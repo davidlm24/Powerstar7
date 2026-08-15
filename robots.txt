@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Design handoff bundle — reference material kept in the repo, not content.
+Disallow: /design/
+
+Sitemap: https://www.powerstar7.com/sitemap.xml

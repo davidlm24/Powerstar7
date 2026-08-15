@@ -1,25 +1,125 @@
-# CODING AGENTS: READ THIS FIRST
+# Powerstar7
 
-This is a **handoff bundle** from Claude Design (claude.ai/design).
+Marketing site for Powerstar7, a Berlin digital agency.
 
-A user mocked up designs in HTML/CSS/JS using an AI design tool, then exported this bundle so a coding agent can implement the designs for real.
+A plain static site — hand-written HTML, one stylesheet, one script. No
+framework, no build step, no dependencies, no external network requests at
+runtime (fonts are self-hosted, icons are inline SVG). Open `index.html` in a
+browser and it works.
 
-## What you should do — IMPORTANT
+## Run it locally
 
-**Read the chat transcripts first.** There are 2 chat transcript(s) in `chats/`. The transcripts show the full back-and-forth between the user and the design assistant — they tell you **what the user actually wants** and **where they landed** after iterating. Don't skip them. The final HTML files are the output, but the chat is where the intent lives.
+```sh
+node .claude/serve.js        # http://localhost:8080
+node .claude/serve.js 3000   # or pick a port
+```
 
-**Read `project/uploads/powerstar7/index.html` in full.** The user had this file open when they triggered the handoff, so it's almost certainly the primary design they want built. Read it top to bottom — don't skim. Then **follow its imports**: open every file it pulls in (shared components, CSS, scripts) so you understand how the pieces fit together before you start implementing.
+The dev server reproduces the two behaviours the production host provides, so
+local matches live:
 
-**If anything is ambiguous, ask the user to confirm before you start implementing.** It's much cheaper to clarify scope up front than to build the wrong thing.
+- **Extensionless URLs** — `/about-us` serves `about-us.html`, and
+  `/about-us.html` 301s to `/about-us`.
+- **Legacy redirects** — the old Sitejet `/en/…` and `/pt/…` URLs 301 to their
+  new equivalents.
 
-## About the design files
+It also exposes a dev-only echo endpoint at `POST /api/contact` for exercising
+the contact form's `fetch` path. Point `data-endpoint` at it in `contact.html`
+to test; it only logs, it never sends mail.
 
-The design medium is **HTML/CSS/JS** — these are prototypes, not production code. Your job is to **recreate them pixel-perfectly** in whatever technology makes sense for the target codebase (React, Vue, native, whatever fits). Match the visual output; don't copy the prototype's internal structure unless it happens to fit.
+Any static file server works too, but without the rewrite rules the
+extensionless links and legacy redirects won't behave as they do in production.
 
-**Don't render these files in a browser or take screenshots unless the user asks you to.** Everything you need — dimensions, colors, layout rules — is spelled out in the source. Read the HTML and CSS directly; a screenshot won't tell you anything they don't.
+## Layout
 
-## Bundle contents
+```
+index.html                    Home
+about-us.html                 About
+services.html                 Services overview (six anchored sections)
+web-design-development.html   Web design service detail
+our-work.html                 Portfolio
+pricing.html                  Pricing tiers
+contact.html                  Contact form
+legal-notice.html             Impressum
+privacy.html                  Privacy policy
+404.html                      Error page (ErrorDocument / Netlify default)
 
-- `README.md` — this file
-- `chats/` — conversation transcripts (read these!)
-- `project/` — the `UI design audit for agency` project files (HTML prototypes, assets, components)
+assets/css/site.css           The entire design system (tokens → components)
+assets/js/site.js             Nav, scroll reveal, cursor tracking, form
+assets/fonts/                 Space Grotesk, 3 self-hosted subsets
+assets/img/                   Logos, favicon, placeholder imagery
+
+_redirects                    Netlify / Cloudflare Pages rules
+.htaccess                     Equivalent Apache rules + cache headers
+sitemap.xml  robots.txt
+DEPLOY.md                     Host setup and the pre-launch checklist
+design/                       Design handoff bundle — see below
+```
+
+## The design system
+
+`assets/css/site.css` is the single source of truth. It is ordered
+tokens → reset → base → layout → components → utilities, with a
+**geometric system** section at the end that carries the current visual
+direction. Everything is driven by custom properties on `:root`: colours, a
+fluid type scale (`--step--1` … `--step-6`), fluid spacing (`--space-2xs` …
+`--space-3xl`), radii, and shadows.
+
+The look, as it landed after the design iterations:
+
+- **Geometric lines and dot accents, no illustrations.** Dot fields are 1px
+  dots on a 13px pitch, with blue accents scattered on an irregular 180px tile
+  so they read as random rather than gridded. On light sections the field is
+  masked out of the centre, so text never sits on dots. In the footer the dots
+  rise from the bottom edge and fade to transparent.
+- **Full-bleed hero**, minimal and direct: badge pill, gradient headline, lead,
+  two buttons. Blue and violet washes over near-black, hairline sweeping arcs,
+  and a dot field that surfaces around the cursor on hover.
+- **Nav** lives in a fixed-width, fully-rounded dark glass pill at all times —
+  flat, 1px outline only, and it stays dark on scroll over light content. The
+  current page gets a tinted pill, never an underline.
+- **Buttons and highlights** carry a minimal 3d finish (top highlight, bottom
+  inset, drop shadow) plus a sheen that follows the pointer. Promo elements add
+  a periodic shine sweep via `.shine`.
+- **Backgrounds** are a desaturated blue off-white (`--paper: #f4f7fb`), never
+  pure white; form fields stay white for contrast.
+
+Behaviour degrades gracefully: with JavaScript off the nav stays reachable and
+all content stays visible (`.no-js` handling). `prefers-reduced-motion` and
+`prefers-contrast` are both honoured.
+
+## Placeholders
+
+The site deliberately ships with visible, styled placeholders rather than
+lorem-filled fake content — striped `.ph-media` panels for project shots and
+team photos, `ADD COPY` blocks for missing prose, and `(01)`–`(03)` markers on
+pricing tiers. They are designed to read as intentional until real material
+replaces them.
+
+**Nothing below is real data.** See the pre-launch checklist in `DEPLOY.md`:
+
+- Contact details — `+49 (0) 000 000 0000`, `hello@powerstar7.com`
+- Pricing — all three tiers are `€0` with placeholder features
+- Portfolio and team — striped placeholder panels
+- Legal notice (Impressum) and privacy policy — incomplete, and legally
+  required before launch (§5 TMG)
+- Contact form — no endpoint configured; it currently falls back to `mailto:`
+
+Search the pages for `ADD COPY` and `TODO` to find them all.
+
+`assets/img/work-1.webp` … `work-6.webp` are left over from an earlier design
+pass and are no longer referenced by any page — the CSS dot-field placeholders
+replaced them. They are kept only as a size reference for real project shots.
+
+## `design/`
+
+The original Claude Design handoff bundle, kept for provenance:
+
+- `HANDOFF.md` — the bundle's own instructions to the implementing agent
+- `chats/` — the two design conversations, where the intent and every
+  iteration of the visual direction live
+- `Powerstar7 UI Audit.dc.html` + `support.js` — the standalone snapshot of
+  the frozen design
+- the reference screenshots the direction was based on
+
+Nothing in `design/` is served — it is reference material, not part of the
+site.

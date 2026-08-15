@@ -17,6 +17,15 @@ pages), which search engines have indexed — those must 301 to the new URLs.
 - **Nginx**: mirror the same rules (`try_files $uri $uri.html $uri/ =404;`
   plus the `/en` → `/` and `/pt` 301s).
 
+`404.html` is the error page. Netlify and Cloudflare Pages pick it up by
+convention; Apache is pointed at it via `ErrorDocument` in `.htaccess`. On
+Nginx, add `error_page 404 /404.html;`.
+
+The `design/` directory is the design handoff bundle — reference material, not
+site content. Both `_redirects` and `.htaccess` return 404 for it, and
+`robots.txt` disallows it. Mirror that on Nginx (`location ^~ /design/ { return
+404; }`) or exclude the directory from the deployed artifact entirely.
+
 Redirect map:
 
 | Old URL | New URL |

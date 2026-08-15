@@ -1,6 +1,11 @@
 # Netlify / Cloudflare Pages redirect rules.
 # (Apache hosts use .htaccess instead; see DEPLOY.md.)
 
+# --- Never serve the design handoff bundle ----------------------------------
+# It lives in the repo as reference material, not as site content.
+/design           /404.html    404
+/design/*         /404.html    404
+
 # --- Legacy Sitejet URLs (301, preserve SEO) --------------------------------
 /en               /            301
 /en/*             /:splat      301

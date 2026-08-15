@@ -930,6 +930,10 @@ strong { font-weight: 600; }
 
 .feature-list .btn-row { align-self: center; }
 
+/* Standalone variant (About → Our values): no artwork column beside it, so
+   the list needs its own measure instead of filling the container. */
+.feature-list--narrow { max-width: 56rem; }
+
 @media (max-width: 30rem) {
   .feature-list { grid-template-columns: 1fr; }
 }
@@ -1113,6 +1117,9 @@ strong { font-weight: 600; }
   letter-spacing: 0.08em;
   color: var(--text-muted);
 }
+
+/* One-line tier tagline under the plan name. */
+.price-card__tag { color: var(--text-muted); }
 
 .price-card:hover { border-color: rgb(14 111 255 / 0.5); }
 
@@ -1475,6 +1482,17 @@ strong { font-weight: 600; }
   color: var(--text-muted);
 }
 
+/* Deliverable list inside a placeholder block. Qualified with `ul` so it
+   outweighs the `ul[class]` reset, which would otherwise strip the markers
+   and the indent this list needs. */
+ul.placeholder__list {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
 .placeholder__tag {
   display: inline-block;
   margin-bottom: var(--space-2xs);
@@ -1501,6 +1519,7 @@ strong { font-weight: 600; }
 }
 
 .mt-xl { margin-top: var(--space-xl); }
+.mb-0 { margin-bottom: 0; }
 .flow > * + * { margin-top: var(--space-m); }
 
 /* ---------- Scroll reveal ------------------------------------------------ */
@@ -1659,11 +1678,18 @@ strong { font-weight: 600; }
 
 .hero--minimal:hover::after { opacity: 1; }
 
-.hero__inner { width: 100%; }
+.hero__inner {
+  position: relative;
+  width: 100%;
+}
+
 .hero__inner > * + * { margin-top: var(--space-m); }
 
+/* Heading width and lead size are the sizes signed off in the design pass.
+   892px is a desktop cap only — below that the container is narrower, so the
+   headline still wraps naturally on phones. */
 .hero--minimal h1 {
-  max-width: 26ch;
+  max-width: 892px;
   font-size: clamp(2.4rem, 1.5rem + 4.2vw, 4.5rem);
   font-weight: 500;
   letter-spacing: -0.035em;
@@ -1674,7 +1700,11 @@ strong { font-weight: 600; }
   color: transparent;
 }
 
-.hero--minimal .hero__lead { max-width: 40rem; }
+.hero--minimal .hero__lead {
+  max-width: 40rem;
+  font-size: 17.72px;
+}
+
 .hero--minimal .btn-row { margin-top: var(--space-l); }
 
 /* Outlined badge pill with a single accent dot. */
