@@ -1,0 +1,16 @@
+# Netlify / Cloudflare Pages redirect rules.
+# (Apache hosts use .htaccess instead; see DEPLOY.md.)
+
+# --- Legacy Sitejet URLs (301, preserve SEO) --------------------------------
+/en               /            301
+/en/*             /:splat      301
+
+# The old Portuguese version only ever had these two pages. Redirect to the
+# English equivalents until a PT version is (re)built.
+/pt               /            301
+/pt/sobre-nos     /about-us    301
+/pt/*             /            301
+
+# --- Strip .html so canonical extensionless URLs are the only public form ---
+/index.html       /                        301
+/*.html           /:splat                  301
