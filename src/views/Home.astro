@@ -195,11 +195,21 @@ const position = [
     border-bottom: 1px solid var(--rule);
     color: var(--fg);
     text-decoration: none;
-    transition: padding-inline-start var(--dur) var(--ease);
   }
 
-  .service a:hover {
-    padding-inline-start: var(--s3);
+  /* The row indents on hover by translating its two left cells, not by
+     animating the row's padding. Padding is a layout property: transitioning
+     it reflows the grid on every frame, on the most-hovered element of the
+     page. Transform runs on the compositor and leaves layout alone.
+     The arrow keeps its own transform so it still travels independently. */
+  .service__n,
+  .service__name {
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .service a:hover .service__n,
+  .service a:hover .service__name {
+    transform: translateX(var(--s3));
   }
 
   .service__n {
