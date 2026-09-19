@@ -27,16 +27,16 @@ const services = [
       five identical cards in a grid with a stroke icon at the top. The old
       site had six of those and they were the reason every page read the
       same. The number column doubles as the section's own index. */}
-  <div class="services">
+  <div class="services rails">
     <div class="container">
       {
-        services.map((s) => (
-          <section class="svc" id={s.id}>
-            <div class="svc__index">
+        services.map((s, i) => (
+          <section class:list={['svc', 'row', i === 1 && 'invert']} id={s.id}>
+            <div class="svc__index row__title">
               <span class="svc__n">{s.n}</span>
             </div>
 
-            <div class="svc__body">
+            <div class="svc__body row__body">
               <h2 class="svc__name">{t(`svc.${s.key}.name` as any)}</h2>
               <p class="svc__lede">{t(`svc.${s.key}.body` as any)}</p>
 
@@ -62,25 +62,44 @@ const services = [
   }
 
   .svc {
-    display: grid;
-    grid-template-columns: 6rem minmax(0, 1fr);
-    gap: var(--s4);
     padding-block: var(--s6);
     border-top: 1px solid var(--rule);
+  }
+
+  /* One row per list runs dark, which is the CREATIVE. reference's device for
+     giving a long list a rhythm without turning a whole section into a band.
+     Dark is the footer's ground everywhere else on this site now; here it is
+     punctuation.
+
+     The negative margin with matching padding is what keeps the type on this
+     row aligned with every other row while the fill sits slightly proud of
+     the content column. The alternative — padding without the margin —
+     indents one row's text by 32px and reads as a mistake.
+
+     Every role inside flips automatically: .invert reassigns --fg, --fg-muted,
+     --accent, --rule and --rail in one place, so .row__body's divider and the
+     index numeral follow without a single override here. */
+  .svc.invert {
+    /* Clamped to the gutter. A flat --s4 bleed is 32px, and at 320px the
+       gutter is only 20px — the row then hangs 12px off each side of the page
+       and the document scrolls sideways. */
+    margin-inline: calc(min(var(--s4), var(--gutter)) * -1);
+    padding-inline: min(var(--s4), var(--gutter));
+    border-top-color: transparent;
   }
 
   /* The index stays with the heading as the section scrolls past, so a long
      services page never loses track of which service you are reading. */
   .svc__index {
     position: sticky;
-    top: var(--s4);
+    top: var(--header-h);
     align-self: start;
   }
 
   .svc__n {
     font-family: var(--font-mono);
     font-size: var(--t-micro);
-    letter-spacing: var(--tr-micro);
+    letter-spacing: var(--tr-mono);
     /* --accent-fn, not --accent. This is 13px text, and the bright display
        blue measures 3.97:1 on the ground — it fails AA below 24px. That is
        the entire reason the accent ships as a pair. */
@@ -129,8 +148,8 @@ const services = [
     font-size: var(--t-small);
   }
 
-  /* A square in the accent, the same mark the section labels use. One
-     device, reused — rather than six bespoke stroke icons. */
+  /* A square in the accent, the same mark the section labels use. One device,
+     reused — rather than six bespoke stroke icons. */
   .svc__deliverables li::before {
     content: '';
     position: absolute;
@@ -141,10 +160,10 @@ const services = [
     background: var(--accent);
   }
 
-  @media (max-width: 48rem) {
+  /* Matches the width the row primitive collapses at, so the index stops
+     sticking at the same moment it stops having a column. */
+  @media (max-width: 60rem) {
     .svc {
-      grid-template-columns: minmax(0, 1fr);
-      gap: var(--s2);
       padding-block: var(--s5);
     }
 

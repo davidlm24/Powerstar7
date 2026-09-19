@@ -1,5 +1,5 @@
 /* =========================================================================
-   Powerstar7 — content, in both languages.
+   DesignActiv — content, in both languages.
    =========================================================================
 
    English and Portuguese sit side by side on purpose: a string that exists
@@ -39,7 +39,7 @@ export type PageKey = keyof typeof ROUTES;
 export { default as metrics } from '../data/metrics.json';
 
 export const CONTACT = {
-  email: 'hello@powerstar7.com',
+  email: 'hello@designactiv.com',
   /* Deliberately absent until they are real: phone and street address.
      The old site shipped "+49 (0) 000 000 0000" and "Street and number,
      10000 Berlin" on all ten pages. A fake number is worse than no number. */
@@ -47,10 +47,10 @@ export const CONTACT = {
 
 export const ui = {
   en: {
-    'site.name': 'Powerstar7',
+    'site.name': 'DesignActiv',
     'site.tagline': 'Web studio · Germany & Luxembourg',
     'site.description':
-      'Powerstar7 is a web studio in Germany and Luxembourg. We hand-build fast, accessible websites for clients across Europe and Brazil — no templates, no trackers, no cookie banner.',
+      'DesignActiv is a web studio in Germany and Luxembourg. We hand-build fast, accessible websites for clients across Europe and Brazil — no templates, no trackers, no cookie banner.',
 
     'nav.home': 'Home',
     'nav.work': 'Work',
@@ -65,12 +65,12 @@ export const ui = {
     'nav.langSwitch': 'Ver em português',
 
     /* --- Home ---------------------------------------------------------- */
-    'home.title': 'Powerstar7 — web studio, Germany & Luxembourg',
+    'home.title': 'DesignActiv — web studio, Germany & Luxembourg',
     'home.h1.a': 'No templates.',
     'home.h1.b': 'No trackers.',
     'home.h1.c': 'No cookie banner.',
     'home.lead':
-      'Powerstar7 is a web studio in Germany and Luxembourg, working with clients across Europe and Brazil. We write every site by hand, so it loads fast, reaches everyone, and belongs to you.',
+      'DesignActiv is a web studio in Germany and Luxembourg, working with clients across Europe and Brazil. We write every site by hand, so it loads fast, reaches everyone, and belongs to you.',
     'home.cta': 'Start a project',
     'home.cta.secondary': 'How we work',
 
@@ -84,6 +84,14 @@ export const ui = {
     'home.proof.banner': 'cookie banners',
     'home.proof.bannerValue': 'None',
     'home.proof.bannerNote': 'Nothing to consent to, so nothing to interrupt you with.',
+
+    'home.stats.label': 'The studio, so far',
+    'home.stats.note':
+      'Small numbers, honestly reported. We would rather show you what is true today than a figure we cannot stand behind.',
+    'home.stats.projects': 'projects delivered',
+    'home.stats.clients': 'clients',
+    'home.stats.countries': 'countries we work from and into',
+    'home.stats.languages': 'languages we build in',
 
     'home.services.label': 'What we do',
     'home.services.h2': 'Five things, done properly.',
@@ -107,13 +115,13 @@ export const ui = {
     'home.work.label': 'Work',
     'home.work.h2': 'The honest state of this page.',
     'home.work.body':
-      'Powerstar7 is early. Client work is under way and the first case studies are not public yet, so there is nothing to show here — and we would rather say that than fill the page with six grey rectangles labelled “Project 1”.',
+      'DesignActiv is early. Client work is under way and the first case studies are not public yet, so there is nothing to show here — and we would rather say that than fill the page with six grey rectangles labelled “Project 1”.',
     'home.work.body2':
       'What we can show is this site: how it is built, what it weighs, and how it behaves on a bad connection with a screen reader running.',
     'home.work.link': 'What we can show',
 
     /* --- Services ------------------------------------------------------- */
-    'services.title': 'Services — Powerstar7',
+    'services.title': 'Services — DesignActiv',
     'services.h1': 'Five things, done properly.',
     'services.lead':
       'A small studio cannot be excellent at twenty things. These are the five we take on, and the way we take them on.',
@@ -155,10 +163,17 @@ export const ui = {
     'svc.hosting.d3': 'A named person who answers email',
 
     /* --- Work ----------------------------------------------------------- */
-    'work.title': 'Work — Powerstar7',
+    'work.title': 'Work — DesignActiv',
     'work.h1': 'Nothing to show yet.',
     'work.lead':
-      'Powerstar7 is early, and the first client sites are still in build. Rather than fill this page with placeholders, here is what we can put in front of you today.',
+      'DesignActiv is early, and the first client sites are still in build. Rather than fill this page with placeholders, here is what we can put in front of you today.',
+    'work.showcase.label': 'Showcase',
+    'work.showcase.h': 'How case studies will look.',
+    'work.showcase.warn':
+      'Placeholder. These four are invented so the layout can be judged before real work exists — no client, project or result below is real. They come out before launch.',
+    'work.showcase.client': 'Client',
+    'work.showcase.service': 'Service',
+
     'work.case.label': 'In build',
     'work.case.h': 'First client site, in progress',
     'work.case.b':
@@ -176,10 +191,10 @@ export const ui = {
       'Early projects get disproportionate attention. If you have something to build, now is a good moment to talk.',
 
     /* --- About ---------------------------------------------------------- */
-    'about.title': 'About — Powerstar7',
+    'about.title': 'About — DesignActiv',
     'about.h1': 'A small studio in two countries.',
     'about.lead':
-      'Powerstar7 works out of Germany and Luxembourg, with clients across Europe and in Brazil. Small enough that the person you brief is the person who builds it.',
+      'DesignActiv works out of Germany and Luxembourg, with clients across Europe and in Brazil. Small enough that the person you brief is the person who builds it.',
     'about.story.h': 'Why hand-built',
     'about.story.b1':
       'Most small-business sites are assembled in a builder, on someone else’s template, paying rent for the privilege. It is fast to start and expensive to leave: the structure is not yours, the payload is not negotiable, and the day you want something the template does not do, you are stuck.',
@@ -202,7 +217,7 @@ export const ui = {
       'WCAG AA is the floor on every project, not a line item you can decline. It is also, quietly, what makes a site work on a bad phone.',
 
     /* --- Contact -------------------------------------------------------- */
-    'contact.title': 'Contact — Powerstar7',
+    'contact.title': 'Contact — DesignActiv',
     'contact.h1': 'Tell us what you are building.',
     'contact.lead':
       'A short description is enough to start. We reply to everything, usually within a working day.',
@@ -250,7 +265,7 @@ export const ui = {
     'footer.built': 'Hand-built. No trackers, no cookies, no consent banner.',
 
     /* --- Legal ---------------------------------------------------------- */
-    'legal.title': 'Legal notice — Powerstar7',
+    'legal.title': 'Legal notice — DesignActiv',
     'legal.h1': 'Legal notice',
     'legal.tmg': 'Information pursuant to § 5 TMG',
     'legal.todo.h': 'This page is not complete.',
@@ -263,7 +278,7 @@ export const ui = {
       'The European Commission provides a platform for online dispute resolution. We are neither obliged nor willing to take part in dispute resolution proceedings before a consumer arbitration board.',
 
     /* --- Privacy -------------------------------------------------------- */
-    'privacy.title': 'Privacy — Powerstar7',
+    'privacy.title': 'Privacy — DesignActiv',
     'privacy.h1': 'Privacy',
     'privacy.summary.h': 'The short version',
     'privacy.summary.b':
@@ -286,7 +301,7 @@ export const ui = {
     'privacy.updated': 'Last updated',
 
     /* --- 404 ------------------------------------------------------------ */
-    'nf.title': 'Page not found — Powerstar7',
+    'nf.title': 'Page not found — DesignActiv',
     'nf.h1': 'That page is not here.',
     'nf.lead':
       'The link may be old, or we may have moved the page during the rebuild. The site is small enough that everything is one click away.',
@@ -294,10 +309,10 @@ export const ui = {
   },
 
   pt: {
-    'site.name': 'Powerstar7',
+    'site.name': 'DesignActiv',
     'site.tagline': 'Estúdio web · Alemanha e Luxemburgo',
     'site.description':
-      'A Powerstar7 é um estúdio web na Alemanha e no Luxemburgo. Criamos sites à mão, rápidos e acessíveis, para clientes na Europa e no Brasil — sem templates, sem rastreadores, sem banner de cookies.',
+      'A DesignActiv é um estúdio web na Alemanha e no Luxemburgo. Criamos sites à mão, rápidos e acessíveis, para clientes na Europa e no Brasil — sem templates, sem rastreadores, sem banner de cookies.',
 
     'nav.home': 'Início',
     'nav.work': 'Trabalhos',
@@ -312,12 +327,12 @@ export const ui = {
     'nav.langSwitch': 'View in English',
 
     /* --- Home ---------------------------------------------------------- */
-    'home.title': 'Powerstar7 — estúdio web, Alemanha e Luxemburgo',
+    'home.title': 'DesignActiv — estúdio web, Alemanha e Luxemburgo',
     'home.h1.a': 'Sem templates.',
     'home.h1.b': 'Sem rastreadores.',
     'home.h1.c': 'Sem cookies.',
     'home.lead':
-      'A Powerstar7 é um estúdio web na Alemanha e no Luxemburgo, com clientes em toda a Europa e no Brasil. Escrevemos cada site à mão, para que carregue rápido, alcance todo mundo e seja realmente seu.',
+      'A DesignActiv é um estúdio web na Alemanha e no Luxemburgo, com clientes em toda a Europa e no Brasil. Escrevemos cada site à mão, para que carregue rápido, alcance todo mundo e seja realmente seu.',
     'home.cta': 'Começar um projeto',
     'home.cta.secondary': 'Como trabalhamos',
 
@@ -331,6 +346,14 @@ export const ui = {
     'home.proof.banner': 'banners de cookies',
     'home.proof.bannerValue': 'Nenhum',
     'home.proof.bannerNote': 'Não há nada a consentir, então nada para interromper você.',
+
+    'home.stats.label': 'O estúdio, até aqui',
+    'home.stats.note':
+      'Números pequenos, relatados com honestidade. Preferimos mostrar o que é verdade hoje a exibir um número que não conseguimos sustentar.',
+    'home.stats.projects': 'projetos entregues',
+    'home.stats.clients': 'clientes',
+    'home.stats.countries': 'países de onde e para onde trabalhamos',
+    'home.stats.languages': 'idiomas em que construímos',
 
     'home.services.label': 'O que fazemos',
     'home.services.h2': 'Cinco coisas, bem feitas.',
@@ -354,13 +377,13 @@ export const ui = {
     'home.work.label': 'Trabalhos',
     'home.work.h2': 'O estado honesto desta página.',
     'home.work.body':
-      'A Powerstar7 está começando. Há trabalho de cliente em andamento e os primeiros estudos de caso ainda não são públicos, então não há o que mostrar aqui — e preferimos dizer isso a encher a página com seis retângulos cinzentos chamados “Projeto 1”.',
+      'A DesignActiv está começando. Há trabalho de cliente em andamento e os primeiros estudos de caso ainda não são públicos, então não há o que mostrar aqui — e preferimos dizer isso a encher a página com seis retângulos cinzentos chamados “Projeto 1”.',
     'home.work.body2':
       'O que podemos mostrar é este site: como foi construído, quanto pesa e como se comporta numa conexão ruim com um leitor de tela ligado.',
     'home.work.link': 'O que podemos mostrar',
 
     /* --- Services ------------------------------------------------------- */
-    'services.title': 'Serviços — Powerstar7',
+    'services.title': 'Serviços — DesignActiv',
     'services.h1': 'Cinco coisas, bem feitas.',
     'services.lead':
       'Um estúdio pequeno não consegue ser excelente em vinte coisas. Estas são as cinco que aceitamos — e o jeito como as aceitamos.',
@@ -402,10 +425,17 @@ export const ui = {
     'svc.hosting.d3': 'Uma pessoa com nome que responde e-mail',
 
     /* --- Work ----------------------------------------------------------- */
-    'work.title': 'Trabalhos — Powerstar7',
+    'work.title': 'Trabalhos — DesignActiv',
     'work.h1': 'Ainda não há o que mostrar.',
     'work.lead':
-      'A Powerstar7 está começando, e os primeiros sites de clientes ainda estão em construção. Em vez de encher esta página de placeholders, aqui está o que podemos colocar na sua frente hoje.',
+      'A DesignActiv está começando, e os primeiros sites de clientes ainda estão em construção. Em vez de encher esta página de placeholders, aqui está o que podemos colocar na sua frente hoje.',
+    'work.showcase.label': 'Vitrine',
+    'work.showcase.h': 'Como os estudos de caso vão aparecer.',
+    'work.showcase.warn':
+      'Provisório. Estes quatro foram inventados para que o layout possa ser avaliado antes de existir trabalho real — nenhum cliente, projeto ou resultado abaixo é real. Saem do ar antes do lançamento.',
+    'work.showcase.client': 'Cliente',
+    'work.showcase.service': 'Serviço',
+
     'work.case.label': 'Em construção',
     'work.case.h': 'Primeiro site de cliente, em andamento',
     'work.case.b':
@@ -423,10 +453,10 @@ export const ui = {
       'Projetos iniciais recebem uma atenção desproporcional. Se você tem algo para construir, este é um bom momento para conversar.',
 
     /* --- About ---------------------------------------------------------- */
-    'about.title': 'Sobre nós — Powerstar7',
+    'about.title': 'Sobre nós — DesignActiv',
     'about.h1': 'Um estúdio pequeno em dois países.',
     'about.lead':
-      'A Powerstar7 trabalha a partir da Alemanha e do Luxemburgo, com clientes pela Europa e no Brasil. Pequena o bastante para que quem recebe o briefing seja quem constrói.',
+      'A DesignActiv trabalha a partir da Alemanha e do Luxemburgo, com clientes pela Europa e no Brasil. Pequena o bastante para que quem recebe o briefing seja quem constrói.',
     'about.story.h': 'Por que à mão',
     'about.story.b1':
       'A maioria dos sites de pequenas empresas é montada num construtor, sobre o template de outra pessoa, pagando aluguel pelo privilégio. É rápido de começar e caro de abandonar: a estrutura não é sua, o peso não é negociável e, no dia em que você quiser algo que o template não faz, você trava.',
@@ -449,7 +479,7 @@ export const ui = {
       'WCAG AA é o piso em todo projeto, não um item que dá para recusar. É também, discretamente, o que faz um site funcionar num celular ruim.',
 
     /* --- Contact -------------------------------------------------------- */
-    'contact.title': 'Contato — Powerstar7',
+    'contact.title': 'Contato — DesignActiv',
     'contact.h1': 'Conte o que você está construindo.',
     'contact.lead':
       'Uma descrição curta já basta para começar. Respondemos tudo, normalmente em um dia útil.',
@@ -497,7 +527,7 @@ export const ui = {
     'footer.built': 'Feito à mão. Sem rastreadores, sem cookies, sem banner de consentimento.',
 
     /* --- Legal ---------------------------------------------------------- */
-    'legal.title': 'Aviso legal — Powerstar7',
+    'legal.title': 'Aviso legal — DesignActiv',
     'legal.h1': 'Aviso legal',
     'legal.tmg': 'Informações conforme o § 5 TMG',
     'legal.todo.h': 'Esta página não está completa.',
@@ -510,7 +540,7 @@ export const ui = {
       'A Comissão Europeia disponibiliza uma plataforma de resolução de litígios online. Não somos obrigados nem dispostos a participar de procedimentos de arbitragem perante um órgão de defesa do consumidor.',
 
     /* --- Privacy -------------------------------------------------------- */
-    'privacy.title': 'Privacidade — Powerstar7',
+    'privacy.title': 'Privacidade — DesignActiv',
     'privacy.h1': 'Privacidade',
     'privacy.summary.h': 'A versão curta',
     'privacy.summary.b':
@@ -533,7 +563,7 @@ export const ui = {
     'privacy.updated': 'Última atualização',
 
     /* --- 404 ------------------------------------------------------------ */
-    'nf.title': 'Página não encontrada — Powerstar7',
+    'nf.title': 'Página não encontrada — DesignActiv',
     'nf.h1': 'Essa página não está aqui.',
     'nf.lead':
       'O link pode estar antigo, ou talvez tenhamos movido a página durante a reconstrução. O site é pequeno o bastante para que tudo esteja a um clique.',

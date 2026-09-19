@@ -13,7 +13,7 @@ const { label, title, lead } = Astro.props;
     else, and it earns its weight from the type alone. It also runs a step
     below the home hero (96px against 140px), so the home page stays the
     loudest thing on the site. */}
-<section class="page-head">
+<section class="page-head rails">
   <div class="container">
     <p class="label">{label}</p>
     <h1 class="page-head__h1">{title}</h1>
@@ -28,7 +28,11 @@ const { label, title, lead } = Astro.props;
 
   .page-head__h1 {
     margin-block-start: var(--s4);
-    font-size: clamp(2.75rem, 7vw, 6rem);
+    /* --t-title. This was a hand-rolled clamp topping at 96px — 8px under
+       the home hero, which is not a step down the ladder, it is noise. The
+       token makes it 80px and the scale 104 / 80 / 56 / 28. */
+    font-size: var(--t-title);
+    font-weight: var(--weight-heading);
     max-width: 16ch;
   }
 

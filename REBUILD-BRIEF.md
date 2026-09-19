@@ -1,4 +1,4 @@
-# Powerstar7 — rebuild brief
+# DesignActiv — rebuild brief
 
 **Written 2026-09-19, for a from-scratch rebuild in a new session.**
 
@@ -25,9 +25,16 @@ covering only 2 of 10 pages), and a warm espresso/amber palette that **was never
 
 ### Mistakes made during the patch attempt — do not repeat
 
-1. **An orange/amber palette was introduced that is not Powerstar7's.** `--amber #f58220`
+1. **An orange/amber palette was introduced that is not the studio's.** `--amber #f58220`
    came in with the Sitejet import; it was then darkened and amplified into hero gradients
-   as "warmth". The brand is **blue and ink**. There is no orange. Delete it entirely.
+   as "warmth". The brand is **blue and ink**. Delete it entirely.
+
+   *Amended 2026-09-19.* An amber **does** now exist in the rebuild — `--amber #f5a524`,
+   on the showcase "service" badge and nowhere else. That is not this mistake repeating.
+   The mistake above was a whole palette arriving unasked-for and spreading into hero
+   gradients; this is one fill, chosen deliberately after the rule was put in front of
+   David, fenced in `tokens.css` and carrying exactly one meaning. The test that keeps
+   the two apart: if the amber turns up in a third place, it has become the mistake again.
 2. **A staged `.typeset` scope** applied a new type scale to 2 pages and left 8 on the old
    one. Never ship two type systems in one stylesheet.
 3. **Copy was rewritten but structure was not.** "Why Choose Us?" became "Why people stay
@@ -41,15 +48,33 @@ covering only 2 of 10 pages), and a warm espresso/amber palette that **was never
 
 | | Value |
 |---|---|
-| Studio | Powerstar7 |
-| Based | **Germany and Luxembourg** (not "Berlin" — the current site understates the footprint) |
+| Studio | **DesignActiv** — renamed from Powerstar7 on 2026-09-19 |
+| Written | `DesignActiv` — capital A, **no trailing "e"**. The capital is deliberate: it makes the spelling read as a choice rather than a typo. Domain is lowercase `designactiv.com`. |
+| Based | **Germany and Luxembourg** (not "Berlin" — the old site understated the footprint) |
 | Clients | Europe and **Brazil** |
 | Sells | Web design & development, branding, SEO, email marketing, hosting |
 | Brand blue | `#0e6fff` display / `#0d68f0` for white-on-blue (the bright one measures 4.44:1 and **fails WCAG AA**) |
 | Ink | near-black |
-| Accent hues | **blue only.** No orange, no violet, no amber. |
+| Accent hues | **blue.** Two fenced exceptions exist by decision: `--purple` in the hero wash and showcase art, `--amber` on one badge. Both are defined with their fences in `tokens.css`; neither may spread. |
 | Display face | Space Grotesk (locked by the owner — see §5 for the tension) |
 | Body face | Source Sans 3 (humanist, chosen to pair with the geometric display) |
+
+**The rename, and the one thing it costs.** "Powerstar7" did not read as a design studio
+to the buyer this studio actually sells to — local small businesses who want reassurance
+they are in the right place, not naming sophistication. The `7` also carried its own
+spoken-referral friction ("powerstar seven dot com" — numeral or word?), so the
+descriptive name was not a net loss on that axis either.
+
+The cost, accepted with eyes open: **`designactive.com` (with the *e*) is not owned.** It
+is parked on domaineasy.com with a for-sale page, so mistyped referrals land there. That
+is survivable — a parking page, not a competitor — but it is an uncontrolled asset that
+could change hands. Re-asking the price is worth it; "expensive" on a parking page is an
+opening position. Mitigate meanwhile by always writing the name rather than relying on it
+being spoken, and by registering `designactiv.lu` and `designactiv.de` defensively.
+
+**`powerstar7.com` is retained**, not abandoned. It 301s path-for-path to
+`designactiv.com`, so the legacy Sitejet URLs the redirect map preserves still land on
+the right page. Deleting that host rule silently discards two generations of SEO.
 
 **Language is an open question and it matters.** The site is English-only. The old Sitejet
 site had `/pt/` pages that `_redirects` now 301s to English, discarding Brazilian-market
@@ -169,7 +194,7 @@ work. Currently locked by owner preference — worth revisiting.
 | Legal Notice (Impressum) | **Placeholder. Legally required (§5 TMG). Launch blocker.** |
 | Privacy policy | Responsible-party blank; needs lawyer review |
 | Phone / address | `+49 (0) 000 000 0000` and "Street and number, 10000 Berlin" — fake, on every page |
-| Email | `hello@powerstar7.com` — unverified |
+| Email | `hello@designactiv.com` — confirmed live 2026-09-19 |
 | Pricing | €0 across all three tiers, "Placeholder feature" bullets |
 | Services copy | Six `ADD COPY` blocks with "Deliverable one/two/three" |
 | Team | Three "Name Surname" cards |

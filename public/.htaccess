@@ -1,7 +1,16 @@
-# Apache configuration for powerstar7.com
+# Apache configuration for designactiv.com
 # Mirrors _redirects (Netlify / Cloudflare Pages). See DEPLOY.md.
 
 RewriteEngine On
+
+# --- Legacy DOMAIN (301, preserve SEO) --------------------------------------
+# The studio renamed from Powerstar7 to DesignActiv on 2026-09-19.
+# powerstar7.com is RETAINED and forwards here path-for-path, so an old URL
+# lands on its real successor rather than the home page. The path rules below
+# then run on the new host, so a legacy /en/… URL resolves in two hops.
+# Deleting this silently discards two generations of SEO.
+RewriteCond %{HTTP_HOST} ^(www\.)?powerstar7\.com$ [NC]
+RewriteRule ^(.*)$ https://www.designactiv.com/$1 [R=301,L]
 
 # --- Never serve the design handoff bundle ----------------------------------
 # It lives in the repo as reference material, not as site content.

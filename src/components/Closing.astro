@@ -13,7 +13,7 @@ const t = useTranslations(lang);
 {/* What replaced .cta-band — the identical blue slab that closed six of the
     old site's ten pages. One line of type at heading scale, between two
     hairlines, and the whole line is the link. */}
-<section class="closing">
+<section class="closing rails">
   <div class="container">
     <a class="closing__link" href={route('contact', lang)}>
       <span>{label ?? t('home.cta')}</span>
@@ -24,7 +24,7 @@ const t = useTranslations(lang);
 
 <style>
   .closing {
-    padding-block: var(--s6) var(--s8);
+    padding-block: var(--s6) var(--section-y);
   }
 
   .closing__link {
@@ -33,10 +33,16 @@ const t = useTranslations(lang);
     justify-content: space-between;
     gap: var(--s4);
     padding-block: var(--s4);
-    border-block: 1px solid var(--rule);
+    /* Start only. The bottom line had --s8 of empty paper beneath it and then
+       the footer's ink ground, which carries that boundary by tone — the same
+       reason the footer needs no top line. Two lines bracketing one element is
+       a frame, which is the shape being retired; one line above it divides the
+       CTA from the section before it, which is a separator. */
+    border-block-start: 1px solid var(--rule);
     font-family: var(--font-display);
     font-size: var(--t-h2);
-    font-weight: var(--weight-display);
+    /* h2 scale, so h2 weight. */
+    font-weight: var(--weight-heading);
     letter-spacing: var(--tr-heading);
     color: var(--fg);
     text-decoration: none;

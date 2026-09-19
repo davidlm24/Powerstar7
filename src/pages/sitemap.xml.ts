@@ -7,7 +7,7 @@ import { ROUTES, LANGS, type PageKey } from '../i18n/ui';
    search engine is told the two URLs are the same page rather than
    duplicate content. */
 
-const SITE = 'https://www.powerstar7.com';
+const SITE = 'https://www.designactiv.com';
 
 const PRIORITY: Record<PageKey, string> = {
   home: '1.0',

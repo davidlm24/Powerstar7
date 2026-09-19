@@ -16,7 +16,7 @@ interface Props {
 const { lang, page, title, description } = Astro.props;
 const t = useTranslations(lang);
 
-const site = Astro.site ?? new URL('https://www.powerstar7.com');
+const site = Astro.site ?? new URL('https://www.designactiv.com');
 const desc = description ?? t('site.description');
 const canonical = page ? new URL(ROUTES[page][lang], site).href : null;
 const ogImage = new URL('/assets/img/og-card.png', site).href;
@@ -67,7 +67,7 @@ const ogImage = new URL('/assets/img/og-card.png', site).href;
     />
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Powerstar7" />
+    <meta property="og:site_name" content="DesignActiv" />
     <meta property="og:locale" content={lang === 'pt' ? 'pt_BR' : 'en_GB'} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={desc} />

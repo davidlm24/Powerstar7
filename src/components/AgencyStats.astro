@@ -1,0 +1,131 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+import agency from '../data/agency.json';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+/* The studio's own numbers. Unlike the measured page figures this replaced,
+   nothing here can be checked by the visitor — which is exactly why the
+   values live in src/data/agency.json with a note, instead of being typed
+   into the markup where they would quietly rot.
+
+   The measured performance figures did not disappear: they are still on the
+   Work page, where they are the evidence for a claim rather than a headline. */
+const cells = [
+  { value: agency.projectsDelivered, label: t('home.stats.projects') },
+  { value: agency.clients, label: t('home.stats.clients') },
+  { value: agency.countries, label: t('home.stats.countries') },
+  { value: agency.languages, label: t('home.stats.languages') },
+];
+---
+
+<section class="stats rails" aria-labelledby="stats-h">
+  <div class="container">
+    <p class="label" id="stats-h">{t('home.stats.label')}</p>
+
+    <dl class="stats__grid">
+      {
+        cells.map((cell) => (
+          <div class="stats__cell">
+            <dt class="stats__label">{cell.label}</dt>
+            <dd class="stats__value">{cell.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <p class="stats__note">{t('home.stats.note')}</p>
+  </div>
+</section>
+
+<style>
+  .stats {
+    padding-block: var(--s6) var(--s7);
+    /* --rail, not --rule: this is the band's own top and bottom edge, and it
+       meets the two page-edge rails at the corners. A 4% horizontal crossing
+       a 10% vertical reads as a line that breaks where it should close. */
+    border-block: 1px solid var(--rail);
+    background: var(--paper-hi);
+  }
+
+  .stats__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    margin-block-start: var(--s5);
+  }
+
+  /* A column per cell with the label allowed to grow, so the figures sit on a
+     shared bottom edge no matter how many lines each label takes. The previous
+     `min-height` on the label only equalised labels of one or two lines —
+     "countries we work from and into" wraps to three at four columns, which
+     pushed its figure out of line with the other three. */
+  .stats__cell {
+    display: flex;
+    flex-direction: column;
+    border-inline-start: 1px solid var(--rule);
+    padding-inline: var(--col-pad);
+  }
+
+  /* The first cell OF EACH ROW carries no line and no indent. There is nothing
+     to its left to be separated from, so a line there would be a frame edge,
+     and the indent would be hanging off a line that is not drawn — flush, the
+     figure aligns with the section label above it and the note below it.
+
+     Scoped per row, not to :first-child, and that is the bug this fixes rather
+     than a refinement. --grid-cols drops to 2 below 60rem, so cell 3 becomes
+     the leftmost of row two; :first-child never matched it, so it kept a
+     border. That border used to land exactly on the old page-edge rail and
+     composite with it to roughly double density — which is what the comment
+     here previously claimed to have solved. With the rail gone it would have
+     been worse: an orphan line down one row only, with none on the other. */
+  .stats__cell:nth-child(4n + 1) {
+    border-inline-start: 0;
+    padding-inline-start: 0;
+  }
+
+  .stats__label {
+    flex: 1;
+  }
+
+  .stats__value {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--t-stat);
+    font-weight: var(--weight-display);
+    line-height: 0.9;
+    letter-spacing: var(--tr-display);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stats__label {
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-micro);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    margin-block-end: var(--s2);
+  }
+
+  .stats__note {
+    max-width: 54ch;
+    margin-block-start: var(--s5);
+    color: var(--fg-muted);
+    font-size: var(--t-small);
+  }
+
+  @media (max-width: 60rem) {
+    .stats__grid {
+      row-gap: var(--s4);
+    }
+
+    /* Two columns here, so the leftmost of each row is every odd cell. */
+    .stats__cell:nth-child(2n + 1) {
+      border-inline-start: 0;
+      padding-inline-start: 0;
+    }
+  }
+</style>

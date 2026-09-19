@@ -1,4 +1,4 @@
-# Deploying powerstar7.com
+# Deploying designactiv.com
 
 The site is built with Astro and deployed as static files. Three things need
 attention before launch.
@@ -79,7 +79,7 @@ The form is handler-agnostic (`src/views/Contact.astro`):
 - **Current state**: with no endpoint set, submitting composes an email in
   the visitor's mail app. The status message says that is what it is
   attempting; it does **not** claim the message was sent, because it cannot
-  know. Confirm `hello@powerstar7.com` is a real, monitored inbox.
+  know. Confirm `hello@designactiv.com` is a real, monitored inbox.
 
 If you adopt a third-party form service, name the processor in the privacy
 policy, and be aware that it is the first third party the site would touch.
@@ -96,12 +96,23 @@ that links out, not as an iframe.
 
 ## Pre-launch checklist
 
+- [ ] **Turn off the placeholder showcase.** `src/data/showcase-demo.json` has
+      `enabled: true` and four invented case studies on the Work page. They
+      exist so the layout could be reviewed before real work exists. Shipping
+      them would put four fabricated clients directly under a heading that
+      says there is nothing to show yet. Set `enabled` to false, or replace
+      them with real case studies.
+- [ ] **Set the studio's real numbers** in `src/data/agency.json`. They are
+      currently the honest values for 2026-09-19 (0 delivered, 1 client) and
+      they lead the home page. Unlike the page-weight figures they replaced,
+      a visitor cannot verify them — so a stale number here is a claim, not
+      a typo.
 - [ ] **Legal notice (Impressum) completed — legally required under § 5 TMG.
       This is a launch blocker.** Real name, postal address, contact details,
       and VAT/register numbers where applicable.
 - [ ] Privacy policy: responsible party and competent supervisory authority
       named; text reviewed by a lawyer
-- [ ] `hello@powerstar7.com` verified as a real, monitored inbox
+- [ ] `hello@designactiv.com` verified as a real, monitored inbox
 - [ ] Form endpoint configured, and a test submission actually received
 - [ ] Decide whether the unlaunched client project stays on `/work` — it is
       the client's information to share, so get their sign-off or cut the
@@ -111,7 +122,7 @@ that links out, not as an iframe.
       figures match what actually ships
 - [ ] Verify the redirects against the live host:
       ```bash
-      curl -sI https://www.powerstar7.com/about-us | head -2
+      curl -sI https://www.designactiv.com/about-us | head -2
       ```
       should return `301` with `Location: /about`, and
-      `curl -sI https://www.powerstar7.com/pt/sobre-nos` should return `200`
+      `curl -sI https://www.designactiv.com/pt/sobre-nos` should return `200`

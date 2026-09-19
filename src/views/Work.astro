@@ -3,6 +3,8 @@ import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import Closing from '../components/Closing.astro';
 import { useTranslations, metrics, type Lang } from '../i18n/ui';
+import Notice from '../components/Notice.astro';
+import showcase from '../data/showcase-demo.json';
 
 interface Props {
   lang: Lang;
@@ -26,31 +28,31 @@ const evidence = [
       tiles here labelled "Project 1" through "Project 6", pointing at six
       2 KB images that were solid black. A page that says "nothing yet" is
       worth more than a page that pretends. */}
-  <div class="exhibits">
+  <div class="exhibits rails">
     <div class="container">
       {/* --- The client project in build -------------------------------
           NOTE FOR REVIEW: this describes an unlaunched client engagement.
           It names no one, but it is still the client's information to
           share. Get their sign-off before this goes live, or cut the
           block — the page stands without it. */}
-      <article class="exhibit">
-        <header class="exhibit__head">
+      <article class="exhibit row row--statement">
+        <header class="exhibit__head row__title">
           <p class="label">{t('work.case.label')}</p>
           <h2 class="exhibit__h">{t('work.case.h')}</h2>
         </header>
-        <div class="exhibit__body">
+        <div class="exhibit__body row__body">
           <p class="lead">{t('work.case.b')}</p>
         </div>
       </article>
 
       {/* --- This site --------------------------------------------------- */}
-      <article class="exhibit">
-        <header class="exhibit__head">
+      <article class="exhibit row row--statement">
+        <header class="exhibit__head row__title">
           <p class="label">{t('work.this.label')}</p>
           <h2 class="exhibit__h">{t('work.this.h')}</h2>
         </header>
 
-        <div class="exhibit__body">
+        <div class="exhibit__body row__body">
           <p class="lead">{t('work.this.b')}</p>
 
           <ul class="evidence">
@@ -83,7 +85,48 @@ const evidence = [
     </div>
   </div>
 
-  <section class="next">
+
+  {/* --- Showcase (PLACEHOLDER) ------------------------------------------
+      Every card below is invented. It exists so the layout can be judged
+      before real case studies exist, and it is gated on a flag in
+      src/data/showcase-demo.json so it can be switched off in one edit.
+      This is a launch blocker and is listed as one in DEPLOY.md — a page
+      that says "nothing to show yet" directly above four fabricated
+      clients would be worse than either half on its own. */}
+  {
+    showcase.enabled && (
+      <section class="showcase rails">
+        <div class="container">
+          <p class="label">{t('work.showcase.label')}</p>
+          <h2 class="showcase__h">{t('work.showcase.h')}</h2>
+
+          <Notice title={t('work.showcase.label')} body={t('work.showcase.warn')} />
+
+          <ul class="cases">
+            {showcase.items.map((item, i) => (
+              <li class={`case case--${i % 4}`} data-placeholder>
+                <div class="case__art">
+                  <div class="case__badges">
+                    <span class="badge badge--client">
+                      <span class="visually-hidden">{t('work.showcase.client')}: </span>
+                      {item.client}
+                    </span>
+                    <span class="badge badge--service">
+                      <span class="visually-hidden">{t('work.showcase.service')}: </span>
+                      {item.service}
+                    </span>
+                  </div>
+                </div>
+                <h3 class="case__h">{item.title}</h3>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="next rails">
     <div class="container next__inner">
       <h2 class="next__h">{t('work.next.h')}</h2>
       <p class="next__b measure">{t('work.next.b')}</p>
@@ -99,17 +142,8 @@ const evidence = [
   }
 
   .exhibit {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-    gap: var(--s4) var(--s7);
     padding-block: var(--s6);
     border-top: 1px solid var(--rule);
-    align-items: start;
-  }
-
-  .exhibit__head {
-    position: sticky;
-    top: var(--s4);
   }
 
   .exhibit__h {
@@ -133,13 +167,21 @@ const evidence = [
     display: grid;
     gap: 0;
     max-width: var(--measure);
+    /* One line above the list, dividing it from the paragraph before it. */
     border-top: 1px solid var(--rule);
   }
 
   .evidence li {
     padding-block: 0.75rem;
-    border-bottom: 1px solid var(--rule);
     font-size: var(--t-small);
+  }
+
+  /* BETWEEN items, not under every one. A border-bottom on each li drew a
+     closing line beneath the last item, so four items were bounded by five
+     lines and the set read as a boxed table. Three lines between four rows is
+     the separator; the fourth was a frame. */
+  .evidence li + li {
+    border-top: 1px solid var(--rule);
   }
 
   /* The same figures as the home page, at body scale — here they are
@@ -162,7 +204,9 @@ const evidence = [
     margin: 0.35rem 0 0;
     font-family: var(--font-display);
     font-size: 2rem;
-    font-weight: var(--weight-display);
+    /* --weight-medium: the display weight is 400 now, and tabular figures at
+       400 read as a placeholder rather than as a measured result. */
+    font-weight: var(--weight-medium);
     letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
   }
@@ -172,6 +216,112 @@ const evidence = [
     color: var(--fg-muted);
     margin-inline-start: 0.15em;
   }
+
+
+  /* --- Showcase ----------------------------------------------------------- */
+
+  .showcase {
+    padding-block: var(--s6);
+    border-top: 1px solid var(--rule);
+  }
+
+  .showcase__h {
+    margin-block-start: var(--s3);
+    font-size: var(--t-h3);
+  }
+
+  .cases {
+    list-style: none;
+    padding: 0;
+    margin-block-start: var(--s5);
+    display: grid;
+    /* Follows --grid-cols rather than hardcoding 2, so the showcase drops to
+       one column at the same width as everything else instead of at its own
+       52rem. That was the last breakpoint not on the shared 60rem. */
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    gap: var(--s5) var(--s4);
+  }
+
+  /* span 2, paired with the track count above: two cards per row at four
+     columns, one per row at two. Without it each card took a single track —
+     four across on desktop and two on a phone, which overflowed by 60px. */
+  .case {
+    grid-column: span 2;
+    display: grid;
+    gap: var(--s3);
+  }
+
+  /* There is no photography and none is coming, so the card's image IS the
+     gradient — the same two hues as the hero, angled differently per card so
+     a grid of four does not read as four copies.
+
+     No grain. It was there to stop the gradient reading as a flat CSS blob,
+     but at card size it competed with the badges sitting on top of it rather
+     than supporting them, and a clean field is the better backdrop for two
+     solid chips. The texture argument still holds at hero scale, where there
+     is nothing laid over it — see tokens.css. */
+  .case__art {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: var(--s3);
+    aspect-ratio: 16 / 10;
+    background-image: linear-gradient(
+      var(--case-angle, 120deg),
+      color-mix(in srgb, var(--blue) 70%, transparent),
+      color-mix(in srgb, var(--purple) 70%, transparent)
+    );
+    background-size: cover;
+  }
+
+  .case--0 .case__art { --case-angle: 120deg; }
+  .case--1 .case__art { --case-angle: 210deg; }
+  .case--2 .case__art { --case-angle: 65deg; }
+  .case--3 .case__art { --case-angle: 300deg; }
+
+  .case__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s1);
+  }
+
+  /* Two badges per card: who it was for, and what we did. Solid fills, which
+     is the point — the frosted-glass version they replace only worked because
+     it borrowed a backdrop from the header, and a chip sitting on a saturated
+     gradient should not depend on what is behind it at all. Each fill is
+     opaque, so each badge carries its own contrast wherever the gradient
+     happens to be light or dark.
+
+     The two text colours are FORCED by the fills, not chosen to match:
+       blue  #0c62e0 — white 5.47:1, ink 3.40:1 → white
+       amber #f5a524 — ink   9.11:1, white 2.04:1 → ink
+     Swapping either one for the other breaks AA immediately. */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.7rem;
+    font-size: var(--t-micro);
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+
+  .badge--client {
+    background: var(--blue-fn);
+    color: #fff;
+  }
+
+  /* --amber is fenced in tokens.css: a fill, here, and nowhere else. */
+  .badge--service {
+    background: var(--amber);
+    color: var(--ink);
+  }
+
+  .case__h {
+    font-size: 1.25rem;
+    line-height: 1.25;
+  }
+
 
   .next {
     padding-block: var(--s6);
@@ -191,13 +341,4 @@ const evidence = [
     color: var(--fg-muted);
   }
 
-  @media (max-width: 60rem) {
-    .exhibit {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .exhibit__head {
-      position: static;
-    }
-  }
 </style>

@@ -1,0 +1,10 @@
+{
+  "_README": "PLACEHOLDER SHOWCASE. Every entry below is invented, so the layout can be reviewed before real case studies exist. None of these are clients and none of these projects happened. Set `enabled` to false, or delete this file and the Showcase block in src/views/Work.astro, before the site goes live. DEPLOY.md carries this as a launch blocker.",
+  "enabled": true,
+  "items": [
+    { "id": "a", "title": "Booking that fits a two-chair salon", "client": "Sample Client A", "service": "Web design & development" },
+    { "id": "b", "title": "A wordmark that survives a shop window", "client": "Sample Client B", "service": "Branding" },
+    { "id": "c", "title": "Rebuilt for search without losing a URL", "client": "Sample Client C", "service": "SEO" },
+    { "id": "d", "title": "A newsletter that renders in Outlook", "client": "Sample Client D", "service": "Email marketing" }
+  ]
+}

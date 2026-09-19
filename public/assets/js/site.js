@@ -1,18 +1,31 @@
 /* =========================================================================
-   Powerstar7 — site behaviour
+   DesignActiv — site behaviour
    =========================================================================
 
-   Three things earn their place here: the mobile nav, the contact form, and
-   the footer year. Everything else the previous site ran on every page —
-   scroll-reveal fades, a cursor-tracking hero glow, a pointer-following
-   sheen on every button, a header that turned into a glass pill at 80px —
-   was deleted. It was motion spent on nothing, on every page, forever.
+   Five things earn their place here: the mobile nav, the sticky header's
+   scrolled hairline, the contact form, the footer year, and the hero wash.
+   What stayed deleted from the previous site: scroll-reveal fades on every
+   element and a cursor-tracking hero glow. Both were motion spent on nothing,
+   on every page, forever.
+
+   The cursor-revealed mark field left with the dark bands it lived on — dark
+   is the footer's alone now, and the footer has no field.
+
+   The header frost and the button sheen came back deliberately, each as one
+   rAF-throttled listener rather than the unthrottled handlers they replaced.
 
    No dependencies, no external requests. With JavaScript off the navigation
    stays open and the form falls back to the browser's own validation.
    ========================================================================= */
 (function () {
   'use strict';
+
+  /* Pointer-driven effects are registered only where there is a real pointer
+     and the visitor has not asked for less motion. Read once, used by both
+     the hero wash and the button sheen, so the two can never disagree. */
+  var pointerEffects =
+    window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------- Mobile navigation ----------------------------------------- */
 
@@ -65,6 +78,39 @@
     mq.addEventListener('change', function () {
       if (!mq.matches) setOpen(false);
     });
+  }
+
+  /* ---------- Sticky header frost ---------------------------------------- */
+
+  /* Toggles one class once the page has moved. rAF-throttled: the flag lives
+     outside the callback so a burst of scroll events schedules a single frame,
+     and the listener is passive so it never blocks scrolling.
+
+     No threshold games and no hysteresis — the transition is a fade, so a
+     class that flips on and off around the boundary looks like a fade, not a
+     flicker. */
+  var header = document.querySelector('.site-header');
+
+  if (header) {
+    var frostQueued = false;
+
+    var applyFrost = function () {
+      frostQueued = false;
+      header.classList.toggle('is-stuck', window.scrollY > 4);
+    };
+
+    window.addEventListener(
+      'scroll',
+      function () {
+        if (frostQueued) return;
+        frostQueued = true;
+        window.requestAnimationFrame(applyFrost);
+      },
+      { passive: true }
+    );
+
+    // Reloading part-way down a page must not start unfrosted.
+    applyFrost();
   }
 
   /* ---------- Contact form ----------------------------------------------- */
@@ -234,6 +280,58 @@
   var year = document.querySelector('[data-year]');
   if (year) year.textContent = String(new Date().getFullYear());
 
+  /* ---------- Hero wash follows the cursor -------------------------------- */
+
+  /* The two colour fields shift a few percent against the pointer, in opposite
+     directions, so the hero has a little parallax without becoming a toy. The
+     drift animation keeps running underneath; this only moves the gradient
+     centres, which is a paint, not a layout.
+
+     clientX/clientY are stashed and the rect is read inside the frame — doing
+     getBoundingClientRect() in the event handler would force layout on every
+     pointer event, which is the cost the throttle exists to avoid. */
+  var hero = document.querySelector('.hero');
+
+  if (hero && pointerEffects) {
+    var heroQueued = false;
+    var heroPoint = null;
+
+    var applyHero = function () {
+      heroQueued = false;
+      var r = hero.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      var x = heroPoint ? ((heroPoint.x - r.left) / r.width) * 2 - 1 : 0;
+      var y = heroPoint ? ((heroPoint.y - r.top) / r.height) * 2 - 1 : 0;
+      hero.style.setProperty('--hx', Math.max(-1, Math.min(1, x)).toFixed(3));
+      hero.style.setProperty('--hy', Math.max(-1, Math.min(1, y)).toFixed(3));
+    };
+
+    var scheduleHero = function () {
+      if (heroQueued) return;
+      heroQueued = true;
+      window.requestAnimationFrame(applyHero);
+    };
+
+    hero.addEventListener(
+      'pointermove',
+      function (e) {
+        heroPoint = { x: e.clientX, y: e.clientY };
+        scheduleHero();
+      },
+      { passive: true }
+    );
+
+    // Leaving the hero returns the wash to centre rather than freezing it.
+    hero.addEventListener(
+      'pointerleave',
+      function () {
+        heroPoint = null;
+        scheduleHero();
+      },
+      { passive: true }
+    );
+  }
+
   /* ---------- Button sheen ------------------------------------------------ */
 
   /* One delegated listener for every button on the page, rAF-throttled so the
@@ -241,17 +339,14 @@
      site shipped two unthrottled handlers — one for this, one for a hero glow
      — in a file that correctly rAF-throttled its scroll handler.
 
-     Skipped entirely on touch and when the visitor asks for reduced motion,
-     so nothing is registered that cannot be seen.
+     Skipped entirely on touch and when the visitor asks for reduced motion
+     (see pointerEffects above), so nothing is registered that cannot be seen.
 
      `queued` lives OUTSIDE `pending` on purpose: `pending` is replaced with a
      fresh object on every move, so a flag stored on it would read undefined
      every time and schedule a frame per event — the exact cost this throttle
      exists to avoid. */
-  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  var stillMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  if (finePointer && !stillMotion) {
+  if (pointerEffects) {
     var pending = null;
     var queued = false;
 

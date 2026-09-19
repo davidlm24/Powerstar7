@@ -24,10 +24,10 @@ const how = [
   {/* No team grid. The old site carried three cards reading "Name Surname"
       over a placeholder portrait. A studio that cannot yet name its people
       says what it does instead. */}
-  <section class="story">
-    <div class="container story__inner">
-      <h2 class="story__h">{t('about.story.h')}</h2>
-      <div class="prose">
+  <section class="story rails">
+    <div class="container row story__inner">
+      <h2 class="story__h row__title">{t('about.story.h')}</h2>
+      <div class="prose row__body">
         <p>{t('about.story.b1')}</p>
         <p>{t('about.story.b2')}</p>
         <p>{t('about.story.b3')}</p>
@@ -35,14 +35,15 @@ const how = [
     </div>
   </section>
 
-  <section class="where invert">
+  <section class="where rails">
+
     <div class="container where__inner">
       <h2 class="where__h">{t('about.where.h')}</h2>
       <p class="lead measure-wide">{t('about.where.b')}</p>
     </div>
   </section>
 
-  <section class="how">
+  <section class="how rails">
     <div class="container">
       <h2 class="how__h">{t('about.how.h')}</h2>
       <div class="how__grid">
@@ -67,11 +68,12 @@ const how = [
     padding-block-end: var(--s7);
   }
 
+  /* On the grid: the heading takes column one, the prose takes the rest, and
+     the line between them is the divider — it IS the prose column's leading
+     edge, so it cannot drift from it. No column gap: a gap would float the
+     prose off the line it is meant to start on, so the breathing room is
+     padding inside the columns instead. */
   .story__inner {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-    gap: var(--s4) var(--s7);
-    align-items: start;
     padding-block-start: var(--s6);
     border-top: 1px solid var(--rule);
   }
@@ -79,7 +81,7 @@ const how = [
   .story__h {
     font-size: var(--t-h3);
     position: sticky;
-    top: var(--s4);
+    top: var(--header-h);
   }
 
   .prose {
@@ -91,7 +93,7 @@ const how = [
   }
 
   .where {
-    padding-block: var(--s8);
+    padding-block: var(--section-y);
   }
 
   .where__inner {
@@ -105,7 +107,7 @@ const how = [
   }
 
   .how {
-    padding-block: var(--s8) var(--s6);
+    padding-block: var(--section-y) var(--s6);
   }
 
   .how__h {
@@ -127,7 +129,7 @@ const how = [
   .how__n {
     font-family: var(--font-mono);
     font-size: var(--t-micro);
-    letter-spacing: var(--tr-micro);
+    letter-spacing: var(--tr-mono);
     /* --accent-fn, not --accent: 13px text needs 4.5:1 and the display blue
        only reaches 3.97:1 on the ground. See tokens.css. */
     color: var(--accent-fn);
@@ -145,7 +147,6 @@ const how = [
   }
 
   @media (max-width: 60rem) {
-    .story__inner,
     .how__grid {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--s4);

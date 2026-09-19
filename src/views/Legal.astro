@@ -15,14 +15,16 @@ const t = useTranslations(lang);
 <Base lang={lang} page="legal" title={t('legal.title')}>
   <PageHead label={t('footer.legalNav')} title={t('legal.h1')} />
 
-  <section class="legal">
+  <section class="legal rails">
     <div class="container">
       <Notice title={t('legal.todo.h')} body={t('legal.todo.b')} />
 
       <div class="prose">
         <h2>{t('legal.tmg')}</h2>
         <p>
-          Powerstar7<br />
+          <span class="pending"
+            >&lt;{lang === 'pt' ? 'razão social registada' : 'registered legal entity'}&gt;</span
+          ><br />
           <span class="pending">&lt;{lang === 'pt' ? 'endereço postal' : 'postal address'}&gt;</span
           ><br />
           <span class="pending">&lt;{lang === 'pt' ? 'país' : 'country'}&gt;</span>
@@ -47,7 +49,7 @@ const t = useTranslations(lang);
 
 <style>
   .legal {
-    padding-block-end: var(--s8);
+    padding-block-end: var(--section-y);
   }
 
   .prose {

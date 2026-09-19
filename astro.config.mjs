@@ -15,7 +15,7 @@ import { defineConfig } from 'astro/config';
  * 404 rather than silently serve English under a Portuguese URL.
  */
 export default defineConfig({
-  site: 'https://www.powerstar7.com',
+  site: 'https://www.designactiv.com',
   trailingSlash: 'never',
   build: {
     /* 'directory', not 'file'. With 'file' the Portuguese home page builds

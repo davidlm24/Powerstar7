@@ -1,6 +1,6 @@
-# Powerstar7
+# DesignActiv
 
-Marketing site for Powerstar7, a web studio in **Germany and Luxembourg**
+Marketing site for DesignActiv, a web studio in **Germany and Luxembourg**
 working with clients across Europe and Brazil.
 
 Built with **Astro**, output as static HTML. No client-side framework, no
@@ -10,8 +10,9 @@ runtime JavaScript beyond one 4 KB file, and — the hard constraint —
 the site needs no consent banner. That is a legal position in Germany, not an
 aesthetic one, and nothing may be added that breaks it.
 
-The home page is **60 KB over the wire in 7 requests**, and says so on itself
-— those figures come from `scripts/measure.mjs` reading the real build output.
+The home page is **63 KB over the wire in 7 requests**. Those figures come from
+`scripts/measure.mjs` reading the real build output, and they are printed on
+the **Work** page — the home page leads with the studio's own numbers instead.
 
 ## Run it
 
@@ -41,9 +42,9 @@ form's `data-endpoint` at it to test. It only logs; it never sends mail.
 npm run measure
 ```
 
-Re-measures the built home page and rewrites `src/data/metrics.json`. The page
-prints what it weighs, so that number has to come from the build, not from a
-claim. Run it between two builds: `build → measure → build`.
+Re-measures the built home page and rewrites `src/data/metrics.json`. The Work
+page prints what the site weighs, so that number has to come from the build,
+not from a claim. Run it between two builds: `build → measure → build`.
 
 ## Layout
 
@@ -64,6 +65,12 @@ src/
     global.css      Reset, elements, and the few shared primitives.
     fonts.css       @font-face and the subsets.
   data/metrics.json Written by scripts/measure.mjs. Do not hand-edit.
+  data/agency.json  The studio's own figures on the home page. Nothing here
+                    is checkable by a visitor, so it has to be kept true by
+                    hand — see the note inside the file.
+  data/showcase-demo.json
+                    PLACEHOLDER case studies for the Work page, behind an
+                    `enabled` flag. None of it is real. Off before launch.
 
 public/             Copied verbatim to dist/.
   assets/js/site.js Nav, contact form, footer year. That is all it does.

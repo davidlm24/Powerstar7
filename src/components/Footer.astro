@@ -26,10 +26,10 @@ const legal: { key: PageKey; label: string }[] = [
 {/* One component, rendered on every page in both languages. The site it
     replaces carried a 74-line footer copy-pasted into ten files — about a
     third of all the HTML on the site. */}
-<footer class="site-footer invert">
+<footer class="site-footer invert rails">
   <div class="container site-footer__inner">
     <div class="site-footer__brand">
-      <p class="site-footer__wordmark">Powerstar7<span aria-hidden="true">.</span></p>
+      <p class="site-footer__wordmark">DesignActiv<span aria-hidden="true">.</span></p>
       <p class="site-footer__blurb">{t('footer.blurb')}</p>
       <a class="site-footer__email" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
     </div>
@@ -66,7 +66,7 @@ const legal: { key: PageKey; label: string }[] = [
   </div>
 
   <div class="container site-footer__base">
-    <p>&copy; <span data-year>2026</span> Powerstar7. {t('footer.rights')}</p>
+    <p>&copy; <span data-year>2026</span> DesignActiv. {t('footer.rights')}</p>
     <p class="site-footer__built">{t('footer.built')}</p>
   </div>
 </footer>
@@ -87,7 +87,9 @@ const legal: { key: PageKey; label: string }[] = [
   .site-footer__wordmark {
     font-family: var(--font-display);
     font-size: var(--t-h3);
-    font-weight: var(--weight-display);
+    /* --weight-medium: at --t-h3 the 400 display weight disappears against
+       the body copy beside it. Same reason as the header wordmark. */
+    font-weight: var(--weight-medium);
     letter-spacing: -0.03em;
   }
 

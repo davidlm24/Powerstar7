@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import ProofStrip from '../components/ProofStrip.astro';
+import AgencyStats from '../components/AgencyStats.astro';
 import Closing from '../components/Closing.astro';
 import { useTranslations, route, type Lang } from '../i18n/ui';
 
@@ -29,14 +29,20 @@ const position = [
 <Base lang={lang} page="home" title={t('home.title')}>
   {/* --- Hero ------------------------------------------------------------
       No photograph exists and none is coming, so type is the image. Three
-      declarative lines at 140px — 7.8x body — against the old site's 1.94x.
+      declarative lines at 104px — 5.8x body — against the old site's 1.94x.
       What is NOT here: a recoloured <em> in the middle of the sentence, the
       hero device every AI image generator and every SaaS template produces.
       The accent lands on the full stops instead, echoing the wordmark. */}
-  <section class="hero">
-    <div class="container">
-      <p class="label hero__label">{t('site.tagline')}</p>
+  <section class="hero rails">
+    {/* Both decorative layers live on this one element rather than on the
+        section's own pseudos. That began as a way to keep ::before free for
+        the frame lines; the frame is gone, but the arrangement stays because
+        this element's box is identical to the one the pseudos used, so the
+        wash's percentages — and the measured contrast ceiling on them — hold
+        without being re-derived. */}
+    <div class="hero__fx" aria-hidden="true"></div>
 
+    <div class="container">
       <h1 class="hero__h1">
         <span>{t('home.h1.a').replace(/\.$/, '')}<b aria-hidden="true">.</b></span>
         <span>{t('home.h1.b').replace(/\.$/, '')}<b aria-hidden="true">.</b></span>
@@ -53,16 +59,19 @@ const position = [
     </div>
   </section>
 
-  {/* --- The proof ------------------------------------------------------
+  {/* --- The studio, in numbers -----------------------------------------
       Set larger than the pitch, on purpose (REBUILD-BRIEF.md §3.6). These
-      numbers come from the real build output via scripts/measure.mjs. */}
-  <ProofStrip lang={lang} />
+      are the agency's own figures and live in src/data/agency.json — unlike
+      the measured page weight they replaced, a visitor cannot check them,
+      so they have to be kept true by hand. The measured figures moved to
+      the Work page, where they back a claim instead of leading the page. */}
+  <AgencyStats lang={lang} />
 
   {/* --- Services -------------------------------------------------------
       An indexed list, not six identical cards in a grid. The names are set
       near h2 scale so the section is a second type moment rather than a
       row of boxes with stroke icons in them. */}
-  <section class="services">
+  <section class="services rails">
     <div class="container">
       <div class="services__head">
         <p class="label">{t('home.services.label')}</p>
@@ -85,8 +94,14 @@ const position = [
     </div>
   </section>
 
-  {/* --- Position (inverted) --------------------------------------------- */}
-  <section class="position invert">
+  {/* A breather between two light sections, from trace.so, which sets a
+      diagonal hatch between its bands. Decorative and empty by contract —
+      .rails so the page-edge verticals run through it unbroken. */}
+  <div class="hatch rails" aria-hidden="true"></div>
+
+  {/* --- Position --------------------------------------------------------- */}
+  <section class="position rails">
+
     <div class="container">
       <div class="position__head">
         <p class="label">{t('home.position.label')}</p>
@@ -112,13 +127,13 @@ const position = [
       There is no portfolio. The page says so in its own voice rather than
       showing six placeholder tiles, which is what the old site did — and
       the six images it pointed at were 2 KB of solid black. */}
-  <section class="honest">
-    <div class="container honest__inner">
-      <div>
+  <section class="honest rails">
+    <div class="container row row--statement honest__inner">
+      <div class="honest__head row__title">
         <p class="label">{t('home.work.label')}</p>
         <h2 class="honest__h2">{t('home.work.h2')}</h2>
       </div>
-      <div class="honest__body">
+      <div class="honest__body row__body">
         <p>{t('home.work.body')}</p>
         <p>{t('home.work.body2')}</p>
         <p class="honest__link">
@@ -135,11 +150,85 @@ const position = [
   /* --- Hero -------------------------------------------------------------- */
 
   .hero {
-    padding-block: var(--s7) var(--s8);
+    position: relative;
+    isolation: isolate;
+    padding-block: var(--s7) var(--section-y);
+    /* The wash is inset negatively so it bleeds past the section, and the
+       drift pushes it further still — which put 244px of horizontal scroll
+       on the page. `clip` on the x axis only, so the wash can still bleed
+       UP behind the frosted header while never widening the document.
+       (clip, not hidden: hidden would create a scroll container.) */
+    overflow: clip;
   }
 
-  .hero__label {
-    margin-block-end: var(--s5);
+  @supports not (overflow: clip) {
+    .hero {
+      overflow: hidden;
+    }
+  }
+
+  /* --- The wash ----------------------------------------------------------
+     Two soft fields of colour behind the type, blue and purple, drifting
+     slowly against each other. This is the site's second authored moment
+     (the button sheen is the first) and it is confined to this one section.
+
+     No blur filter: the radial stops are already soft, and a 60px blur on a
+     box this size is a large, expensive layer for an effect the gradient
+     gives for free.
+
+     The 30% stops are a measured ceiling, not a look. The lead paragraph is
+     --ink-muted, the weakest text in the hero, and it has to clear 4.5:1
+     against the STRONGEST point of the wash — because the wash drifts and
+     the layout reflows, so "the text probably isn't under the blob" is not
+     something to rely on. At 30% the worst case is 5.1:1 (purple) and
+     5.0:1 (blue). Purple at 42%, where this started, measured 4.34:1.
+
+     --hx/--hy come from the pointer (see site.js) and are clamped to -1..1,
+     so the centres can move at most 7% and the measured worst case above
+     still bounds what any text can land on. */
+  .hero__fx {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .hero__fx::before {
+    content: '';
+    position: absolute;
+    inset: -35% -12% -25%;
+    background:
+      radial-gradient(
+        34% 38% at calc(78% + var(--hx, 0) * 7%) calc(24% + var(--hy, 0) * 6%),
+        color-mix(in srgb, var(--purple) 26%, transparent),
+        transparent 68%
+      ),
+      radial-gradient(
+        40% 44% at calc(26% - var(--hx, 0) * 5%) calc(12% - var(--hy, 0) * 4%),
+        color-mix(in srgb, var(--blue) 26%, transparent),
+        transparent 70%
+      );
+    animation: hero-drift 26s var(--ease) infinite alternate;
+    pointer-events: none;
+  }
+
+  /* Grain, over the wash and under the type. Without it the gradient reads as
+     a flat CSS blob; with it, it reads as a surface. Very low opacity — it is
+     texture, not a filter. */
+  .hero__fx::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--grain);
+    opacity: 0.16;
+  }
+
+  /* Transform only, so the drift runs on the compositor and never touches
+     layout. prefers-reduced-motion is handled globally: the blanket rule
+     collapses the duration, which parks the wash at its start position. */
+  @keyframes hero-drift {
+    from { transform: translate3d(-2%, -1%, 0) scale(1); }
+    to { transform: translate3d(3%, 2%, 0) scale(1.09); }
   }
 
   .hero__h1 span {
@@ -147,10 +236,20 @@ const position = [
   }
 
   /* The accent lands here — on three full stops — and nowhere else in the
-     headline. One hue, used structurally. */
+     headline. They now walk from blue to purple, which is the only place the
+     two hues meet in type rather than in the wash. Decorative and
+     aria-hidden, but still set large enough to be plainly visible. */
   .hero__h1 b {
     color: var(--accent);
     font-weight: inherit;
+  }
+
+  .hero__h1 span:nth-child(2) b {
+    color: color-mix(in srgb, var(--blue) 50%, var(--purple));
+  }
+
+  .hero__h1 span:nth-child(3) b {
+    color: var(--purple-deep);
   }
 
   .hero__foot {
@@ -171,7 +270,7 @@ const position = [
   /* --- Services ---------------------------------------------------------- */
 
   .services {
-    padding-block: var(--s8);
+    padding-block: var(--section-y);
   }
 
   .services__head {
@@ -183,16 +282,28 @@ const position = [
   .services__list {
     list-style: none;
     padding: 0;
+    /* One line above the list, dividing it from the heading. */
+    border-top: 1px solid var(--rule);
+  }
+
+  /* BETWEEN rows, not under every one — the same correction the evidence list
+     on the Work page needed, and for the same reason. A border-bottom on every
+     row drew a closing line under the last service, so five rows were bounded
+     by six lines and the list read as a boxed table. What is below the last
+     row is the ink band, and a change of ground carries that boundary without
+     a line. */
+  .service + .service a {
     border-top: 1px solid var(--rule);
   }
 
   .service a {
+    position: relative;
+    isolation: isolate;
     display: grid;
-    grid-template-columns: 4rem 1fr auto;
+    grid-template-columns: 4rem minmax(0, 1fr) auto;
     align-items: baseline;
     gap: var(--s4);
     padding-block: clamp(1.1rem, 2.2vw, 1.75rem);
-    border-bottom: 1px solid var(--rule);
     color: var(--fg);
     text-decoration: none;
   }
@@ -212,14 +323,87 @@ const position = [
     transform: translateX(var(--s3));
   }
 
+  /* The hover wash. Quieter than it was: a light surface with the two hues
+     entering from the LEFT and gone by two thirds, rather than a saturated
+     band sweeping the whole row. Square, like the header bar.
+
+     Two layers so each can be tuned on its own — colour on ::before, grain on
+     ::after at --grain-soft, which is a fraction of the weight the cards use.
+     The strength is still bounded by the row's 13px index in --fg-muted,
+     which has to clear 4.5:1 against the darkest point. */
+  .service a::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background-image:
+      linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--blue) 20%, transparent) 0%,
+        color-mix(in srgb, var(--purple) 14%, transparent) 22%,
+        transparent 64%
+      ),
+      linear-gradient(var(--paper-hi), var(--paper-hi));
+    background-size:
+      160% 100%,
+      100% 100%;
+    background-position:
+      0% 50%,
+      0 0;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease);
+    pointer-events: none;
+  }
+
+  .service a::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background-image: var(--grain-soft);
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease);
+    pointer-events: none;
+  }
+
+  /* Gated to real pointers: on touch there is no hover to leave, and a row
+     that lit on tap and stayed lit would be the sticky-sheen bug again. */
+  @media (hover: hover) and (pointer: fine) {
+    .service a:hover::before {
+      opacity: 1;
+      animation: service-drift 9s var(--ease) infinite alternate;
+    }
+
+    .service a:hover::after {
+      opacity: 1;
+    }
+  }
+
+  /* A short breathing movement, not a sweep across the row. */
+  @keyframes service-drift {
+    from {
+      background-position:
+        0% 50%,
+        0 0;
+    }
+    to {
+      background-position:
+        14% 50%,
+        0 0;
+    }
+  }
+
   .service__n {
     font-family: var(--font-mono);
     font-size: var(--t-micro);
-    letter-spacing: var(--tr-micro);
+    letter-spacing: var(--tr-mono);
     color: var(--fg-muted);
   }
 
   .service__name {
+    /* "desenvolvimento" is wider than the column at phone widths. */
+    overflow-wrap: break-word;
     font-family: var(--font-display);
     font-size: clamp(1.75rem, 3.6vw, 2.75rem);
     font-weight: var(--weight-display);
@@ -228,7 +412,11 @@ const position = [
   }
 
   .service__go {
-    color: var(--accent);
+    /* --accent-fn, not --accent. On the plain ground the display blue reaches
+       4.10:1, but the hover wash pushes blue INTO the backdrop behind it and
+       it falls to 2.98:1 — below the 3:1 a graphic this size needs. The
+       functional blue holds up against both. */
+    color: var(--accent-fn);
     font-size: var(--t-h3);
     transition: transform var(--dur) var(--ease);
   }
@@ -240,7 +428,7 @@ const position = [
   /* --- Position ---------------------------------------------------------- */
 
   .position {
-    padding-block: var(--s8);
+    padding-block: var(--section-y);
   }
 
   .position__head {
@@ -253,23 +441,64 @@ const position = [
     max-width: 18ch;
   }
 
+  /* column-gap 0 so each card's edge IS its divider; the air is padding inside
+     the card instead. The lines cannot reach the h2 above because
+     .position__grid is a SIBLING of .position__head, not its parent. */
   .position__grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--s5);
+    column-gap: 0;
+    row-gap: var(--s5);
     margin-block-start: var(--s7);
   }
 
+  /* Left-aligned, and the SAME padding on both sides of every cell.
+
+     Centring made the old asymmetry impossible to miss: the first cell was
+     centred inside 0 / 58px of padding so its text sat left of its own middle,
+     and the last inside 58px / 0 so its text sat right of it. Only the middle
+     cell was symmetric, and the three read as three different insets.
+
+     The zeroed outer edges were deliberate once — they put the first cell
+     flush with the heading above, on the grounds that clearance is bought
+     from a divider and the outer edges have no divider to clear. That argument
+     loses to the one the eye makes: three cells side by side have to match
+     each other before any of them matches the heading.
+
+     --s4, NOT --col-pad, and this is the only grid on the site that sets its
+     own clearance rather than taking the system value. Equalising the padding
+     makes the outer two cells pay 58px they never paid before, and at
+     --col-pad that took the body measure down to 263px — short for running
+     copy. --s4 hands ~56px back to every cell and keeps all three identical,
+     which was the whole point of the change.
+
+     The top rules still span the full cell, so the lines stay on the grid
+     while the type steps in from it. */
   .point {
     border-top: 1px solid var(--rule);
     padding-block-start: var(--s3);
+    padding-inline: var(--s4);
+    text-align: start;
   }
 
+  .point + .point {
+    border-inline-start: 1px solid var(--rule);
+  }
+
+  /* --col-pad buys clearance from a divider. The outer two edges have no
+     divider to clear — the page-edge rail that used to sit there is gone — so
+     the padding there was holding the band's text 3rem off nothing and making
+     its measure 6rem narrower than the heading directly above it. Same orphan
+     as the one in AgencyStats, same fix. */
+  /* --accent-fn, not --accent. This band used to be inverted, where --accent
+     resolves to --on-ink-blue at 6.40:1. On the light ground the display blue
+     is 3.97:1, and 13px needs 4.5:1 — so the index would have failed the
+     moment the band turned light. The functional sibling is 4.89:1. */
   .point__n {
     font-family: var(--font-mono);
     font-size: var(--t-micro);
-    letter-spacing: var(--tr-micro);
-    color: var(--accent);
+    letter-spacing: var(--tr-mono);
+    color: var(--accent-fn);
   }
 
   .point__h {
@@ -286,20 +515,17 @@ const position = [
   /* --- Honest ------------------------------------------------------------ */
 
   .honest {
-    padding-block: var(--s8);
+    padding-block: var(--section-y);
   }
 
-  .honest__inner {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-    gap: var(--s6) var(--s7);
-    align-items: start;
-  }
+
 
   .honest__h2 {
     margin-block-start: var(--s3);
     max-width: 14ch;
   }
+
+
 
   .honest__body {
     display: grid;
@@ -322,12 +548,21 @@ const position = [
       gap: var(--s4);
     }
 
-    .honest__inner {
-      grid-template-columns: minmax(0, 1fr);
+    /* Stacked: no column to divide, so no clearance to buy — the cells align
+       with everything else on the page instead of sitting inset from the
+       rails. text-align is already start. */
+    .point {
+      padding-inline: 0;
     }
 
+    .point + .point {
+      border-inline-start: 0;
+    }
+
+
+
     .service a {
-      grid-template-columns: 2.5rem 1fr auto;
+      grid-template-columns: 2.5rem minmax(0, 1fr) auto;
       gap: var(--s3);
     }
   }

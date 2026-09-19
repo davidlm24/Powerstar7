@@ -15,7 +15,7 @@ const links = (['home', 'work', 'services', 'about', 'contact'] as const).map((k
 ---
 
 <Base lang="en" title={t('nf.title')}>
-  <section class="nf">
+  <section class="nf rails">
     <div class="container">
       <p class="label">404</p>
       <h1 class="nf__h1">{t('nf.h1')}</h1>
@@ -47,12 +47,13 @@ const links = (['home', 'work', 'services', 'about', 'contact'] as const).map((k
 
 <style>
   .nf {
-    padding-block: var(--s7) var(--s8);
+    padding-block: var(--s7) var(--section-y);
   }
 
   .nf__h1 {
     margin-block: var(--s4);
-    font-size: clamp(2.75rem, 7vw, 6rem);
+    font-size: var(--t-title);
+    font-weight: var(--weight-heading);
   }
 
   .nf__pt {

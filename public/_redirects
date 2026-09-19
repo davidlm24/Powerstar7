@@ -6,6 +6,16 @@
 # that replaced it. Deleting a line here silently discards whatever ranking
 # and inbound links that URL had.
 
+# --- Legacy DOMAIN (301) ----------------------------------------------------
+# Renamed from Powerstar7 to DesignActiv on 2026-09-19. The old host is kept
+# and forwards path-for-path, so legacy Sitejet URLs still reach their real
+# successor. Requires powerstar7.com to be attached to this site as a domain
+# alias — see DEPLOY.md.
+http://powerstar7.com/*      https://www.designactiv.com/:splat   301!
+http://www.powerstar7.com/*  https://www.designactiv.com/:splat   301!
+https://powerstar7.com/*     https://www.designactiv.com/:splat   301!
+https://www.powerstar7.com/* https://www.designactiv.com/:splat   301!
+
 # --- Portuguese -------------------------------------------------------------
 # /pt/ is a REAL section again, so the old blanket "/pt/* -> /" rule is gone.
 # It used to 301 every Portuguese URL to the English home page, which threw
