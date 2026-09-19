@@ -217,22 +217,53 @@ a:hover { text-decoration-thickness: 2px; }
 }
 
 /* Focus takes the same fill as hover, because focus also turns the sheen on
-   — and the sheen has to composite over the darker fill to stay readable. */
-.btn:not(.btn--quiet):hover,
+   — and the sheen has to composite over the darker fill to stay readable.
+
+   Every hover rule below is guarded with :not(:disabled). A disabled button
+   still MATCHES :hover in CSS — it just never fires events — so without the
+   guard an inert control would light up, lift and track the pointer. */
+.btn:not(.btn--quiet):not(:disabled):hover,
 .btn:not(.btn--quiet):focus-visible {
   --btn-bg: var(--blue-hover);
 }
 
-.btn:hover { transform: translateY(-1px); }
-.btn:active { transform: translateY(0); }
+.btn:not(:disabled):hover { transform: translateY(-1px); }
+.btn:not(:disabled):active { transform: translateY(0); }
 
 /* Only where there is a real pointer. On touch the sheen has nothing to
    follow, and the old version stuck on after a tap. */
 @media (hover: hover) and (pointer: fine) {
-  .btn:hover::after { opacity: 1; }
+  .btn:not(:disabled):hover::after { opacity: 1; }
 }
 
 .btn:focus-visible::after { opacity: 1; }
+
+/* --- Disabled ------------------------------------------------------------
+   The contact form disables its submit button for the duration of a request.
+   Before this the disabled button was pixel-identical to an enabled one,
+   cursor included, so the one moment the control is genuinely inert was the
+   moment it looked most clickable.
+
+   The colour drains to a neutral rather than dimming with opacity. Opacity
+   composites the LABEL against the page ground along with the fill, which
+   takes an 18px/500 label to 3.54:1 even at 0.75 — worse than the state it
+   is meant to clarify. A flat neutral fill keeps it at 8.07:1. WCAG exempts
+   inactive controls from contrast, but there is no reason to spend that
+   exemption. The top highlight goes too: it is what gives the fill its
+   direction, and an inert surface should read flat. */
+.btn:disabled {
+  --btn-bg: var(--ink-muted);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* The quiet button has no fill to drain, so it mutes its label and keeps the
+   hairline. Without this it would inherit the neutral fill above. */
+.btn--quiet:disabled {
+  --btn-bg: transparent;
+  --btn-fg: var(--fg-muted);
+  border-color: var(--rule);
+}
 
 .btn--quiet {
   --btn-bg: transparent;
@@ -241,7 +272,7 @@ a:hover { text-decoration-thickness: 2px; }
   box-shadow: none;
 }
 
-.btn--quiet:hover {
+.btn--quiet:not(:disabled):hover {
   border-color: var(--fg);
 }
 
