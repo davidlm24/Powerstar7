@@ -38,12 +38,20 @@
      prevent. */
   --blue: #0e6fff;
   --blue-fn: #0c62e0;
-  /* The hover fill for a solid button. NOT --blue: a button label is 18px at
-     weight 500, which is not "large text", so it needs the full 4.5:1 — and
-     white on --blue measures 4.43:1. This is the brightest blue on the brand
-     hue that still clears it (4.63:1) and it is still 24% brighter than the
-     resting fill, so the hover reads as a lift rather than a colour shift. */
-  --blue-hover: #0e6cf9;
+  /* The hover/focus fill for a solid button. It is DARKER than the resting
+     fill, which looks backwards until you account for the sheen.
+
+     The sheen is a pseudo-element painted on top of the fill and underneath
+     the label, so the label's real backdrop is fill + white@alpha — and that
+     composite is what WCAG measures, not the fill alone. A 4.5:1 label sits
+     at luminance 0.1833. Brightening the fill spends that headroom before
+     the sheen gets any: on a #0e6cf9 fill even a 2% white overlay drops
+     below AA, and the sheen runs at 20%.
+
+     So the fill goes down and the sheen supplies the lift. Bare this is
+     7.63:1; with the sheen composited at its peak it is 4.83:1, which clears
+     AA with margin instead of sitting on the line. */
+  --blue-hover: #0a4eb3;
   --blue-wash: #e8effd;      /* the only tint — quiet blue ground          */
 
   /* --- Inverted band --------------------------------------------------

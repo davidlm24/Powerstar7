@@ -192,8 +192,14 @@ a:hover { text-decoration-thickness: 2px; }
     box-shadow var(--dur) var(--ease);
 }
 
-/* The sheen. isolation + z-index:-1 puts it above the fill but BELOW the
-   label, so the text stays crisp instead of being washed out. */
+/* The sheen. isolation + z-index:-1 puts it above the fill but below the
+   label, so the glyphs themselves are never washed out.
+
+   That is also the catch: "below the label" means "in the label's
+   background", which is the layer WCAG contrast is measured against. The
+   alpha here is not a taste decision — it is the largest value that keeps
+   white text on --blue-hover above 4.5:1 once composited, with margin.
+   Raising it, or lightening --blue-hover, breaks AA on hover. */
 .btn::after {
   content: '';
   position: absolute;
@@ -202,7 +208,7 @@ a:hover { text-decoration-thickness: 2px; }
   border-radius: inherit;
   background: radial-gradient(
     9rem circle at var(--mx, 50%) var(--my, 50%),
-    rgb(255 255 255 / 0.28),
+    rgb(255 255 255 / 0.2),
     transparent 60%
   );
   opacity: 0;
@@ -210,7 +216,14 @@ a:hover { text-decoration-thickness: 2px; }
   pointer-events: none;
 }
 
-.btn:hover { --btn-bg: var(--blue-hover); transform: translateY(-1px); }
+/* Focus takes the same fill as hover, because focus also turns the sheen on
+   — and the sheen has to composite over the darker fill to stay readable. */
+.btn:not(.btn--quiet):hover,
+.btn:not(.btn--quiet):focus-visible {
+  --btn-bg: var(--blue-hover);
+}
+
+.btn:hover { transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
 
 /* Only where there is a real pointer. On touch the sheen has nothing to
@@ -229,7 +242,6 @@ a:hover { text-decoration-thickness: 2px; }
 }
 
 .btn--quiet:hover {
-  --btn-bg: transparent;
   border-color: var(--fg);
 }
 
