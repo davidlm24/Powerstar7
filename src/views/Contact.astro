@@ -1,0 +1,254 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { useTranslations, CONTACT, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+/* The validation strings travel to the client as data, so the errors are
+   always in the language of the page being read. The browser's own
+   reportValidity() would use the *browser's* locale instead — which is how
+   a German visitor ended up reading German error text inside an English
+   form on the old site. */
+const formCopy = JSON.stringify({
+  name: t('contact.err.name'),
+  email: t('contact.err.email'),
+  emailFormat: t('contact.err.emailFormat'),
+  message: t('contact.err.message'),
+  one: t('contact.err.one'),
+  many: t('contact.err.many'),
+  ok: t('contact.ok'),
+  fail: t('contact.fail'),
+  sending: t('contact.form.sending'),
+  mailtoOpening: t('contact.mailtoOpening'),
+  unconfigured: t('contact.unconfigured'),
+});
+
+const topics = [
+  t('contact.form.topic.web'),
+  t('contact.form.topic.brand'),
+  t('contact.form.topic.seo'),
+  t('contact.form.topic.email'),
+  t('contact.form.topic.hosting'),
+  t('contact.form.topic.other'),
+];
+---
+
+<Base lang={lang} page="contact" title={t('contact.title')} description={t('contact.lead')}>
+  <PageHead label={t('nav.contact')} title={t('contact.h1')} lead={t('contact.lead')} />
+
+  <section class="contact">
+    <div class="container contact__inner">
+      {/* TODO before launch: set data-endpoint to the real form handler.
+          Until then the form composes an email instead — and says that is
+          what it is doing, rather than reporting a success it cannot know
+          about (which is what the old site did). See DEPLOY.md. */}
+      <form class="form" data-contact data-mailto={CONTACT.email} data-copy={formCopy} novalidate>
+        <div class="field">
+          <label for="name">{t('contact.form.name')}</label>
+          <input id="name" name="name" type="text" autocomplete="name" required />
+        </div>
+
+        <div class="field">
+          <label for="email">{t('contact.form.email')}</label>
+          <input id="email" name="email" type="email" autocomplete="email" required />
+        </div>
+
+        <div class="field">
+          <label for="company">
+            {t('contact.form.company')}
+            <span class="field__hint">{t('contact.form.companyHint')}</span>
+          </label>
+          <input id="company" name="company" type="text" autocomplete="organization" />
+        </div>
+
+        <div class="field">
+          <label for="topic">{t('contact.form.topic')}</label>
+          <select id="topic" name="topic">
+            {topics.map((topic) => <option value={topic}>{topic}</option>)}
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="message">{t('contact.form.message')}</label>
+          <p class="field__hint" id="message-hint">{t('contact.form.messageHint')}</p>
+          <textarea id="message" name="message" rows="6" aria-describedby="message-hint" required
+          ></textarea>
+        </div>
+
+        {/* Honeypot. Hidden from sight and from assistive technology, so no
+            real visitor is ever asked to leave a field empty. */}
+        <div class="trap" aria-hidden="true">
+          <label for="website">{t('contact.form.trap')}</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="form__foot">
+          <button class="btn" type="submit">{t('contact.form.submit')}</button>
+          <p class="form__status" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+
+      <aside class="direct">
+        <h2 class="direct__h">{t('contact.direct.h')}</h2>
+        <p class="direct__b">{t('contact.direct.b')}</p>
+        <a class="direct__email" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+        <p class="direct__note">{t('site.tagline')}</p>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact {
+    padding-block-end: var(--s8);
+  }
+
+  .contact__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: var(--s6) var(--s7);
+    align-items: start;
+    padding-block-start: var(--s5);
+    border-top: 1px solid var(--rule);
+  }
+
+  /* --- Form -------------------------------------------------------------- */
+
+  .form {
+    display: grid;
+    gap: var(--s4);
+    max-width: 36rem;
+  }
+
+  .field {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .field label {
+    font-size: var(--t-small);
+    font-weight: var(--weight-medium);
+  }
+
+  .field__hint {
+    font-size: var(--t-small);
+    font-weight: var(--weight-text);
+    color: var(--fg-muted);
+  }
+
+  label .field__hint {
+    margin-inline-start: 0.4em;
+  }
+
+  /* 1rem = 18px here, comfortably above the 16px below which iOS Safari
+     zooms the viewport on focus. */
+  .field input,
+  .field select,
+  .field textarea {
+    inline-size: 100%;
+    padding: 0.7rem 0.8rem;
+    font-size: 1rem;
+    background: var(--paper-hi);
+    color: var(--fg);
+    border: 1px solid var(--paper-edge);
+    border-radius: var(--radius);
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-block-size: 8rem;
+  }
+
+  .field input:focus-visible,
+  .field select:focus-visible,
+  .field textarea:focus-visible {
+    border-color: var(--blue);
+  }
+
+  .field :global([aria-invalid='true']) {
+    border-color: #b42318;
+  }
+
+  .field :global(.field__error) {
+    color: #b42318;
+    font-size: var(--t-small);
+  }
+
+  .trap {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .form__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s3);
+  }
+
+  .form__status {
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+  }
+
+  .form__status[data-kind='error'] {
+    color: #b42318;
+  }
+
+  .form__status[data-kind='ok'] {
+    color: var(--accent-fn);
+  }
+
+  /* --- Direct ------------------------------------------------------------ */
+
+  .direct {
+    padding: var(--s4);
+    background: var(--paper-hi);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+  }
+
+  .direct__h {
+    font-size: 1.25rem;
+  }
+
+  .direct__b {
+    margin-block-start: var(--s2);
+    color: var(--fg-muted);
+    font-size: var(--t-small);
+  }
+
+  .direct__email {
+    display: inline-block;
+    margin-block-start: var(--s3);
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: var(--weight-medium);
+    letter-spacing: -0.02em;
+  }
+
+  .direct__note {
+    margin-block-start: var(--s4);
+    padding-block-start: var(--s3);
+    border-top: 1px solid var(--rule);
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-micro);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  @media (max-width: 60rem) {
+    .contact__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

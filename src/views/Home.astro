@@ -1,0 +1,324 @@
+---
+import Base from '../layouts/Base.astro';
+import ProofStrip from '../components/ProofStrip.astro';
+import Closing from '../components/Closing.astro';
+import { useTranslations, route, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const services = [
+  { n: '01', name: t('svc.web.name'), key: 'web' },
+  { n: '02', name: t('svc.brand.name'), key: 'brand' },
+  { n: '03', name: t('svc.seo.name'), key: 'seo' },
+  { n: '04', name: t('svc.email.name'), key: 'email' },
+  { n: '05', name: t('svc.hosting.name'), key: 'hosting' },
+];
+
+const position = [
+  { h: t('home.position.one.h'), b: t('home.position.one.b') },
+  { h: t('home.position.two.h'), b: t('home.position.two.b') },
+  { h: t('home.position.three.h'), b: t('home.position.three.b') },
+];
+---
+
+<Base lang={lang} page="home" title={t('home.title')}>
+  {/* --- Hero ------------------------------------------------------------
+      No photograph exists and none is coming, so type is the image. Three
+      declarative lines at 140px — 7.8x body — against the old site's 1.94x.
+      What is NOT here: a recoloured <em> in the middle of the sentence, the
+      hero device every AI image generator and every SaaS template produces.
+      The accent lands on the full stops instead, echoing the wordmark. */}
+  <section class="hero">
+    <div class="container">
+      <p class="label hero__label">{t('site.tagline')}</p>
+
+      <h1 class="hero__h1">
+        <span>{t('home.h1.a').replace(/\.$/, '')}<b aria-hidden="true">.</b></span>
+        <span>{t('home.h1.b').replace(/\.$/, '')}<b aria-hidden="true">.</b></span>
+        <span>{t('home.h1.c').replace(/\.$/, '')}<b aria-hidden="true">.</b></span>
+      </h1>
+
+      <div class="hero__foot">
+        <p class="lead measure">{t('home.lead')}</p>
+        <div class="hero__actions">
+          <a class="btn" href={route('contact', lang)}>{t('home.cta')}</a>
+          <a class="btn btn--quiet" href={route('about', lang)}>{t('home.cta.secondary')}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* --- The proof ------------------------------------------------------
+      Set larger than the pitch, on purpose (REBUILD-BRIEF.md §3.6). These
+      numbers come from the real build output via scripts/measure.mjs. */}
+  <ProofStrip lang={lang} />
+
+  {/* --- Services -------------------------------------------------------
+      An indexed list, not six identical cards in a grid. The names are set
+      near h2 scale so the section is a second type moment rather than a
+      row of boxes with stroke icons in them. */}
+  <section class="services">
+    <div class="container">
+      <div class="services__head">
+        <p class="label">{t('home.services.label')}</p>
+        <h2>{t('home.services.h2')}</h2>
+      </div>
+
+      <ol class="services__list">
+        {
+          services.map((s) => (
+            <li class="service">
+              <a href={`${route('services', lang)}#${s.key}`}>
+                <span class="service__n">{s.n}</span>
+                <span class="service__name">{s.name}</span>
+                <span class="service__go" aria-hidden="true">&rarr;</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {/* --- Position (inverted) --------------------------------------------- */}
+  <section class="position invert">
+    <div class="container">
+      <div class="position__head">
+        <p class="label">{t('home.position.label')}</p>
+        <h2 class="position__h2">{t('home.position.h2')}</h2>
+        <p class="lead measure">{t('home.position.body')}</p>
+      </div>
+
+      <div class="position__grid">
+        {
+          position.map((p, i) => (
+            <article class="point">
+              <p class="point__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</p>
+              <h3 class="point__h">{p.h}</h3>
+              <p class="point__b">{p.b}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* --- Work, honestly --------------------------------------------------
+      There is no portfolio. The page says so in its own voice rather than
+      showing six placeholder tiles, which is what the old site did — and
+      the six images it pointed at were 2 KB of solid black. */}
+  <section class="honest">
+    <div class="container honest__inner">
+      <div>
+        <p class="label">{t('home.work.label')}</p>
+        <h2 class="honest__h2">{t('home.work.h2')}</h2>
+      </div>
+      <div class="honest__body">
+        <p>{t('home.work.body')}</p>
+        <p>{t('home.work.body2')}</p>
+        <p class="honest__link">
+          <a href={route('work', lang)}>{t('home.work.link')} &rarr;</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Closing lang={lang} />
+</Base>
+
+<style>
+  /* --- Hero -------------------------------------------------------------- */
+
+  .hero {
+    padding-block: var(--s7) var(--s8);
+  }
+
+  .hero__label {
+    margin-block-end: var(--s5);
+  }
+
+  .hero__h1 span {
+    display: block;
+  }
+
+  /* The accent lands here — on three full stops — and nowhere else in the
+     headline. One hue, used structurally. */
+  .hero__h1 b {
+    color: var(--accent);
+    font-weight: inherit;
+  }
+
+  .hero__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--s5);
+    margin-block-start: var(--s6);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2);
+  }
+
+  /* --- Services ---------------------------------------------------------- */
+
+  .services {
+    padding-block: var(--s8);
+  }
+
+  .services__head {
+    display: grid;
+    gap: var(--s3);
+    margin-block-end: var(--s6);
+  }
+
+  .services__list {
+    list-style: none;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .service a {
+    display: grid;
+    grid-template-columns: 4rem 1fr auto;
+    align-items: baseline;
+    gap: var(--s4);
+    padding-block: clamp(1.1rem, 2.2vw, 1.75rem);
+    border-bottom: 1px solid var(--rule);
+    color: var(--fg);
+    text-decoration: none;
+    transition: padding-inline-start var(--dur) var(--ease);
+  }
+
+  .service a:hover {
+    padding-inline-start: var(--s3);
+  }
+
+  .service__n {
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-micro);
+    color: var(--fg-muted);
+  }
+
+  .service__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+    font-weight: var(--weight-display);
+    line-height: 1.05;
+    letter-spacing: var(--tr-heading);
+  }
+
+  .service__go {
+    color: var(--accent);
+    font-size: var(--t-h3);
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .service a:hover .service__go {
+    transform: translateX(0.35rem);
+  }
+
+  /* --- Position ---------------------------------------------------------- */
+
+  .position {
+    padding-block: var(--s8);
+  }
+
+  .position__head {
+    display: grid;
+    gap: var(--s3);
+    max-width: 52rem;
+  }
+
+  .position__h2 {
+    max-width: 18ch;
+  }
+
+  .position__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s5);
+    margin-block-start: var(--s7);
+  }
+
+  .point {
+    border-top: 1px solid var(--rule);
+    padding-block-start: var(--s3);
+  }
+
+  .point__n {
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-micro);
+    color: var(--accent);
+  }
+
+  .point__h {
+    margin-block: var(--s3) var(--s2);
+    font-size: 1.375rem;
+    line-height: 1.2;
+  }
+
+  .point__b {
+    color: var(--fg-muted);
+    font-size: var(--t-small);
+  }
+
+  /* --- Honest ------------------------------------------------------------ */
+
+  .honest {
+    padding-block: var(--s8);
+  }
+
+  .honest__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: var(--s6) var(--s7);
+    align-items: start;
+  }
+
+  .honest__h2 {
+    margin-block-start: var(--s3);
+    max-width: 14ch;
+  }
+
+  .honest__body {
+    display: grid;
+    gap: var(--s3);
+    max-width: var(--measure);
+    color: var(--fg-muted);
+  }
+
+  .honest__link a {
+    color: var(--fg);
+    font-weight: var(--weight-medium);
+    text-underline-offset: 0.25em;
+  }
+
+  /* --- Narrow ------------------------------------------------------------ */
+
+  @media (max-width: 60rem) {
+    .position__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s4);
+    }
+
+    .honest__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .service a {
+      grid-template-columns: 2.5rem 1fr auto;
+      gap: var(--s3);
+    }
+  }
+</style>

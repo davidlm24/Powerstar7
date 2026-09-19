@@ -2,10 +2,16 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "static-site",
-      "runtimeExecutable": "node",
-      "runtimeArgs": [".claude/serve.js", "3000"],
+      "name": "astro-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "production-preview",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [".claude/serve.js", "4000"],
+      "port": 4000
     }
   ]
 }

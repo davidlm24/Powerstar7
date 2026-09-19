@@ -1,0 +1,34 @@
+# Netlify / Cloudflare Pages redirect rules.
+# (Apache hosts use .htaccess instead; see DEPLOY.md.)
+#
+# This map is preserved SEO and survives every rebuild. Two generations of
+# URL now point here: the original Sitejet site, and the hand-built site
+# that replaced it. Deleting a line here silently discards whatever ranking
+# and inbound links that URL had.
+
+# --- Portuguese -------------------------------------------------------------
+# /pt/ is a REAL section again, so the old blanket "/pt/* -> /" rule is gone.
+# It used to 301 every Portuguese URL to the English home page, which threw
+# away the Brazilian-market SEO the Sitejet site had built. /pt/sobre-nos in
+# particular now resolves to the actual Portuguese About page, at the same
+# URL it had before.
+#
+# Nothing to declare here: /pt, /pt/sobre-nos, /pt/servicos, /pt/trabalhos,
+# /pt/contato, /pt/aviso-legal and /pt/privacidade are all served directly.
+
+# --- Legacy Sitejet URLs (301) ----------------------------------------------
+/en               /            301
+/en/*             /:splat      301
+
+# --- Pages the rebuild renamed or merged (301) ------------------------------
+/about-us                    /about       301
+/our-work                    /work        301
+/web-design-development      /services    301
+# The three-tier pricing ladder is gone — it advertised EUR 0 across all
+# three tiers and "Placeholder feature" bullets. Services is the honest
+# destination for anyone who arrives looking for it.
+/pricing                     /services    301
+
+# --- Strip .html so canonical extensionless URLs are the only public form ---
+/index.html       /                        301
+/*.html           /:splat                  301

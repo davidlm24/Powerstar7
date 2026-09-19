@@ -1,0 +1,142 @@
+/* =========================================================================
+   Powerstar7 — design tokens
+   =========================================================================
+
+   Every value here is deliberate and most are measured. Two rules govern
+   this file, both learned the hard way (REBUILD-BRIEF.md §1):
+
+     1. ONE accent hue. Blue. There is no orange, no violet, no amber, and
+        no gradient built from them. If a new colour is needed, it is a
+        role, not a hue.
+     2. ONE type system. Never a second scale scoped to a subset of pages.
+
+   Contrast: every pairing below was computed against WCAG 2.1, not eyeballed.
+   The ratios in the comments are real. The brand blue #0e6fff measures
+   4.43:1 against white and 3.97:1 against the ground — it FAILS AA as text.
+   So the accent ships as a pair: the bright one is display-only, and a
+   darkened sibling carries anything that has to be read at body size.
+   ========================================================================= */
+
+:root {
+  /* --- Ground ---------------------------------------------------------
+     Never pure white. Every reference site sits on a tinted ground; the
+     one that used seven indistinguishable near-blacks is the weakest of
+     the ten. Two neutrals and one raised surface, that is all. */
+  --paper: #f5f2eb;          /* warm ground                                */
+  --paper-hi: #fbf9f4;       /* raised surface — lifts by tone, not bevel  */
+  --paper-edge: #e3ded2;     /* hairlines                                  */
+
+  --ink: #111318;            /* body text · 16.62:1 on paper · AAA         */
+  --ink-muted: #4b505c;      /* secondary text · 7.22:1 on paper · AAA     */
+
+  /* --- Accent pair ----------------------------------------------------
+     --blue      display only: type above 24px, fills with no text on them,
+                 graphic marks, the focus ring.
+     --blue-fn   functional: link text at body size (4.89:1 on paper) and
+                 fills carrying white text (5.47:1). Both clear AA.
+     Never use --blue for small text. That is the bug this pair exists to
+     prevent. */
+  --blue: #0e6fff;
+  --blue-fn: #0c62e0;
+  --blue-wash: #e8effd;      /* the only tint — quiet blue ground          */
+
+  /* --- Inverted band --------------------------------------------------
+     The ink band needs its own muted and accent tones: --ink-muted scores
+     2.30:1 on ink and is unreadable there. These are role tokens, not new
+     hues — .invert reassigns the roles rather than introducing colours. */
+  --on-ink: #f5f2eb;         /* 16.62:1 on ink · AAA                       */
+  --on-ink-muted: #a8aebc;   /*  8.36:1 on ink · AAA                       */
+  --on-ink-blue: #5c9dff;    /*  6.83:1 on ink · AAA                       */
+
+  /* --- Semantic roles -------------------------------------------------
+     Components reference these, never the raw palette. .invert swaps the
+     roles in one place and every component inside follows. */
+  --bg: var(--paper);
+  --bg-raised: var(--paper-hi);
+  --fg: var(--ink);
+  --fg-muted: var(--ink-muted);
+  --accent: var(--blue);
+  --accent-fn: var(--blue-fn);
+  --rule: var(--paper-edge);
+
+  /* --- Type -----------------------------------------------------------
+     The single biggest delta between the old site and the references:
+     headings ran at 1.94x body. Nine of ten references run 4x–11.6x.
+     --t-hero tops out at 8.75rem = 140px = 7.8x the 18px body. */
+  --font-display: 'Cabinet Grotesk', 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-text: 'Switzer', 'Source Sans 3', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+
+  /* The floor is set by the longest hero line in the WIDEST language, not
+     by taste: "Sem rastreadores." measures 8.17em, so at a 320px viewport
+     (280px of content) the type cannot exceed ~34px without wrapping. The
+     vw term takes over immediately above that and reaches the 140px cap at
+     1360px — 7.8x body, against the old site's 1.94x. */
+  --t-hero: clamp(2rem, 10.3vw, 8.75rem);      /*  33 → 140px              */
+  --t-h2: clamp(2.5rem, 5.5vw, 4.25rem);       /*  40 →  68px              */
+  --t-h3: clamp(1.5rem, 2.2vw, 1.875rem);      /*  24 →  30px              */
+  --t-stat: clamp(3.5rem, 7.5vw, 6rem);        /*  56 →  96px — the proof
+                                                   is set larger than the
+                                                   pitch, on purpose       */
+  --t-lead: clamp(1.25rem, 1.8vw, 1.5rem);     /*  20 →  24px              */
+  --t-body: 1.125rem;                          /*  18px                    */
+  --t-small: 0.9375rem;                        /*  15px                    */
+  --t-micro: 0.8125rem;                        /*  13px — tracked labels   */
+
+  --lh-display: 0.92;        /* poster scale needs negative leading        */
+  --lh-heading: 1.06;
+  --lh-body: 1.6;
+
+  --tr-display: -0.035em;    /* optical tightening, scaled to size         */
+  --tr-heading: -0.02em;
+  --tr-micro: 0.09em;
+
+  --weight-text: 400;
+  --weight-medium: 500;
+  --weight-display: 700;
+
+  /* --- Space ----------------------------------------------------------
+     The old site padded every section to 128px, which is why ten pages
+     read as one template. These are a scale to compose from, and section
+     rhythm is expected to VARY page to page. */
+  --s1: 0.5rem;
+  --s2: 1rem;
+  --s3: 1.5rem;
+  --s4: 2rem;
+  --s5: 3rem;
+  --s6: 4rem;
+  --s7: 6rem;
+  --s8: 8rem;
+  --s9: 11rem;
+
+  --gutter: clamp(1.25rem, 5vw, 4rem);
+  --measure: 62ch;           /* body copy line length                      */
+  --width-page: 90rem;       /* 1440 — wide, because content bleeds out of
+                                it deliberately rather than never reaching
+                                it                                         */
+  --width-text: 48rem;
+
+  /* --- Everything else -------------------------------------------------
+     One radius. One shadow, used almost never. The old site had twenty
+     surface classes, twelve of them the same rounded-rectangle-plus-
+     hairline-plus-bevel. */
+  --radius: 4px;
+  --shadow: 0 1px 2px rgb(17 19 24 / 0.04), 0 12px 32px -12px rgb(17 19 24 / 0.12);
+
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --dur: 180ms;
+}
+
+/* The inverted band. Roles flip; hues do not change. */
+.invert {
+  --bg: var(--ink);
+  --bg-raised: #1a1d24;
+  --fg: var(--on-ink);
+  --fg-muted: var(--on-ink-muted);
+  --accent: var(--on-ink-blue);
+  --accent-fn: var(--on-ink-blue);
+  --rule: #2a2e37;
+
+  background: var(--bg);
+  color: var(--fg);
+}

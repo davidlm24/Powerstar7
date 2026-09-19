@@ -1,0 +1,116 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Notice from '../components/Notice.astro';
+import { useTranslations, CONTACT, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const sections = [
+  { h: t('privacy.hosting.h'), b: t('privacy.hosting.b') },
+  { h: t('privacy.form.h'), b: t('privacy.form.b') },
+  { h: t('privacy.fonts.h'), b: t('privacy.fonts.b') },
+  { h: t('privacy.rights.h'), b: t('privacy.rights.b') },
+];
+
+/* Kept in step with the content by hand: bump it whenever the policy text
+   below changes, not whenever the site is rebuilt. */
+const updated = '2026-09-19';
+---
+
+<Base lang={lang} page="privacy" title={t('privacy.title')}>
+  <PageHead label={t('footer.legalNav')} title={t('privacy.h1')} />
+
+  <section class="privacy">
+    <div class="container">
+      {/* The summary first, in plain language. A privacy page whose honest
+          content is "we collect almost nothing" should say that at the top
+          rather than bury it under four screens of legal boilerplate. */}
+      <div class="summary">
+        <h2 class="summary__h">{t('privacy.summary.h')}</h2>
+        <p class="lead summary__b">{t('privacy.summary.b')}</p>
+      </div>
+
+      <Notice title={t('privacy.todo.h')} body={t('privacy.todo.b')} />
+
+      <div class="prose">
+        {
+          sections.map((s) => (
+            <section>
+              <h2>{s.h}</h2>
+              <p>{s.b}</p>
+            </section>
+          ))
+        }
+
+        <section>
+          <h2>{t('legal.contact.h')}</h2>
+          <p>
+            <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+          </p>
+        </section>
+      </div>
+
+      <p class="updated">
+        {t('privacy.updated')}: <time datetime={updated}>{updated}</time>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .privacy {
+    padding-block-end: var(--s8);
+  }
+
+  .summary {
+    max-width: var(--width-text);
+    padding-block-end: var(--s5);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .summary__h {
+    font-size: var(--t-h3);
+  }
+
+  .summary__b {
+    margin-block-start: var(--s3);
+    color: var(--fg);
+  }
+
+  .prose {
+    max-width: var(--width-text);
+    display: grid;
+    gap: var(--s5);
+    margin-block-start: var(--s5);
+  }
+
+  .prose h2 {
+    font-size: 1.375rem;
+    margin-block-end: var(--s2);
+  }
+
+  .prose p {
+    color: var(--fg-muted);
+  }
+
+  .updated {
+    margin-block-start: var(--s6);
+    padding-block-start: var(--s3);
+    border-top: 1px solid var(--rule);
+    max-width: var(--width-text);
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-micro);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  .updated time {
+    font-family: var(--font-mono);
+  }
+</style>

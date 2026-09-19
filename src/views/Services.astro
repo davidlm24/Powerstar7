@@ -1,0 +1,155 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Closing from '../components/Closing.astro';
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const services = [
+  { id: 'web', n: '01', key: 'web' },
+  { id: 'brand', n: '02', key: 'brand' },
+  { id: 'seo', n: '03', key: 'seo' },
+  { id: 'email', n: '04', key: 'email' },
+  { id: 'hosting', n: '05', key: 'hosting' },
+] as const;
+---
+
+<Base lang={lang} page="services" title={t('services.title')} description={t('services.lead')}>
+  <PageHead label={t('home.services.label')} title={t('services.h1')} lead={t('services.lead')} />
+
+  {/* Five sections, each with its own heading at near-display scale — not
+      five identical cards in a grid with a stroke icon at the top. The old
+      site had six of those and they were the reason every page read the
+      same. The number column doubles as the section's own index. */}
+  <div class="services">
+    <div class="container">
+      {
+        services.map((s) => (
+          <section class="svc" id={s.id}>
+            <div class="svc__index">
+              <span class="svc__n">{s.n}</span>
+            </div>
+
+            <div class="svc__body">
+              <h2 class="svc__name">{t(`svc.${s.key}.name` as any)}</h2>
+              <p class="svc__lede">{t(`svc.${s.key}.body` as any)}</p>
+
+              <h3 class="svc__deliverables-h">{t('services.deliverables')}</h3>
+              <ul class="svc__deliverables">
+                <li>{t(`svc.${s.key}.d1` as any)}</li>
+                <li>{t(`svc.${s.key}.d2` as any)}</li>
+                <li>{t(`svc.${s.key}.d3` as any)}</li>
+              </ul>
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+
+  <Closing lang={lang} />
+</Base>
+
+<style>
+  .services {
+    padding-block-end: var(--s7);
+  }
+
+  .svc {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    gap: var(--s4);
+    padding-block: var(--s6);
+    border-top: 1px solid var(--rule);
+  }
+
+  /* The index stays with the heading as the section scrolls past, so a long
+     services page never loses track of which service you are reading. */
+  .svc__index {
+    position: sticky;
+    top: var(--s4);
+    align-self: start;
+  }
+
+  .svc__n {
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-micro);
+    /* --accent-fn, not --accent. This is 13px text, and the bright display
+       blue measures 3.97:1 on the ground — it fails AA below 24px. That is
+       the entire reason the accent ships as a pair. */
+    color: var(--accent-fn);
+  }
+
+  .svc__body {
+    max-width: 58rem;
+  }
+
+  .svc__name {
+    font-size: clamp(1.875rem, 4vw, 3rem);
+    line-height: 1.04;
+  }
+
+  .svc__lede {
+    margin-block-start: var(--s3);
+    max-width: var(--measure);
+    font-size: var(--t-lead);
+    line-height: 1.5;
+    color: var(--fg-muted);
+  }
+
+  .svc__deliverables-h {
+    margin-block-start: var(--s5);
+    font-family: var(--font-text);
+    font-size: var(--t-micro);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tr-micro);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  .svc__deliverables {
+    list-style: none;
+    padding: 0;
+    margin-block-start: var(--s3);
+    display: grid;
+    gap: 0.6rem;
+    max-width: var(--measure);
+  }
+
+  .svc__deliverables li {
+    position: relative;
+    padding-inline-start: 1.5rem;
+    font-size: var(--t-small);
+  }
+
+  /* A square in the accent, the same mark the section labels use. One
+     device, reused — rather than six bespoke stroke icons. */
+  .svc__deliverables li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.55em;
+    inline-size: 0.4rem;
+    block-size: 0.4rem;
+    background: var(--accent);
+  }
+
+  @media (max-width: 48rem) {
+    .svc {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s2);
+      padding-block: var(--s5);
+    }
+
+    .svc__index {
+      position: static;
+    }
+  }
+</style>

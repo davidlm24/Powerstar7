@@ -1,0 +1,101 @@
+---
+import '../styles/fonts.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { useTranslations, ROUTES, type Lang, type PageKey } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  /** Omitted only by the 404, which has no canonical URL of its own. */
+  page?: PageKey;
+  title: string;
+  description?: string;
+}
+
+const { lang, page, title, description } = Astro.props;
+const t = useTranslations(lang);
+
+const site = Astro.site ?? new URL('https://www.powerstar7.com');
+const desc = description ?? t('site.description');
+const canonical = page ? new URL(ROUTES[page][lang], site).href : null;
+const ogImage = new URL('/assets/img/og-card.png', site).href;
+---
+
+<!doctype html>
+<html lang={lang} class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{title}</title>
+    <meta name="description" content={desc} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {!page && <meta name="robots" content="noindex" />}
+
+    {/* Both languages are declared on every page, so a Portuguese-speaking
+        visitor landing on an English URL is offered the real Portuguese page
+        rather than a 301 to English — which is what the old site did. */}
+    {
+      page && (
+        <>
+          <link rel="alternate" hreflang="en" href={new URL(ROUTES[page].en, site).href} />
+          <link rel="alternate" hreflang="pt" href={new URL(ROUTES[page].pt, site).href} />
+          <link rel="alternate" hreflang="x-default" href={new URL(ROUTES[page].en, site).href} />
+        </>
+      )
+    }
+
+    <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#f5f2eb" />
+
+    {/* The two subsets every page actually uses. Everything else is fetched
+        only if a character needs it. */}
+    <link
+      rel="preload"
+      href="/assets/fonts/space-grotesk-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/assets/fonts/source-sans-3-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Powerstar7" />
+    <meta property="og:locale" content={lang === 'pt' ? 'pt_BR' : 'en_GB'} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={desc} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {/* Swap the no-js class before first paint so nothing flashes. */}
+    <script is:inline>
+      document.documentElement.classList.remove('no-js');
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">{t('nav.skip')}</a>
+    <Header lang={lang} page={page} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} page={page} />
+    <script src="/assets/js/site.js" defer is:inline></script>
+  </body>
+</html>
+
+<style>
+  main:focus-visible {
+    outline: none;
+  }
+</style>

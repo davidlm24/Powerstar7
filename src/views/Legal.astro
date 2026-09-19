@@ -1,0 +1,73 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Notice from '../components/Notice.astro';
+import { useTranslations, CONTACT, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Base lang={lang} page="legal" title={t('legal.title')}>
+  <PageHead label={t('footer.legalNav')} title={t('legal.h1')} />
+
+  <section class="legal">
+    <div class="container">
+      <Notice title={t('legal.todo.h')} body={t('legal.todo.b')} />
+
+      <div class="prose">
+        <h2>{t('legal.tmg')}</h2>
+        <p>
+          Powerstar7<br />
+          <span class="pending">&lt;{lang === 'pt' ? 'endereço postal' : 'postal address'}&gt;</span
+          ><br />
+          <span class="pending">&lt;{lang === 'pt' ? 'país' : 'country'}&gt;</span>
+        </p>
+
+        <h2>{t('legal.contact.h')}</h2>
+        <p>
+          <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+        </p>
+
+        <h2>{t('legal.responsible.h')}</h2>
+        <p class="pending">
+          &lt;{lang === 'pt' ? 'nome e endereço do responsável' : 'name and address of the person responsible'}&gt;
+        </p>
+
+        <h2>{t('legal.disputes.h')}</h2>
+        <p>{t('legal.disputes.b')}</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal {
+    padding-block-end: var(--s8);
+  }
+
+  .prose {
+    max-width: var(--width-text);
+    display: grid;
+    gap: var(--s2);
+  }
+
+  .prose h2 {
+    margin-block-start: var(--s4);
+    font-size: var(--t-h3);
+  }
+
+  /* Unfilled fields read as unfilled. They are not styled to look like
+     content, because they are not content. */
+  .pending {
+    font-family: var(--font-mono);
+    font-size: var(--t-small);
+    color: var(--ink-muted);
+    background: var(--blue-wash);
+    padding: 0.1em 0.35em;
+  }
+</style>

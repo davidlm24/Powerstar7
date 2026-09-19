@@ -1,0 +1,248 @@
+---
+import { useTranslations, route, alternate, type Lang, type PageKey } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  page?: PageKey;
+}
+
+const { lang, page } = Astro.props;
+const t = useTranslations(lang);
+const other = alternate(page ?? 'home', lang);
+
+const items: { key: PageKey; label: string }[] = [
+  { key: 'work', label: t('nav.work') },
+  { key: 'services', label: t('nav.services') },
+  { key: 'about', label: t('nav.about') },
+  { key: 'contact', label: t('nav.contact') },
+];
+---
+
+{/* A plain bar on a hairline. It does not shrink, blur, float or turn into
+    a glass pill on scroll — the old site did all four, and every one of them
+    spends motion budget and attention on the least interesting element of
+    the page. The hero does the shouting. */}
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="wordmark" href={route('home', lang)} aria-label="Powerstar7 — home">
+      Powerstar7<span class="wordmark__dot" aria-hidden="true">.</span>
+    </a>
+
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      aria-label={t('nav.open')}
+      data-label-open={t('nav.open')}
+      data-label-close={t('nav.close')}
+    >
+      <span class="nav-toggle__bars" aria-hidden="true"><span></span><span></span></span>
+      <span class="nav-toggle__text">{t('nav.menu')}</span>
+    </button>
+
+    <nav class="nav" id="site-nav" data-open="false" aria-label={t('nav.menu')}>
+      <ul class="nav__list">
+        {
+          items.map((item) => (
+            <li>
+              <a
+                href={route(item.key, lang)}
+                aria-current={item.key === page ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <a class="nav__lang" href={other.href} lang={other.lang} hreflang={other.lang}>
+        {t('nav.langSwitch')}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s4);
+    min-height: 4.5rem;
+  }
+
+  /* --- Wordmark ---------------------------------------------------------- */
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: var(--weight-display);
+    letter-spacing: -0.03em;
+    color: var(--fg);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  /* The only ornament that survived the rebuild: a full stop in the accent.
+     It is one character, it carries the brand colour, and it costs nothing. */
+  .wordmark__dot {
+    color: var(--accent);
+  }
+
+  /* --- Navigation -------------------------------------------------------- */
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: var(--s5);
+  }
+
+  .nav__list {
+    display: flex;
+    align-items: center;
+    gap: var(--s4);
+    list-style: none;
+    padding: 0;
+  }
+
+  .nav__list a {
+    display: inline-block;
+    padding-block: 0.5rem;
+    color: var(--fg);
+    font-size: var(--t-small);
+    text-decoration: none;
+    letter-spacing: -0.005em;
+  }
+
+  /* Underline on hover and on the current page — same device, so the current
+     page reads as "you are here" rather than as a different kind of thing. */
+  .nav__list a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.3em;
+  }
+
+  .nav__list a[aria-current='page'] {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.3em;
+  }
+
+  .nav__lang {
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-micro);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    text-decoration: none;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 0.45rem 0.7rem;
+    white-space: nowrap;
+  }
+
+  .nav__lang:hover {
+    color: var(--fg);
+    border-color: var(--fg);
+  }
+
+  /* --- Mobile ------------------------------------------------------------ */
+
+  .nav-toggle {
+    display: none;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.5rem 0.75rem;
+    margin-inline-end: calc(var(--s2) * -1);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-micro);
+    text-transform: uppercase;
+    color: var(--fg);
+  }
+
+  .nav-toggle__bars {
+    display: grid;
+    gap: 5px;
+    inline-size: 20px;
+  }
+
+  .nav-toggle__bars span {
+    display: block;
+    block-size: 2px;
+    background: currentColor;
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bars span:first-child {
+    transform: translateY(3.5px) rotate(45deg);
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bars span:last-child {
+    transform: translateY(-3.5px) rotate(-45deg);
+  }
+
+  @media (max-width: 60rem) {
+    .nav-toggle {
+      display: inline-flex;
+    }
+
+    .nav {
+      position: absolute;
+      inset-inline: 0;
+      inset-block-start: 100%;
+      z-index: 20;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: var(--s2) var(--gutter) var(--s4);
+      background: var(--bg);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .nav[data-open='false'] {
+      display: none;
+    }
+
+    .site-header {
+      position: relative;
+    }
+
+    .nav__list {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .nav__list a {
+      padding-block: 0.9rem;
+      border-bottom: 1px solid var(--rule);
+      font-size: var(--t-body);
+    }
+
+    .nav__lang {
+      align-self: flex-start;
+      margin-block-start: var(--s3);
+    }
+  }
+
+  /* Without JavaScript the toggle cannot work, so the nav stays visible. */
+  :global(html.no-js) .nav {
+    display: flex !important;
+  }
+
+  :global(html.no-js) .nav-toggle {
+    display: none !important;
+  }
+</style>

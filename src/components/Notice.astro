@@ -1,0 +1,38 @@
+---
+interface Props {
+  title: string;
+  body: string;
+}
+
+const { title, body } = Astro.props;
+---
+
+{/* A launch blocker, stated on the page itself. The old site shipped a
+    placeholder Impressum that looked finished — which, under § 5 TMG, is
+    worse than one that admits it is not. This block is meant to be deleted
+    once the real details are in, not styled around. */}
+<aside class="notice" role="note">
+  <p class="notice__title">{title}</p>
+  <p class="notice__body">{body}</p>
+</aside>
+
+<style>
+  .notice {
+    max-width: var(--width-text);
+    padding: var(--s3) var(--s4);
+    margin-block: var(--s4);
+    background: var(--blue-wash);
+    border-inline-start: 3px solid var(--blue-fn);
+  }
+
+  .notice__title {
+    font-weight: var(--weight-medium);
+    color: var(--ink);
+  }
+
+  .notice__body {
+    margin-block-start: var(--s1);
+    color: var(--ink-muted);
+    font-size: var(--t-small);
+  }
+</style>

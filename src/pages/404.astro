@@ -1,0 +1,92 @@
+---
+import Base from '../layouts/Base.astro';
+import { useTranslations, route, ROUTES } from '../i18n/ui';
+
+/* One 404 serves both languages — the host cannot know which language a
+   broken URL was meant to be in, so the page offers both rather than
+   guessing. It is the only page with no canonical URL of its own. */
+const t = useTranslations('en');
+const pt = useTranslations('pt');
+
+const links = (['home', 'work', 'services', 'about', 'contact'] as const).map((key) => ({
+  en: { href: ROUTES[key].en, label: t(`nav.${key}` as any) },
+  pt: { href: ROUTES[key].pt, label: pt(`nav.${key}` as any) },
+}));
+---
+
+<Base lang="en" title={t('nf.title')}>
+  <section class="nf">
+    <div class="container">
+      <p class="label">404</p>
+      <h1 class="nf__h1">{t('nf.h1')}</h1>
+      <p class="lead measure">{t('nf.lead')}</p>
+      <p class="lead measure nf__pt" lang="pt">{pt('nf.lead')}</p>
+
+      <div class="nf__cols">
+        <nav class="nf__nav" aria-label="English">
+          <h2 class="nf__nav-h">English</h2>
+          <ul>
+            {links.map((l) => <li><a href={l.en.href}>{l.en.label}</a></li>)}
+          </ul>
+        </nav>
+
+        <nav class="nf__nav" aria-label="Português" lang="pt">
+          <h2 class="nf__nav-h">Português</h2>
+          <ul>
+            {links.map((l) => <li><a href={l.pt.href}>{l.pt.label}</a></li>)}
+          </ul>
+        </nav>
+      </div>
+
+      <p class="nf__back">
+        <a class="btn" href={route('home', 'en')}>{t('nf.home')}</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    padding-block: var(--s7) var(--s8);
+  }
+
+  .nf__h1 {
+    margin-block: var(--s4);
+    font-size: clamp(2.75rem, 7vw, 6rem);
+  }
+
+  .nf__pt {
+    margin-block-start: var(--s3);
+    font-size: var(--t-body);
+  }
+
+  .nf__cols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s7);
+    margin-block-start: var(--s6);
+    padding-block-start: var(--s4);
+    border-top: 1px solid var(--rule);
+  }
+
+  .nf__nav-h {
+    font-family: var(--font-text);
+    font-size: var(--t-micro);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tr-micro);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  .nf__nav ul {
+    list-style: none;
+    padding: 0;
+    margin-block-start: var(--s3);
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .nf__back {
+    margin-block-start: var(--s6);
+  }
+</style>

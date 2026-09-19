@@ -1,70 +1,117 @@
 # Deploying powerstar7.com
 
-This is a plain static site — any static host works. Two things need
-host-side configuration before launch.
+The site is built with Astro and deployed as static files. Three things need
+attention before launch.
+
+## 0. Build
+
+```bash
+npm ci && npm run build
+```
+
+Output goes to `dist/`. On **Cloudflare Pages** (or Netlify) set:
+
+| Setting | Value |
+|---|---|
+| Build command | `npm run build` |
+| Output directory | `dist` |
+| Node version | 20 or later |
+
+`dist/` contains a directory per page (`about/index.html`), not bare `.html`
+files. That is deliberate: with file output the Portuguese home page builds to
+*both* `/pt.html` and a `/pt/` directory, and every host has to guess which
+one `/pt` means.
+
+To check the built output locally before pushing:
+
+```bash
+npm run build && npm run preview
+```
 
 ## 1. URL rewrites and legacy redirects
 
-Pages are `.html` files but canonicalize to extensionless URLs
-(`/about-us`, not `/about-us.html`), matching the original site's slugs.
-The old Sitejet site also served everything under `/en/…` (plus two `/pt/…`
-pages), which search engines have indexed — those must 301 to the new URLs.
+Canonical URLs are extensionless and carry no trailing slash. Two generations
+of URL redirect into this site — the original Sitejet site, and the
+hand-written site that replaced it. **This map is preserved SEO; deleting a
+line discards whatever ranking and inbound links that URL had.**
 
-- **Netlify / Cloudflare Pages**: `_redirects` (already in the repo root)
-  handles both. Deploy and done.
-- **Apache shared hosting**: `.htaccess` (already in the repo root) does the
-  same, plus cache headers.
-- **Nginx**: mirror the same rules (`try_files $uri $uri.html $uri/ =404;`
-  plus the `/en` → `/` and `/pt` 301s).
-
-`404.html` is the error page. Netlify and Cloudflare Pages pick it up by
-convention; Apache is pointed at it via `ErrorDocument` in `.htaccess`. On
-Nginx, add `error_page 404 /404.html;`.
-
-The `design/` directory is the design handoff bundle — reference material, not
-site content. Both `_redirects` and `.htaccess` return 404 for it, and
-`robots.txt` disallows it. Mirror that on Nginx (`location ^~ /design/ { return
-404; }`) or exclude the directory from the deployed artifact entirely.
+- **Netlify / Cloudflare Pages**: `public/_redirects` handles it. Deploy and
+  done.
+- **Apache shared hosting**: `public/.htaccess` does the same, plus cache
+  headers. Note `DirectorySlash Off` — without it mod_dir 301s `/about` to
+  `/about/` and every canonical URL grows a trailing slash it does not have.
+- **Nginx**: mirror the rules (`try_files $uri $uri/ =404;` plus the 301s
+  below).
 
 Redirect map:
 
 | Old URL | New URL |
 |---|---|
-| `/en` and `/en/<page>` | `/` and `/<page>` |
-| `/pt` | `/` (until a PT version exists) |
-| `/pt/sobre-nos` | `/about-us` |
-| `/<page>.html` | `/<page>` (301) |
+| `/en`, `/en/<page>` | `/`, `/<page>` |
+| `/about-us` | `/about` |
+| `/our-work` | `/work` |
+| `/web-design-development` | `/services` |
+| `/pricing` | `/services` |
+| `/<page>.html` | `/<page>` |
+
+**Portuguese is no longer redirected away.** The previous config 301'd every
+`/pt/…` URL to the English home page, discarding the Brazilian-market SEO the
+Sitejet site had. `/pt/sobre-nos` now resolves to the real Portuguese About
+page at the URL it always had. Do not reintroduce a blanket `/pt` rule — it
+would shadow the entire Portuguese section.
+
+`404.html` is the error page. Netlify and Cloudflare Pages pick it up by
+convention; Apache is pointed at it by `ErrorDocument`. On Nginx add
+`error_page 404 /404.html;`.
+
+`design/` is reference material, not site content: `_redirects`, `.htaccess`
+and `robots.txt` all exclude it, and it is outside `public/` so it is not in
+`dist/` at all.
 
 ## 2. Contact form handler
 
-`contact.html` has a handler-agnostic form:
+The form is handler-agnostic (`src/views/Contact.astro`):
 
-- **Preferred**: set `data-endpoint="…"` on the `<form>` to a POST handler —
-  either a form service or a small script on your own host. Submissions are
-  sent as `multipart/form-data` with fields `name`, `email`, `company`,
-  `topic`, `message` (the `website` field is a spam honeypot — discard any
-  submission where it is non-empty).
-- **Fallback (current state)**: with no endpoint set, submitting opens the
-  visitor's email app with the message pre-filled, addressed to
-  `data-mailto`. **Confirm `data-mailto` points at the real inbox** —
-  `hello@powerstar7.com` is an unverified placeholder.
+- **Preferred**: set `data-endpoint="…"` on the `<form>` to a POST handler.
+  Submissions arrive as `multipart/form-data` with `name`, `email`,
+  `company`, `topic` and `message`. The `website` field is a honeypot —
+  discard any submission where it is non-empty.
+- **Current state**: with no endpoint set, submitting composes an email in
+  the visitor's mail app. The status message says that is what it is
+  attempting; it does **not** claim the message was sent, because it cannot
+  know. Confirm `hello@powerstar7.com` is a real, monitored inbox.
 
-If you adopt a third-party form service, mention the processor in
-`privacy.html` (GDPR).
+If you adopt a third-party form service, name the processor in the privacy
+policy, and be aware that it is the first third party the site would touch.
 
-For local development, `node .claude/serve.js` serves the site with the
-same extensionless URL behavior and a dev-only echo endpoint at
-`POST /api/contact` for testing the form's fetch path.
+## 3. The zero-third-party constraint
+
+`npm run measure` **fails the build** if any `http(s)://` asset appears on the
+home page. Keep it that way: no Google Fonts, no analytics, no embedded maps,
+no chat widget, no social pixels. This is what lets the site run with no
+cookie banner and stay clear of the German Google Fonts *Abmahnung* problem.
+
+Anything that must be embedded (a map, a video) should ship as a static image
+that links out, not as an iframe.
 
 ## Pre-launch checklist
 
-- [ ] Real contact details (phone, email, address) — placeholders are
-      clearly marked in the pages
-- [ ] Legal notice (Impressum) completed — legally required (§5 TMG)
-- [ ] Privacy policy: responsible-party section completed; lawyer review
-- [ ] Form endpoint configured and test submission received
-- [ ] Placeholder copy replaced (search the pages for "ADD COPY")
-- [ ] Pricing tiers: real prices (currently €0 placeholders)
-- [ ] Portfolio: real project images replacing `work-*.webp` panels
-- [ ] Verify redirects: `curl -I https://www.powerstar7.com/en/about-us`
-      should return `301` with `Location: /about-us`
+- [ ] **Legal notice (Impressum) completed — legally required under § 5 TMG.
+      This is a launch blocker.** Real name, postal address, contact details,
+      and VAT/register numbers where applicable.
+- [ ] Privacy policy: responsible party and competent supervisory authority
+      named; text reviewed by a lawyer
+- [ ] `hello@powerstar7.com` verified as a real, monitored inbox
+- [ ] Form endpoint configured, and a test submission actually received
+- [ ] Decide whether the unlaunched client project stays on `/work` — it is
+      the client's information to share, so get their sign-off or cut the
+      block (it is marked in `src/views/Work.astro`)
+- [ ] Regenerate `public/assets/img/og-card.png` to match the rebuilt design
+- [ ] `npm run build && npm run measure && npm run build` so the published
+      figures match what actually ships
+- [ ] Verify the redirects against the live host:
+      ```bash
+      curl -sI https://www.powerstar7.com/about-us | head -2
+      ```
+      should return `301` with `Location: /about`, and
+      `curl -sI https://www.powerstar7.com/pt/sobre-nos` should return `200`

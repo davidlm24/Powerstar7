@@ -1,0 +1,203 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Closing from '../components/Closing.astro';
+import { useTranslations, metrics, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const evidence = [
+  t('work.this.list.1'),
+  t('work.this.list.2'),
+  t('work.this.list.3'),
+  t('work.this.list.4'),
+];
+---
+
+<Base lang={lang} page="work" title={t('work.title')} description={t('work.lead')}>
+  <PageHead label={t('nav.work')} title={t('work.h1')} lead={t('work.lead')} />
+
+  {/* Two exhibits, and the page admits what it is. The old site put six
+      tiles here labelled "Project 1" through "Project 6", pointing at six
+      2 KB images that were solid black. A page that says "nothing yet" is
+      worth more than a page that pretends. */}
+  <div class="exhibits">
+    <div class="container">
+      {/* --- The client project in build -------------------------------
+          NOTE FOR REVIEW: this describes an unlaunched client engagement.
+          It names no one, but it is still the client's information to
+          share. Get their sign-off before this goes live, or cut the
+          block — the page stands without it. */}
+      <article class="exhibit">
+        <header class="exhibit__head">
+          <p class="label">{t('work.case.label')}</p>
+          <h2 class="exhibit__h">{t('work.case.h')}</h2>
+        </header>
+        <div class="exhibit__body">
+          <p class="lead">{t('work.case.b')}</p>
+        </div>
+      </article>
+
+      {/* --- This site --------------------------------------------------- */}
+      <article class="exhibit">
+        <header class="exhibit__head">
+          <p class="label">{t('work.this.label')}</p>
+          <h2 class="exhibit__h">{t('work.this.h')}</h2>
+        </header>
+
+        <div class="exhibit__body">
+          <p class="lead">{t('work.this.b')}</p>
+
+          <ul class="evidence">
+            {evidence.map((item) => <li>{item}</li>)}
+          </ul>
+
+          {
+            metrics.measuredAt !== null && metrics.weightKb > 0 && (
+              <dl class="figures">
+                <div>
+                  <dt>{t('home.proof.weight')}</dt>
+                  <dd>
+                    {metrics.weightKb}
+                    <span>KB</span>
+                  </dd>
+                </div>
+                <div>
+                  <dt>{t('home.proof.requests')}</dt>
+                  <dd>{metrics.requests}</dd>
+                </div>
+                <div>
+                  <dt>{t('home.proof.thirdParty')}</dt>
+                  <dd>{metrics.thirdPartyRequests}</dd>
+                </div>
+              </dl>
+            )
+          }
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <section class="next">
+    <div class="container next__inner">
+      <h2 class="next__h">{t('work.next.h')}</h2>
+      <p class="next__b measure">{t('work.next.b')}</p>
+    </div>
+  </section>
+
+  <Closing lang={lang} />
+</Base>
+
+<style>
+  .exhibits {
+    padding-block-end: var(--s6);
+  }
+
+  .exhibit {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: var(--s4) var(--s7);
+    padding-block: var(--s6);
+    border-top: 1px solid var(--rule);
+    align-items: start;
+  }
+
+  .exhibit__head {
+    position: sticky;
+    top: var(--s4);
+  }
+
+  .exhibit__h {
+    margin-block-start: var(--s3);
+    font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+    line-height: 1.06;
+  }
+
+  .exhibit__body {
+    display: grid;
+    gap: var(--s4);
+  }
+
+  .exhibit__body .lead {
+    max-width: var(--measure);
+  }
+
+  .evidence {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    max-width: var(--measure);
+    border-top: 1px solid var(--rule);
+  }
+
+  .evidence li {
+    padding-block: 0.75rem;
+    border-bottom: 1px solid var(--rule);
+    font-size: var(--t-small);
+  }
+
+  /* The same figures as the home page, at body scale — here they are
+     supporting evidence rather than the headline. */
+  .figures {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s5);
+    margin: 0;
+  }
+
+  .figures dt {
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-micro);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  .figures dd {
+    margin: 0.35rem 0 0;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: var(--weight-display);
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .figures dd span {
+    font-size: 0.45em;
+    color: var(--fg-muted);
+    margin-inline-start: 0.15em;
+  }
+
+  .next {
+    padding-block: var(--s6);
+    border-top: 1px solid var(--rule);
+  }
+
+  .next__inner {
+    display: grid;
+    gap: var(--s3);
+  }
+
+  .next__h {
+    font-size: var(--t-h3);
+  }
+
+  .next__b {
+    color: var(--fg-muted);
+  }
+
+  @media (max-width: 60rem) {
+    .exhibit {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .exhibit__head {
+      position: static;
+    }
+  }
+</style>

@@ -1,0 +1,17 @@
+{
+  "name": "powerstar7",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Powerstar7 — agency site. Static output, zero third-party requests, no client JS unless a component asks for it.",
+  "scripts": {
+    "dev": "astro dev --port 3000",
+    "build": "astro build",
+    "preview": "node .claude/serve.js 3000",
+    "check": "astro check",
+    "measure": "node scripts/measure.mjs"
+  },
+  "dependencies": {
+    "astro": "^7.3.3"
+  }
+}
