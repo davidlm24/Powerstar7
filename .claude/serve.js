@@ -29,6 +29,15 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..', 'dist');
 const PORT = Number(process.argv[2] || process.env.PORT || 8080);
 
+/* This serves the BUILD, not the source tree. Without dist/ every route would
+   404 and it would look like a routing bug rather than a missing build. */
+if (!fs.existsSync(path.join(ROOT, 'index.html'))) {
+  console.error(`No build found at ${ROOT}`);
+  console.error('Run `npm run build` first, then start this server again.');
+  console.error('(To iterate on the site itself, use `npm run dev` instead.)');
+  process.exit(1);
+}
+
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
