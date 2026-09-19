@@ -63,8 +63,15 @@
      The single biggest delta between the old site and the references:
      headings ran at 1.94x body. Nine of ten references run 4x–11.6x.
      --t-hero tops out at 8.75rem = 140px = 7.8x the 18px body. */
-  --font-display: 'Cabinet Grotesk', 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-text: 'Switzer', 'Source Sans 3', ui-sans-serif, system-ui, sans-serif;
+  /* Space Grotesk stays, for now, as a deliberate decision rather than an
+     oversight. REBUILD-BRIEF.md §3 is worth re-reading before changing it:
+     nine of the ten reference sites licence a foundry display face, only one
+     uses a Google font, and Space Grotesk is on every "overused" list. The
+     replacement, when it happens, is a free Fontshare face — swapping it is
+     two @font-face rules in fonts.css and these two lines. No other rule in
+     the system names a typeface. */
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-text: 'Source Sans 3', ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
 
   /* The floor is set by the longest hero line in the WIDEST language, not

@@ -12,10 +12,11 @@
    in U+0000-00FF — and Latin Extended only downloads when a page actually
    uses a character from it.
 
-   NOTE: the display face is still Space Grotesk, pending replacement with
-   Cabinet Grotesk (Fontshare, ITF Free Font Licence). See REBUILD-BRIEF.md
-   §3 — nine of the ten reference sites licence a foundry face, and Space
-   Grotesk is flagged as overused. Swapping it is a two-file change here.
+   The display face is Space Grotesk and the text face is Source Sans 3.
+   Both are self-hosted here; neither is fetched from Google Fonts, which is
+   the whole point. REBUILD-BRIEF.md §3 argues for replacing the display face
+   with something less common — that remains open, and is a two-rule change
+   here plus two lines in tokens.css.
    ========================================================================= */
 
 /* --- Display ------------------------------------------------------------- */
