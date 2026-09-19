@@ -38,6 +38,12 @@
      prevent. */
   --blue: #0e6fff;
   --blue-fn: #0c62e0;
+  /* The hover fill for a solid button. NOT --blue: a button label is 18px at
+     weight 500, which is not "large text", so it needs the full 4.5:1 — and
+     white on --blue measures 4.43:1. This is the brightest blue on the brand
+     hue that still clears it (4.63:1) and it is still 24% brighter than the
+     resting fill, so the hover reads as a lift rather than a colour shift. */
+  --blue-hover: #0e6cf9;
   --blue-wash: #e8effd;      /* the only tint — quiet blue ground          */
 
   /* --- Inverted band --------------------------------------------------

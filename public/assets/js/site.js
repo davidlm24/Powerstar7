@@ -233,4 +233,48 @@
 
   var year = document.querySelector('[data-year]');
   if (year) year.textContent = String(new Date().getFullYear());
+
+  /* ---------- Button sheen ------------------------------------------------ */
+
+  /* One delegated listener for every button on the page, rAF-throttled so the
+     work happens once per frame instead of once per pointer event. The old
+     site shipped two unthrottled handlers — one for this, one for a hero glow
+     — in a file that correctly rAF-throttled its scroll handler.
+
+     Skipped entirely on touch and when the visitor asks for reduced motion,
+     so nothing is registered that cannot be seen.
+
+     `queued` lives OUTSIDE `pending` on purpose: `pending` is replaced with a
+     fresh object on every move, so a flag stored on it would read undefined
+     every time and schedule a frame per event — the exact cost this throttle
+     exists to avoid. */
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var stillMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (finePointer && !stillMotion) {
+    var pending = null;
+    var queued = false;
+
+    document.addEventListener(
+      'pointermove',
+      function (e) {
+        var btn = e.target.closest && e.target.closest('.btn');
+        if (!btn) return;
+
+        pending = { btn: btn, x: e.clientX, y: e.clientY };
+        if (queued) return;
+        queued = true;
+
+        window.requestAnimationFrame(function () {
+          queued = false;
+          if (!pending) return;
+          var r = pending.btn.getBoundingClientRect();
+          pending.btn.style.setProperty('--mx', pending.x - r.left + 'px');
+          pending.btn.style.setProperty('--my', pending.y - r.top + 'px');
+          pending = null;
+        });
+      },
+      { passive: true }
+    );
+  }
 })();

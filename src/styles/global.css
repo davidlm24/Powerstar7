@@ -154,11 +154,22 @@ a:hover { text-decoration-thickness: 2px; }
 }
 
 /* --- Buttons -------------------------------------------------------------
-   Two. A solid one and a quiet one. No sheen, no shine sweep, no gradient. */
+   Two: a solid one and a quiet one.
+
+   The buttons carry the one piece of ornament in this system — a light sheen
+   that follows the pointer across the face, plus a hairline top highlight
+   that gives the fill a direction. This is deliberate and it is the only
+   place it appears. The previous site put the same idea on a hero cursor
+   glow, a shine sweep on a pricing badge and a fade on every element on the
+   page; spread that thin it read as noise. Spent in exactly one place, on
+   the control the visitor is about to click, it reads as craft. */
 
 .btn {
   --btn-bg: var(--accent-fn);
   --btn-fg: #fff;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   gap: var(--s2);
@@ -172,16 +183,49 @@ a:hover { text-decoration-thickness: 2px; }
   border: 1px solid transparent;
   border-radius: var(--radius);
   cursor: pointer;
-  transition: background var(--dur) var(--ease), transform var(--dur) var(--ease);
+  /* A hairline of light along the top edge — one inset, not the three-layer
+     bevel the old system stamped on twelve different surfaces. */
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22);
+  transition:
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
 }
 
-.btn:hover { --btn-bg: var(--blue); transform: translateY(-1px); }
+/* The sheen. isolation + z-index:-1 puts it above the fill but BELOW the
+   label, so the text stays crisp instead of being washed out. */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    9rem circle at var(--mx, 50%) var(--my, 50%),
+    rgb(255 255 255 / 0.28),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+  pointer-events: none;
+}
+
+.btn:hover { --btn-bg: var(--blue-hover); transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
+
+/* Only where there is a real pointer. On touch the sheen has nothing to
+   follow, and the old version stuck on after a tap. */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover::after { opacity: 1; }
+}
+
+.btn:focus-visible::after { opacity: 1; }
 
 .btn--quiet {
   --btn-bg: transparent;
   --btn-fg: var(--fg);
   border-color: var(--rule);
+  box-shadow: none;
 }
 
 .btn--quiet:hover {
@@ -189,7 +233,26 @@ a:hover { text-decoration-thickness: 2px; }
   border-color: var(--fg);
 }
 
+/* On the quiet button the sheen is ink, not light — white on the paper
+   ground would be invisible. Mixed from --ink rather than written out as
+   rgb(17 19 24), which is the same colour the token already names. */
+.btn--quiet::after {
+  background: radial-gradient(
+    9rem circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--ink) 7%, transparent),
+    transparent 60%
+  );
+}
+
 .invert .btn--quiet { --btn-fg: var(--on-ink); }
+
+.invert .btn--quiet::after {
+  background: radial-gradient(
+    9rem circle at var(--mx, 50%) var(--my, 50%),
+    rgb(255 255 255 / 0.12),
+    transparent 60%
+  );
+}
 
 /* --- Accessibility -------------------------------------------------------- */
 
