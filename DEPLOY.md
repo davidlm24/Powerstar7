@@ -102,6 +102,22 @@ that links out, not as an iframe.
       them would put four fabricated clients directly under a heading that
       says there is nothing to show yet. Set `enabled` to false, or replace
       them with real case studies.
+- [ ] **Fill the sixteen unfilled slots** — thirty-two, counting
+      Portuguese. Three sections ship with
+      `.pending` placeholders rather than invented content, and each one
+      renders visibly as `<angle brackets>` on the live site:
+      - four step descriptions in the home page process timeline
+      - five prices on `/services` (the `<amount>` slots)
+      - seven answers in the `/services` FAQ
+
+      The drafted step names and FAQ questions restate commitments the site
+      already makes elsewhere, so they claim nothing new — but they are
+      drafts, and rewriting them is free. Both `/services` sections carry a
+      Notice saying they are unfinished; delete it once they are.
+
+      Remember Portuguese. The parity guard in `src/i18n/ui.ts` fails the
+      build when a key is missing from one language, but it cannot tell you
+      that a Portuguese string is still sitting in English.
 - [ ] **Set the studio's real numbers** in `src/data/agency.json`. They are
       currently the honest values for 2026-09-19 (0 delivered, 1 client) and
       they lead the home page. Unlike the page-weight figures they replaced,

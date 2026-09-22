@@ -126,9 +126,13 @@ const topics = [
      — `3 / -1` on a two-column grid resolves to `3 / 3`, which the spec
      rewrites as an implicit extra track. span degrades on its own, so the
      layout no longer depends on a media query firing at the right width. */
+  /* --col-pad on both sides of the divider, matching .direct below. It was
+     --s5 here against --s6 there: 16px apart below 1280, and the sign FLIPS
+     above 1440, where .form's own max-width caps it short of its track and
+     leaves this padding dead code while the aside keeps its 64px. */
   .form {
     grid-column: span 2;
-    padding-inline-end: var(--s5);
+    padding-inline-end: var(--col-pad);
   }
 
   /* The aside is a COLUMN now, not a card. As a card its own border sat 48px
@@ -138,7 +142,7 @@ const topics = [
   .direct {
     grid-column: span 2;
     border-inline-start: 1px solid var(--rule);
-    padding-inline-start: var(--s6);
+    padding-inline-start: var(--col-pad);
   }
 
   /* --- Form -------------------------------------------------------------- */

@@ -197,9 +197,15 @@ a:hover { text-decoration-thickness: 2px; }
   padding-inline-end: var(--col-pad);
 }
 
+/* --col-pad, matching .row__title's padding-inline-end above, rather than
+   --s6. The two sides of this ONE line used to clear it by different amounts:
+   a fluid 24-64px on the left against a fixed 64px on the right, so they
+   agreed only above 1422px and sat 20.8px apart at 960. Content either side
+   of a divider has to be the same distance from it, or the divider stops
+   reading as one line. */
 .row__body {
   grid-column: 2 / -1;
-  padding-inline-start: var(--s6);
+  padding-inline-start: var(--col-pad);
   border-inline-start: 1px solid var(--rule);
 }
 
@@ -301,6 +307,92 @@ a:hover { text-decoration-thickness: 2px; }
     var(--rail) 0 1px,
     transparent 1px 8px
   );
+}
+
+/* An unfilled slot, shown as unfilled. Used wherever a section is built but
+   its content is not written yet — the legal notice's missing registration
+   details, the prices, the FAQ answers.
+
+   It is deliberately NOT styled to look like content. The rule the legal page
+   set: "Unfilled fields read as unfilled. They are not styled to look like
+   content, because they are not content." Mono, tinted, angle-bracketed, so
+   nobody mistakes one for copy and nobody ships one by accident.
+
+   The text inside is written inline at the call site rather than as an i18n
+   key, because a placeholder is not content and does not belong in the
+   translation deck. */
+.pending {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  color: var(--fg-muted);
+  background: var(--blue-wash);
+  padding: 0.1em 0.35em;
+}
+
+/* --- Illustrations --------------------------------------------------------
+   A brush-drawn object: an ink line over a flat blue shape that sits behind it
+   and deliberately does not register with it, the way a risograph misprints a
+   second pass. The wobble in both comes from a turbulence filter — see
+   components/InkDefs.astro, which must be on the page for these to render as
+   anything but clean geometry.
+
+   Decorative by contract. Every instance is aria-hidden and sits beside a real
+   text label, so no contrast floor applies to it — which is the only reason
+   the flat layer can run at 0.5 and still be legitimate. */
+.illo {
+  display: block;
+  inline-size: 100%;
+  max-inline-size: 7.5rem;
+  block-size: auto;
+}
+
+.illo__line {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The filled marks inside the line group — dots, pips — which would otherwise
+   inherit fill: none and vanish. */
+.illo__dot {
+  fill: var(--ink);
+  stroke: none;
+}
+
+/* The base misregistration lives here rather than as a transform attribute on
+   the element, so the hover drift below can build on it instead of fighting
+   it. Offset up and right, which is the direction the reference misprints. */
+.illo__flat {
+  fill: var(--blue);
+  opacity: 0.5;
+  transform: translate(8px, -6px);
+}
+
+/* The drift: on hover the two layers pull APART, exaggerating the
+   misregistration that is the whole character of the style. Put .illo-drift on
+   whatever carries the hover — usually the card's own link.
+
+   Gated on no-preference rather than left to the global reduced-motion rule.
+   That rule only zeroes transition-duration, which would turn this into an
+   instant jump — worse than no motion at all. Here, someone who asked for less
+   motion simply never sees the layers move. */
+@media (prefers-reduced-motion: no-preference) {
+  .illo__flat,
+  .illo__line {
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .illo-drift:hover .illo__flat,
+  .illo-drift:focus-visible .illo__flat {
+    transform: translate(14px, -11px);
+  }
+
+  .illo-drift:hover .illo__line,
+  .illo-drift:focus-visible .illo__line {
+    transform: translate(-4px, 3px);
+  }
 }
 
 /* --- Buttons -------------------------------------------------------------

@@ -1,6 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import AgencyStats from '../components/AgencyStats.astro';
+import InkDefs from '../components/InkDefs.astro';
+import Illustration from '../components/Illustration.astro';
 import Closing from '../components/Closing.astro';
 import { useTranslations, route, type Lang } from '../i18n/ui';
 
@@ -11,12 +13,33 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
+/* The card bodies reuse svc.*.body — the same descriptions the Services page
+   carries. Not a shortcut: they are already written, already translated, and
+   already reviewed, and a home page carrying five placeholder strings would be
+   worse than one carrying five real sentences. Swap in shorter dedicated keys
+   if these read long in a card.
+
+   Written out rather than built with a template literal, because
+   t(`svc.${key}.body`) needs an `as any` cast and that quietly removes the
+   type protection from every key it touches. */
 const services = [
-  { n: '01', name: t('svc.web.name'), key: 'web' },
-  { n: '02', name: t('svc.brand.name'), key: 'brand' },
-  { n: '03', name: t('svc.seo.name'), key: 'seo' },
-  { n: '04', name: t('svc.email.name'), key: 'email' },
-  { n: '05', name: t('svc.hosting.name'), key: 'hosting' },
+  { n: '01', key: 'web', illo: 'browser', name: t('svc.web.name'), b: t('svc.web.body') },
+  { n: '02', key: 'brand', illo: 'bulb', name: t('svc.brand.name'), b: t('svc.brand.body') },
+  { n: '03', key: 'seo', illo: 'magnifier', name: t('svc.seo.name'), b: t('svc.seo.body') },
+  { n: '04', key: 'email', illo: 'envelope', name: t('svc.email.name'), b: t('svc.email.body') },
+  { n: '05', key: 'hosting', illo: 'plug', name: t('svc.hosting.name'), b: t('svc.hosting.body') },
+] as const;
+
+/* The four step NAMES restate commitments the site already makes elsewhere —
+   a written scope with a price attached (About), design reviewed on real
+   devices (Services), a hand-written front end, a handover document (the
+   position section). Nothing here claims anything new. The descriptions are
+   unfilled slots, not invented sentences. */
+const steps = [
+  t('home.process.s1.h'),
+  t('home.process.s2.h'),
+  t('home.process.s3.h'),
+  t('home.process.s4.h'),
 ];
 
 const position = [
@@ -78,19 +101,27 @@ const position = [
         <h2>{t('home.services.h2')}</h2>
       </div>
 
-      <ol class="services__list">
+      <InkDefs />
+
+      <ul class="svc-cards">
         {
           services.map((s) => (
-            <li class="service">
-              <a href={`${route('services', lang)}#${s.key}`}>
-                <span class="service__n">{s.n}</span>
-                <span class="service__name">{s.name}</span>
-                <span class="service__go" aria-hidden="true">&rarr;</span>
+            <li>
+              <a class="svc-card illo-drift" href={`${route('services', lang)}#${s.key}`}>
+                <Illustration name={s.illo} />
+                <span class="svc-card__n">{s.n}</span>
+                <h3 class="svc-card__name">{s.name}</h3>
+                <p class="svc-card__b">{s.b}</p>
+                <span class="svc-card__go" aria-hidden="true">&rarr;</span>
               </a>
             </li>
           ))
         }
-      </ol>
+      </ul>
+
+      <p class="svc-cards__more">
+        <a href={route('services', lang)}>{t('home.services.link')} &rarr;</a>
+      </p>
     </div>
   </section>
 
@@ -120,6 +151,36 @@ const position = [
           ))
         }
       </div>
+    </div>
+  </section>
+
+  {/* --- Process ----------------------------------------------------------
+      A timeline rather than a fourth grid of numbered cards. The site already
+      has three of those (the service cards, the position points, About's
+      "how"), and a process is a SEQUENCE — so it gets one continuous rule
+      with a node where each step starts, instead of four separate boxes. */}
+  <section class="process rails">
+    <div class="container">
+      <div class="process__head">
+        <p class="label">{t('home.process.label')}</p>
+        <h2>{t('home.process.h2')}</h2>
+      </div>
+
+      <ol class="steps">
+        {
+          steps.map((name, i) => (
+            <li class="step">
+              <span class="step__n">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="step__h">{name}</h3>
+              <p class="step__b">
+                <span class="pending">
+                  &lt;{lang === 'pt' ? 'uma frase sobre este passo' : 'one sentence on this step'}&gt;
+                </span>
+              </p>
+            </li>
+          ))
+        }
+      </ol>
     </div>
   </section>
 
@@ -279,156 +340,165 @@ const position = [
     margin-block-end: var(--s6);
   }
 
-  .services__list {
+  /* Five cards on a SIX-column grid: the first three span two, the last two
+     span three. That is what closes the second row instead of leaving a
+     one-third hole — five items never divide evenly into three or four
+     columns, and an empty cell in a bordered grid reads as a broken image.
+
+     This is the "six identical cards in a grid" shape the brief warns about,
+     chosen deliberately: the objection there was to a row of boxes with stroke
+     icons in them, and brush art is a different object. David's call. */
+  .svc-cards {
     list-style: none;
     padding: 0;
-    /* One line above the list, dividing it from the heading. */
-    border-top: 1px solid var(--rule);
-  }
-
-  /* BETWEEN rows, not under every one — the same correction the evidence list
-     on the Work page needed, and for the same reason. A border-bottom on every
-     row drew a closing line under the last service, so five rows were bounded
-     by six lines and the list read as a boxed table. What is below the last
-     row is the ink band, and a change of ground carries that boundary without
-     a line. */
-  .service + .service a {
-    border-top: 1px solid var(--rule);
-  }
-
-  .service a {
-    position: relative;
-    isolation: isolate;
+    margin-block-start: var(--s6);
     display: grid;
-    grid-template-columns: 4rem minmax(0, 1fr) auto;
-    align-items: baseline;
-    gap: var(--s4);
-    padding-block: clamp(1.1rem, 2.2vw, 1.75rem);
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .svc-cards > li:nth-child(-n + 3) { grid-column: span 2; }
+  .svc-cards > li:nth-child(n + 4) { grid-column: span 3; }
+
+  .svc-cards > li { display: grid; }
+
+  /* Dividers BETWEEN cards only — never around the set. A border on the whole
+     grid would be a frame, which is the shape this system retired. So: a
+     vertical rule on every card that is not first in its row, and a horizontal
+     one above the second row. */
+  .svc-cards > li:not(:nth-child(1)):not(:nth-child(4)) .svc-card {
+    border-inline-start: 1px solid var(--rule);
+  }
+
+  .svc-cards > li:nth-child(n + 4) .svc-card {
+    border-block-start: 1px solid var(--rule);
+  }
+
+  /* --s4 on every side of every card, including the outer edges that have no
+     divider to clear. Same trade as the .position cells: three cards side by
+     side have to match each other before any of them matches the heading, so
+     the set sits inset from the content edge as a block. */
+  .svc-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+    block-size: 100%;
+    padding: var(--s4);
     color: var(--fg);
     text-decoration: none;
   }
 
-  /* The row indents on hover by translating its two left cells, not by
-     animating the row's padding. Padding is a layout property: transitioning
-     it reflows the grid on every frame, on the most-hovered element of the
-     page. Transform runs on the compositor and leaves layout alone.
-     The arrow keeps its own transform so it still travels independently. */
-  .service__n,
-  .service__name {
-    transition: transform var(--dur) var(--ease);
+  .svc-card .illo {
+    margin-block-end: var(--s2);
   }
 
-  .service a:hover .service__n,
-  .service a:hover .service__name {
-    transform: translateX(var(--s3));
-  }
-
-  /* The hover wash. Quieter than it was: a light surface with the two hues
-     entering from the LEFT and gone by two thirds, rather than a saturated
-     band sweeping the whole row. Square, like the header bar.
-
-     Two layers so each can be tuned on its own — colour on ::before, grain on
-     ::after at --grain-soft, which is a fraction of the weight the cards use.
-     The strength is still bounded by the row's 13px index in --fg-muted,
-     which has to clear 4.5:1 against the darkest point. */
-  .service a::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background-image:
-      linear-gradient(
-        90deg,
-        color-mix(in srgb, var(--blue) 20%, transparent) 0%,
-        color-mix(in srgb, var(--purple) 14%, transparent) 22%,
-        transparent 64%
-      ),
-      linear-gradient(var(--paper-hi), var(--paper-hi));
-    background-size:
-      160% 100%,
-      100% 100%;
-    background-position:
-      0% 50%,
-      0 0;
-    background-repeat: no-repeat;
-    opacity: 0;
-    transition: opacity var(--dur) var(--ease);
-    pointer-events: none;
-  }
-
-  .service a::after {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background-image: var(--grain-soft);
-    opacity: 0;
-    transition: opacity var(--dur) var(--ease);
-    pointer-events: none;
-  }
-
-  /* Gated to real pointers: on touch there is no hover to leave, and a row
-     that lit on tap and stayed lit would be the sticky-sheen bug again. */
-  @media (hover: hover) and (pointer: fine) {
-    .service a:hover::before {
-      opacity: 1;
-      animation: service-drift 9s var(--ease) infinite alternate;
-    }
-
-    .service a:hover::after {
-      opacity: 1;
-    }
-  }
-
-  /* A short breathing movement, not a sweep across the row. */
-  @keyframes service-drift {
-    from {
-      background-position:
-        0% 50%,
-        0 0;
-    }
-    to {
-      background-position:
-        14% 50%,
-        0 0;
-    }
-  }
-
-  .service__n {
+  .svc-card__n {
     font-family: var(--font-mono);
     font-size: var(--t-micro);
     letter-spacing: var(--tr-mono);
     color: var(--fg-muted);
+    font-variant-numeric: tabular-nums;
   }
 
-  .service__name {
-    /* "desenvolvimento" is wider than the column at phone widths. */
-    overflow-wrap: break-word;
-    font-family: var(--font-display);
-    font-size: clamp(1.75rem, 3.6vw, 2.75rem);
-    font-weight: var(--weight-display);
-    line-height: 1.05;
-    letter-spacing: var(--tr-heading);
-  }
-
-  .service__go {
-    /* --accent-fn, not --accent. On the plain ground the display blue reaches
-       4.10:1, but the hover wash pushes blue INTO the backdrop behind it and
-       it falls to 2.98:1 — below the 3:1 a graphic this size needs. The
-       functional blue holds up against both. */
-    color: var(--accent-fn);
+  .svc-card__name {
     font-size: var(--t-h3);
+    line-height: 1.15;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .svc-card__b {
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+    max-width: 42ch;
+  }
+
+  /* auto margin, so the arrow sits on the card's bottom edge whatever the
+     body copy does. Five cards of different text lengths otherwise put their
+     arrows at five different heights. */
+  .svc-card__go {
+    margin-block-start: auto;
+    padding-block-start: var(--s2);
+    font-size: var(--t-h3);
+    line-height: 1;
+    /* --accent-fn, not --accent: the display blue is 3.97:1 and this is a
+       graphic carrying meaning at small size. */
+    color: var(--accent-fn);
     transition: transform var(--dur) var(--ease);
   }
 
-  .service a:hover .service__go {
+  .svc-card:hover .svc-card__name,
+  .svc-card:focus-visible .svc-card__name {
+    color: var(--accent-fn);
+  }
+
+  .svc-card:hover .svc-card__go,
+  .svc-card:focus-visible .svc-card__go {
     transform: translateX(0.35rem);
   }
 
-  /* --- Position ---------------------------------------------------------- */
+  .svc-cards__more {
+    margin-block-start: var(--s5);
+    font-size: var(--t-small);
+  }
 
-  .position {
+  /* --- Process ----------------------------------------------------------- */
+
+  .process {
     padding-block: var(--section-y);
+  }
+
+  .process__head {
+    display: grid;
+    gap: var(--s3);
+    margin-block-end: var(--s6);
+  }
+
+  /* ONE continuous rule across the whole row, not a rule per cell. That is the
+     difference between a timeline and four cards: the line carries through and
+     each step marks a point on it. */
+  .steps {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--rule);
+  }
+
+  .step {
+    position: relative;
+    padding-block-start: var(--s4);
+    padding-inline-end: var(--s4);
+  }
+
+  /* The node, straddling the rule. A mark sitting ON a line is fine — the rule
+     is that CONTENT never touches one, and this is a graphic, not content. */
+  .step::before {
+    content: '';
+    position: absolute;
+    inset-block-start: -0.25rem;
+    inset-inline-start: 0;
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    background: var(--accent);
+  }
+
+  .step__n {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-mono);
+    color: var(--fg-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .step__h {
+    margin-block: var(--s2) var(--s1);
+    font-size: var(--t-h3);
+    line-height: 1.15;
+  }
+
+  .step__b {
+    font-size: var(--t-small);
+    color: var(--fg-muted);
   }
 
   .position__head {
@@ -543,6 +613,23 @@ const position = [
   /* --- Narrow ------------------------------------------------------------ */
 
   @media (max-width: 60rem) {
+    /* Two abreast rather than four: at four, a step is about 60px wide on a
+       phone and the names wrap to three lines each.
+
+       The rule moves from the container to each step. One continuous line
+       across the container only spans the FIRST row once the grid wraps, so
+       the second row every node sat on nothing. A line per step is the same
+       reading at two columns and it wraps with them. */
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: var(--s5);
+      border-top: 0;
+    }
+
+    .step {
+      border-top: 1px solid var(--rule);
+    }
+
     .position__grid {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--s4);
@@ -561,9 +648,21 @@ const position = [
 
 
 
-    .service a {
-      grid-template-columns: 2.5rem minmax(0, 1fr) auto;
-      gap: var(--s3);
+    /* One card per row below 60rem: six columns cannot carry five cards on a
+       phone, and the dividers between them stop meaning anything once each
+       card is full width. */
+    .svc-cards > li:nth-child(-n + 3),
+    .svc-cards > li:nth-child(n + 4) {
+      grid-column: span 6;
+    }
+
+    .svc-cards > li:not(:nth-child(1)) .svc-card {
+      border-inline-start: 0;
+      border-block-start: 1px solid var(--rule);
+    }
+
+    .svc-card {
+      padding-inline: 0;
     }
   }
 </style>

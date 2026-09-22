@@ -1,0 +1,82 @@
+---
+/* A brush-drawn object, in the house grammar: an ink line over a flat blue
+   shape that sits behind it and deliberately does not line up — the way a
+   risograph misprints a second pass. Plus a few energy marks.
+
+   OBJECTS, NOT PEOPLE, and that is a limit rather than a preference. The
+   reference this style comes from is figurative character illustration drawn
+   by a person with a brush; authoring bezier coordinates for a face does not
+   produce that. Objects survive being built from a few confident curves.
+
+   Needs <InkDefs /> rendered once on the same page — it references #ink-line
+   and #ink-flat by id.
+
+   The two layers are separate groups on purpose: .illo__flat and .illo__line
+   are what the hover drift in global.css moves in opposite directions, which
+   animates the misregistration that is the whole character of the style. */
+
+export type IlloName = 'browser' | 'bulb' | 'magnifier' | 'envelope' | 'plug';
+
+interface Props {
+  name: IlloName;
+}
+
+const { name } = Astro.props;
+
+/* Each entry is [flat, line]. The flat layer's base offset lives in CSS, not
+   here, so the hover drift can build on it rather than fight an attribute. */
+const ART: Record<IlloName, { flat: string; line: string }> = {
+  browser: {
+    flat: '<path d="M28 20 L98 18 Q106 18 106 26 L108 72 Q108 80 100 80 L30 82 Q22 82 22 74 L22 26 Q22 20 28 20 Z"/>',
+    line:
+      '<path d="M18 26 L100 24 L102 86 L20 88 Z"/><path d="M19 40 L101 38"/>' +
+      '<path d="M32 58 L78 57"/><path d="M32 70 L62 69"/>' +
+      '<circle cx="29" cy="32" r="2.8" class="illo__dot"/>' +
+      '<circle cx="39" cy="32" r="2.8" class="illo__dot"/>' +
+      '<circle cx="49" cy="32" r="2.8" class="illo__dot"/>',
+  },
+  bulb: {
+    flat: '<path d="M62 16 Q84 18 88 42 Q90 58 78 68 L48 70 Q34 60 34 42 Q34 18 62 16 Z"/>',
+    line:
+      '<path d="M56 22 Q34 24 32 44 Q31 58 42 66 Q45 70 45 76 L73 75 Q73 69 76 65 Q86 56 85 43 Q84 23 56 22 Z"/>' +
+      '<path d="M46 84 L74 83"/><path d="M49 92 L71 91"/>' +
+      '<path d="M20 40 L10 37"/><path d="M26 20 L18 12"/><path d="M58 8 L57 1"/>' +
+      '<path d="M92 20 L100 13"/><path d="M98 41 L108 39"/>',
+  },
+  magnifier: {
+    flat: '<circle cx="54" cy="46" r="28"/>',
+    line:
+      '<path d="M48 20 Q22 22 20 48 Q19 74 46 76 Q72 77 74 51 Q75 23 48 20 Z"/>' +
+      '<path d="M70 70 L96 96"/><path d="M34 40 Q36 30 46 28"/>' +
+      '<path d="M88 34 L96 30"/><path d="M90 20 L94 12"/>',
+  },
+  envelope: {
+    flat: '<path d="M26 28 L100 26 Q106 26 106 32 L108 76 Q108 82 102 82 L28 84 Q22 84 22 78 L22 34 Q22 28 26 28 Z"/>',
+    line:
+      '<path d="M16 32 L100 30 L102 88 L18 90 Z"/><path d="M16 32 L59 62 L102 30"/>' +
+      '<path d="M16 88 L46 64"/><path d="M102 86 L72 63"/>' +
+      '<path d="M106 14 L112 8"/><path d="M92 12 L94 4"/>',
+  },
+  plug: {
+    flat: '<path d="M40 26 L82 24 Q90 24 90 32 L91 58 Q91 68 81 68 L42 70 Q33 70 33 61 L33 32 Q33 26 40 26 Z"/>',
+    line:
+      '<path d="M32 32 L84 30 L86 62 Q86 74 72 75 L46 76 Q32 75 32 62 Z"/>' +
+      '<path d="M44 30 L43 12"/><path d="M72 29 L71 11"/>' +
+      '<path d="M59 76 Q59 92 44 94 Q28 96 26 84"/>' +
+      '<path d="M96 44 L106 42"/><path d="M94 30 L102 24"/><path d="M96 58 L105 62"/>',
+  },
+};
+
+const art = ART[name];
+---
+
+<svg
+  class="illo"
+  viewBox="0 0 120 110"
+  role="presentation"
+  aria-hidden="true"
+  focusable="false"
+>
+  <g class="illo__flat" filter="url(#ink-flat)" set:html={art.flat} />
+  <g class="illo__line" filter="url(#ink-line)" set:html={art.line} />
+</svg>

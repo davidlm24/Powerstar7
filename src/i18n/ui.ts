@@ -306,6 +306,39 @@ export const ui = {
     'nf.lead':
       'The link may be old, or we may have moved the page during the rebuild. The site is small enough that everything is one click away.',
     'nf.home': 'Back to the home page',
+
+    /* --- Process, pricing and FAQ -------------------------------------
+       Added with the three new sections. The step names, the pricing lead
+       and the questions are drafts: they restate commitments the site
+       already makes elsewhere, so nothing here claims anything new. Every
+       ANSWER, every PRICE and every step description is an unfilled slot in
+       the markup, not a string here. See DEPLOY.md. */
+    'home.process.label': 'How we work',
+    'home.process.h2': 'Four steps, and you own the result.',
+    'home.process.s1.h': 'Scope and price',
+    'home.process.s2.h': 'Design in the browser',
+    'home.process.s3.h': 'Build by hand',
+    'home.process.s4.h': 'Handover',
+
+    'services.pricing.label': 'What things cost',
+    'services.pricing.h2': 'Fixed scope, named price.',
+    'services.pricing.lead':
+      'Every project is quoted against a written scope, and the price is attached to it before anything starts. Changes are quoted too, rather than absorbed and resented.',
+    'services.pricing.from': 'From',
+
+    'services.faq.label': 'Questions',
+    'services.faq.h2': 'What people ask before they start.',
+    'services.faq.q1': 'How long does a site take?',
+    'services.faq.q2': 'What do you need from me to begin?',
+    'services.faq.q3': 'Can I edit the site myself afterwards?',
+    'services.faq.q4': 'What happens if I want to leave?',
+    'services.faq.q5': 'Do you work in languages other than English?',
+    'services.faq.q6': 'What does "accessible" mean in practice?',
+    'services.faq.q7': 'Do you keep working on it after launch?',
+
+    'services.todo.h': 'Two sections here are not finished.',
+    'services.todo.b':
+      'The prices and the answers below are unfilled. They are shown as slots rather than as invented numbers, because a made-up price is worse than no price. Both must be completed before launch.',
   },
 
   pt: {
@@ -568,10 +601,96 @@ export const ui = {
     'nf.lead':
       'O link pode estar antigo, ou talvez tenhamos movido a página durante a reconstrução. O site é pequeno o bastante para que tudo esteja a um clique.',
     'nf.home': 'Voltar para a página inicial',
+
+    /* Ver a nota em inglês: apenas a cópia real tem chave aqui. As respostas,
+       os preços e as descrições dos passos são espaços por preencher na
+       marcação, não strings neste ficheiro. */
+    'home.process.label': 'Como trabalhamos',
+    'home.process.h2': 'Quatro passos, e o resultado é seu.',
+    'home.process.s1.h': 'Escopo e preço',
+    'home.process.s2.h': 'Design no navegador',
+    'home.process.s3.h': 'Construção à mão',
+    'home.process.s4.h': 'Entrega',
+
+    'services.pricing.label': 'Quanto custa',
+    'services.pricing.h2': 'Escopo fechado, preço com nome.',
+    'services.pricing.lead':
+      'Cada projeto é orçado a partir de um escopo escrito, e o preço fica ligado a ele antes de começar seja o que for. As alterações também são orçadas, em vez de absorvidas a contragosto.',
+    'services.pricing.from': 'A partir de',
+
+    'services.faq.label': 'Perguntas',
+    'services.faq.h2': 'O que perguntam antes de começar.',
+    'services.faq.q1': 'Quanto tempo demora um site?',
+    'services.faq.q2': 'De que precisam da minha parte para começar?',
+    'services.faq.q3': 'Posso editar o site sozinho depois?',
+    'services.faq.q4': 'E se eu quiser sair?',
+    'services.faq.q5': 'Trabalham noutras línguas além do inglês?',
+    'services.faq.q6': 'O que significa "acessível" na prática?',
+    'services.faq.q7': 'Continuam a trabalhar nele depois do lançamento?',
+
+    'services.todo.h': 'Duas secções aqui não estão terminadas.',
+    'services.todo.b':
+      'Os preços e as respostas abaixo estão por preencher. Aparecem como espaços em vez de números inventados, porque um preço inventado é pior do que preço nenhum. Ambos têm de ser completados antes do lançamento.',
   },
 } as const;
 
 export type UIKey = keyof (typeof ui)['en'];
+
+/* --- Parity guard ---------------------------------------------------------
+   UIKey is derived from `en` alone, and `pt` has no type constraining it to
+   match. So an English key added without its Portuguese sibling typechecks,
+   falls through the ?? below at runtime, and renders ENGLISH TEXT ON /pt/ —
+   silently, with no error and a green build. The throw in t() never fires for
+   this case, because it only triggers when BOTH languages lack the key.
+
+   The file header claims the side-by-side layout makes a gap "visible here
+   immediately". That is a reading convention, and it is not one that survives
+   adding forty keys in an afternoon.
+
+   Two guards, because they catch it at different moments:
+
+   1. The type assertion below fails in an editor and under `npm run check`.
+      It costs nothing and gives the fastest feedback, but only to someone
+      running TypeScript — and `npm run build` is bare `astro build`.
+
+   2. The runtime block fails the BUILD. Every page imports this module, so it
+      executes during `astro build` and takes the whole thing down. That is
+      the one that actually holds, and it is the same idiom scripts/measure.mjs
+      uses to enforce the zero-third-party rule: a loud throw beats a
+      convention nobody re-reads. */
+
+type PtCoversEn = (typeof ui)['pt'] extends Record<UIKey, string> ? true : never;
+type EnCoversPt = (typeof ui)['en'] extends Record<keyof (typeof ui)['pt'], string>
+  ? true
+  : never;
+
+/* If either of these errors, a key exists in one language and not the other.
+   The error names the type, not the key — the runtime guard below names the
+   key. */
+const _ptCoversEn: PtCoversEn = true;
+const _enCoversPt: EnCoversPt = true;
+void _ptCoversEn;
+void _enCoversPt;
+
+{
+  const en = Object.keys(ui.en);
+  const pt = Object.keys(ui.pt);
+  const missingInPt = en.filter((k) => !(k in ui.pt));
+  const missingInEn = pt.filter((k) => !(k in ui.en));
+
+  if (missingInPt.length || missingInEn.length) {
+    const lines = [
+      `i18n parity broken: ${missingInPt.length + missingInEn.length} key(s) exist in one language only.`,
+    ];
+    if (missingInPt.length) {
+      lines.push(`  missing from pt (would render English on /pt/): ${missingInPt.join(', ')}`);
+    }
+    if (missingInEn.length) {
+      lines.push(`  missing from en (unreachable, t() cannot name them): ${missingInEn.join(', ')}`);
+    }
+    throw new Error(lines.join('\n'));
+  }
+}
 
 /** Translator bound to a language. Missing keys fail loudly in the build
  *  rather than rendering an empty element. */

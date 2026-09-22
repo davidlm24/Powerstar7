@@ -168,10 +168,33 @@
      page. */
   --rail: rgb(28 27 23 / 0.10);
 
-  /* The content edge, expressed once. Every .rails element is full-bleed, so
-     100% resolves to the viewport and this lands on .container's content
-     edge on all of them. Same expression the retired frame used. */
-  --rail-x: calc(max((100% - var(--width-page)) / 2, 0px) + var(--gutter));
+  /* THE RULE: a structural line may touch another structural line. Content
+     never touches a line. This is the one number that enforces it, so every
+     piece of content on the site sits the same distance inside the frame.
+
+     trace.so draws the same distinction — its logo-wall cell borders sit
+     exactly ON the page rail, while the text inside them starts 16-20px in.
+     Lines meet lines; type clears them. */
+  --line-gap: clamp(0.5rem, 1.5vw, 1.25rem);   /* 8px -> 20px */
+
+  /* The rails' x. This USED to be defined as .container's content edge, and
+     was algebraically identical to it — same 100% base, same --gutter — so
+     clearance was 0 everywhere by construction and the content box overlapped
+     the 1px rail by a pixel. Every heading on the site started ON the line.
+
+     --line-gap comes off the RAILS rather than being added to .container, and
+     that is not a preference. At 320px the Portuguese hero line measures
+     261.44px against 265px of available width: 3.56px of headroom. Any inward
+     move of the content edge wraps it, and text-wrap: balance will not save
+     it. The gutter is empty space, so taking the gap from there costs nothing
+     and no content moves at any width.
+
+     The clamp floor keeps this positive. A negative inset-inline-end on
+     .rails::after would push past the section box and scroll the document
+     sideways on every band. */
+  --rail-x: calc(
+    max((100% - var(--width-page)) / 2, 0px) + var(--gutter) - var(--line-gap)
+  );
 
   /* Form-field edges, and nothing else. A control boundary and a decorative
      separator cannot share one token: WCAG 1.4.11 wants 3:1 for the boundary
