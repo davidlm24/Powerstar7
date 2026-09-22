@@ -17,7 +17,13 @@ const { label, title, lead } = Astro.props;
   <div class="container">
     <p class="label">{label}</p>
     <h1 class="page-head__h1">{title}</h1>
-    {lead && <p class="lead page-head__lead">{lead}</p>}
+    {
+      /* Either the string prop or a `lead` slot. The slot exists because a
+         .pending placeholder is markup and cannot travel as a string. */
+      (lead || Astro.slots.has('lead')) && (
+        <p class="lead page-head__lead">{lead ?? <slot name="lead" />}</p>
+      )
+    }
   </div>
 </section>
 

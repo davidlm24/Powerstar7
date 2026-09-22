@@ -4,9 +4,10 @@ import { useTranslations, route, type Lang } from '../i18n/ui';
 interface Props {
   lang: Lang;
   label?: string;
+  lead?: string;
 }
 
-const { lang, label } = Astro.props;
+const { lang, label, lead } = Astro.props;
 const t = useTranslations(lang);
 ---
 
@@ -19,6 +20,23 @@ const t = useTranslations(lang);
       <span>{label ?? t('home.cta')}</span>
       <span class="closing__arrow" aria-hidden="true">&rarr;</span>
     </a>
+
+    {/* The supporting line. One line at heading scale and then 372px of
+        nothing was the emptiest band on four of the pages. This answers the
+        question someone actually has at the foot of a page — what happens
+        after the click — so it sits outside the link, which stays the
+        headline. */}
+    <p class="lead closing__lead">
+      {
+        lead ?? (
+          <span class="pending">
+            &lt;{lang === 'pt'
+              ? 'uma linha sobre o que acontece a seguir'
+              : 'one line on what happens next'}&gt;
+          </span>
+        )
+      }
+    </p>
   </div>
 </section>
 
@@ -51,6 +69,13 @@ const t = useTranslations(lang);
 
   .closing__link:hover {
     color: var(--accent-fn);
+  }
+
+  .closing__lead {
+    margin-block-start: var(--s3);
+    /* Same measure as .page-head__lead, so a lead is one width wherever it
+       turns up. */
+    max-width: 52ch;
   }
 
   .closing__arrow {

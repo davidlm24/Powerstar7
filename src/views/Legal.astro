@@ -13,7 +13,13 @@ const t = useTranslations(lang);
 ---
 
 <Base lang={lang} page="legal" title={t('legal.title')}>
-  <PageHead label={t('footer.legalNav')} title={t('legal.h1')} />
+  <PageHead label={t('footer.legalNav')} title={t('legal.h1')}>
+    <span slot="lead" class="pending">
+      &lt;{lang === 'pt'
+        ? 'uma linha sobre quem gere este site'
+        : 'one line on who runs this site'}&gt;
+    </span>
+  </PageHead>
 
   <section class="legal rails">
     <div class="container">
