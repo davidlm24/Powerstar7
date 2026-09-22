@@ -230,7 +230,8 @@ node .claude/serve.js 3000        # the project's own dev server, not npx serve
 
 Reference material worth re-reading:
 - `DEPLOY.md` — hosting, redirects, form handler, pre-launch checklist
-- `design/HANDOFF.md` + `design/chats/` — the original Claude Design handoff
+- `design/HANDOFF.md` + `design/chats/` — the original Claude Design handoff,
+  removed from the tree on 2026-09-22; still in history at `21fdecb`
 - `.impeccable/critique/` — the persisted design critique (scored 20/40)
 - `_redirects` / `.htaccess` — the legacy Sitejet URL map that must survive
 

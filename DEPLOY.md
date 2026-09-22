@@ -64,9 +64,10 @@ would shadow the entire Portuguese section.
 convention; Apache is pointed at it by `ErrorDocument`. On Nginx add
 `error_page 404 /404.html;`.
 
-`design/` is reference material, not site content: `_redirects`, `.htaccess`
-and `robots.txt` all exclude it, and it is outside `public/` so it is not in
-`dist/` at all.
+`design/` has been removed from the tree; it is in history at `21fdecb`. The
+rules that kept it out of the served site — `robots.txt`, `.htaccess` and
+`.claude/serve.js` — are still in place and now guard a path that no longer
+exists. Harmless, and left alone rather than disturbing the legacy URL map.
 
 ## 2. Contact form handler
 

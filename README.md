@@ -109,12 +109,14 @@ placeholders styled to look finished. Before launch, see the checklist in
 [DEPLOY.md](DEPLOY.md) — the legal notice in particular is a **launch
 blocker** under § 5 TMG.
 
-## `design/` and `REBUILD-BRIEF.md`
+## `REBUILD-BRIEF.md`
 
 `REBUILD-BRIEF.md` is why this site looks the way it does: the measured DNA of
 ten reference sites, what the previous version got wrong, and what had to
 survive the rebuild. Read it before making design decisions.
 
-`design/` is the original Claude Design handoff bundle, kept for provenance.
-Nothing in it is served — `_redirects`, `.htaccess` and `robots.txt` all
-exclude it.
+The original Claude Design handoff bundle used to sit in `design/`. It was
+removed from the tree once the rebuild had absorbed it, and is still reachable
+in history at `21fdecb` if the provenance is ever wanted. `robots.txt`,
+`.htaccess` and `.claude/serve.js` still refuse the `/design/` path — belt and
+braces now, rather than a guard over anything.
