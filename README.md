@@ -33,8 +33,8 @@ npm run build && npm run preview
 
 `npm run preview` runs `.claude/serve.js` against `dist/` on
 <http://localhost:4000>. Use it to check the **built** output behaves the way
-a host will serve it: extensionless URLs, the legacy 301 map, a 404 page, and
-`/design/` blocked. It also exposes a dev-only echo endpoint at
+a host will serve it: extensionless URLs, the legacy 301 map and a 404 page.
+It also exposes a dev-only echo endpoint at
 `POST /api/contact` for exercising the contact form's `fetch` path — point the
 form's `data-endpoint` at it to test. It only logs; it never sends mail.
 
@@ -117,6 +117,5 @@ survive the rebuild. Read it before making design decisions.
 
 The original Claude Design handoff bundle used to sit in `design/`. It was
 removed from the tree once the rebuild had absorbed it, and is still reachable
-in history at `21fdecb` if the provenance is ever wanted. `robots.txt`,
-`.htaccess` and `.claude/serve.js` still refuse the `/design/` path — belt and
-braces now, rather than a guard over anything.
+in history at `21fdecb` if the provenance is ever wanted. The rules that kept
+it off the served site went with it.

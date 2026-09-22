@@ -12,10 +12,6 @@ RewriteEngine On
 RewriteCond %{HTTP_HOST} ^(www\.)?powerstar7\.com$ [NC]
 RewriteRule ^(.*)$ https://www.designactiv.com/$1 [R=301,L]
 
-# --- Never serve the design handoff bundle ----------------------------------
-# It lives in the repo as reference material, not as site content.
-RewriteRule ^design(/.*)?$ - [R=404,L]
-
 # --- Legacy Sitejet URLs (301, preserve SEO) --------------------------------
 
 # The old site served everything under /en/… — send those to the new roots.

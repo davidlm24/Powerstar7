@@ -156,11 +156,6 @@ const server = http.createServer(async (req, res) => {
     return send(res, 405, 'Method Not Allowed', { Allow: 'GET, HEAD' });
   }
 
-  // --- The design bundle is reference material, never site content --------
-  if (pathname === '/design' || pathname.startsWith('/design/')) {
-    return notFound(req, res);
-  }
-
   // --- Legacy 301s --------------------------------------------------------
   const legacy = legacyTarget(pathname);
   if (legacy !== null) {

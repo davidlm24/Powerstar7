@@ -142,7 +142,7 @@ work. Currently locked by owner preference — worth revisiting.
   subsets. In Germany this avoids the Google Fonts GDPR problem (Munich ruling → wave of
   *Abmahnungen*) and means **no cookie banner is needed**. Protect this property.
 - **`.claude/serve.js`** — the project's own dev server. Reproduces production behaviour:
-  extensionless URLs, `.html` → 301, `/design/` blocked, and a dev-only `POST /api/contact`
+  extensionless URLs, `.html` → 301, and a dev-only `POST /api/contact`
   echo endpoint for testing the form. Run it with `node .claude/serve.js 3000`. **Do not
   use `npx serve`** — it does not reproduce any of that.
 - **Deploy config**: `_redirects` (Netlify/Cloudflare) and `.htaccess` (Apache) both handle
