@@ -1,0 +1,43 @@
+---
+interface Props {
+  label: string;
+  title: string;
+  lead?: string;
+}
+
+const { label, title, lead } = Astro.props;
+---
+
+{/* The inner-page header. Deliberately NOT the dark hero slab the old site
+    repeated on all ten pages — it is the same paper ground as everything
+    else, and it earns its weight from the type alone. It also runs a step
+    below the home hero (96px against 140px), so the home page stays the
+    loudest thing on the site. */}
+<section class="page-head rails">
+  <div class="container">
+    <p class="label">{label}</p>
+    <h1 class="page-head__h1">{title}</h1>
+    {lead && <p class="lead page-head__lead">{lead}</p>}
+  </div>
+</section>
+
+<style>
+  .page-head {
+    padding-block: var(--s6) var(--s7);
+  }
+
+  .page-head__h1 {
+    margin-block-start: var(--s4);
+    /* --t-title. This was a hand-rolled clamp topping at 96px — 8px under
+       the home hero, which is not a step down the ladder, it is noise. The
+       token makes it 80px and the scale 104 / 80 / 56 / 28. */
+    font-size: var(--t-title);
+    font-weight: var(--weight-heading);
+    max-width: 16ch;
+  }
+
+  .page-head__lead {
+    margin-block-start: var(--s4);
+    max-width: 52ch;
+  }
+</style>

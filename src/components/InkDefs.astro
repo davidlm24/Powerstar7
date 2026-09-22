@@ -1,0 +1,66 @@
+---
+/* The two filters every illustration on the site shares, defined once per
+   page. They are what makes hand-authored SVG read as drawn rather than as a
+   stroke icon: a turbulence field displaces the path, so a mathematically
+   clean curve picks up a wobble no coordinate anyone could type would have.
+
+   This is the same technique --grain already uses (tokens.css), so it is a
+   known quantity here: an inline SVG filter, no request, no dependency.
+
+   Two strengths, because the ink line and the flat colour behind it want
+   different amounts of roughness — the line should look drawn, the flat shape
+   should look printed slightly wrong.
+
+   Render this ONCE per page, above the illustrations that reference it. The
+   ids are global, which is the point: five <Illustration> instances share one
+   filter rather than defining five. */
+---
+
+<svg class="ink-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="ink-line" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.028"
+        numOctaves="4"
+        seed="3"
+        result="n"
+      />
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="n"
+        scale="4"
+        xChannelSelector="R"
+        yChannelSelector="G"
+      />
+    </filter>
+
+    <filter id="ink-flat" x="-25%" y="-25%" width="150%" height="150%">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.018"
+        numOctaves="3"
+        seed="5"
+        result="n"
+      />
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="n"
+        scale="6"
+        xChannelSelector="R"
+        yChannelSelector="G"
+      />
+    </filter>
+  </defs>
+</svg>
+
+<style>
+  /* Out of flow entirely — it draws nothing itself. width/height 0 is not
+     enough on its own in every engine, so it is also positioned away. */
+  .ink-defs {
+    position: absolute;
+    inline-size: 0;
+    block-size: 0;
+    overflow: hidden;
+  }
+</style>

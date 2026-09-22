@@ -1,0 +1,8 @@
+{
+  "_README": "The studio's own numbers, shown on the home page. DAVID: set these to the real figures before launch — they are the one place on this site that makes a claim nothing else can verify. Seeded with what is true on 2026-09-19: one client engaged (a salon in Luxembourg, in build), nothing delivered yet, working across DE/LU/BR, building in EN and PT. A number left wrong here is worse than no number at all; that is the mistake the whole rebuild was a reaction to.",
+  "updated": "2026-09-19",
+  "projectsDelivered": 0,
+  "clients": 1,
+  "countries": 3,
+  "languages": 2
+}

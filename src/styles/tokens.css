@@ -1,0 +1,383 @@
+/* =========================================================================
+   DesignActiv — design tokens
+   =========================================================================
+
+   Every value here is deliberate and most are measured. Two rules govern
+   this file, both learned the hard way (REBUILD-BRIEF.md §1):
+
+     1. ONE accent hue. Blue. If a new colour is needed, it is a role and
+        not a hue. TWO exceptions exist by decision, both fenced where they
+        are defined and both David's call against this rule: --purple in
+        the hero wash and the showcase art, and --amber on the showcase
+        service badge. Neither may spread beyond its fence. A rule the code
+        silently contradicts is worse than a rule with a written exception.
+     2. ONE type system. Never a second scale scoped to a subset of pages.
+
+   Contrast: every pairing below was computed against WCAG 2.1, not eyeballed.
+   The ratios in the comments are real. The brand blue #0e6fff measures
+   4.43:1 against white and 3.97:1 against the ground — it FAILS AA as text.
+   So the accent ships as a pair: the bright one is display-only, and a
+   darkened sibling carries anything that has to be read at body size.
+   ========================================================================= */
+
+:root {
+  /* --- Ground ---------------------------------------------------------
+     Never pure white, and now WARM. The ground was cool blue-grey; every
+     reference the owner chose — trace.so, the CREATIVE. and PIXOR comps —
+     sits on a warm bone or cream. This closes an open question rather than
+     reversing a decision: REBUILD-BRIEF.md §3 already specified "warm creams
+     and off-blacks", README.md already described the ground as warm, and
+     Base.astro already declared theme-color: #f5f2eb. All three were stale
+     against the cool value that actually shipped.
+
+     #F5F2EB over Trace's own #F1F1E6 for one measured reason: it keeps the
+     accent pair furthest from the AA line. The blue is unchanged, so the
+     ground is the only thing carrying that margin. */
+  --paper: #F5F2EB;          /* warm ground — bone, never white            */
+  /* Solved for, not picked: this is the value at which --field-edge measures
+     exactly 3.52:1 against a field's own fill. Moving it moves that. */
+  --paper-hi: #FCFAF6;       /* raised surface — lifts by tone, not bevel  */
+  /* No --paper-edge. It was the opaque ancestor of --rule and had no call
+     sites left, which made it a trap rather than a spare: anyone reaching for
+     a token literally named "hairlines" would get a line about twice the
+     weight of --rule that does not composite over a dark band. Lines come
+     from --rule, and from nowhere else. */
+
+  --ink: #1C1B17;            /* body text · 15.41:1 on paper · AAA         */
+  --ink-muted: #55504A;      /* secondary text · 7.13:1 on paper · AAA     */
+  /* The inverted band's GROUND, which is not the same thing as the body-text
+     ink even though they are a rounding apart. Keeping them separate is what
+     lets the band be tuned without moving every paragraph on the site — they
+     shared one variable before, and that is a trap rather than a saving. */
+  --ink-deep: #1B1A16;       /* the .invert ground · on-ink 15.58:1        */
+
+  /* --- Accent pair ----------------------------------------------------
+     --blue      display only: type above 24px, fills with no text on them,
+                 graphic marks, the focus ring.
+     --blue-fn   functional: link text at body size (5.06:1 on paper) and
+                 fills carrying white text (5.47:1). Both clear AA.
+     Never use --blue for small text. That is the bug this pair exists to
+     prevent. */
+  --blue: #0e6fff;
+  --blue-fn: #0c62e0;
+  /* The hover/focus fill for a solid button. It is DARKER than the resting
+     fill, which looks backwards until you account for the sheen.
+
+     The sheen is a pseudo-element painted on top of the fill and underneath
+     the label, so the label's real backdrop is fill + white@alpha — and that
+     composite is what WCAG measures, not the fill alone. A 4.5:1 label sits
+     at luminance 0.1833. Brightening the fill spends that headroom before
+     the sheen gets any: on a #0e6cf9 fill even a 2% white overlay drops
+     below AA, and the sheen runs at 20%.
+
+     So the fill goes down and the sheen supplies the lift. Bare this is
+     7.63:1; with the sheen composited at its peak it is 4.83:1, which clears
+     AA with margin instead of sitting on the line. */
+  --blue-hover: #0a4eb3;
+  /* WAS #e8effd. A cool blue tint on a warm cream ground reads as a bruise.
+     #E5EBF3 is 1.07:1 against the ground — the identical perceived lift the
+     cool pair had — and still carries --ink at 14.37:1, --ink-muted at
+     6.65:1 and a --blue-fn edge at 4.56:1. */
+  --blue-wash: #E5EBF3;      /* the only tint — quiet blue ground          */
+
+  /* --- Purple ---------------------------------------------------------
+     A SECOND hue, which the rest of this file argues against and which
+     REBUILD-BRIEF.md §1 lists as a mistake to avoid. It is here because
+     David asked for a blue-and-purple hero, and it is fenced: it appears
+     only in the hero's background wash and the showcase card art, never as
+     a fill behind text, never as a border, never as a line. It carries no
+     meaning and nothing is measured against it — if it were deleted the site would lose an
+     effect, not a signal. Keep it that way. */
+  --purple: #7b5bff;
+  --purple-deep: #5b3ce6;
+
+  /* --- Amber ----------------------------------------------------------
+     A THIRD hue, and the one rule 1 above named explicitly as a mistake:
+     REBUILD-BRIEF.md §1 records #f58220 as a colour the old site imported
+     by accident and which had to go. This is not a relapse into that. The
+     showcase carries two badges, David asked for them to read blue and
+     orange, was shown the rule, and chose it anyway.
+
+     So it ships fenced. It is a FILL and nothing else — never a border,
+     never a wash, never a line, never text. It carries exactly one meaning,
+     "service", and its text colour is forced by contrast rather than taste:
+     --ink on it measures 9.11:1, white only 2.04:1. If this token ever
+     turns up in a third place, deleting it is the correct fix. */
+  --amber: #f5a524;
+
+  /* Film grain, generated by the renderer from an inline SVG filter — a data:
+     URI, not a file and not a request, so the zero-third-party rule holds.
+
+     feColorMatrix saturate=0 makes it MONOCHROME. Coloured turbulence reads
+     as JPEG artefacts rather than film, and it fought the two brand hues it
+     was laid over. Strength is baked into the rect's opacity so each caller
+     can pick a weight without needing its own layer. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)' opacity='0.55'/%3E%3C/svg%3E");
+  /* No --marks. The cursor-revealed mark field lived only on the two dark
+     bands that are now light — dark is the footer's alone — so the token,
+     its CSS layer and its rAF loop in site.js all retire together. */
+
+  --grain-soft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)' opacity='0.14'/%3E%3C/svg%3E");
+
+  /* --- Inverted band --------------------------------------------------
+     The ink band needs its own muted and accent tones: --ink-muted scores
+     2.30:1 on ink and is unreadable there. These are role tokens, not new
+     hues — .invert reassigns the roles rather than introducing colours. */
+  --on-ink: #F5F2EB;         /* 15.58:1 on --ink-deep · AAA                */
+  --on-ink-muted: #ADA79B;   /*  7.28:1 on --ink-deep · AAA                */
+  --on-ink-blue: #5c9dff;    /*  6.40:1 on --ink-deep · AAA                */
+
+  /* --- Semantic roles -------------------------------------------------
+     Components reference these, never the raw palette. .invert swaps the
+     roles in one place and every component inside follows. */
+  --bg: var(--paper);
+  /* No --bg-raised. It had zero call sites and its .invert override was a raw
+     #1a1d24 that belonged to no palette. Surfaces that lift use --paper-hi
+     directly. */
+  --fg: var(--ink);
+  --fg-muted: var(--ink-muted);
+  --accent: var(--blue);
+  --accent-fn: var(--blue-fn);
+  /* Alpha, not a hex: there was no opacity to lower before (#e0e5ee is
+     opaque, ~8.8% ink), and an alpha line composites correctly over whatever
+     band it lands on. 6% is roughly a third lighter.
+
+     rgb() with a slash rather than color-mix() on purpose. This token is
+     consumed inside `border: 1px solid var(--rule)`, and where color-mix is
+     unsupported the substitution is invalid at computed-value time — which
+     drops the WHOLE shorthand to its initial value, i.e. no border at all.
+     A decorative background can degrade like that; a card edge cannot.
+
+     4% against the warm ground is 1.08:1 — a line meant to be FELT rather
+     than read, dividing two pieces of content that both belong to the page.
+     Do not raise it to make the page edges visible; that is --rail's job and
+     it is a different object. */
+  --rule: rgb(28 27 23 / 0.04);
+
+  /* --- The rails ------------------------------------------------------
+     The two vertical rules at the container's content edges. A SEPARATE
+     token from --rule, and the separation is the point: --rule has 28 call
+     sites and is the entire interior layout grammar, so raising it would
+     rebuild the hard grid that was deliberately retired. --rail is purely
+     additive — it changes none of those 28.
+
+     10% = 1.22:1, which is exactly trace.so's measured rail (#DCDCCD on
+     #F1F1E6). 6% would have been 1.12:1, fainter than either reference.
+     --rule and --rail are different OBJECTS: --rule separates two things
+     that are both content; --rail bounds the content column against the
+     page. */
+  --rail: rgb(28 27 23 / 0.10);
+
+  /* THE RULE: a structural line may touch another structural line. Content
+     never touches a line. This is the one number that enforces it, so every
+     piece of content on the site sits the same distance inside the frame.
+
+     trace.so draws the same distinction — its logo-wall cell borders sit
+     exactly ON the page rail, while the text inside them starts 16-20px in.
+     Lines meet lines; type clears them. */
+  --line-gap: clamp(0.5rem, 1.5vw, 1.25rem);   /* 8px -> 20px */
+
+  /* The rails' x. This USED to be defined as .container's content edge, and
+     was algebraically identical to it — same 100% base, same --gutter — so
+     clearance was 0 everywhere by construction and the content box overlapped
+     the 1px rail by a pixel. Every heading on the site started ON the line.
+
+     --line-gap comes off the RAILS rather than being added to .container, and
+     that is not a preference. At 320px the Portuguese hero line measures
+     261.44px against 265px of available width: 3.56px of headroom. Any inward
+     move of the content edge wraps it, and text-wrap: balance will not save
+     it. The gutter is empty space, so taking the gap from there costs nothing
+     and no content moves at any width.
+
+     The clamp floor keeps this positive. A negative inset-inline-end on
+     .rails::after would push past the section box and scroll the document
+     sideways on every band. */
+  --rail-x: calc(
+    max((100% - var(--width-page)) / 2, 0px) + var(--gutter) - var(--line-gap)
+  );
+
+  /* Form-field edges, and nothing else. A control boundary and a decorative
+     separator cannot share one token: WCAG 1.4.11 wants 3:1 for the boundary
+     of a non-text UI component, and --rule is 1.084:1 — deliberately, because
+     a divider between two paragraphs is meant to be felt rather than read.
+     Raising --rule to fix the inputs would turn every separator on the site
+     into a hard grid, which is the aesthetic just retired. So the input gets
+     its own colour. The cool #878d9a that did this job measured 2.98:1 on
+     the warm ground and FAILED — the ground move broke the exact fix it was
+     added for. Its warm sibling: 3.52:1 against --paper-hi, which is the
+     field's own fill, and 3.29:1 against --paper behind it. Both clear 3:1. */
+  --field-edge: #8A857A;
+
+  /* The one semantic colour that was three literals in one file. It survives
+     the ground change untouched — 5.88:1 on --paper, 6.31:1 as a field
+     border on --paper-hi — but three copies of a meaning is a token asking
+     to exist. */
+  --error: #b42318;
+
+  /* --- Type -----------------------------------------------------------
+     The single biggest delta between the old site and the references:
+     headings ran at 1.94x body. Nine of ten references run 4x–11.6x.
+     --t-hero tops out at 6.5rem = 104px = 5.8x the 18px body — down from
+     140px, still comfortably inside the 4x-11.6x band the references run. */
+  /* Space Grotesk stays, for now, as a deliberate decision rather than an
+     oversight. REBUILD-BRIEF.md §3 is worth re-reading before changing it:
+     nine of the ten reference sites licence a foundry display face, only one
+     uses a Google font, and Space Grotesk is on every "overused" list. The
+     replacement, when it happens, is a free Fontshare face — swapping it is
+     two @font-face rules in fonts.css and these two lines. No other rule in
+     the system names a typeface. */
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-text: 'Source Sans 3', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+
+  /* The floor is set by the longest hero line in the WIDEST language, not
+     by taste: "Sem rastreadores." measures 8.17em, so at a 320px viewport
+     (265px of content once a scrollbar is present) the type cannot exceed
+     ~32px without wrapping. 10.3vw left 0.3px of margin and wrapped as soon
+     as a classic scrollbar appeared; 9.9vw leaves ~6px. The vw term reaches
+     the 104px cap at 1051px — 5.8x body, against the old site's 1.94x. */
+  --t-hero: clamp(2rem, 9.9vw, 6.5rem);        /*  32 → 104px              */
+  /* NEW. The inner-page h1. PageHead and 404 both hard-coded their own
+     clamp topping at 96px — 8px under the home hero, which is not a step
+     down, it is noise. 80px makes the ladder 104 / 80 / 56 / 28: four real
+     steps, and a future display change touches this file only. */
+  --t-title: clamp(2.5rem, 6.5vw, 5rem);       /*  40 →  80px              */
+  --t-h2: clamp(2rem, 4.5vw, 3.5rem);          /*  32 →  56px              */
+  --t-h3: clamp(1.375rem, 2vw, 1.75rem);       /*  22 →  28px              */
+  --t-stat: clamp(3.5rem, 7.5vw, 6rem);        /*  56 →  96px — the proof
+                                                   is set larger than the
+                                                   pitch, on purpose       */
+  --t-lead: clamp(1.25rem, 1.8vw, 1.5rem);     /*  20 →  24px              */
+  --t-body: 1.125rem;                          /*  18px                    */
+  --t-small: 0.9375rem;                        /*  15px                    */
+  --t-micro: 0.8125rem;                        /*  13px — tracked labels   */
+
+  /* 0.95, UP from 0.92. Counter-intuitive until you account for the weight
+     change: at 700 the bold stem mass hid the gap between three stacked hero
+     lines, and at 400 the ascenders and descenders of adjacent lines collide
+     at 0.92. Lighter type needs more leading, not less. */
+  --lh-display: 0.95;
+  --lh-heading: 1.1;         /* trace.so's measured heading leading         */
+  --lh-body: 1.6;
+
+  /* −0.03em, not trace.so's −0.05em, and this was TESTED rather than copied:
+     the real hero string rendered in the real face at five weight/tracking
+     pairs. Space Grotesk is wider and flatter than Geist, the face Trace
+     actually uses, so its letters collide sooner — at −0.05em the counters
+     close against the thinned stems and it reads cramped rather than tight. */
+  --tr-display: -0.03em;
+  --tr-heading: -0.025em;
+  --tr-micro: 0.09em;        /* UPPERCASE micro labels only                 */
+  /* Lowercase mono: eyebrows and index numerals. Trace measures 0.13px on
+     13px = 0.01em. It cannot share --tr-micro, because uppercase at 0.01em
+     is unreadable and lowercase at 0.09em is not an eyebrow. */
+  --tr-mono: 0.01em;
+
+  --weight-text: 400;
+  --weight-medium: 500;
+  /* 600, for the two middle display steps. The poster scale below stays at 400
+     — that lightness is the whole effect — but at 56-80px the same 400 reads
+     under-set rather than quiet, so title and h2 take mass back while the hero
+     and the stat figures do not. Inside Space Grotesk's 300-700 variable
+     range, so it costs no bytes. */
+  --weight-heading: 600;
+  /* 400, down from 700. The references do NOT set display type bold —
+     trace.so runs 48px headings at regular weight, and the quietness of that
+     is most of the effect. Note this can no longer serve every heading: at
+     20–28px, 400 in the display face sits at the same apparent weight as
+     18px body copy and the hierarchy collapses, so h3/h4, the wordmark and
+     the tabular figures take --weight-medium instead. See global.css. */
+  --weight-display: 400;
+
+  /* --- Space ----------------------------------------------------------
+     The old site padded every section to 128px, which is why ten pages
+     read as one template. These are a scale to compose from, and section
+     rhythm is expected to VARY page to page. */
+  --s1: 0.5rem;
+  --s2: 1rem;
+  --s3: 1.5rem;
+  --s4: 2rem;
+  --s5: 3rem;
+  --s6: 4rem;
+  --s7: 6rem;
+
+  /* The section rhythm, and the one number that most decides whether the
+     page reads like the reference. It used to be --s8, a flat 8rem, on 9 of
+     11 sections — so the rhythm the comment above calls "expected to VARY"
+     was in practice a single fixed value anyway. Now it is fluid and more
+     generous where there is room: 96px on a phone, ~153px at 1280, 192px on
+     a wide screen, against a flat 128px before.
+
+     --s8 and --s9 are gone. Every one of their call sites was this. */
+  --section-y: clamp(6rem, 12vw, 12rem);
+
+  /* The floating header, measured once so nothing has to guess. The bar is
+     --header-bar-h tall and floats inside --s2 of padding top and bottom, so
+     --header-h is the band the page must keep clear. ANY position:sticky
+     offset on this site must use it: making the header sticky silently hid
+     three sub-headings that were still offsetting by --s4. */
+  /* The page grid. Four columns at desktop, two on a phone. Everything that
+     spans more than one column should still line up with these — not because
+     the grid is drawn any more (the edge rails are gone; see global.css) but
+     because the dividers that remain sit ON these track boundaries, and a
+     block that ignores them puts its content out of step with the one above. */
+  --grid-cols: 4;
+
+  /* Air inside a grid cell before the next line. One value so every cell on
+     the page hangs the same way — the stats block previously had none on its
+     first cell and 32px on the one below, which is why the two rows did not
+     line up. */
+  /* Fluid, because this is subtracted from a grid cell twice. A flat 4rem
+     left a two-column stats cell 4px of content at 320px and the page
+     scrolled sideways. --s3 at the bottom, --s6 where there is room. */
+  --col-pad: clamp(var(--s3), 4.5vw, var(--s6));
+
+  /* A literal now, because there is no bar left to derive it from — the
+     header is the page's own ground with a hairline. The VALUE is unchanged
+     at 92px (the old 3.75rem bar plus 1rem of padding top and bottom), so
+     every sticky offset and scroll-padding that reads it stays put. */
+  --header-h: 5.75rem;
+
+  --gutter: clamp(1.25rem, 5vw, 4rem);
+  --measure: 62ch;           /* body copy line length                      */
+  --width-page: 90rem;       /* 1440 — wide, because content bleeds out of
+                                it deliberately rather than never reaching
+                                it                                         */
+  --width-text: 48rem;
+
+  /* --- Everything else -------------------------------------------------
+     One radius. One shadow, used almost never. The old site had twenty
+     surface classes, twelve of them the same rounded-rectangle-plus-
+     hairline-plus-bevel. */
+  /* No radius tokens. Every surface on the site is square — controls, cards,
+     form fields, the notice. The only curves left are two 50%-round accent
+     marks, and an outline follows its element's own radius, so the focus ring
+     squares with them.
+
+     No --shadow token either. Its first layer was a 1px offset at the same
+     0.04 as --rule, i.e. a hairline drawn in shadow instead of in border — the
+     exact thing a line audit is supposed to catch. It had no call sites; the
+     site's one real shadow is written out where it is used, on the mobile nav
+     panel, which is a floating surface rather than a line. */
+
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --dur: 180ms;
+}
+
+/* The inverted band. Roles flip; hues do not change. */
+.invert {
+  --bg: var(--ink-deep);
+  --fg: var(--on-ink);
+  --fg-muted: var(--on-ink-muted);
+  --accent: var(--on-ink-blue);
+  --accent-fn: var(--on-ink-blue);
+  /* Not the light-ground numbers. A light line on ink lifts more per unit
+     alpha, so matching the NUMBER would not match the look — these are
+     solved for the RATIO instead: 1.23:1 against the light rail's 1.22:1,
+     and 1.13:1 against the light rule's 1.08:1. */
+  --rail: rgb(245 242 235 / 0.08);
+  --rule: rgb(245 242 235 / 0.05);
+
+  background: var(--bg);
+  color: var(--fg);
+}

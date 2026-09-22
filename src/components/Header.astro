@@ -1,0 +1,326 @@
+---
+import { useTranslations, route, alternate, type Lang, type PageKey } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  page?: PageKey;
+}
+
+const { lang, page } = Astro.props;
+const t = useTranslations(lang);
+const other = alternate(page ?? 'home', lang);
+
+const items: { key: PageKey; label: string }[] = [
+  { key: 'home', label: t('nav.home') },
+  { key: 'work', label: t('nav.work') },
+  { key: 'services', label: t('nav.services') },
+  { key: 'about', label: t('nav.about') },
+  { key: 'contact', label: t('nav.contact') },
+];
+---
+
+{/* No bar. The wordmark and the nav sit on the page, and the only thing that
+    happens on scroll is one hairline — which is what trace.so does.
+
+    This is the third attempt at this element and the first that has nothing
+    to hide. A translucent inset panel draws its rectangle twice over, once
+    with the tint and once with the backdrop-filter's clip edge; feathering
+    that away read as a blurred border instead. An opaque header has no edge
+    to remove, so the whole mechanism goes: the surface, both filters, the
+    four-side mask, the @supports bleed gate, and the no-JS and
+    reduced-transparency fences — every one of which existed only to stop a
+    translucent plate failing contrast over a dark band.
+
+    Being opaque is also what lets the rails work: the header occludes the
+    band scrolling under it, so its rail segment and the band's never
+    composite into a darker 92px stripe. */}
+<header class="site-header rails">
+  <div class="container site-header__row">
+    <a class="wordmark" href={route('home', lang)} aria-label="DesignActiv — home">
+      DesignActiv<span class="wordmark__dot" aria-hidden="true">.</span>
+    </a>
+
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      aria-label={t('nav.open')}
+      data-label-open={t('nav.open')}
+      data-label-close={t('nav.close')}
+    >
+      <span class="nav-toggle__bars" aria-hidden="true"><span></span><span></span></span>
+      <span class="nav-toggle__text">{t('nav.menu')}</span>
+    </button>
+
+    <nav class="nav" id="site-nav" data-open="false" aria-label={t('nav.menu')}>
+      <ul class="nav__list">
+        {
+          items.map((item) => (
+            <li>
+              <a
+                href={route(item.key, lang)}
+                aria-current={item.key === page ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      {/* Just the code, but the accessible name has to CONTAIN the visible
+          text — WCAG 2.5.3 Label in Name, so that someone saying "click PT"
+          to a voice control actually hits this link. Announcing only "Ver em
+          português" while showing "PT" fails that. */}
+      <a
+        class="nav__lang"
+        href={other.href}
+        lang={other.lang}
+        hreflang={other.lang}
+        aria-label={`${other.lang.toUpperCase()} — ${t('nav.langSwitch')}`}
+      >
+        {other.lang.toUpperCase()}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  /* sticky, not relative: this beats .rails's own position: relative via
+     Astro's scoping (0,2,0 against 0,1,0). Do not "simplify" it away — the
+     header would un-stick. */
+  .site-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 50;
+    background: var(--bg);
+    /* 24 + 44 + 23 + 1px of border = 92px = --header-h, which is exactly what
+       the old bar computed to, so every sticky offset and scroll-padding that
+       reads that token stays where it was. */
+    padding-block: var(--s3) calc(var(--s3) - 1px);
+    /* A real border, transparent until scrolled — not a box-shadow. A
+       hairline drawn in shadow is precisely what a line audit is supposed to
+       catch, and this one has to sit beside 28 border-drawn hairlines without
+       being a different kind of object. Always 1px, so nothing reflows when
+       it colours in. */
+    border-block-end: 1px solid transparent;
+    transition: border-color var(--dur) var(--ease);
+  }
+
+  /* The same line the page edges draw, 1.22:1. There is no tint to fail
+     contrast now: the nav reads --fg at 15.41:1 and --fg-muted at 7.13:1
+     against an opaque ground, whatever is scrolled underneath. That is the
+     real prize here — the header's contrast stops being a function of page
+     content, which is what the three deleted fences were all working around. */
+  .site-header.is-stuck {
+    border-block-end-color: var(--rail);
+  }
+
+  .site-header__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s4);
+    min-block-size: 2.75rem;
+  }
+
+  /* --- Wordmark ---------------------------------------------------------- */
+
+  /* --weight-medium, not --weight-display. The display weight is 400 now, and
+     at 20px that is a ghost — it would sit at the same apparent weight as the
+     body copy beside it. 500 is the floor that keeps a wordmark reading as a
+     wordmark. */
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: var(--weight-medium);
+    letter-spacing: -0.03em;
+    color: var(--fg);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  /* The only ornament that survived the rebuild: a full stop in the accent.
+     It is one character, it carries the brand colour, and it costs nothing. */
+  /* --accent-fn, not --accent, and the weight change is why. At 700 this dot
+     was LARGE text — 20px at >=18.66px/700 — so 3:1 applied and the display
+     blue's 3.97:1 passed. At 500 it stops being large text, the bar becomes
+     4.5:1, and the same colour fails. The functional sibling is 4.89:1. */
+  .wordmark__dot {
+    color: var(--accent-fn);
+  }
+
+  /* --- Navigation -------------------------------------------------------- */
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: var(--s5);
+  }
+
+  .nav__list {
+    display: flex;
+    align-items: center;
+    gap: var(--s4);
+    list-style: none;
+    padding: 0;
+  }
+
+  .nav__list a {
+    display: inline-block;
+    padding-block: 0.5rem;
+    color: var(--fg);
+    font-size: var(--t-small);
+    text-decoration: none;
+    letter-spacing: -0.005em;
+  }
+
+  /* Underline on hover and on the current page — same device, so the current
+     page reads as "you are here" rather than as a different kind of thing. */
+  .nav__list a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.3em;
+  }
+
+  .nav__list a[aria-current='page'] {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.3em;
+  }
+
+  /* No box, no border, no pill — two letters. The 44px tap target is kept
+     with padding rather than with a visible frame. */
+  .nav__lang {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: 0.25rem;
+    font-size: var(--t-micro);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tr-micro);
+    color: var(--fg-muted);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .nav__lang:hover {
+    color: var(--fg);
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+
+  /* --- Mobile ------------------------------------------------------------ */
+
+  .nav-toggle {
+    display: none;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.5rem 0.75rem;
+    margin-inline-end: calc(var(--s2) * -1);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-micro);
+    text-transform: uppercase;
+    color: var(--fg);
+  }
+
+  .nav-toggle__bars {
+    display: grid;
+    gap: 5px;
+    inline-size: 20px;
+  }
+
+  .nav-toggle__bars span {
+    display: block;
+    block-size: 2px;
+    background: currentColor;
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bars span:first-child {
+    transform: translateY(3.5px) rotate(45deg);
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bars span:last-child {
+    transform: translateY(-3.5px) rotate(-45deg);
+  }
+
+  @media (max-width: 60rem) {
+    .nav-toggle {
+      display: inline-flex;
+    }
+
+    .nav {
+      position: absolute;
+      inset-inline: 0;
+      /* Flush to the header's bottom edge. The old +var(--s1) was clearance
+         from a floating bar, and there is no floating bar. */
+      inset-block-start: 100%;
+      max-height: calc(100svh - var(--header-h) - var(--s4));
+      overflow-y: auto;
+      z-index: 20;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      /* --gutter, not --s3: inset-inline: 0 resolves against .container's
+         padding box now, so this lands the links on the content edge — i.e.
+         framed by the rails. */
+      padding: var(--s2) var(--gutter) var(--s3);
+      /* OPAQUE, not a tint. The panel used to sit at 85% with a hard floor
+         underneath it, because below that the muted language toggle stopped
+         clearing 4.5:1 over a near-black band. An opaque panel cannot fail
+         that at all: --fg is 15.41:1 and --fg-muted 7.13:1, whatever is
+         behind. The floor, and the comment defending it, both go. */
+      background: var(--bg);
+      /* No backdrop-filter. The panel is opaque, so a blur behind it is a
+         composited layer rendering something nobody can see. */
+      /* No border. It was a four-sided frame around a floating panel — the
+         shape the line direction retires — and it was drawn at 1.084:1, too
+         faint to be an edge even where an edge was wanted. The shadow below
+         was already doing that job on its own. */
+      box-shadow: 0 16px 40px -24px rgb(17 19 24 / 0.5);
+    }
+
+    .nav[data-open='false'] {
+      display: none;
+    }
+
+    /* No position override here. A sticky element is already a containing
+       block for the absolutely positioned panel, and switching to relative
+       would silently un-stick the header on exactly the devices where a
+       reachable nav matters most. */
+
+    .nav__list {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .nav__list a {
+      padding-block: 0.9rem;
+      border-bottom: 1px solid var(--rule);
+      font-size: var(--t-body);
+    }
+
+    .nav__lang {
+      align-self: flex-start;
+      margin-block-start: var(--s3);
+    }
+  }
+
+  /* Without JavaScript the toggle cannot work, so the nav stays visible. */
+  :global(html.no-js) .nav {
+    display: flex !important;
+  }
+
+  :global(html.no-js) .nav-toggle {
+    display: none !important;
+  }
+</style>

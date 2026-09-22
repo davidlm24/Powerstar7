@@ -1,0 +1,17 @@
+{
+  "measuredAt": "2026-09-22",
+  "page": "/",
+  "requests": 7,
+  "thirdPartyRequests": 0,
+  "weightKb": 65,
+  "weightRawKb": 105.5,
+  "cookies": 0,
+  "assets": [
+    "/_astro/Base.mqZCTIrb.css",
+    "/_astro/Home.C-i7d7yS.css",
+    "/assets/fonts/source-sans-3-latin.woff2",
+    "/assets/fonts/space-grotesk-latin.woff2",
+    "/assets/img/favicon.svg",
+    "/assets/js/site.js"
+  ]
+}

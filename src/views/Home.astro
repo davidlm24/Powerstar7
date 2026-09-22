@@ -1,0 +1,668 @@
+---
+import Base from '../layouts/Base.astro';
+import AgencyStats from '../components/AgencyStats.astro';
+import InkDefs from '../components/InkDefs.astro';
+import Illustration from '../components/Illustration.astro';
+import Closing from '../components/Closing.astro';
+import { useTranslations, route, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+/* The card bodies reuse svc.*.body — the same descriptions the Services page
+   carries. Not a shortcut: they are already written, already translated, and
+   already reviewed, and a home page carrying five placeholder strings would be
+   worse than one carrying five real sentences. Swap in shorter dedicated keys
+   if these read long in a card.
+
+   Written out rather than built with a template literal, because
+   t(`svc.${key}.body`) needs an `as any` cast and that quietly removes the
+   type protection from every key it touches. */
+const services = [
+  { n: '01', key: 'web', illo: 'browser', name: t('svc.web.name'), b: t('svc.web.body') },
+  { n: '02', key: 'brand', illo: 'bulb', name: t('svc.brand.name'), b: t('svc.brand.body') },
+  { n: '03', key: 'seo', illo: 'magnifier', name: t('svc.seo.name'), b: t('svc.seo.body') },
+  { n: '04', key: 'email', illo: 'envelope', name: t('svc.email.name'), b: t('svc.email.body') },
+  { n: '05', key: 'hosting', illo: 'plug', name: t('svc.hosting.name'), b: t('svc.hosting.body') },
+] as const;
+
+/* The four step NAMES restate commitments the site already makes elsewhere —
+   a written scope with a price attached (About), design reviewed on real
+   devices (Services), a hand-written front end, a handover document (the
+   position section). Nothing here claims anything new. The descriptions are
+   unfilled slots, not invented sentences. */
+const steps = [
+  t('home.process.s1.h'),
+  t('home.process.s2.h'),
+  t('home.process.s3.h'),
+  t('home.process.s4.h'),
+];
+
+const position = [
+  { h: t('home.position.one.h'), b: t('home.position.one.b') },
+  { h: t('home.position.two.h'), b: t('home.position.two.b') },
+  { h: t('home.position.three.h'), b: t('home.position.three.b') },
+];
+---
+
+<Base lang={lang} page="home" title={t('home.title')}>
+  {/* --- Hero ------------------------------------------------------------
+      No photograph exists and none is coming, so type is the image. Three
+      declarative lines at 104px — 5.8x body — against the old site's 1.94x.
+      What is NOT here: a recoloured <em> in the middle of the sentence, the
+      hero device every AI image generator and every SaaS template produces.
+      The accent lands on the full stops instead, echoing the wordmark. */}
+  <section class="hero rails">
+    {/* Both decorative layers live on this one element rather than on the
+        section's own pseudos. That began as a way to keep ::before free for
+        the frame lines; the frame is gone, but the arrangement stays because
+        this element's box is identical to the one the pseudos used, so the
+        wash's percentages — and the measured contrast ceiling on them — hold
+        without being re-derived. */}
+    <div class="hero__fx" aria-hidden="true"></div>
+
+    <div class="container">
+      <h1 class="hero__h1">
+        <span>{t('home.h1.a').replace(/\.$/, '')}<b aria-hidden="true">.</b></span>
+        <span>{t('home.h1.b').replace(/\.$/, '')}<b aria-hidden="true">.</b></span>
+        <span>{t('home.h1.c').replace(/\.$/, '')}<b aria-hidden="true">.</b></span>
+      </h1>
+
+      <div class="hero__foot">
+        <p class="lead measure">{t('home.lead')}</p>
+        <div class="hero__actions">
+          <a class="btn" href={route('contact', lang)}>{t('home.cta')}</a>
+          <a class="btn btn--quiet" href={route('about', lang)}>{t('home.cta.secondary')}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* --- The studio, in numbers -----------------------------------------
+      Set larger than the pitch, on purpose (REBUILD-BRIEF.md §3.6). These
+      are the agency's own figures and live in src/data/agency.json — unlike
+      the measured page weight they replaced, a visitor cannot check them,
+      so they have to be kept true by hand. The measured figures moved to
+      the Work page, where they back a claim instead of leading the page. */}
+  <AgencyStats lang={lang} />
+
+  {/* --- Services -------------------------------------------------------
+      An indexed list, not six identical cards in a grid. The names are set
+      near h2 scale so the section is a second type moment rather than a
+      row of boxes with stroke icons in them. */}
+  <section class="services rails">
+    <div class="container">
+      <div class="services__head">
+        <p class="label">{t('home.services.label')}</p>
+        <h2>{t('home.services.h2')}</h2>
+      </div>
+
+      <InkDefs />
+
+      <ul class="svc-cards">
+        {
+          services.map((s) => (
+            <li>
+              <a class="svc-card illo-drift" href={`${route('services', lang)}#${s.key}`}>
+                <Illustration name={s.illo} />
+                <span class="svc-card__n">{s.n}</span>
+                <h3 class="svc-card__name">{s.name}</h3>
+                <p class="svc-card__b">{s.b}</p>
+                <span class="svc-card__go" aria-hidden="true">&rarr;</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="svc-cards__more">
+        <a href={route('services', lang)}>{t('home.services.link')} &rarr;</a>
+      </p>
+    </div>
+  </section>
+
+  {/* A breather between two light sections, from trace.so, which sets a
+      diagonal hatch between its bands. Decorative and empty by contract —
+      .rails so the page-edge verticals run through it unbroken. */}
+  <div class="hatch rails" aria-hidden="true"></div>
+
+  {/* --- Position --------------------------------------------------------- */}
+  <section class="position rails">
+
+    <div class="container">
+      <div class="position__head">
+        <p class="label">{t('home.position.label')}</p>
+        <h2 class="position__h2">{t('home.position.h2')}</h2>
+        <p class="lead measure">{t('home.position.body')}</p>
+      </div>
+
+      <div class="position__grid">
+        {
+          position.map((p, i) => (
+            <article class="point">
+              <p class="point__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</p>
+              <h3 class="point__h">{p.h}</h3>
+              <p class="point__b">{p.b}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* --- Process ----------------------------------------------------------
+      A timeline rather than a fourth grid of numbered cards. The site already
+      has three of those (the service cards, the position points, About's
+      "how"), and a process is a SEQUENCE — so it gets one continuous rule
+      with a node where each step starts, instead of four separate boxes. */}
+  <section class="process rails">
+    <div class="container">
+      <div class="process__head">
+        <p class="label">{t('home.process.label')}</p>
+        <h2>{t('home.process.h2')}</h2>
+      </div>
+
+      <ol class="steps">
+        {
+          steps.map((name, i) => (
+            <li class="step">
+              <span class="step__n">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="step__h">{name}</h3>
+              <p class="step__b">
+                <span class="pending">
+                  &lt;{lang === 'pt' ? 'uma frase sobre este passo' : 'one sentence on this step'}&gt;
+                </span>
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {/* --- Work, honestly --------------------------------------------------
+      There is no portfolio. The page says so in its own voice rather than
+      showing six placeholder tiles, which is what the old site did — and
+      the six images it pointed at were 2 KB of solid black. */}
+  <section class="honest rails">
+    <div class="container row row--statement honest__inner">
+      <div class="honest__head row__title">
+        <p class="label">{t('home.work.label')}</p>
+        <h2 class="honest__h2">{t('home.work.h2')}</h2>
+      </div>
+      <div class="honest__body row__body">
+        <p>{t('home.work.body')}</p>
+        <p>{t('home.work.body2')}</p>
+        <p class="honest__link">
+          <a href={route('work', lang)}>{t('home.work.link')} &rarr;</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Closing lang={lang} />
+</Base>
+
+<style>
+  /* --- Hero -------------------------------------------------------------- */
+
+  .hero {
+    position: relative;
+    isolation: isolate;
+    padding-block: var(--s7) var(--section-y);
+    /* The wash is inset negatively so it bleeds past the section, and the
+       drift pushes it further still — which put 244px of horizontal scroll
+       on the page. `clip` on the x axis only, so the wash can still bleed
+       UP behind the frosted header while never widening the document.
+       (clip, not hidden: hidden would create a scroll container.) */
+    overflow: clip;
+  }
+
+  @supports not (overflow: clip) {
+    .hero {
+      overflow: hidden;
+    }
+  }
+
+  /* --- The wash ----------------------------------------------------------
+     Two soft fields of colour behind the type, blue and purple, drifting
+     slowly against each other. This is the site's second authored moment
+     (the button sheen is the first) and it is confined to this one section.
+
+     No blur filter: the radial stops are already soft, and a 60px blur on a
+     box this size is a large, expensive layer for an effect the gradient
+     gives for free.
+
+     The 30% stops are a measured ceiling, not a look. The lead paragraph is
+     --ink-muted, the weakest text in the hero, and it has to clear 4.5:1
+     against the STRONGEST point of the wash — because the wash drifts and
+     the layout reflows, so "the text probably isn't under the blob" is not
+     something to rely on. At 30% the worst case is 5.1:1 (purple) and
+     5.0:1 (blue). Purple at 42%, where this started, measured 4.34:1.
+
+     --hx/--hy come from the pointer (see site.js) and are clamped to -1..1,
+     so the centres can move at most 7% and the measured worst case above
+     still bounds what any text can land on. */
+  .hero__fx {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .hero__fx::before {
+    content: '';
+    position: absolute;
+    inset: -35% -12% -25%;
+    background:
+      radial-gradient(
+        34% 38% at calc(78% + var(--hx, 0) * 7%) calc(24% + var(--hy, 0) * 6%),
+        color-mix(in srgb, var(--purple) 26%, transparent),
+        transparent 68%
+      ),
+      radial-gradient(
+        40% 44% at calc(26% - var(--hx, 0) * 5%) calc(12% - var(--hy, 0) * 4%),
+        color-mix(in srgb, var(--blue) 26%, transparent),
+        transparent 70%
+      );
+    animation: hero-drift 26s var(--ease) infinite alternate;
+    pointer-events: none;
+  }
+
+  /* Grain, over the wash and under the type. Without it the gradient reads as
+     a flat CSS blob; with it, it reads as a surface. Very low opacity — it is
+     texture, not a filter. */
+  .hero__fx::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--grain);
+    opacity: 0.16;
+  }
+
+  /* Transform only, so the drift runs on the compositor and never touches
+     layout. prefers-reduced-motion is handled globally: the blanket rule
+     collapses the duration, which parks the wash at its start position. */
+  @keyframes hero-drift {
+    from { transform: translate3d(-2%, -1%, 0) scale(1); }
+    to { transform: translate3d(3%, 2%, 0) scale(1.09); }
+  }
+
+  .hero__h1 span {
+    display: block;
+  }
+
+  /* The accent lands here — on three full stops — and nowhere else in the
+     headline. They now walk from blue to purple, which is the only place the
+     two hues meet in type rather than in the wash. Decorative and
+     aria-hidden, but still set large enough to be plainly visible. */
+  .hero__h1 b {
+    color: var(--accent);
+    font-weight: inherit;
+  }
+
+  .hero__h1 span:nth-child(2) b {
+    color: color-mix(in srgb, var(--blue) 50%, var(--purple));
+  }
+
+  .hero__h1 span:nth-child(3) b {
+    color: var(--purple-deep);
+  }
+
+  .hero__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--s5);
+    margin-block-start: var(--s6);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2);
+  }
+
+  /* --- Services ---------------------------------------------------------- */
+
+  .services {
+    padding-block: var(--section-y);
+  }
+
+  .services__head {
+    display: grid;
+    gap: var(--s3);
+    margin-block-end: var(--s6);
+  }
+
+  /* Five cards on a SIX-column grid: the first three span two, the last two
+     span three. That is what closes the second row instead of leaving a
+     one-third hole — five items never divide evenly into three or four
+     columns, and an empty cell in a bordered grid reads as a broken image.
+
+     This is the "six identical cards in a grid" shape the brief warns about,
+     chosen deliberately: the objection there was to a row of boxes with stroke
+     icons in them, and brush art is a different object. David's call. */
+  .svc-cards {
+    list-style: none;
+    padding: 0;
+    margin-block-start: var(--s6);
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .svc-cards > li:nth-child(-n + 3) { grid-column: span 2; }
+  .svc-cards > li:nth-child(n + 4) { grid-column: span 3; }
+
+  .svc-cards > li { display: grid; }
+
+  /* Dividers BETWEEN cards only — never around the set. A border on the whole
+     grid would be a frame, which is the shape this system retired. So: a
+     vertical rule on every card that is not first in its row, and a horizontal
+     one above the second row. */
+  .svc-cards > li:not(:nth-child(1)):not(:nth-child(4)) .svc-card {
+    border-inline-start: 1px solid var(--rule);
+  }
+
+  .svc-cards > li:nth-child(n + 4) .svc-card {
+    border-block-start: 1px solid var(--rule);
+  }
+
+  /* --s4 on every side of every card, including the outer edges that have no
+     divider to clear. Same trade as the .position cells: three cards side by
+     side have to match each other before any of them matches the heading, so
+     the set sits inset from the content edge as a block. */
+  .svc-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+    block-size: 100%;
+    padding: var(--s4);
+    color: var(--fg);
+    text-decoration: none;
+  }
+
+  .svc-card .illo {
+    margin-block-end: var(--s2);
+  }
+
+  .svc-card__n {
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-mono);
+    color: var(--fg-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .svc-card__name {
+    font-size: var(--t-h3);
+    line-height: 1.15;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .svc-card__b {
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+    max-width: 42ch;
+  }
+
+  /* auto margin, so the arrow sits on the card's bottom edge whatever the
+     body copy does. Five cards of different text lengths otherwise put their
+     arrows at five different heights. */
+  .svc-card__go {
+    margin-block-start: auto;
+    padding-block-start: var(--s2);
+    font-size: var(--t-h3);
+    line-height: 1;
+    /* --accent-fn, not --accent: the display blue is 3.97:1 and this is a
+       graphic carrying meaning at small size. */
+    color: var(--accent-fn);
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .svc-card:hover .svc-card__name,
+  .svc-card:focus-visible .svc-card__name {
+    color: var(--accent-fn);
+  }
+
+  .svc-card:hover .svc-card__go,
+  .svc-card:focus-visible .svc-card__go {
+    transform: translateX(0.35rem);
+  }
+
+  .svc-cards__more {
+    margin-block-start: var(--s5);
+    font-size: var(--t-small);
+  }
+
+  /* --- Process ----------------------------------------------------------- */
+
+  .process {
+    padding-block: var(--section-y);
+  }
+
+  .process__head {
+    display: grid;
+    gap: var(--s3);
+    margin-block-end: var(--s6);
+  }
+
+  /* ONE continuous rule across the whole row, not a rule per cell. That is the
+     difference between a timeline and four cards: the line carries through and
+     each step marks a point on it. */
+  .steps {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--rule);
+  }
+
+  .step {
+    position: relative;
+    padding-block-start: var(--s4);
+    padding-inline-end: var(--s4);
+  }
+
+  /* The node, straddling the rule. A mark sitting ON a line is fine — the rule
+     is that CONTENT never touches one, and this is a graphic, not content. */
+  .step::before {
+    content: '';
+    position: absolute;
+    inset-block-start: -0.25rem;
+    inset-inline-start: 0;
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    background: var(--accent);
+  }
+
+  .step__n {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-mono);
+    color: var(--fg-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .step__h {
+    margin-block: var(--s2) var(--s1);
+    font-size: var(--t-h3);
+    line-height: 1.15;
+  }
+
+  .step__b {
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+  }
+
+  .position__head {
+    display: grid;
+    gap: var(--s3);
+    max-width: 52rem;
+  }
+
+  .position__h2 {
+    max-width: 18ch;
+  }
+
+  /* column-gap 0 so each card's edge IS its divider; the air is padding inside
+     the card instead. The lines cannot reach the h2 above because
+     .position__grid is a SIBLING of .position__head, not its parent. */
+  .position__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 0;
+    row-gap: var(--s5);
+    margin-block-start: var(--s7);
+  }
+
+  /* Left-aligned, and the SAME padding on both sides of every cell.
+
+     Centring made the old asymmetry impossible to miss: the first cell was
+     centred inside 0 / 58px of padding so its text sat left of its own middle,
+     and the last inside 58px / 0 so its text sat right of it. Only the middle
+     cell was symmetric, and the three read as three different insets.
+
+     The zeroed outer edges were deliberate once — they put the first cell
+     flush with the heading above, on the grounds that clearance is bought
+     from a divider and the outer edges have no divider to clear. That argument
+     loses to the one the eye makes: three cells side by side have to match
+     each other before any of them matches the heading.
+
+     --s4, NOT --col-pad, and this is the only grid on the site that sets its
+     own clearance rather than taking the system value. Equalising the padding
+     makes the outer two cells pay 58px they never paid before, and at
+     --col-pad that took the body measure down to 263px — short for running
+     copy. --s4 hands ~56px back to every cell and keeps all three identical,
+     which was the whole point of the change.
+
+     The top rules still span the full cell, so the lines stay on the grid
+     while the type steps in from it. */
+  .point {
+    border-top: 1px solid var(--rule);
+    padding-block-start: var(--s3);
+    padding-inline: var(--s4);
+    text-align: start;
+  }
+
+  .point + .point {
+    border-inline-start: 1px solid var(--rule);
+  }
+
+  /* --col-pad buys clearance from a divider. The outer two edges have no
+     divider to clear — the page-edge rail that used to sit there is gone — so
+     the padding there was holding the band's text 3rem off nothing and making
+     its measure 6rem narrower than the heading directly above it. Same orphan
+     as the one in AgencyStats, same fix. */
+  /* --accent-fn, not --accent. This band used to be inverted, where --accent
+     resolves to --on-ink-blue at 6.40:1. On the light ground the display blue
+     is 3.97:1, and 13px needs 4.5:1 — so the index would have failed the
+     moment the band turned light. The functional sibling is 4.89:1. */
+  .point__n {
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-mono);
+    color: var(--accent-fn);
+  }
+
+  .point__h {
+    margin-block: var(--s3) var(--s2);
+    font-size: 1.375rem;
+    line-height: 1.2;
+  }
+
+  .point__b {
+    color: var(--fg-muted);
+    font-size: var(--t-small);
+  }
+
+  /* --- Honest ------------------------------------------------------------ */
+
+  .honest {
+    padding-block: var(--section-y);
+  }
+
+
+
+  .honest__h2 {
+    margin-block-start: var(--s3);
+    max-width: 14ch;
+  }
+
+
+
+  .honest__body {
+    display: grid;
+    gap: var(--s3);
+    max-width: var(--measure);
+    color: var(--fg-muted);
+  }
+
+  .honest__link a {
+    color: var(--fg);
+    font-weight: var(--weight-medium);
+    text-underline-offset: 0.25em;
+  }
+
+  /* --- Narrow ------------------------------------------------------------ */
+
+  @media (max-width: 60rem) {
+    /* Two abreast rather than four: at four, a step is about 60px wide on a
+       phone and the names wrap to three lines each.
+
+       The rule moves from the container to each step. One continuous line
+       across the container only spans the FIRST row once the grid wraps, so
+       the second row every node sat on nothing. A line per step is the same
+       reading at two columns and it wraps with them. */
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: var(--s5);
+      border-top: 0;
+    }
+
+    .step {
+      border-top: 1px solid var(--rule);
+    }
+
+    .position__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s4);
+    }
+
+    /* Stacked: no column to divide, so no clearance to buy — the cells align
+       with everything else on the page instead of sitting inset from the
+       rails. text-align is already start. */
+    .point {
+      padding-inline: 0;
+    }
+
+    .point + .point {
+      border-inline-start: 0;
+    }
+
+
+
+    /* One card per row below 60rem: six columns cannot carry five cards on a
+       phone, and the dividers between them stop meaning anything once each
+       card is full width. */
+    .svc-cards > li:nth-child(-n + 3),
+    .svc-cards > li:nth-child(n + 4) {
+      grid-column: span 6;
+    }
+
+    .svc-cards > li:not(:nth-child(1)) .svc-card {
+      border-inline-start: 0;
+      border-block-start: 1px solid var(--rule);
+    }
+
+    .svc-card {
+      padding-inline: 0;
+    }
+  }
+</style>

@@ -1,28 +1,42 @@
 #!/usr/bin/env node
 /* =========================================================================
-   Local dev server for the Powerstar7 static site.
+   Production preview server for the Powerstar7 site — serves dist/.
+
+   Run `npm run build` first. `npm run dev` (astro dev) is for iterating;
+   this is for checking the built output behaves the way the host will.
 
      node .claude/serve.js [port]
 
    Reproduces the two host-side behaviours production relies on, so what you
    see locally matches what ships (see DEPLOY.md):
 
-     1. Extensionless URLs — /about-us serves about-us.html, and a request
-        for /about-us.html 301s to /about-us.
+     1. Extensionless URLs — /about serves about/index.html, and a request
+        for /about.html 301s to /about.
      2. A dev-only echo endpoint at POST /api/contact, for exercising the
         form's fetch path without wiring up a real handler.
 
    Node's standard library only — no dependencies, nothing to install.
    ========================================================================= */
-'use strict';
+/* ESM, because package.json now declares "type": "module" for Astro. */
 
-const http = require('node:http');
-const fs = require('node:fs');
-const fsp = require('node:fs/promises');
-const path = require('node:path');
+import http from 'node:http';
+import fs from 'node:fs';
+import fsp from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = path.resolve(__dirname, '..');
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(HERE, '..', 'dist');
 const PORT = Number(process.argv[2] || process.env.PORT || 8080);
+
+/* This serves the BUILD, not the source tree. Without dist/ every route would
+   404 and it would look like a routing bug rather than a missing build. */
+if (!fs.existsSync(path.join(ROOT, 'index.html'))) {
+  console.error(`No build found at ${ROOT}`);
+  console.error('Run `npm run build` first, then start this server again.');
+  console.error('(To iterate on the site itself, use `npm run dev` instead.)');
+  process.exit(1);
+}
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -42,10 +56,23 @@ const MIME = {
 /* Legacy redirects, mirroring _redirects and .htaccess. Returns the target
    path for a 301, or null when the request is not a legacy URL. */
 function legacyTarget(pathname) {
-  if (pathname === '/en' || pathname === '/en/') return '/';
-  if (pathname.startsWith('/en/')) return pathname.slice(3) || '/';
-  if (pathname === '/pt/sobre-nos' || pathname === '/pt/sobre-nos/') return '/about-us';
-  if (pathname === '/pt' || pathname.startsWith('/pt/')) return '/';
+  const clean = pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname;
+
+  // The old Sitejet site served English under /en/….
+  if (clean === '/en') return '/';
+  if (clean.startsWith('/en/')) return clean.slice(3) || '/';
+
+  // Pages the rebuild renamed or merged.
+  const renamed = {
+    '/about-us': '/about',
+    '/our-work': '/work',
+    '/web-design-development': '/services',
+    '/pricing': '/services',
+  };
+  if (renamed[clean]) return renamed[clean];
+
+  /* No /pt rule any more, deliberately. /pt/… is a real Portuguese section
+     again; the blanket redirect this used to carry would shadow all of it. */
   return null;
 }
 
@@ -174,5 +201,5 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, () => {
   console.log(`Powerstar7 dev server → http://localhost:${PORT}`);
   console.log(`Serving ${ROOT}`);
-  console.log('Extensionless URLs and legacy /en, /pt redirects are active.');
+  console.log('Extensionless URLs and the legacy 301 map are active.');
 });

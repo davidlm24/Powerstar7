@@ -1,0 +1,573 @@
+/* =========================================================================
+   DesignActiv — base layer
+   Reset, elements, and the handful of primitives every page composes from.
+   Component styling lives with its component; nothing decorative lives here.
+   ========================================================================= */
+
+@import './tokens.css';
+
+/* --- Reset --------------------------------------------------------------- */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Derived from --header-h, not guessed. Without it, tabbing to a link just
+     below the fold — or following the skip link, or any #anchor — parks the
+     target underneath the bar. */
+  scroll-padding-block-start: calc(var(--header-h) + var(--s2));
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-text);
+  font-size: var(--t-body);
+  font-weight: var(--weight-text);
+  line-height: var(--lh-body);
+  min-height: 100svh;
+  /* No -webkit-font-smoothing: antialiased. On macOS and iOS it renders text
+     THINNER than the default subpixel rendering. That was a defensible choice
+     at display weight 700; at 400 it is the difference between "light" and
+     "anaemic", on exactly the machines a design client looks at the site on. */
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg,
+video { display: block; max-width: 100%; height: auto; }
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Motion is rationed (REBUILD-BRIEF.md §3.8): a couple of authored moments,
+   no scroll-reveal fades. Whatever survives that budget still honours this. */
+/* Four columns need roughly 240px each to carry a title; below 60rem they do
+   not have it, which is why every two-part row already collapses here. The
+   column count drops with them so the grid is never decoration. */
+@media (max-width: 60rem) {
+  :root {
+    --grid-cols: 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --- Typography ---------------------------------------------------------- */
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tr-heading);
+  text-wrap: balance;
+}
+
+/* The display weight is 400 now, and it cannot serve every heading. At poster
+   scale that lightness IS the effect. At 20–28px the same 400 in the display
+   face sits at the same apparent weight as 18px body copy, and the hierarchy
+   collapses — a sub-head stops reading as a sub-head. 500 is the minimum that
+   keeps the distinction, and it needs no new token. */
+/* Three weights, not two, and h1 cannot be keyed off the element any more:
+   the home hero runs --t-hero at 400 while the inner-page h1s run --t-title at
+   600. So the bare h1 carries the hero weight and the two --t-title overrides
+   set their own alongside their size. */
+h1 { font-weight: var(--weight-display); }
+h2 { font-weight: var(--weight-heading); }
+h3, h4 { font-weight: var(--weight-medium); }
+
+h1 {
+  font-size: var(--t-hero);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tr-display);
+}
+
+h2 { font-size: var(--t-h2); }
+h3 { font-size: var(--t-h3); }
+
+p { text-wrap: pretty; }
+
+a {
+  color: var(--accent-fn);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+a:hover { text-decoration-thickness: 2px; }
+
+/* One visible focus treatment, everywhere, in the display blue. */
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  /* No border-radius here on purpose: an outline follows the element's own
+     radius, so the ring squares on the square controls and stays rounded on
+     inputs and cards without a single per-element override. */
+}
+
+.invert :focus-visible { outline-color: var(--on-ink-blue); }
+
+/* --blue-fn, not --blue: the display blue behind white measured 4.43:1 and
+   failed AA for selected text. The functional sibling is 5.47:1. #fff stays
+   — --paper on this fill is 4.89:1, which passes but spends margin for
+   nothing. */
+::selection {
+  background: var(--blue-fn);
+  color: #fff;
+}
+
+/* --- Primitives ---------------------------------------------------------- */
+
+/* --- Bands ----------------------------------------------------------------
+   .rails draws the two page-edge rules: one vertical hairline at each of the
+   container's content edges, running the full height of every band. Both of
+   the references the owner chose do exactly this — trace.so and Makora each
+   carry two 1px rails at their content edge, flipping colour on dark
+   sections.
+
+   Drawn PER BAND rather than as one page-level overlay, because a single
+   full-height layer cannot flip with the ground it crosses: it would need a
+   second layer for every inverted section, and whatever z-index it took it
+   would paint either over or under the opaque bands. Per band, the layering
+   resolves itself and --rail is simply read from whatever band it is in.
+
+   isolation: isolate is what makes z-index: -1 mean "above this band's own
+   background, below its content" rather than "behind everything". It was kept
+   when the old frame was retired, for the mark field; the mark field is gone
+   and this is what it is for now. */
+.rails {
+  position: relative;
+  isolation: isolate;
+}
+
+.rails::before,
+.rails::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset-block: 0;
+  inline-size: 1px;
+  background: var(--rail);
+  pointer-events: none;
+}
+
+.rails::before { inset-inline-start: var(--rail-x); }
+.rails::after { inset-inline-end: var(--rail-x); }
+
+.container {
+  width: 100%;
+  max-width: var(--width-page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* --- Title beside content -------------------------------------------------
+   The divider is a border on the body column itself, not a line positioned in
+   a background. That makes it self-aligning — it IS the column edge, so it can
+   never drift from it — and it exists only where a split exists. Column gap is
+   zero on purpose: a gap would float the body off the line it starts on, so
+   the breathing room is padding inside the columns. */
+.row {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: 0;
+  align-items: start;
+}
+
+.row__title {
+  grid-column: 1 / 2;
+  padding-inline-end: var(--col-pad);
+}
+
+/* --col-pad, matching .row__title's padding-inline-end above, rather than
+   --s6. The two sides of this ONE line used to clear it by different amounts:
+   a fluid 24-64px on the left against a fixed 64px on the right, so they
+   agreed only above 1422px and sat 20.8px apart at 960. Content either side
+   of a divider has to be the same distance from it, or the divider stops
+   reading as one line. */
+.row__body {
+  grid-column: 2 / -1;
+  padding-inline-start: var(--col-pad);
+  border-inline-start: 1px solid var(--rule);
+}
+
+/* THE RULE: a one-column .row__title carries type up to --t-h3 and no further.
+   At four columns the title track is 284px, and --col-pad takes 58 of them —
+   so a heading has 227px to set in. That is fine for 28px (one line) and
+   breaks down above it: --t-h2 at 56px lands on FIVE lines of one or two
+   words each, and --t-h3's own 40px sibling on three.
+
+   The tell that this was always the constraint: .honest__h2 carries
+   max-width: 14ch, which computes to 506px — more than twice the track it
+   sits in, so it never applied. 14ch was written for a title two columns
+   wide. This is that width.
+
+   Proof it is the column and not the type: .svc__name is LARGER, 48px, and
+   sets on one line — it lives in the body track at 853px.
+
+   span, not a numbered end line: "3 / -1" on a two-column grid resolves to
+   "3 / 3", which the spec rewrites as an implicit extra track that overflows
+   the page. span degrades on its own, so this needs no media query. */
+.row--statement > .row__title,
+.row--statement > .row__body {
+  grid-column: span 2;
+}
+
+/* Collapses at the same width the column count drops, so no span is ever
+   evaluated against a two-column grid — `3 / -1` would resolve to `3 / 3`,
+   which the spec rewrites as an implicit extra track that overflows the page. */
+@media (max-width: 60rem) {
+  .row__title,
+  .row__body {
+    grid-column: 1 / -1;
+    padding-inline: 0;
+    border-inline-start: 0;
+  }
+
+  .row__body {
+    padding-block-start: var(--s3);
+  }
+}
+
+.measure { max-width: var(--measure); }
+.measure-wide { max-width: var(--width-text); }
+
+/* The tracked micro-label. Used as a section marker instead of an eyebrow
+   heading, so the h2 can stay at poster scale without a kicker above it. */
+/* The section eyebrow, in trace.so's treatment: lowercase mono at 13px with
+   effectively no tracking. Free — --font-mono is a system stack and loads no
+   webfont — and it is the most recognisable thing about the reference after
+   the ground colour.
+
+   text-transform does the work, so no content changes: "What we do" renders
+   as "what we do" and the Portuguese strings follow without a casing hazard
+   in either language.
+
+   This grammar is for eyebrows ONLY. The seven uppercase micro labels —
+   column and field headers like "PROJECTS DELIVERED" — keep --tr-micro at
+   0.09em, because uppercase at 0.01em is unreadable and lowercase at 0.09em
+   is not an eyebrow. Two different objects, two different rules. */
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--t-micro);
+  font-weight: var(--weight-text);
+  letter-spacing: var(--tr-mono);
+  text-transform: lowercase;
+  color: var(--fg-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+
+/* A bar, not a square. It was a square, became a dot when the UI went
+   rounded, and went back to a square; it is a bar now because that is what
+   precedes an eyebrow on the reference, and at 16x2 it reads as a mark rather
+   than as a bullet. Non-text, so 3:1 is the bar and --accent clears it. */
+.label::before {
+  content: '';
+  inline-size: 1rem;
+  block-size: 2px;
+  background: var(--accent);
+  flex: none;
+}
+
+.lead {
+  font-size: var(--t-lead);
+  line-height: 1.45;
+  color: var(--fg-muted);
+  letter-spacing: -0.008em;
+}
+
+/* A between-section breather, from trace.so, which sets a diagonal hatch
+   between its bands. A repeating gradient: no asset, no request, and it reads
+   from --rail so it flips with the ground like every other line. Decorative
+   and empty by contract — text must never sit on it. */
+.hatch {
+  block-size: var(--s6);
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--rail) 0 1px,
+    transparent 1px 8px
+  );
+}
+
+/* An unfilled slot, shown as unfilled. Used wherever a section is built but
+   its content is not written yet — the legal notice's missing registration
+   details, the prices, the FAQ answers.
+
+   It is deliberately NOT styled to look like content. The rule the legal page
+   set: "Unfilled fields read as unfilled. They are not styled to look like
+   content, because they are not content." Mono, tinted, angle-bracketed, so
+   nobody mistakes one for copy and nobody ships one by accident.
+
+   The text inside is written inline at the call site rather than as an i18n
+   key, because a placeholder is not content and does not belong in the
+   translation deck. */
+.pending {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  color: var(--fg-muted);
+  background: var(--blue-wash);
+  padding: 0.1em 0.35em;
+}
+
+/* --- Illustrations --------------------------------------------------------
+   A brush-drawn object: an ink line over a flat blue shape that sits behind it
+   and deliberately does not register with it, the way a risograph misprints a
+   second pass. The wobble in both comes from a turbulence filter — see
+   components/InkDefs.astro, which must be on the page for these to render as
+   anything but clean geometry.
+
+   Decorative by contract. Every instance is aria-hidden and sits beside a real
+   text label, so no contrast floor applies to it — which is the only reason
+   the flat layer can run at 0.5 and still be legitimate. */
+.illo {
+  display: block;
+  inline-size: 100%;
+  max-inline-size: 7.5rem;
+  block-size: auto;
+}
+
+.illo__line {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The filled marks inside the line group — dots, pips — which would otherwise
+   inherit fill: none and vanish. */
+.illo__dot {
+  fill: var(--ink);
+  stroke: none;
+}
+
+/* The base misregistration lives here rather than as a transform attribute on
+   the element, so the hover drift below can build on it instead of fighting
+   it. Offset up and right, which is the direction the reference misprints. */
+.illo__flat {
+  fill: var(--blue);
+  opacity: 0.5;
+  transform: translate(8px, -6px);
+}
+
+/* The drift: on hover the two layers pull APART, exaggerating the
+   misregistration that is the whole character of the style. Put .illo-drift on
+   whatever carries the hover — usually the card's own link.
+
+   Gated on no-preference rather than left to the global reduced-motion rule.
+   That rule only zeroes transition-duration, which would turn this into an
+   instant jump — worse than no motion at all. Here, someone who asked for less
+   motion simply never sees the layers move. */
+@media (prefers-reduced-motion: no-preference) {
+  .illo__flat,
+  .illo__line {
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .illo-drift:hover .illo__flat,
+  .illo-drift:focus-visible .illo__flat {
+    transform: translate(14px, -11px);
+  }
+
+  .illo-drift:hover .illo__line,
+  .illo-drift:focus-visible .illo__line {
+    transform: translate(-4px, 3px);
+  }
+}
+
+/* --- Buttons -------------------------------------------------------------
+   Two: a solid one and a quiet one.
+
+   The buttons carry the one piece of ornament in this system — a light sheen
+   that follows the pointer across the face, plus a hairline top highlight
+   that gives the fill a direction. This is deliberate and it is the only
+   place it appears. The previous site put the same idea on a hero cursor
+   glow, a shine sweep on a pricing badge and a fade on every element on the
+   page; spread that thin it read as noise. Spent in exactly one place, on
+   the control the visitor is about to click, it reads as craft. */
+
+.btn {
+  --btn-bg: var(--accent-fn);
+  --btn-fg: #fff;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: 0.85rem 1.4rem;
+  min-height: 44px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  border: 1px solid transparent;
+  /* Square, by request. The sheen's ::after inherits this, so it squares off
+     with the button rather than leaving rounded corners behind. */
+  border-radius: 0;
+  cursor: pointer;
+  /* A hairline of light along the top edge — one inset, not the three-layer
+     bevel the old system stamped on twelve different surfaces. */
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22);
+  transition:
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+/* The sheen. isolation + z-index:-1 puts it above the fill but below the
+   label, so the glyphs themselves are never washed out.
+
+   That is also the catch: "below the label" means "in the label's
+   background", which is the layer WCAG contrast is measured against. The
+   alpha here is not a taste decision — it is the largest value that keeps
+   white text on --blue-hover above 4.5:1 once composited, with margin.
+   Raising it, or lightening --blue-hover, breaks AA on hover. */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    9rem circle at var(--mx, 50%) var(--my, 50%),
+    rgb(255 255 255 / 0.2),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+  pointer-events: none;
+}
+
+/* Focus takes the same fill as hover, because focus also turns the sheen on
+   — and the sheen has to composite over the darker fill to stay readable.
+
+   Every hover rule below is guarded with :not(:disabled). A disabled button
+   still MATCHES :hover in CSS — it just never fires events — so without the
+   guard an inert control would light up, lift and track the pointer. */
+.btn:not(.btn--quiet):not(:disabled):hover,
+.btn:not(.btn--quiet):focus-visible {
+  --btn-bg: var(--blue-hover);
+}
+
+.btn:not(:disabled):hover { transform: translateY(-1px); }
+.btn:not(:disabled):active { transform: translateY(0); }
+
+/* Only where there is a real pointer. On touch the sheen has nothing to
+   follow, and the old version stuck on after a tap. */
+@media (hover: hover) and (pointer: fine) {
+  .btn:not(:disabled):hover::after { opacity: 1; }
+}
+
+.btn:focus-visible::after { opacity: 1; }
+
+/* --- Disabled ------------------------------------------------------------
+   The contact form disables its submit button for the duration of a request.
+   Before this the disabled button was pixel-identical to an enabled one,
+   cursor included, so the one moment the control is genuinely inert was the
+   moment it looked most clickable.
+
+   The colour drains to a neutral rather than dimming with opacity. Opacity
+   composites the LABEL against the page ground along with the fill, which
+   takes an 18px/500 label to 3.54:1 even at 0.75 — worse than the state it
+   is meant to clarify. A flat neutral fill keeps it at 8.07:1. WCAG exempts
+   inactive controls from contrast, but there is no reason to spend that
+   exemption. The top highlight goes too: it is what gives the fill its
+   direction, and an inert surface should read flat. */
+.btn:disabled {
+  --btn-bg: var(--ink-muted);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* The quiet button has no fill to drain, so it mutes its label and keeps the
+   hairline. Without this it would inherit the neutral fill above. */
+.btn--quiet:disabled {
+  --btn-bg: transparent;
+  --btn-fg: var(--fg-muted);
+  border-color: var(--rule);
+}
+
+/* --rail, not --rule: at 1.08:1 the edge of an outlined button was
+   effectively invisible on the cream. 1.22:1 is the same line the page edges
+   draw. Honest caveat: neither clears WCAG 1.4.11's 3:1, which is defensible
+   here only because the button carries a visible text label — the boundary is
+   not what identifies the control. A field border has no label and so gets
+   --field-edge instead. */
+.btn--quiet {
+  --btn-bg: transparent;
+  --btn-fg: var(--fg);
+  border-color: var(--rail);
+  box-shadow: none;
+}
+
+.btn--quiet:not(:disabled):hover {
+  border-color: var(--fg);
+}
+
+/* On the quiet button the sheen is ink, not light — white on the paper
+   ground would be invisible. Mixed from --ink rather than written out as
+   rgb(17 19 24), which is the same colour the token already names. */
+.btn--quiet::after {
+  background: radial-gradient(
+    9rem circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--ink) 7%, transparent),
+    transparent 60%
+  );
+}
+
+.invert .btn--quiet { --btn-fg: var(--on-ink); }
+
+.invert .btn--quiet::after {
+  background: radial-gradient(
+    9rem circle at var(--mx, 50%) var(--my, 50%),
+    rgb(255 255 255 / 0.12),
+    transparent 60%
+  );
+}
+
+/* --- Accessibility -------------------------------------------------------- */
+
+.skip-link {
+  position: absolute;
+  inset-inline-start: var(--gutter);
+  inset-block-start: -100%;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background: var(--ink);
+  color: var(--paper);
+  text-decoration: none;
+}
+
+.skip-link:focus-visible { inset-block-start: var(--s2); }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

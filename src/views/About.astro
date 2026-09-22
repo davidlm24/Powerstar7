@@ -1,0 +1,159 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Closing from '../components/Closing.astro';
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const how = [
+  { h: t('about.how.1.h'), b: t('about.how.1.b') },
+  { h: t('about.how.2.h'), b: t('about.how.2.b') },
+  { h: t('about.how.3.h'), b: t('about.how.3.b') },
+];
+---
+
+<Base lang={lang} page="about" title={t('about.title')} description={t('about.lead')}>
+  <PageHead label={t('nav.about')} title={t('about.h1')} lead={t('about.lead')} />
+
+  {/* No team grid. The old site carried three cards reading "Name Surname"
+      over a placeholder portrait. A studio that cannot yet name its people
+      says what it does instead. */}
+  <section class="story rails">
+    <div class="container row story__inner">
+      <h2 class="story__h row__title">{t('about.story.h')}</h2>
+      <div class="prose row__body">
+        <p>{t('about.story.b1')}</p>
+        <p>{t('about.story.b2')}</p>
+        <p>{t('about.story.b3')}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="where rails">
+
+    <div class="container where__inner">
+      <h2 class="where__h">{t('about.where.h')}</h2>
+      <p class="lead measure-wide">{t('about.where.b')}</p>
+    </div>
+  </section>
+
+  <section class="how rails">
+    <div class="container">
+      <h2 class="how__h">{t('about.how.h')}</h2>
+      <div class="how__grid">
+        {
+          how.map((item, i) => (
+            <article class="how__item">
+              <p class="how__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</p>
+              <h3 class="how__item-h">{item.h}</h3>
+              <p class="how__item-b">{item.b}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <Closing lang={lang} />
+</Base>
+
+<style>
+  .story {
+    padding-block-end: var(--s7);
+  }
+
+  /* On the grid: the heading takes column one, the prose takes the rest, and
+     the line between them is the divider — it IS the prose column's leading
+     edge, so it cannot drift from it. No column gap: a gap would float the
+     prose off the line it is meant to start on, so the breathing room is
+     padding inside the columns instead. */
+  .story__inner {
+    padding-block-start: var(--s6);
+    border-top: 1px solid var(--rule);
+  }
+
+  .story__h {
+    font-size: var(--t-h3);
+    position: sticky;
+    top: var(--header-h);
+  }
+
+  .prose {
+    display: grid;
+    gap: var(--s3);
+    max-width: var(--measure);
+    font-size: var(--t-lead);
+    line-height: 1.5;
+  }
+
+  .where {
+    padding-block: var(--section-y);
+  }
+
+  .where__inner {
+    display: grid;
+    gap: var(--s4);
+  }
+
+  .where__h {
+    font-size: var(--t-h2);
+    max-width: 14ch;
+  }
+
+  .how {
+    padding-block: var(--section-y) var(--s6);
+  }
+
+  .how__h {
+    font-size: var(--t-h3);
+  }
+
+  .how__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s5);
+    margin-block-start: var(--s5);
+  }
+
+  .how__item {
+    border-top: 1px solid var(--rule);
+    padding-block-start: var(--s3);
+  }
+
+  .how__n {
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-mono);
+    /* --accent-fn, not --accent: 13px text needs 4.5:1 and the display blue
+       only reaches 3.97:1 on the ground. See tokens.css. */
+    color: var(--accent-fn);
+  }
+
+  .how__item-h {
+    margin-block: var(--s3) var(--s2);
+    font-size: 1.25rem;
+    line-height: 1.2;
+  }
+
+  .how__item-b {
+    color: var(--fg-muted);
+    font-size: var(--t-small);
+  }
+
+  @media (max-width: 60rem) {
+    .how__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s4);
+    }
+
+    .story__h {
+      position: static;
+    }
+  }
+</style>

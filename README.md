@@ -1,125 +1,120 @@
-# Powerstar7
+# DesignActiv
 
-Marketing site for Powerstar7, a Berlin digital agency.
+Marketing site for DesignActiv, a web studio in **Germany and Luxembourg**
+working with clients across Europe and Brazil.
 
-A plain static site — hand-written HTML, one stylesheet, one script. No
-framework, no build step, no dependencies, no external network requests at
-runtime (fonts are self-hosted, icons are inline SVG). Open `index.html` in a
-browser and it works.
+Built with **Astro**, output as static HTML. No client-side framework, no
+runtime JavaScript beyond one 4 KB file, and — the hard constraint —
+**zero third-party requests**. Fonts are self-hosted with hand-written
+`unicode-range` subsets, there is no analytics and there are no cookies, so
+the site needs no consent banner. That is a legal position in Germany, not an
+aesthetic one, and nothing may be added that breaks it.
 
-## Run it locally
+The home page is **63 KB over the wire in 7 requests**. Those figures come from
+`scripts/measure.mjs` reading the real build output, and they are printed on
+the **Work** page — the home page leads with the studio's own numbers instead.
 
-```sh
-node .claude/serve.js        # http://localhost:8080
-node .claude/serve.js 3000   # or pick a port
+## Run it
+
+```bash
+npm install
 ```
 
-The dev server reproduces the two behaviours the production host provides, so
-local matches live:
+```bash
+npm run dev
+```
 
-- **Extensionless URLs** — `/about-us` serves `about-us.html`, and
-  `/about-us.html` 301s to `/about-us`.
-- **Legacy redirects** — the old Sitejet `/en/…` and `/pt/…` URLs 301 to their
-  new equivalents.
+`npm run dev` is Astro's dev server with hot reload, on
+<http://localhost:3000>. Use it for building and iterating.
 
-It also exposes a dev-only echo endpoint at `POST /api/contact` for exercising
-the contact form's `fetch` path. Point `data-endpoint` at it in `contact.html`
-to test; it only logs, it never sends mail.
+```bash
+npm run build && npm run preview
+```
 
-Any static file server works too, but without the rewrite rules the
-extensionless links and legacy redirects won't behave as they do in production.
+`npm run preview` runs `.claude/serve.js` against `dist/` on
+<http://localhost:4000>. Use it to check the **built** output behaves the way
+a host will serve it: extensionless URLs, the legacy 301 map, a 404 page, and
+`/design/` blocked. It also exposes a dev-only echo endpoint at
+`POST /api/contact` for exercising the contact form's `fetch` path — point the
+form's `data-endpoint` at it to test. It only logs; it never sends mail.
+
+```bash
+npm run measure
+```
+
+Re-measures the built home page and rewrites `src/data/metrics.json`. The Work
+page prints what the site weighs, so that number has to come from the build,
+not from a claim. Run it between two builds: `build → measure → build`.
 
 ## Layout
 
 ```
-index.html                    Home
-about-us.html                 About
-services.html                 Services overview (six anchored sections)
-web-design-development.html   Web design service detail
-our-work.html                 Portfolio
-pricing.html                  Pricing tiers
-contact.html                  Contact form
-legal-notice.html             Impressum
-privacy.html                  Privacy policy
-404.html                      Error page (ErrorDocument / Netlify default)
+src/
+  pages/            One file per route. English at the root, Portuguese
+                    under pt/ with Portuguese slugs (/pt/sobre-nos).
+                    Each one is a three-line wrapper around a view.
+  views/            The actual pages, each rendered in both languages.
+  components/       Header, Footer, ProofStrip, PageHead, Closing, Notice.
+  layouts/Base      <head>, canonical, hreflang, Open Graph, skip link.
+  i18n/ui.ts        ALL copy, both languages, side by side. Also ROUTES —
+                    the single source of truth for nav, the language
+                    switcher, hreflang and the sitemap.
+  styles/
+    tokens.css      Colour, type scale, spacing. Every contrast pairing is
+                    computed, and the ratios are in the comments.
+    global.css      Reset, elements, and the few shared primitives.
+    fonts.css       @font-face and the subsets.
+  data/metrics.json Written by scripts/measure.mjs. Do not hand-edit.
+  data/agency.json  The studio's own figures on the home page. Nothing here
+                    is checkable by a visitor, so it has to be kept true by
+                    hand — see the note inside the file.
+  data/showcase-demo.json
+                    PLACEHOLDER case studies for the Work page, behind an
+                    `enabled` flag. None of it is real. Off before launch.
 
-assets/css/site.css           The entire design system (tokens → components)
-assets/js/site.js             Nav, scroll reveal, cursor tracking, form
-assets/fonts/                 Space Grotesk, 3 self-hosted subsets
-assets/img/                   Logos, favicon, placeholder imagery
+public/             Copied verbatim to dist/.
+  assets/js/site.js Nav, contact form, footer year. That is all it does.
+  _redirects        Netlify / Cloudflare Pages rules.
+  .htaccess         Equivalent Apache rules, plus cache headers.
 
-_redirects                    Netlify / Cloudflare Pages rules
-.htaccess                     Equivalent Apache rules + cache headers
-sitemap.xml  robots.txt
-DEPLOY.md                     Host setup and the pre-launch checklist
-design/                       Design handoff bundle — see below
+scripts/measure.mjs Measures dist/ and fails the run if any third-party
+                    request has crept onto the home page.
 ```
 
 ## The design system
 
-`assets/css/site.css` is the single source of truth. It is ordered
-tokens → reset → base → layout → components → utilities, with a
-**geometric system** section at the end that carries the current visual
-direction. Everything is driven by custom properties on `:root`: colours, a
-fluid type scale (`--step--1` … `--step-6`), fluid spacing (`--space-2xs` …
-`--space-3xl`), radii, and shadows.
+`src/styles/tokens.css` is the source of truth, and two rules govern it:
 
-The look, as it landed after the design iterations:
+1. **One accent hue.** Blue. The brand blue `#0e6fff` fails WCAG AA as text
+   (3.97:1 on the ground), so the accent ships as a **pair**: the bright one
+   is display-only, and `#0c62e0` carries anything read at body size (4.89:1
+   on paper, 5.47:1 behind white text). There is no orange, violet or amber.
+2. **One type system.** Never a second scale scoped to a subset of pages.
 
-- **Geometric lines and dot accents, no illustrations.** Dot fields are 1px
-  dots on a 13px pitch, with blue accents scattered on an irregular 180px tile
-  so they read as random rather than gridded. On light sections the field is
-  masked out of the centre, so text never sits on dots. In the footer the dots
-  rise from the bottom edge and fade to transparent.
-- **Full-bleed hero**, minimal and direct: badge pill, gradient headline, lead,
-  two buttons. Blue and violet washes over near-black, hairline sweeping arcs,
-  and a dot field that surfaces around the cursor on hover.
-- **Nav** lives in a fixed-width, fully-rounded dark glass pill at all times —
-  flat, 1px outline only, and it stays dark on scroll over light content. The
-  current page gets a tinted pill, never an underline.
-- **Buttons and highlights** carry a minimal 3d finish (top highlight, bottom
-  inset, drop shadow) plus a sheen that follows the pointer. Promo elements add
-  a periodic shine sweep via `.shine`.
-- **Backgrounds** are a desaturated blue off-white (`--paper: #f4f7fb`), never
-  pure white; form fields stay white for contrast.
+The ground is a warm off-white, never pure white; `.invert` flips the
+semantic roles for the dark bands and reassigns the muted and accent tones,
+which the light values fail on.
 
-Behaviour degrades gracefully: with JavaScript off the nav stays reachable and
-all content stays visible (`.no-js` handling). `prefers-reduced-motion` and
-`prefers-contrast` are both honoured.
+Headings run at **7.8× body** at desktop (140px against an 18px body). The
+hero floor is set by the longest line in the *widest* language — Portuguese —
+so three lines stay three lines from 320px upward.
 
-## Placeholders
+Motion is rationed: hover transitions only, no scroll-reveal, no cursor
+tracking, no header that turns into a glass pill.
 
-The site deliberately ships with visible, styled placeholders rather than
-lorem-filled fake content — striped `.ph-media` panels for project shots and
-team photos, `ADD COPY` blocks for missing prose, and `(01)`–`(03)` markers on
-pricing tiers. They are designed to read as intentional until real material
-replaces them.
+## Content status
 
-**Nothing below is real data.** See the pre-launch checklist in `DEPLOY.md`:
+The site is honest about what does not exist yet, rather than shipping
+placeholders styled to look finished. Before launch, see the checklist in
+[DEPLOY.md](DEPLOY.md) — the legal notice in particular is a **launch
+blocker** under § 5 TMG.
 
-- Contact details — `+49 (0) 000 000 0000`, `hello@powerstar7.com`
-- Pricing — all three tiers are `€0` with placeholder features
-- Portfolio and team — striped placeholder panels
-- Legal notice (Impressum) and privacy policy — incomplete, and legally
-  required before launch (§5 TMG)
-- Contact form — no endpoint configured; it currently falls back to `mailto:`
+## `design/` and `REBUILD-BRIEF.md`
 
-Search the pages for `ADD COPY` and `TODO` to find them all.
+`REBUILD-BRIEF.md` is why this site looks the way it does: the measured DNA of
+ten reference sites, what the previous version got wrong, and what had to
+survive the rebuild. Read it before making design decisions.
 
-`assets/img/work-1.webp` … `work-6.webp` are left over from an earlier design
-pass and are no longer referenced by any page — the CSS dot-field placeholders
-replaced them. They are kept only as a size reference for real project shots.
-
-## `design/`
-
-The original Claude Design handoff bundle, kept for provenance:
-
-- `HANDOFF.md` — the bundle's own instructions to the implementing agent
-- `chats/` — the two design conversations, where the intent and every
-  iteration of the visual direction live
-- `Powerstar7 UI Audit.dc.html` + `support.js` — the standalone snapshot of
-  the frozen design
-- the reference screenshots the direction was based on
-
-Nothing in `design/` is served — it is reference material, not part of the
-site.
+`design/` is the original Claude Design handoff bundle, kept for provenance.
+Nothing in it is served — `_redirects`, `.htaccess` and `robots.txt` all
+exclude it.

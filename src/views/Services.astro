@@ -1,0 +1,383 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Closing from '../components/Closing.astro';
+import Notice from '../components/Notice.astro';
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+/* Written out rather than built with t(`svc.${key}.name` as any). The cast
+   was quietly removing static key-checking from all 25 svc.* strings — a
+   typo in one would have rendered nothing rather than failing. */
+const services = [
+  {
+    id: 'web', n: '01',
+    name: t('svc.web.name'), body: t('svc.web.body'),
+    d: [t('svc.web.d1'), t('svc.web.d2'), t('svc.web.d3')],
+  },
+  {
+    id: 'brand', n: '02',
+    name: t('svc.brand.name'), body: t('svc.brand.body'),
+    d: [t('svc.brand.d1'), t('svc.brand.d2'), t('svc.brand.d3')],
+  },
+  {
+    id: 'seo', n: '03',
+    name: t('svc.seo.name'), body: t('svc.seo.body'),
+    d: [t('svc.seo.d1'), t('svc.seo.d2'), t('svc.seo.d3')],
+  },
+  {
+    id: 'email', n: '04',
+    name: t('svc.email.name'), body: t('svc.email.body'),
+    d: [t('svc.email.d1'), t('svc.email.d2'), t('svc.email.d3')],
+  },
+  {
+    id: 'hosting', n: '05',
+    name: t('svc.hosting.name'), body: t('svc.hosting.body'),
+    d: [t('svc.hosting.d1'), t('svc.hosting.d2'), t('svc.hosting.d3')],
+  },
+] as const;
+
+/* Questions only. Every answer is an unfilled slot in the markup — these are
+   the questions a small business actually asks a studio, but what the studio
+   says back is not mine to invent. */
+const faqs = [
+  t('services.faq.q1'), t('services.faq.q2'), t('services.faq.q3'),
+  t('services.faq.q4'), t('services.faq.q5'), t('services.faq.q6'),
+  t('services.faq.q7'),
+];
+---
+
+<Base lang={lang} page="services" title={t('services.title')} description={t('services.lead')}>
+  <PageHead label={t('home.services.label')} title={t('services.h1')} lead={t('services.lead')} />
+
+  {/* Five sections, each with its own heading at near-display scale — not
+      five identical cards in a grid with a stroke icon at the top. The old
+      site had six of those and they were the reason every page read the
+      same. The number column doubles as the section's own index. */}
+  <div class="services rails">
+    <div class="container">
+      {
+        services.map((s, i) => (
+          <section class:list={['svc', 'row', i === 1 && 'invert']} id={s.id}>
+            <div class="svc__index row__title">
+              <span class="svc__n">{s.n}</span>
+            </div>
+
+            <div class="svc__body row__body">
+              <h2 class="svc__name">{s.name}</h2>
+              <p class="svc__lede">{s.body}</p>
+
+              <h3 class="svc__deliverables-h">{t('services.deliverables')}</h3>
+              <ul class="svc__deliverables">
+                {s.d.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+
+  {/* --- What things cost -------------------------------------------------
+      Not a tier table. This studio quotes against a written scope, so the
+      shape is one line per service with the number attached — and the numbers
+      are the one thing on this site nobody can verify, so they are slots
+      rather than guesses until David fills them. */}
+  <section class="pricing rails">
+    <div class="container">
+      <Notice title={t('services.todo.h')} body={t('services.todo.b')} />
+
+      <div class="pricing__head">
+        <p class="label">{t('services.pricing.label')}</p>
+        <h2>{t('services.pricing.h2')}</h2>
+        <p class="lead measure">{t('services.pricing.lead')}</p>
+      </div>
+
+      <dl class="prices">
+        {
+          services.map((s) => (
+            <div class="price">
+              <dt class="price__name">{s.name}</dt>
+              <dd class="price__v">
+                <span class="price__from">{t('services.pricing.from')}</span>
+                <span class="pending">
+                  &lt;{lang === 'pt' ? 'valor' : 'amount'}&gt;
+                </span>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  {/* --- FAQ ---------------------------------------------------------------
+      <details>/<summary>, so it opens and closes with no JavaScript at all
+      and arrives keyboard-accessible with its expanded state announced. The
+      site ships one 12 KB script; an accordion is not worth adding to it. */}
+  <section class="faq rails">
+    <div class="container">
+      <div class="faq__head">
+        <p class="label">{t('services.faq.label')}</p>
+        <h2>{t('services.faq.h2')}</h2>
+      </div>
+
+      <div class="faqs">
+        {
+          faqs.map((q) => (
+            <details class="faq-item">
+              <summary class="faq-item__q">{q}</summary>
+              <div class="faq-item__a">
+                <span class="pending">
+                  &lt;{lang === 'pt' ? 'resposta' : 'answer'}&gt;
+                </span>
+              </div>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <Closing lang={lang} />
+</Base>
+
+<style>
+  .services {
+    padding-block-end: var(--s7);
+  }
+
+  /* --- What things cost --------------------------------------------------- */
+
+  .pricing {
+    padding-block: var(--section-y);
+    border-top: 1px solid var(--rule);
+  }
+
+  .pricing__head {
+    display: grid;
+    gap: var(--s3);
+    margin-block: var(--s6);
+  }
+
+  .prices {
+    margin: 0;
+    display: grid;
+  }
+
+  /* A row per service, the name left and the number right — the same shape the
+     footer's base row uses. A divider between rows, none around the set. */
+  .price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s3);
+    padding-block: var(--s3);
+  }
+
+  .price + .price {
+    border-top: 1px solid var(--rule);
+  }
+
+  .price__name {
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tr-heading);
+  }
+
+  .price__v {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: var(--s2);
+  }
+
+  .price__from {
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-mono);
+    color: var(--fg-muted);
+  }
+
+  /* --- FAQ ---------------------------------------------------------------- */
+
+  .faq {
+    padding-block-end: var(--section-y);
+  }
+
+  .faq__head {
+    display: grid;
+    gap: var(--s3);
+    margin-block-end: var(--s6);
+  }
+
+  .faqs {
+    max-width: var(--width-text);
+  }
+
+  .faq-item {
+    border-top: 1px solid var(--rule);
+  }
+
+  /* list-style and the webkit marker both have to go, or the browser draws its
+     own triangle next to ours. */
+  .faq-item__q {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s4);
+    padding-block: var(--s3);
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    font-weight: var(--weight-medium);
+    line-height: 1.2;
+    letter-spacing: var(--tr-heading);
+  }
+
+  .faq-item__q::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item__q::after {
+    content: '+';
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: var(--t-body);
+    /* --accent-fn, not --accent: this is a small graphic carrying state, and
+       the display blue is 3.97:1. */
+    color: var(--accent-fn);
+  }
+
+  .faq-item[open] .faq-item__q::after {
+    content: '\2212';
+  }
+
+  .faq-item__a {
+    padding-block-end: var(--s4);
+    max-width: var(--measure);
+    color: var(--fg-muted);
+  }
+
+  .svc {
+    padding-block: var(--s6);
+    border-top: 1px solid var(--rule);
+  }
+
+  /* One row per list runs dark, which is the CREATIVE. reference's device for
+     giving a long list a rhythm without turning a whole section into a band.
+     Dark is the footer's ground everywhere else on this site now; here it is
+     punctuation.
+
+     The negative margin with matching padding is what keeps the type on this
+     row aligned with every other row while the fill sits slightly proud of
+     the content column. The alternative — padding without the margin —
+     indents one row's text by 32px and reads as a mistake.
+
+     Every role inside flips automatically: .invert reassigns --fg, --fg-muted,
+     --accent, --rule and --rail in one place, so .row__body's divider and the
+     index numeral follow without a single override here. */
+  .svc.invert {
+    /* Clamped to the gutter. A flat --s4 bleed is 32px, and at 320px the
+       gutter is only 20px — the row then hangs 12px off each side of the page
+       and the document scrolls sideways. */
+    margin-inline: calc(min(var(--s4), var(--gutter)) * -1);
+    padding-inline: min(var(--s4), var(--gutter));
+    border-top-color: transparent;
+  }
+
+  /* The index stays with the heading as the section scrolls past, so a long
+     services page never loses track of which service you are reading. */
+  .svc__index {
+    position: sticky;
+    top: var(--header-h);
+    align-self: start;
+  }
+
+  .svc__n {
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-mono);
+    /* --accent-fn, not --accent. This is 13px text, and the bright display
+       blue measures 3.97:1 on the ground — it fails AA below 24px. That is
+       the entire reason the accent ships as a pair. */
+    color: var(--accent-fn);
+  }
+
+  .svc__body {
+    max-width: 58rem;
+  }
+
+  .svc__name {
+    font-size: clamp(1.875rem, 4vw, 3rem);
+    line-height: 1.04;
+  }
+
+  .svc__lede {
+    margin-block-start: var(--s3);
+    max-width: var(--measure);
+    font-size: var(--t-lead);
+    line-height: 1.5;
+    color: var(--fg-muted);
+  }
+
+  .svc__deliverables-h {
+    margin-block-start: var(--s5);
+    font-family: var(--font-text);
+    font-size: var(--t-micro);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tr-micro);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  .svc__deliverables {
+    list-style: none;
+    padding: 0;
+    margin-block-start: var(--s3);
+    display: grid;
+    gap: 0.6rem;
+    max-width: var(--measure);
+  }
+
+  .svc__deliverables li {
+    position: relative;
+    padding-inline-start: 1.5rem;
+    font-size: var(--t-small);
+  }
+
+  /* A square in the accent, the same mark the section labels use. One device,
+     reused — rather than six bespoke stroke icons. */
+  .svc__deliverables li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.55em;
+    inline-size: 0.4rem;
+    block-size: 0.4rem;
+    background: var(--accent);
+  }
+
+  /* Matches the width the row primitive collapses at, so the index stops
+     sticking at the same moment it stops having a column. */
+  @media (max-width: 60rem) {
+    .svc {
+      padding-block: var(--s5);
+    }
+
+    .svc__index {
+      position: static;
+    }
+  }
+</style>
