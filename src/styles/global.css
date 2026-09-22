@@ -342,7 +342,10 @@ a:hover { text-decoration-thickness: 2px; }
 .illo {
   display: block;
   inline-size: 100%;
-  max-inline-size: 7.5rem;
+  /* A knob, not a fixed cap. The home cards keep the 7.5rem default because
+     they are five in a row; a lone instance sets --illo-size and gets to be
+     the "large" half of "few and large" without a second class. */
+  max-inline-size: var(--illo-size, 7.5rem);
   block-size: auto;
 }
 
