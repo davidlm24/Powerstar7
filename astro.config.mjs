@@ -35,4 +35,18 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
+
+  /* The harness assigns a free port and passes it as PORT (autoPort in
+     .claude/launch.json). Astro's CLI reads --port or server.port and does
+     NOT read PORT, so it has to be picked up here.
+
+     3000 is the preference, not the requirement. Nothing on this site needs a
+     fixed port: there are no OAuth callbacks, no webhooks and no CORS
+     allow-list. The only endpoint is the dev-only contact echo in
+     .claude/serve.js, which the form calls same-origin. A hardcoded
+     --port 3000 in the dev script meant a second dev server could never come
+     up alongside a first — including a stale one of our own. */
+  server: {
+    port: Number(process.env.PORT) || 3000,
+  },
 });

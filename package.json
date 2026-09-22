@@ -5,9 +5,9 @@
   "type": "module",
   "description": "Powerstar7 — agency site. Static output, zero third-party requests, no client JS unless a component asks for it.",
   "scripts": {
-    "dev": "astro dev --port 3000",
+    "dev": "astro dev",
     "build": "astro build",
-    "preview": "node .claude/serve.js 3000",
+    "preview": "node .claude/serve.js",
     "check": "astro check",
     "measure": "node scripts/measure.mjs"
   },

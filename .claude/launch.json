@@ -4,14 +4,21 @@
     {
       "name": "astro-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 3000
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "port": 3000,
+      "autoPort": true
     },
     {
       "name": "production-preview",
       "runtimeExecutable": "node",
-      "runtimeArgs": [".claude/serve.js", "4000"],
-      "port": 4000
+      "runtimeArgs": [
+        ".claude/serve.js"
+      ],
+      "port": 4000,
+      "autoPort": true
     }
   ]
 }
