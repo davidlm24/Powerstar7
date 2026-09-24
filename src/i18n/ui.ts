@@ -122,9 +122,9 @@ export const ui = {
 
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Services — DesignActiv',
-    'services.h1': 'Five things, done properly.',
+    'services.h1': 'A website, and someone to call.',
     'services.lead':
-      'A small studio cannot be excellent at twenty things. These are the five we take on, and the way we take them on.',
+      'One price to build your site, one to keep it looked after — and a person who answers when something needs to change.',
     'services.deliverables': 'What you get',
 
     'svc.web.name': 'Web design & development',
@@ -155,7 +155,7 @@ export const ui = {
     'svc.email.d2': 'Consent and unsubscribe handled correctly',
     'svc.email.d3': 'Automations, with reporting you can read',
 
-    'svc.hosting.name': 'Hosting & care',
+    'svc.hosting.name': 'Website care',
     'svc.hosting.body':
       'Hosting on infrastructure registered in your name, with updates, backups, uptime monitoring and a person who answers. A retainer, not a lock-in: you can take the account and go.',
     'svc.hosting.d1': 'Hosting in your account, not ours',
@@ -325,6 +325,43 @@ export const ui = {
     'services.pricing.lead':
       'Every project is quoted against a written scope, and the price is attached to it before anything starts. Changes are quoted too, rather than absorbed and resented.',
     'services.pricing.from': 'From',
+    'services.pricing.includes': 'What’s included',
+    'services.pricing.perMonth': 'per month',
+    'services.pricing.perPage': '{price} per page',
+
+    'services.design.kind': 'One-time project',
+    'services.design.name': 'Website design',
+    'services.design.note':
+      'The starting price for a straightforward small-business site. Booking systems, integrations, extra content work or a tight deadline raise the quote — and you have the number in writing first.',
+    'services.design.i1': 'Custom design, built for phone and desktop',
+    'services.design.i2': 'Up to five pages',
+    'services.design.i3': 'Page structure and layout',
+    'services.design.i4': 'Contact form',
+    'services.design.i5': 'Basic SEO setup',
+    'services.design.i6': 'Domain and hosting set up',
+    'services.design.i7': 'Testing before launch',
+    'services.design.i8': 'Launch and handover',
+
+    'services.care.kind': 'After launch · optional',
+    'services.care.name': 'Website care',
+    'services.care.note':
+      'Recommended, not required. Without it, later updates and support are quoted as they come up.',
+    'services.care.i1': 'Hosting',
+    'services.care.i2': 'Uptime monitoring',
+    'services.care.i3': 'Security and platform updates',
+    'services.care.i4': 'Backups',
+    'services.care.i5': 'One small content change a month',
+    'services.care.i6': 'Priority support',
+
+    'services.addons.h': 'Add to any project',
+    'services.addons.lead': 'Quoted with the rest of the scope, so they are part of the agreed price.',
+    'services.addons.pages': 'Extra pages',
+    'services.addons.language': 'Each additional language',
+    'services.addons.brand': 'Branding refinement',
+    'services.addons.email': 'Email setup and basic automation',
+    'services.addons.automation': 'Process automation',
+
+    'services.detail.h2': 'What each part covers.',
 
     'services.faq.label': 'Questions',
     'services.faq.h2': 'What people ask before they start.',
@@ -336,9 +373,9 @@ export const ui = {
     'services.faq.q6': 'What does "accessible" mean in practice?',
     'services.faq.q7': 'Do you keep working on it after launch?',
 
-    'services.todo.h': 'Two sections here are not finished.',
+    'services.todo.h': 'One section here is not finished.',
     'services.todo.b':
-      'The prices and the answers below are unfilled. They are shown as slots rather than as invented numbers, because a made-up price is worse than no price. Both must be completed before launch.',
+      'The answers below are unfilled. They are shown as slots rather than invented, because a made-up answer is worse than no answer. They must be completed before launch.',
   },
 
   pt: {
@@ -417,9 +454,9 @@ export const ui = {
 
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Serviços — DesignActiv',
-    'services.h1': 'Cinco coisas, bem feitas.',
+    'services.h1': 'Um site, e alguém para quem ligar.',
     'services.lead':
-      'Um estúdio pequeno não consegue ser excelente em vinte coisas. Estas são as cinco que aceitamos — e o jeito como as aceitamos.',
+      'Um preço para construir o seu site, outro para cuidar dele depois — e uma pessoa que responde quando algo precisa mudar.',
     'services.deliverables': 'O que você recebe',
 
     'svc.web.name': 'Design e desenvolvimento web',
@@ -450,7 +487,7 @@ export const ui = {
     'svc.email.d2': 'Consentimento e descadastro tratados corretamente',
     'svc.email.d3': 'Automações, com relatórios que dá para ler',
 
-    'svc.hosting.name': 'Hospedagem e manutenção',
+    'svc.hosting.name': 'Manutenção do site',
     'svc.hosting.body':
       'Hospedagem em infraestrutura registrada no seu nome, com atualizações, backups, monitoramento e uma pessoa que responde. Um contrato mensal, não uma armadilha: você pode pegar a conta e ir embora.',
     'svc.hosting.d1': 'Hospedagem na sua conta, não na nossa',
@@ -617,20 +654,57 @@ export const ui = {
     'services.pricing.lead':
       'Cada projeto é orçado a partir de um escopo escrito, e o preço fica ligado a ele antes de começar seja o que for. As alterações também são orçadas, em vez de absorvidas a contragosto.',
     'services.pricing.from': 'A partir de',
+    'services.pricing.includes': 'O que está incluído',
+    'services.pricing.perMonth': 'por mês',
+    'services.pricing.perPage': '{price} por página',
+
+    'services.design.kind': 'Pagamento único',
+    'services.design.name': 'Criação de site',
+    'services.design.note':
+      'O preço de partida para um site simples de pequeno negócio. Sistemas de agendamento, integrações, mais trabalho de conteúdo ou um prazo apertado aumentam o orçamento — e você recebe o valor por escrito antes de começarmos.',
+    'services.design.i1': 'Design sob medida, pensado para celular e computador',
+    'services.design.i2': 'Até cinco páginas',
+    'services.design.i3': 'Estrutura e layout das páginas',
+    'services.design.i4': 'Formulário de contato',
+    'services.design.i5': 'SEO básico configurado',
+    'services.design.i6': 'Domínio e hospedagem configurados',
+    'services.design.i7': 'Testes antes do lançamento',
+    'services.design.i8': 'Lançamento e entrega',
+
+    'services.care.kind': 'Depois do lançamento · opcional',
+    'services.care.name': 'Manutenção do site',
+    'services.care.note':
+      'Recomendada, não obrigatória. Sem ela, atualizações e suporte posteriores são orçados à parte, conforme surgirem.',
+    'services.care.i1': 'Hospedagem',
+    'services.care.i2': 'Monitoramento de disponibilidade',
+    'services.care.i3': 'Atualizações de segurança e da plataforma',
+    'services.care.i4': 'Backups',
+    'services.care.i5': 'Uma pequena alteração de conteúdo por mês',
+    'services.care.i6': 'Suporte prioritário',
+
+    'services.addons.h': 'Adicione a qualquer projeto',
+    'services.addons.lead': 'Orçados junto com o resto do escopo, então já entram no preço combinado.',
+    'services.addons.pages': 'Páginas extras',
+    'services.addons.language': 'Cada idioma adicional',
+    'services.addons.brand': 'Refinamento de marca',
+    'services.addons.email': 'Configuração de e-mail e automação básica',
+    'services.addons.automation': 'Automação de processos',
+
+    'services.detail.h2': 'O que cada parte cobre.',
 
     'services.faq.label': 'Perguntas',
     'services.faq.h2': 'O que perguntam antes de começar.',
     'services.faq.q1': 'Quanto tempo demora um site?',
-    'services.faq.q2': 'De que precisam da minha parte para começar?',
+    'services.faq.q2': 'Do que vocês precisam de mim para começar?',
     'services.faq.q3': 'Posso editar o site sozinho depois?',
     'services.faq.q4': 'E se eu quiser sair?',
-    'services.faq.q5': 'Trabalham noutras línguas além do inglês?',
+    'services.faq.q5': 'Vocês trabalham em outros idiomas além do inglês?',
     'services.faq.q6': 'O que significa "acessível" na prática?',
-    'services.faq.q7': 'Continuam a trabalhar nele depois do lançamento?',
+    'services.faq.q7': 'Vocês continuam cuidando do site depois do lançamento?',
 
-    'services.todo.h': 'Duas secções aqui não estão terminadas.',
+    'services.todo.h': 'Uma seção aqui não está terminada.',
     'services.todo.b':
-      'Os preços e as respostas abaixo estão por preencher. Aparecem como espaços em vez de números inventados, porque um preço inventado é pior do que preço nenhum. Ambos têm de ser completados antes do lançamento.',
+      'As respostas abaixo ainda não estão preenchidas. Aparecem como espaços vazios em vez de inventadas, porque uma resposta inventada é pior do que nenhuma. Precisam ser completadas antes do lançamento.',
   },
 } as const;
 

@@ -4,6 +4,7 @@ import PageHead from '../components/PageHead.astro';
 import Closing from '../components/Closing.astro';
 import Notice from '../components/Notice.astro';
 import { useTranslations, type Lang } from '../i18n/ui';
+import { PRICING, euros } from '../data/pricing';
 
 interface Props {
   lang: Lang;
@@ -11,6 +12,44 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const eur = (amount: number) => euros(amount, lang);
+const from = (amount: number) => `${t('services.pricing.from')} ${eur(amount)}`;
+
+/* Pricing is one offer and the plan that follows it, then the extras — not a
+   price per service. A list with one row per discipline asks a salon owner to
+   work out which rows apply to them; this says what the one project includes,
+   what keeping it running costs, and what can go on top. The figures come
+   from src/data/pricing.ts, so a price changes in one place. */
+const designIncludes = [
+  t('services.design.i1'),
+  t('services.design.i2'),
+  t('services.design.i3'),
+  t('services.design.i4'),
+  t('services.design.i5'),
+  t('services.design.i6'),
+  t('services.design.i7'),
+  t('services.design.i8'),
+];
+
+const careIncludes = [
+  t('services.care.i1'),
+  t('services.care.i2'),
+  t('services.care.i3'),
+  t('services.care.i4'),
+  t('services.care.i5'),
+  t('services.care.i6'),
+];
+
+const addons = [
+  {
+    name: t('services.addons.pages'),
+    price: t('services.pricing.perPage', { price: eur(PRICING.addons.page) }),
+  },
+  { name: t('services.addons.language'), price: from(PRICING.addons.language) },
+  { name: t('services.addons.brand'), price: from(PRICING.addons.brand) },
+  { name: t('services.addons.email'), price: from(PRICING.addons.email) },
+  { name: t('services.addons.automation'), price: from(PRICING.addons.automation) },
+];
 
 /* Written out rather than built with t(`svc.${key}.name` as any). The cast
    was quietly removing static key-checking from all 25 svc.* strings — a
@@ -54,14 +93,83 @@ const faqs = [
 ---
 
 <Base lang={lang} page="services" title={t('services.title')} description={t('services.lead')}>
-  <PageHead label={t('home.services.label')} title={t('services.h1')} lead={t('services.lead')} />
+  <PageHead label={t('nav.services')} title={t('services.h1')} lead={t('services.lead')} />
 
-  {/* Five sections, each with its own heading at near-display scale — not
-      five identical cards in a grid with a stroke icon at the top. The old
-      site had six of those and they were the reason every page read the
-      same. The number column doubles as the section's own index. */}
+  {/* --- What things cost -------------------------------------------------
+      First on the page, because it is the question a referral arrives with.
+      Two plans set as ONE relationship — the project, then the care that
+      follows it — so they read as a sequence rather than as two packages
+      competing for the same decision. The care plan is deliberately the
+      quieter of the two: a smaller number, on the far side of the rule. The
+      id is what the home page links to. */}
+  <section class="pricing rails" id="pricing">
+    <div class="container">
+      <div class="pricing__head">
+        <p class="label">{t('services.pricing.label')}</p>
+        <h2>{t('services.pricing.h2')}</h2>
+        <p class="lead measure">{t('services.pricing.lead')}</p>
+      </div>
+
+      <div class="plans">
+        <article class="plan plan--design">
+          <p class="plan__kind">{t('services.design.kind')}</p>
+          <h3 class="plan__name">{t('services.design.name')}</h3>
+          <p class="plan__price">
+            <span class="plan__unit">{t('services.pricing.from')}</span>
+            <span class="plan__amount">{eur(PRICING.design)}</span>
+          </p>
+          <p class="plan__note">{t('services.design.note')}</p>
+          <h4 class="plan__includes">{t('services.pricing.includes')}</h4>
+          <ul class="plan__list">
+            {designIncludes.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+
+        <article class="plan plan--care">
+          <p class="plan__kind">{t('services.care.kind')}</p>
+          <h3 class="plan__name">{t('services.care.name')}</h3>
+          <p class="plan__price">
+            <span class="plan__amount">{eur(PRICING.care)}</span>
+            <span class="plan__unit">{t('services.pricing.perMonth')}</span>
+          </p>
+          <p class="plan__note">{t('services.care.note')}</p>
+          <h4 class="plan__includes">{t('services.pricing.includes')}</h4>
+          <ul class="plan__list">
+            {careIncludes.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+      </div>
+
+      <div class="addons">
+        <h3>{t('services.addons.h')}</h3>
+        <p class="addons__lead">{t('services.addons.lead')}</p>
+        <dl class="addons__list">
+          {
+            addons.map((a) => (
+              <div class="addon">
+                <dt>{a.name}</dt>
+                <dd class="addon__price">{a.price}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  {/* --- What each part covers --------------------------------------------
+      The five disciplines behind the prices above, each with its own heading
+      at near-display scale — not five identical cards in a grid with a stroke
+      icon at the top. The old site had six of those and they were the reason
+      every page read the same. The number column doubles as the section's
+      own index, and each id is what a home-page lane links to. */}
   <div class="services rails">
     <div class="container">
+      <div class="services__head">
+        <p class="label">{t('home.services.label')}</p>
+        <h2>{t('services.detail.h2')}</h2>
+      </div>
+
       {
         services.map((s, i) => (
           <section class:list={['svc', 'row', i === 1 && 'invert']} id={s.id}>
@@ -70,10 +178,10 @@ const faqs = [
             </div>
 
             <div class="svc__body row__body">
-              <h2 class="svc__name">{s.name}</h2>
+              <h3 class="svc__name">{s.name}</h3>
               <p class="svc__lede">{s.body}</p>
 
-              <h3 class="svc__deliverables-h">{t('services.deliverables')}</h3>
+              <h4 class="svc__deliverables-h">{t('services.deliverables')}</h4>
               <ul class="svc__deliverables">
                 {s.d.map((item) => (
                   <li>{item}</li>
@@ -86,45 +194,16 @@ const faqs = [
     </div>
   </div>
 
-  {/* --- What things cost -------------------------------------------------
-      Not a tier table. This studio quotes against a written scope, so the
-      shape is one line per service with the number attached — and the numbers
-      are the one thing on this site nobody can verify, so they are slots
-      rather than guesses until David fills them. */}
-  <section class="pricing rails">
-    <div class="container">
-      <Notice title={t('services.todo.h')} body={t('services.todo.b')} />
-
-      <div class="pricing__head">
-        <p class="label">{t('services.pricing.label')}</p>
-        <h2>{t('services.pricing.h2')}</h2>
-        <p class="lead measure">{t('services.pricing.lead')}</p>
-      </div>
-
-      <dl class="prices">
-        {
-          services.map((s) => (
-            <div class="price">
-              <dt class="price__name">{s.name}</dt>
-              <dd class="price__v">
-                <span class="price__from">{t('services.pricing.from')}</span>
-                <span class="pending">
-                  &lt;{lang === 'pt' ? 'valor' : 'amount'}&gt;
-                </span>
-              </dd>
-            </div>
-          ))
-        }
-      </dl>
-    </div>
-  </section>
-
   {/* --- FAQ ---------------------------------------------------------------
       <details>/<summary>, so it opens and closes with no JavaScript at all
       and arrives keyboard-accessible with its expanded state announced. The
-      site ships one 12 KB script; an accordion is not worth adding to it. */}
+      site ships one 12 KB script; an accordion is not worth adding to it.
+      The Notice sits here now because the answers are the one part of this
+      page still unfilled — the prices above are real. */}
   <section class="faq rails">
     <div class="container">
+      <Notice title={t('services.todo.h')} body={t('services.todo.b')} />
+
       <div class="faq__head">
         <p class="label">{t('services.faq.label')}</p>
         <h2>{t('services.faq.h2')}</h2>
@@ -151,62 +230,165 @@ const faqs = [
 </Base>
 
 <style>
-  .services {
-    padding-block-end: var(--s7);
-  }
-
   /* --- What things cost --------------------------------------------------- */
 
   .pricing {
-    padding-block: var(--section-y);
+    padding-block: var(--s6) var(--section-y);
     border-top: 1px solid var(--rule);
   }
 
   .pricing__head {
     display: grid;
     gap: var(--s3);
-    margin-block: var(--s6);
+    margin-block-end: var(--s6);
   }
 
-  .prices {
-    margin: 0;
+  /* The project and the care that follows it, side by side, the project the
+     wider of the two. One rule BETWEEN them and none around them — a line
+     that divides, not a box. Each side clears that rule by --col-pad, the same
+     clearance .row__body keeps from its own divider. */
+  .plans {
     display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: start;
   }
 
-  /* A row per service, the name left and the number right — the same shape the
-     footer's base row uses. A divider between rows, none around the set. */
-  .price {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
+  .plan {
+    display: grid;
     gap: var(--s3);
-    padding-block: var(--s3);
   }
 
-  .price + .price {
-    border-top: 1px solid var(--rule);
+  .plan--design {
+    padding-inline-end: var(--col-pad);
   }
 
-  .price__name {
-    font-family: var(--font-display);
-    font-size: var(--t-h3);
-    font-weight: var(--weight-medium);
-    letter-spacing: var(--tr-heading);
+  .plan--care {
+    padding-inline-start: var(--col-pad);
+    border-inline-start: 1px solid var(--rule);
   }
 
-  .price__v {
-    margin: 0;
-    display: flex;
-    align-items: baseline;
-    gap: var(--s2);
-  }
-
-  .price__from {
+  .plan__kind {
     font-family: var(--font-mono);
     font-size: var(--t-micro);
     letter-spacing: var(--tr-mono);
     color: var(--fg-muted);
+  }
+
+  .plan__name {
+    font-size: var(--t-h3);
+    line-height: 1.15;
+  }
+
+  .plan__price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s2);
+  }
+
+  /* The project's number at h2 scale and the care plan's a step below it.
+     That difference in size is what makes the second read as following the
+     first rather than competing with it. */
+  .plan__amount {
+    font-family: var(--font-display);
+    font-size: var(--t-h2);
+    font-weight: var(--weight-display);
+    letter-spacing: var(--tr-display);
+    line-height: 1;
+  }
+
+  .plan--care .plan__amount {
+    font-size: var(--t-h3);
+  }
+
+  .plan__unit {
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-mono);
+    color: var(--fg-muted);
+  }
+
+  .plan__note {
+    max-width: 52ch;
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+  }
+
+  .plan__includes {
+    margin-block-start: var(--s2);
+    font-family: var(--font-text);
+    font-size: var(--t-micro);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tr-micro);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  .plan__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  /* Eight items as one column run long beside the care plan's six; two
+     columns keep the two plans roughly the same height. */
+  .plan--design .plan__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--s4);
+  }
+
+  /* --- Extras ------------------------------------------------------------- */
+
+  .addons {
+    margin-block-start: var(--s7);
+    max-width: var(--width-text);
+  }
+
+  .addons__lead {
+    margin-block-start: var(--s2);
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+  }
+
+  .addons__list {
+    margin: var(--s4) 0 0;
+    display: grid;
+  }
+
+  /* One row per extra, the name left and the price right, with rules BETWEEN
+     rows only — the same shape the footer's base row uses. */
+  .addon {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s1) var(--s3);
+    padding-block: var(--s2);
+  }
+
+  .addon + .addon {
+    border-top: 1px solid var(--rule);
+  }
+
+  .addon__price {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--t-small);
+    letter-spacing: var(--tr-mono);
+  }
+
+  /* --- What each part covers ---------------------------------------------- */
+
+  .services {
+    padding-block-end: var(--s7);
+  }
+
+  .services__head {
+    display: grid;
+    gap: var(--s3);
+    margin-block-end: var(--s5);
   }
 
   /* --- FAQ ---------------------------------------------------------------- */
@@ -218,7 +400,7 @@ const faqs = [
   .faq__head {
     display: grid;
     gap: var(--s3);
-    margin-block-end: var(--s6);
+    margin-block: var(--s6);
   }
 
   .faqs {
@@ -319,8 +501,12 @@ const faqs = [
     max-width: 58rem;
   }
 
+  /* An h3 now that the section has its own head above the rows — held at the
+     h2 weight it was drawn at, so the demotion changes the document outline
+     and nothing a reader sees. */
   .svc__name {
     font-size: clamp(1.875rem, 4vw, 3rem);
+    font-weight: var(--weight-heading);
     line-height: 1.04;
   }
 
@@ -351,15 +537,18 @@ const faqs = [
     max-width: var(--measure);
   }
 
-  .svc__deliverables li {
+  .svc__deliverables li,
+  .plan__list li {
     position: relative;
     padding-inline-start: 1.5rem;
     font-size: var(--t-small);
   }
 
   /* A square in the accent, the same mark the section labels use. One device,
-     reused — rather than six bespoke stroke icons. */
-  .svc__deliverables li::before {
+     reused — for the deliverables here and the plan inclusions above —
+     rather than six bespoke stroke icons. */
+  .svc__deliverables li::before,
+  .plan__list li::before {
     content: '';
     position: absolute;
     inset-inline-start: 0;
@@ -370,7 +559,9 @@ const faqs = [
   }
 
   /* Matches the width the row primitive collapses at, so the index stops
-     sticking at the same moment it stops having a column. */
+     sticking at the same moment it stops having a column. The plans stack at
+     the same width: the rule between them turns from vertical to horizontal
+     and the clearance moves with it. */
   @media (max-width: 60rem) {
     .svc {
       padding-block: var(--s5);
@@ -378,6 +569,28 @@ const faqs = [
 
     .svc__index {
       position: static;
+    }
+
+    .plans {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: var(--s5);
+    }
+
+    .plan--design {
+      padding-inline-end: 0;
+    }
+
+    .plan--care {
+      padding-inline-start: 0;
+      padding-block-start: var(--s5);
+      border-inline-start: 0;
+      border-block-start: 1px solid var(--rule);
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .plan--design .plan__list {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>
