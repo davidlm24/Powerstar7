@@ -1,14 +1,14 @@
 {
-  "measuredAt": "2026-09-22",
+  "measuredAt": "2026-09-24",
   "page": "/",
   "requests": 7,
   "thirdPartyRequests": 0,
-  "weightKb": 65.1,
-  "weightRawKb": 105.7,
+  "weightKb": 65.5,
+  "weightRawKb": 108.1,
   "cookies": 0,
   "assets": [
     "/_astro/Base.i_uaENZ7.css",
-    "/_astro/Home.yyvwTgTQ.css",
+    "/_astro/Home.FuM0k54r.css",
     "/assets/fonts/source-sans-3-latin.woff2",
     "/assets/fonts/space-grotesk-latin.woff2",
     "/assets/img/favicon.svg",

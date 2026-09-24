@@ -68,6 +68,19 @@ const ART: Record<IlloName, { flat: string; line: string }> = {
 };
 
 const art = ART[name];
+
+/* Every mark in the line layer gets pathLength="1", which normalises its
+   length so that one stroke-dasharray value can draw ANY path on — the long
+   outline and a short energy tick alike — and --i, its place in the drawing
+   order the strings above already follow: outline, then detail, then the
+   energy marks. Both are inert until a consumer's CSS reaches for them; the
+   home page's service lanes use them to draw the art on hover. Nothing about
+   the drawing changes at rest. */
+let mark = 0;
+const line = art.line.replace(
+  /<(path|circle)\b/g,
+  (tag) => `${tag} pathLength="1" style="--i:${mark++}"`,
+);
 ---
 
 <svg
@@ -78,5 +91,5 @@ const art = ART[name];
   focusable="false"
 >
   <g class="illo__flat" filter="url(#ink-flat)" set:html={art.flat} />
-  <g class="illo__line" filter="url(#ink-line)" set:html={art.line} />
+  <g class="illo__line" filter="url(#ink-line)" set:html={line} />
 </svg>

@@ -13,11 +13,11 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-/* The card bodies reuse svc.*.body — the same descriptions the Services page
+/* The lane bodies reuse svc.*.body — the same descriptions the Services page
    carries. Not a shortcut: they are already written, already translated, and
    already reviewed, and a home page carrying five placeholder strings would be
    worse than one carrying five real sentences. Swap in shorter dedicated keys
-   if these read long in a card.
+   if these read long in a lane.
 
    Written out rather than built with a template literal, because
    t(`svc.${key}.body`) needs an `as any` cast and that quietly removes the
@@ -90,10 +90,13 @@ const position = [
       the Work page, where they back a claim instead of leading the page. */}
   <AgencyStats lang={lang} />
 
-  {/* --- Services -------------------------------------------------------
-      An indexed list, not six identical cards in a grid. The names are set
-      near h2 scale so the section is a second type moment rather than a
-      row of boxes with stroke icons in them. */}
+  {/* --- What we do -------------------------------------------------------
+      Layout B from the illustration options, which David picked: copy-led
+      lanes, one service to a row, instead of five cards. Each service keeps
+      its own drawing, but it waits at the end of the lane and draws itself in
+      when the lane is pointed at or focused — so the section reads as type
+      first and art second. With no hover to wait for (touch), the drawings
+      simply sit there, finished. */}
   <section class="services rails">
     <div class="container">
       <div class="services__head">
@@ -103,23 +106,27 @@ const position = [
 
       <InkDefs />
 
-      <ul class="svc-cards">
+      <ul class="lanes">
         {
           services.map((s) => (
             <li>
-              <a class="svc-card illo-drift" href={`${route('services', lang)}#${s.key}`}>
-                <Illustration name={s.illo} />
-                <span class="svc-card__n">{s.n}</span>
-                <h3 class="svc-card__name">{s.name}</h3>
-                <p class="svc-card__b">{s.b}</p>
-                <span class="svc-card__go" aria-hidden="true">&rarr;</span>
+              <a class="lane" href={`${route('services', lang)}#${s.key}`}>
+                <span class="lane__n">{s.n}</span>
+                <div class="lane__text">
+                  <h3 class="lane__name">{s.name}</h3>
+                  <p class="lane__b">{s.b}</p>
+                </div>
+                <span class="lane__art">
+                  <Illustration name={s.illo} />
+                </span>
+                <span class="lane__go" aria-hidden="true">&rarr;</span>
               </a>
             </li>
           ))
         }
       </ul>
 
-      <p class="svc-cards__more">
+      <p class="lanes__more">
         <a href={route('services', lang)}>{t('home.services.link')} &rarr;</a>
       </p>
     </div>
@@ -340,58 +347,39 @@ const position = [
     margin-block-end: var(--s6);
   }
 
-  /* Five cards on a SIX-column grid: the first three span two, the last two
-     span three. That is what closes the second row instead of leaving a
-     one-third hole — five items never divide evenly into three or four
-     columns, and an empty cell in a bordered grid reads as a broken image.
-
-     This is the "six identical cards in a grid" shape the brief warns about,
-     chosen deliberately: the objection there was to a row of boxes with stroke
-     icons in them, and brush art is a different object. David's call. */
-  .svc-cards {
+  /* --- What we do: lanes --------------------------------------------------
+     Layout B from the illustration options, David's pick: copy-led lanes,
+     one service to a row. The name is set at the Services page's own
+     .svc__name size, so a service is one size wherever it is named, and the
+     section is a second type moment rather than a grid of boxes. Rules
+     BETWEEN lanes only, never around the set — a frame is the shape this
+     system retired. */
+  .lanes {
     list-style: none;
     padding: 0;
-    margin-block-start: var(--s6);
+    margin: 0;
+  }
+
+  .lanes > li + li {
+    border-top: 1px solid var(--rule);
+  }
+
+  /* Four tracks: index, copy, art, arrow. Baseline-aligned, so the index and
+     the arrow sit on the name's first line whatever the copy beneath it does;
+     only the art centres on the lane. */
+  .lane {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-
-  .svc-cards > li:nth-child(-n + 3) { grid-column: span 2; }
-  .svc-cards > li:nth-child(n + 4) { grid-column: span 3; }
-
-  .svc-cards > li { display: grid; }
-
-  /* Dividers BETWEEN cards only — never around the set. A border on the whole
-     grid would be a frame, which is the shape this system retired. So: a
-     vertical rule on every card that is not first in its row, and a horizontal
-     one above the second row. */
-  .svc-cards > li:not(:nth-child(1)):not(:nth-child(4)) .svc-card {
-    border-inline-start: 1px solid var(--rule);
-  }
-
-  .svc-cards > li:nth-child(n + 4) .svc-card {
-    border-block-start: 1px solid var(--rule);
-  }
-
-  /* --s4 on every side of every card, including the outer edges that have no
-     divider to clear. Same trade as the .position cells: three cards side by
-     side have to match each other before any of them matches the heading, so
-     the set sits inset from the content edge as a block. */
-  .svc-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s2);
-    block-size: 100%;
-    padding: var(--s4);
+    grid-template-columns: 3.5rem minmax(0, 1fr) 10rem 2rem;
+    grid-template-areas: 'n text art go';
+    align-items: baseline;
+    column-gap: var(--s4);
+    padding-block: var(--s4);
     color: var(--fg);
     text-decoration: none;
   }
 
-  .svc-card .illo {
-    margin-block-end: var(--s2);
-  }
-
-  .svc-card__n {
+  .lane__n {
+    grid-area: n;
     font-family: var(--font-mono);
     font-size: var(--t-micro);
     letter-spacing: var(--tr-mono);
@@ -399,45 +387,167 @@ const position = [
     font-variant-numeric: tabular-nums;
   }
 
-  .svc-card__name {
-    font-size: var(--t-h3);
-    line-height: 1.15;
+  .lane__text {
+    grid-area: text;
+    display: grid;
+    gap: var(--s2);
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .lane__name {
+    font-size: clamp(1.875rem, 4vw, 3rem);
+    font-weight: var(--weight-heading);
+    line-height: 1.04;
     transition: color var(--dur) var(--ease);
   }
 
-  .svc-card__b {
+  .lane__b {
+    max-width: 52ch;
     font-size: var(--t-small);
     color: var(--fg-muted);
-    max-width: 42ch;
   }
 
-  /* auto margin, so the arrow sits on the card's bottom edge whatever the
-     body copy does. Five cards of different text lengths otherwise put their
-     arrows at five different heights. */
-  .svc-card__go {
-    margin-block-start: auto;
-    padding-block-start: var(--s2);
+  .lane__art {
+    grid-area: art;
+    align-self: center;
+    --illo-size: 100%;
+  }
+
+  .lane__go {
+    grid-area: go;
+    justify-self: end;
     font-size: var(--t-h3);
     line-height: 1;
-    /* --accent-fn, not --accent: the display blue is 3.97:1 and this is a
-       graphic carrying meaning at small size. */
+    /* --accent-fn, not --accent: a graphic carrying meaning at small size,
+       and the display blue is 3.97:1. */
     color: var(--accent-fn);
     transition: transform var(--dur) var(--ease);
   }
 
-  .svc-card:hover .svc-card__name,
-  .svc-card:focus-visible .svc-card__name {
+  /* The copy steps in as the art arrives — the whole column, name and body
+     together, so the two never shear apart mid-move. */
+  .lane:hover .lane__text,
+  .lane:focus-visible .lane__text {
+    transform: translateX(0.5rem);
+  }
+
+  .lane:hover .lane__name,
+  .lane:focus-visible .lane__name {
     color: var(--accent-fn);
   }
 
-  .svc-card:hover .svc-card__go,
-  .svc-card:focus-visible .svc-card__go {
+  .lane:hover .lane__go,
+  .lane:focus-visible .lane__go {
     transform: translateX(0.35rem);
   }
 
-  .svc-cards__more {
+  .lanes__more {
     margin-block-start: var(--s5);
     font-size: var(--t-small);
+  }
+
+  /* --- The reveal ---------------------------------------------------------
+     Where a pointer can hover, the art waits hidden at the end of its lane
+     and arrives on hover or keyboard focus. Touch screens get none of this:
+     with nothing to wait for, their drawings are simply there. */
+  @media (hover: hover) and (pointer: fine) {
+    .lane__art {
+      opacity: 0;
+      transition: opacity 160ms var(--ease);
+    }
+
+    .lane:hover .lane__art,
+    .lane:focus-visible .lane__art {
+      opacity: 1;
+    }
+  }
+
+  /* With motion allowed, the art is not faded in — it is drawn. The ink
+     strokes itself on mark by mark, in the order Illustration.astro numbers
+     them (outline, detail, then the energy ticks), and the flat blue prints a
+     beat later, slipping off-register as it lands: the misprint that is the
+     whole character of the style, happening in front of you.
+
+     Transitions rather than @keyframes, for two reasons. The motion budget's
+     two keyframes stay spent. And a transition reverses from wherever it has
+     got to, so sweeping the pointer down the list never queues five
+     animations — each lane simply unwinds. Leaving is faster than arriving
+     and has no stagger, so the list never lags behind the pointer. */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .lane__art {
+      opacity: 1;
+    }
+
+    /* pathLength="1" on every path makes "1 2" one whole stroke followed by
+       a gap longer than any path — so an offset just past 1 hides it cleanly,
+       with no round-cap dot left at its start, and 0 draws it whole. */
+    .lane :global(.illo__line > path) {
+      stroke-dasharray: 1 2;
+      stroke-dashoffset: 1.05;
+      transition: stroke-dashoffset 180ms var(--ease);
+    }
+
+    .lane:hover :global(.illo__line > path),
+    .lane:focus-visible :global(.illo__line > path) {
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 420ms var(--ease) calc(var(--i, 0) * 35ms);
+    }
+
+    .lane :global(.illo__dot) {
+      opacity: 0;
+      transition: opacity 120ms var(--ease);
+    }
+
+    .lane:hover :global(.illo__dot),
+    .lane:focus-visible :global(.illo__dot) {
+      opacity: 1;
+      transition: opacity 200ms var(--ease) 240ms;
+    }
+
+    /* Starts in register, directly behind the line, and slips out to the
+       house offset as it prints — the same translate(8px, -6px) it rests at
+       everywhere else on the site. */
+    .lane :global(.illo__flat) {
+      opacity: 0;
+      transform: translate(0, 0);
+      transition:
+        opacity 160ms var(--ease),
+        transform 180ms var(--ease);
+    }
+
+    .lane:hover :global(.illo__flat),
+    .lane:focus-visible :global(.illo__flat) {
+      opacity: 0.5;
+      transform: translate(8px, -6px);
+      transition:
+        opacity 300ms var(--ease) 120ms,
+        transform 460ms var(--ease) 120ms;
+    }
+  }
+
+  /* Narrower, the art track shrinks; below 48rem it goes. There is no room
+     for it beside copy set at 30px, so the lane stacks — index and arrow on
+     one line, the copy full width beneath — and the art is dropped rather
+     than squeezed. It is decorative; the lane says everything without it. */
+  @media (max-width: 60rem) {
+    .lane {
+      grid-template-columns: 2.5rem minmax(0, 1fr) 7rem 1.5rem;
+      column-gap: var(--s3);
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .lane {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        'n go'
+        'text text';
+      row-gap: var(--s2);
+    }
+
+    .lane__art {
+      display: none;
+    }
   }
 
   /* --- Process ----------------------------------------------------------- */
@@ -644,25 +754,6 @@ const position = [
 
     .point + .point {
       border-inline-start: 0;
-    }
-
-
-
-    /* One card per row below 60rem: six columns cannot carry five cards on a
-       phone, and the dividers between them stop meaning anything once each
-       card is full width. */
-    .svc-cards > li:nth-child(-n + 3),
-    .svc-cards > li:nth-child(n + 4) {
-      grid-column: span 6;
-    }
-
-    .svc-cards > li:not(:nth-child(1)) .svc-card {
-      border-inline-start: 0;
-      border-block-start: 1px solid var(--rule);
-    }
-
-    .svc-card {
-      padding-inline: 0;
     }
   }
 </style>
