@@ -19,7 +19,9 @@ const t = useTranslations(lang);
 const site = Astro.site ?? new URL('https://www.designactiv.com');
 const desc = description ?? t('site.description');
 const canonical = page ? new URL(ROUTES[page][lang], site).href : null;
-const ogImage = new URL('/assets/img/og-card.png', site).href;
+/* A WhatsApp referral sees this card before it sees the site, so PT pages get
+   the Portuguese card. Both come from scripts/og-card.mjs. */
+const ogImage = new URL(lang === 'pt' ? '/assets/img/og-card-pt.png' : '/assets/img/og-card.png', site).href;
 ---
 
 <!doctype html>

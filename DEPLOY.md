@@ -134,12 +134,9 @@ that links out, not as an iframe.
 - [ ] Decide whether the unlaunched client project stays on `/work` — it is
       the client's information to share, so get their sign-off or cut the
       block (it is marked in `src/views/Work.astro`)
-- [ ] Regenerate `public/assets/img/og-card.png`. It still shows the old
-      headline ("No templates. No trackers. No cookie banner."), and since
-      2026-09-24 the hero says "A website, and someone to call." The size,
-      1200x630, and the meta tags on every page are already right; only the
-      image needs remaking. Worth a Portuguese version too, because a WhatsApp
-      referral sees this card before it sees the site.
+- [x] Social cards regenerated with the new hero, in English (`og-card.png`)
+      and Portuguese (`og-card-pt.png`, used on /pt pages). Remake them with
+      `node scripts/og-card.mjs` whenever the hero changes.
 - [ ] `npm run check && npm run build && npm run measure && npm run build`, so the
       types hold and the published figures match what actually ships
 - [ ] Verify the redirects against the live host:
