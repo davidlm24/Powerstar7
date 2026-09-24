@@ -351,6 +351,8 @@ export const ui = {
     'services.care.i4': 'Backups',
     'services.care.i5': 'One small content change a month',
     'services.care.i6': 'Priority support',
+    'services.care.small':
+      'A small change is a new photo, updated prices or opening hours, or a paragraph of text. Anything bigger — a new page or section — is quoted before we start it.',
 
     'services.addons.h': 'Add to any project',
     'services.addons.lead': 'Quoted with the rest of the scope, so they are part of the agreed price.',
@@ -679,6 +681,8 @@ export const ui = {
     'services.care.i4': 'Backups',
     'services.care.i5': 'Uma pequena alteração de conteúdo por mês',
     'services.care.i6': 'Suporte prioritário',
+    'services.care.small':
+      'Uma pequena alteração é uma foto nova, preços ou horários atualizados, ou um parágrafo de texto. Qualquer coisa maior — uma página ou seção nova — é orçada antes de começarmos.',
 
     'services.addons.h': 'Adicione a qualquer projeto',
     'services.addons.lead': 'Orçados junto com o resto do escopo, então já entram no preço combinado.',
