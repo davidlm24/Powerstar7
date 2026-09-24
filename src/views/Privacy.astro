@@ -27,13 +27,7 @@ const updated = '2026-09-19';
   {/* The lead states SCOPE — what this document covers. The .summary below
       states substance ("we collect almost nothing"). Two different jobs, so
       they do not read as the same sentence twice. */}
-  <PageHead label={t('footer.legalNav')} title={t('privacy.h1')}>
-    <span slot="lead" class="pending">
-      &lt;{lang === 'pt'
-        ? 'uma linha sobre o que esta política cobre'
-        : 'one line on what this policy covers'}&gt;
-    </span>
-  </PageHead>
+  <PageHead label={t('footer.legalNav')} title={t('privacy.h1')} lead={t('privacy.lead')} />
 
   <section class="privacy rails">
     <div class="container">

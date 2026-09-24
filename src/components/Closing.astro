@@ -26,17 +26,7 @@ const t = useTranslations(lang);
         question someone actually has at the foot of a page — what happens
         after the click — so it sits outside the link, which stays the
         headline. */}
-    <p class="lead closing__lead">
-      {
-        lead ?? (
-          <span class="pending">
-            &lt;{lang === 'pt'
-              ? 'uma linha sobre o que acontece a seguir'
-              : 'one line on what happens next'}&gt;
-          </span>
-        )
-      }
-    </p>
+    <p class="lead closing__lead">{lead ?? t('closing.lead')}</p>
   </div>
 </section>
 

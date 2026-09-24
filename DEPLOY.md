@@ -100,20 +100,15 @@ that links out, not as an iframe.
       case studies, their card layout, the data file and the amber badge colour
       that existed only for them are gone. Real case studies go in when there is
       real work to show.
-- [ ] **Fill the remaining unfilled slots** — three, six counting
-      Portuguese. They ship as `.pending` placeholders rather than invented
-      content, and each one renders visibly as `<angle brackets>` on the live
-      site:
-      - one supporting line under the closing link (one component, shown on
-        the home, About, Services and Work pages)
-      - the lead lines under the Legal and Privacy page headings
-
-      Done 2026-09-24, all drafts and free to rewrite: the five prices (now in
-      `src/data/pricing.ts`), the four process step descriptions, and the
-      seven FAQ answers. Two answers make commitments the site did not make
-      before, so check them first: **every scope includes a date**, and **an
-      editor is added, and priced, when a client will update the site
-      themselves**. The Impressum fields are their own item below.
+- [x] **Fill the unfilled content slots.** Done 2026-09-24, all drafts and
+      free to rewrite: the five prices (now in `src/data/pricing.ts`), the four
+      process step descriptions, the seven FAQ answers, the line under the
+      closing link, and the leads under the Legal and Privacy headings. Two FAQ
+      answers make commitments the site did not make before, so check them
+      first: **every scope includes a date**, and **an editor is added, and
+      priced, when a client will update the site themselves**. The Impressum
+      fields are their own item below, and they are the only `.pending`
+      placeholders left.
 
       Remember Portuguese. The parity guard in `src/i18n/ui.ts` fails the
       build when a key is missing from one language, but it cannot tell you

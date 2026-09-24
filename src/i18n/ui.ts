@@ -73,6 +73,8 @@ export const ui = {
       'DesignActiv is a web studio in Germany and Luxembourg, working with clients across Europe and Brazil. We write every site by hand, so it loads fast, reaches everyone, and belongs to you.',
     'home.cta': 'Start a project',
     'home.cta.secondary': 'How we work',
+    'closing.lead':
+      'Tell us about it in a few lines — you’ll hear back, usually within a working day, and if it’s a fit you get a written scope with the price attached.',
 
     'home.proof.label': 'This page, measured',
     'home.proof.note':
@@ -260,6 +262,8 @@ export const ui = {
     /* --- Legal ---------------------------------------------------------- */
     'legal.title': 'Legal notice — DesignActiv',
     'legal.h1': 'Legal notice',
+    'legal.lead':
+      'DesignActiv is a small web studio run from Germany and Luxembourg. This page carries the details German law requires a business website to publish.',
     'legal.tmg': 'Information pursuant to § 5 TMG',
     'legal.todo.h': 'This page is not complete.',
     'legal.todo.b':
@@ -273,6 +277,8 @@ export const ui = {
     /* --- Privacy -------------------------------------------------------- */
     'privacy.title': 'Privacy — DesignActiv',
     'privacy.h1': 'Privacy',
+    'privacy.lead':
+      'How this website handles personal data, and the rights you have over it under the GDPR.',
     'privacy.summary.h': 'The short version',
     'privacy.summary.b':
       'This website sets no cookies, runs no analytics, and loads nothing from another company’s server. Fonts, styles, scripts and images all come from this domain. If you do not use the contact form, we do not learn anything about you beyond what your browser tells our host in order to send you this page.',
@@ -420,6 +426,8 @@ export const ui = {
       'A DesignActiv é um estúdio web na Alemanha e no Luxemburgo, com clientes em toda a Europa e no Brasil. Escrevemos cada site à mão, para que carregue rápido, alcance todo mundo e seja realmente seu.',
     'home.cta': 'Começar um projeto',
     'home.cta.secondary': 'Como trabalhamos',
+    'closing.lead':
+      'Conte em poucas linhas — você recebe uma resposta, normalmente em um dia útil, e, se fizer sentido, um escopo por escrito com o preço junto.',
 
     'home.proof.label': 'Esta página, medida',
     'home.proof.note':
@@ -607,6 +615,8 @@ export const ui = {
     /* --- Legal ---------------------------------------------------------- */
     'legal.title': 'Aviso legal — DesignActiv',
     'legal.h1': 'Aviso legal',
+    'legal.lead':
+      'A DesignActiv é um pequeno estúdio web que funciona a partir da Alemanha e do Luxemburgo. Esta página traz os dados que a lei alemã exige que um site comercial publique.',
     'legal.tmg': 'Informações conforme o § 5 TMG',
     'legal.todo.h': 'Esta página não está completa.',
     'legal.todo.b':
@@ -620,6 +630,8 @@ export const ui = {
     /* --- Privacy -------------------------------------------------------- */
     'privacy.title': 'Privacidade — DesignActiv',
     'privacy.h1': 'Privacidade',
+    'privacy.lead':
+      'Como este site trata dados pessoais, e os direitos que você tem sobre eles pelo GDPR.',
     'privacy.summary.h': 'A versão curta',
     'privacy.summary.b':
       'Este site não usa cookies, não roda analytics e não carrega nada do servidor de outra empresa. Fontes, estilos, scripts e imagens vêm todos deste domínio. Se você não usar o formulário de contato, não ficamos sabendo nada sobre você além do que seu navegador informa ao nosso servidor para poder entregar esta página.',
