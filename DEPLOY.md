@@ -96,12 +96,10 @@ that links out, not as an iframe.
 
 ## Pre-launch checklist
 
-- [ ] **Turn off the placeholder showcase.** `src/data/showcase-demo.json` has
-      `enabled: true` and four invented case studies on the Work page. They
-      exist so the layout could be reviewed before real work exists. Shipping
-      them would put four fabricated clients directly under a heading that
-      says there is nothing to show yet. Set `enabled` to false, or replace
-      them with real case studies.
+- [x] **Remove the placeholder showcase.** Done 2026-09-24: the four invented
+      case studies, their card layout, the data file and the amber badge colour
+      that existed only for them are gone. Real case studies go in when there is
+      real work to show.
 - [ ] **Fill the sixteen unfilled slots** — thirty-two, counting
       Portuguese. Three sections ship with
       `.pending` placeholders rather than invented content, and each one

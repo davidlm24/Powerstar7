@@ -68,9 +68,6 @@ src/
   data/agency.json  The studio's own figures on the home page. Nothing here
                     is checkable by a visitor, so it has to be kept true by
                     hand — see the note inside the file.
-  data/showcase-demo.json
-                    PLACEHOLDER case studies for the Work page, behind an
-                    `enabled` flag. None of it is real. Off before launch.
 
 public/             Copied verbatim to dist/.
   assets/js/site.js Nav, contact form, footer year. That is all it does.

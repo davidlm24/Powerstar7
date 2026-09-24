@@ -167,12 +167,6 @@ export const ui = {
     'work.h1': 'Nothing to show yet.',
     'work.lead':
       'DesignActiv is early, and the first client sites are still in build. Rather than fill this page with placeholders, here is what we can put in front of you today.',
-    'work.showcase.label': 'Showcase',
-    'work.showcase.h': 'How case studies will look.',
-    'work.showcase.warn':
-      'Placeholder. These four are invented so the layout can be judged before real work exists — no client, project or result below is real. They come out before launch.',
-    'work.showcase.client': 'Client',
-    'work.showcase.service': 'Service',
 
     'work.case.label': 'In build',
     'work.case.h': 'First client site, in progress',
@@ -500,12 +494,6 @@ export const ui = {
     'work.h1': 'Ainda não há o que mostrar.',
     'work.lead':
       'A DesignActiv está começando, e os primeiros sites de clientes ainda estão em construção. Em vez de encher esta página de placeholders, aqui está o que podemos colocar na sua frente hoje.',
-    'work.showcase.label': 'Vitrine',
-    'work.showcase.h': 'Como os estudos de caso vão aparecer.',
-    'work.showcase.warn':
-      'Provisório. Estes quatro foram inventados para que o layout possa ser avaliado antes de existir trabalho real — nenhum cliente, projeto ou resultado abaixo é real. Saem do ar antes do lançamento.',
-    'work.showcase.client': 'Cliente',
-    'work.showcase.service': 'Serviço',
 
     'work.case.label': 'Em construção',
     'work.case.h': 'Primeiro site de cliente, em andamento',

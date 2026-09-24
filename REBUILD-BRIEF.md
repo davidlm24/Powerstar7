@@ -35,6 +35,8 @@ covering only 2 of 10 pages), and a warm espresso/amber palette that **was never
    gradients; this is one fill, chosen deliberately after the rule was put in front of
    David, fenced in `tokens.css` and carrying exactly one meaning. The test that keeps
    the two apart: if the amber turns up in a third place, it has become the mistake again.
+   *Amended 2026-09-24.* Gone again. The badge it lived on belonged to the placeholder
+   showcase, which was removed, and the token went with it — so the rebuild has no amber.
 2. **A staged `.typeset` scope** applied a new type scale to 2 pages and left 8 on the old
    one. Never ship two type systems in one stylesheet.
 3. **Copy was rewritten but structure was not.** "Why Choose Us?" became "Why people stay
@@ -55,7 +57,7 @@ covering only 2 of 10 pages), and a warm espresso/amber palette that **was never
 | Sells | Web design & development, branding, SEO, email marketing, hosting |
 | Brand blue | `#0e6fff` display / `#0d68f0` for white-on-blue (the bright one measures 4.44:1 and **fails WCAG AA**) |
 | Ink | near-black |
-| Accent hues | **blue.** Two fenced exceptions exist by decision: `--purple` in the hero wash and showcase art, `--amber` on one badge. Both are defined with their fences in `tokens.css`; neither may spread. |
+| Accent hues | **blue.** One fenced exception exists by decision: `--purple`, in the hero only. It is defined with its fence in `tokens.css` and may not spread. (An `--amber` badge fill existed until the placeholder showcase was removed on 2026-09-24.) |
 | Display face | Space Grotesk (locked by the owner — see §5 for the tension) |
 | Body face | Source Sans 3 (humanist, chosen to pair with the geometric display) |
 
