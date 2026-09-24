@@ -52,11 +52,12 @@ const position = [
 
 <Base lang={lang} page="home" title={t('home.title')}>
   {/* --- Hero ------------------------------------------------------------
-      No photograph exists and none is coming, so type is the image. Three
-      declarative lines at 104px — 5.8x body — against the old site's 1.94x.
+      No photograph exists and none is coming, so type is the image: one
+      sentence at 104px, 5.8x body, against the old site's 1.94x. It says what
+      a small business is actually buying, and the subtitle says who from.
       What is NOT here: a recoloured <em> in the middle of the sentence, the
       hero device every AI image generator and every SaaS template produces.
-      The accent lands on the full stops instead, echoing the wordmark. */}
+      The accent lands on the full stop instead, echoing the wordmark. */}
   <section class="hero rails">
     {/* Both decorative layers live on this one element rather than on the
         section's own pseudos. That began as a way to keep ::before free for
@@ -68,16 +69,14 @@ const position = [
 
     <div class="container">
       <h1 class="hero__h1">
-        <span>{t('home.h1.a').replace(/\.$/, '')}<b aria-hidden="true">.</b></span>
-        <span>{t('home.h1.b').replace(/\.$/, '')}<b aria-hidden="true">.</b></span>
-        <span>{t('home.h1.c').replace(/\.$/, '')}<b aria-hidden="true">.</b></span>
+        <span>{t('home.h1').replace(/\.$/, '')}<b aria-hidden="true">.</b></span>
       </h1>
 
       <div class="hero__foot">
         <p class="lead measure">{t('home.lead')}</p>
         <div class="hero__actions">
           <a class="btn" href={route('contact', lang)}>{t('home.cta')}</a>
-          <a class="btn btn--quiet" href={route('about', lang)}>{t('home.cta.secondary')}</a>
+          <a class="btn btn--quiet" href={`${route('services', lang)}#pricing`}>{t('home.cta.secondary')}</a>
         </div>
       </div>
     </div>
@@ -300,21 +299,12 @@ const position = [
     display: block;
   }
 
-  /* The accent lands here — on three full stops — and nowhere else in the
-     headline. They now walk from blue to purple, which is the only place the
-     two hues meet in type rather than in the wash. Decorative and
-     aria-hidden, but still set large enough to be plainly visible. */
+  /* The accent lands here — on the full stop — and nowhere else in the
+     headline, the same blue dot the wordmark ends on. Decorative and
+     aria-hidden, but set large enough to be plainly visible. */
   .hero__h1 b {
     color: var(--accent);
     font-weight: inherit;
-  }
-
-  .hero__h1 span:nth-child(2) b {
-    color: color-mix(in srgb, var(--blue) 50%, var(--purple));
-  }
-
-  .hero__h1 span:nth-child(3) b {
-    color: var(--purple-deep);
   }
 
   .hero__foot {

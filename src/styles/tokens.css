@@ -85,9 +85,9 @@
      A SECOND hue, which the rest of this file argues against and which
      REBUILD-BRIEF.md §1 lists as a mistake to avoid. It is here because
      David asked for a blue-and-purple hero, and it is fenced: it appears
-     only in the hero — its background wash and the colour of its last two
-     full stops — never as a fill behind text, never as a border, never as a
-     line. It carries no
+     only in the hero's background wash, never as a fill behind text, never
+     as a border, never as a line. (Until 2026-09-24 it also coloured the
+     last two full stops of a three-line headline; that headline is gone.) It carries no
      meaning and nothing is measured against it — if it were deleted the site would lose an
      effect, not a signal. Keep it that way. */
   --purple: #7b5bff;

@@ -50,7 +50,7 @@ export const ui = {
     'site.name': 'DesignActiv',
     'site.tagline': 'Web studio · Germany & Luxembourg',
     'site.description':
-      'DesignActiv is a web studio in Germany and Luxembourg. We build fast, accessible websites from scratch for clients across Europe and Brazil — no templates, no trackers, no cookie banner.',
+      'DesignActiv is a father-and-son studio building websites for small businesses in Luxembourg and Germany: built from scratch, yours to keep, in English and Portuguese.',
 
     'nav.home': 'Home',
     'nav.work': 'Work',
@@ -66,13 +66,11 @@ export const ui = {
 
     /* --- Home ---------------------------------------------------------- */
     'home.title': 'DesignActiv — web studio, Germany & Luxembourg',
-    'home.h1.a': 'No templates.',
-    'home.h1.b': 'No trackers.',
-    'home.h1.c': 'No cookie banner.',
+    'home.h1': 'A website, and someone to call.',
     'home.lead':
-      'DesignActiv is a web studio in Germany and Luxembourg, working with clients across Europe and Brazil. We build sites from scratch, so they load fast, reach everyone, and belong to you.',
+      'We’re a father and son building websites for small businesses in Luxembourg and Germany, in English and Portuguese. One of us builds and looks after your site; the other is the person you talk to.',
     'home.cta': 'Start a project',
-    'home.cta.secondary': 'How we work',
+    'home.cta.secondary': 'See prices',
     'closing.lead':
       'Tell us about it in a few lines — you’ll hear back, usually within a working day, and if it’s a fit you get a written scope with the price attached.',
 
@@ -124,7 +122,7 @@ export const ui = {
 
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Services — DesignActiv',
-    'services.h1': 'A website, and someone to call.',
+    'services.h1': 'What it costs, and what you get.',
     'services.lead':
       'One price to build your site, one to keep it looked after — and a person who answers when something needs to change.',
     'services.deliverables': 'What you get',
@@ -400,7 +398,7 @@ export const ui = {
     'site.name': 'DesignActiv',
     'site.tagline': 'Estúdio web · Alemanha e Luxemburgo',
     'site.description':
-      'A DesignActiv é um estúdio web na Alemanha e no Luxemburgo. Criamos sites do zero, rápidos e acessíveis, para clientes na Europa e no Brasil — sem templates, sem rastreadores, sem banner de cookies.',
+      'A DesignActiv é o estúdio de um pai e um filho que fazem sites para pequenos negócios no Luxemburgo e na Alemanha: feitos do zero, seus de verdade, em português e inglês.',
 
     'nav.home': 'Início',
     'nav.work': 'Trabalhos',
@@ -416,13 +414,11 @@ export const ui = {
 
     /* --- Home ---------------------------------------------------------- */
     'home.title': 'DesignActiv — estúdio web, Alemanha e Luxemburgo',
-    'home.h1.a': 'Sem templates.',
-    'home.h1.b': 'Sem rastreadores.',
-    'home.h1.c': 'Sem cookies.',
+    'home.h1': 'Um site, e alguém para quem ligar.',
     'home.lead':
-      'A DesignActiv é um estúdio web na Alemanha e no Luxemburgo, com clientes em toda a Europa e no Brasil. Construímos sites do zero, para que carreguem rápido, alcancem todo mundo e sejam realmente seus.',
+      'Somos pai e filho e fazemos sites para pequenos negócios no Luxemburgo e na Alemanha, em português e inglês. Um de nós constrói e cuida do seu site; o outro é a pessoa com quem você fala.',
     'home.cta': 'Começar um projeto',
-    'home.cta.secondary': 'Como trabalhamos',
+    'home.cta.secondary': 'Ver preços',
     'closing.lead':
       'Conte em poucas linhas — você recebe uma resposta, normalmente em um dia útil, e, se fizer sentido, um escopo por escrito com o preço junto.',
 
@@ -474,7 +470,7 @@ export const ui = {
 
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Serviços — DesignActiv',
-    'services.h1': 'Um site, e alguém para quem ligar.',
+    'services.h1': 'Quanto custa, e o que você recebe.',
     'services.lead':
       'Um preço para construir o seu site, outro para cuidar dele depois — e uma pessoa que responde quando algo precisa mudar.',
     'services.deliverables': 'O que você recebe',
