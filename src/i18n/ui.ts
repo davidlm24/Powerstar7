@@ -50,7 +50,7 @@ export const ui = {
     'site.name': 'DesignActiv',
     'site.tagline': 'Web studio · Germany & Luxembourg',
     'site.description':
-      'DesignActiv is a web studio in Germany and Luxembourg. We hand-build fast, accessible websites for clients across Europe and Brazil — no templates, no trackers, no cookie banner.',
+      'DesignActiv is a web studio in Germany and Luxembourg. We build fast, accessible websites from scratch for clients across Europe and Brazil — no templates, no trackers, no cookie banner.',
 
     'nav.home': 'Home',
     'nav.work': 'Work',
@@ -70,7 +70,7 @@ export const ui = {
     'home.h1.b': 'No trackers.',
     'home.h1.c': 'No cookie banner.',
     'home.lead':
-      'DesignActiv is a web studio in Germany and Luxembourg, working with clients across Europe and Brazil. We write every site by hand, so it loads fast, reaches everyone, and belongs to you.',
+      'DesignActiv is a web studio in Germany and Luxembourg, working with clients across Europe and Brazil. We build sites from scratch, so they load fast, reach everyone, and belong to you.',
     'home.cta': 'Start a project',
     'home.cta.secondary': 'How we work',
     'closing.lead':
@@ -100,9 +100,9 @@ export const ui = {
     'home.services.link': 'All services',
 
     'home.position.label': 'The position',
-    'home.position.h2': 'Hand-built is the whole argument.',
+    'home.position.h2': 'Custom-built is the whole argument.',
     'home.position.body':
-      'A page builder gives you someone else’s structure, a subscription you cannot leave, and a payload to match. We write the HTML, the CSS and the handful of lines of JavaScript ourselves. It costs more attention and it produces a site that is faster, easier to reach, and genuinely yours.',
+      'A page builder gives you someone else’s structure, a subscription you cannot leave, and a payload to match. We write the HTML, the CSS and the handful of lines of JavaScript for your site alone. It costs more attention and it produces a site that is faster, easier to reach, and genuinely yours.',
 
     'home.position.one.h': 'It loads before they leave',
     'home.position.one.b':
@@ -131,9 +131,9 @@ export const ui = {
 
     'svc.web.name': 'Web design & development',
     'svc.web.body':
-      'Design and build, as one job rather than two. Hand-written HTML, CSS and JavaScript, or Astro where a site needs to be edited by the people who own it. Accessible to WCAG AA as a floor, not an upgrade.',
+      'Design and build, as one job rather than two. Custom code on Astro — no template, no page builder — with a simple editor where the people who own the site need to change it. Accessible to WCAG AA as a floor, not an upgrade.',
     'svc.web.d1': 'Design in the browser, reviewed on real devices',
-    'svc.web.d2': 'Hand-written front end, no builder lock-in',
+    'svc.web.d2': 'Custom front end, no builder lock-in',
     'svc.web.d3': 'WCAG AA, tested with a keyboard and a screen reader',
 
     'svc.brand.name': 'Branding',
@@ -178,7 +178,7 @@ export const ui = {
     'work.this.h': 'This website',
     'work.this.b':
       'The most honest thing we can show is the thing you are reading. It was rebuilt from scratch after the previous version turned out to be a faithful reimplementation of a template — which taught us more than a successful project would have.',
-    'work.this.list.1': 'Written by hand, no page builder, no framework runtime',
+    'work.this.list.1': 'Custom code, no page builder, no framework runtime',
     'work.this.list.2': 'Zero third-party requests, so no consent banner',
     'work.this.list.3': 'Every colour pair contrast-checked against WCAG, not eyeballed',
     'work.this.list.4': 'Keyboard and screen-reader paths tested on every page',
@@ -191,11 +191,11 @@ export const ui = {
     'about.h1': 'A small studio in two countries.',
     'about.lead':
       'DesignActiv works out of Germany and Luxembourg, with clients across Europe and in Brazil. Small enough that the person you brief is the person who builds it.',
-    'about.story.h': 'Why hand-built',
+    'about.story.h': 'Why custom-built',
     'about.story.b1':
       'Most small-business sites are assembled in a builder, on someone else’s template, paying rent for the privilege. It is fast to start and expensive to leave: the structure is not yours, the payload is not negotiable, and the day you want something the template does not do, you are stuck.',
     'about.story.b2':
-      'We took the other road. Every site is written by hand — or built on Astro where the client needs to edit it themselves. It takes longer. It also produces a site that loads in a fraction of the weight, passes accessibility checks, keeps its own SEO through a rebuild, and can be handed to any other developer on earth without a migration project.',
+      'We took the other road: custom code, written for each business on Astro, with a simple editor where the client needs to change things themselves. It takes longer. It also produces a site that loads in a fraction of the weight, passes accessibility checks, keeps its own SEO through a rebuild, and can be handed to any other developer on earth without a migration project.',
     'about.story.b3':
       'We know the cost of the other road because we walked it. This site’s previous version was a careful reimplementation of a purchased template. It worked, it looked professional, and it had no ideas in it. We rebuilt it from nothing.',
     'about.where.h': 'Where we are',
@@ -251,13 +251,13 @@ export const ui = {
 
     /* --- Footer --------------------------------------------------------- */
     'footer.blurb':
-      'A web studio in Germany and Luxembourg. Hand-built sites for clients across Europe and Brazil.',
+      'A web studio in Germany and Luxembourg. Custom-built sites for clients across Europe and Brazil.',
     'footer.nav': 'Pages',
     'footer.legalNav': 'Legal',
     'footer.legal': 'Legal notice',
     'footer.privacy': 'Privacy',
     'footer.rights': 'All rights reserved.',
-    'footer.built': 'Hand-built. No trackers, no cookies, no consent banner.',
+    'footer.built': 'Custom-built. No trackers, no cookies, no consent banner.',
 
     /* --- Legal ---------------------------------------------------------- */
     'legal.title': 'Legal notice — DesignActiv',
@@ -315,7 +315,7 @@ export const ui = {
     'home.process.h2': 'Four steps, and you own the result.',
     'home.process.s1.h': 'Scope and price',
     'home.process.s2.h': 'Design in the browser',
-    'home.process.s3.h': 'Build by hand',
+    'home.process.s3.h': 'Build from scratch',
     'home.process.s4.h': 'Handover',
     'home.process.s1.b':
       'You tell us what you need, and we write it up as a scope with the price attached — agreed before any work starts.',
@@ -400,7 +400,7 @@ export const ui = {
     'site.name': 'DesignActiv',
     'site.tagline': 'Estúdio web · Alemanha e Luxemburgo',
     'site.description':
-      'A DesignActiv é um estúdio web na Alemanha e no Luxemburgo. Criamos sites à mão, rápidos e acessíveis, para clientes na Europa e no Brasil — sem templates, sem rastreadores, sem banner de cookies.',
+      'A DesignActiv é um estúdio web na Alemanha e no Luxemburgo. Criamos sites do zero, rápidos e acessíveis, para clientes na Europa e no Brasil — sem templates, sem rastreadores, sem banner de cookies.',
 
     'nav.home': 'Início',
     'nav.work': 'Trabalhos',
@@ -420,7 +420,7 @@ export const ui = {
     'home.h1.b': 'Sem rastreadores.',
     'home.h1.c': 'Sem cookies.',
     'home.lead':
-      'A DesignActiv é um estúdio web na Alemanha e no Luxemburgo, com clientes em toda a Europa e no Brasil. Escrevemos cada site à mão, para que carregue rápido, alcance todo mundo e seja realmente seu.',
+      'A DesignActiv é um estúdio web na Alemanha e no Luxemburgo, com clientes em toda a Europa e no Brasil. Construímos sites do zero, para que carreguem rápido, alcancem todo mundo e sejam realmente seus.',
     'home.cta': 'Começar um projeto',
     'home.cta.secondary': 'Como trabalhamos',
     'closing.lead':
@@ -450,9 +450,9 @@ export const ui = {
     'home.services.link': 'Todos os serviços',
 
     'home.position.label': 'A posição',
-    'home.position.h2': 'Feito à mão é o argumento inteiro.',
+    'home.position.h2': 'Feito sob medida é o argumento inteiro.',
     'home.position.body':
-      'Um construtor de sites entrega a estrutura de outra pessoa, uma assinatura da qual você não consegue sair e um peso à altura. Nós escrevemos o HTML, o CSS e as poucas linhas de JavaScript nós mesmos. Custa mais atenção e resulta num site mais rápido, mais fácil de acessar e genuinamente seu.',
+      'Um construtor de sites entrega a estrutura de outra pessoa, uma assinatura da qual você não consegue sair e um peso à altura. Nós escrevemos o HTML, o CSS e as poucas linhas de JavaScript só para o seu site. Custa mais atenção e resulta num site mais rápido, mais fácil de acessar e genuinamente seu.',
 
     'home.position.one.h': 'Carrega antes de a pessoa desistir',
     'home.position.one.b':
@@ -481,9 +481,9 @@ export const ui = {
 
     'svc.web.name': 'Design e desenvolvimento web',
     'svc.web.body':
-      'Design e construção como um trabalho só, não dois. HTML, CSS e JavaScript escritos à mão, ou Astro quando o site precisa ser editado por quem é dono dele. Acessível conforme WCAG AA como piso, não como upgrade.',
+      'Design e construção como um trabalho só, não dois. Código sob medida em Astro — sem template, sem construtor de sites — com um editor simples quando quem é dono do site precisa alterá-lo. Acessível conforme WCAG AA como piso, não como upgrade.',
     'svc.web.d1': 'Design feito no navegador, revisado em aparelhos reais',
-    'svc.web.d2': 'Front-end escrito à mão, sem amarras de construtor',
+    'svc.web.d2': 'Front-end sob medida, sem amarras de construtor',
     'svc.web.d3': 'WCAG AA, testado com teclado e leitor de tela',
 
     'svc.brand.name': 'Branding',
@@ -528,7 +528,7 @@ export const ui = {
     'work.this.h': 'Este site',
     'work.this.b':
       'A coisa mais honesta que podemos mostrar é o que você está lendo. Ele foi refeito do zero depois que a versão anterior se revelou uma reimplementação fiel de um template — o que ensinou mais do que um projeto bem-sucedido teria ensinado.',
-    'work.this.list.1': 'Escrito à mão, sem construtor de sites, sem runtime de framework',
+    'work.this.list.1': 'Código sob medida, sem construtor de sites, sem runtime de framework',
     'work.this.list.2': 'Zero requisições a terceiros, portanto sem banner de consentimento',
     'work.this.list.3': 'Cada par de cores verificado contra a WCAG, não no olho',
     'work.this.list.4': 'Caminhos de teclado e leitor de tela testados em todas as páginas',
@@ -541,11 +541,11 @@ export const ui = {
     'about.h1': 'Um estúdio pequeno em dois países.',
     'about.lead':
       'A DesignActiv trabalha a partir da Alemanha e do Luxemburgo, com clientes pela Europa e no Brasil. Pequena o bastante para que quem recebe o briefing seja quem constrói.',
-    'about.story.h': 'Por que à mão',
+    'about.story.h': 'Por que sob medida',
     'about.story.b1':
       'A maioria dos sites de pequenas empresas é montada num construtor, sobre o template de outra pessoa, pagando aluguel pelo privilégio. É rápido de começar e caro de abandonar: a estrutura não é sua, o peso não é negociável e, no dia em que você quiser algo que o template não faz, você trava.',
     'about.story.b2':
-      'Escolhemos o outro caminho. Cada site é escrito à mão — ou feito em Astro quando o cliente precisa editar sozinho. Demora mais. Também resulta num site que carrega com uma fração do peso, passa em verificações de acessibilidade, mantém o próprio SEO através de uma reconstrução e pode ser entregue a qualquer outro desenvolvedor do mundo sem virar um projeto de migração.',
+      'Escolhemos o outro caminho: código sob medida, escrito para cada negócio em Astro, com um editor simples quando o cliente precisa alterar algo sozinho. Demora mais. Também resulta num site que carrega com uma fração do peso, passa em verificações de acessibilidade, mantém o próprio SEO através de uma reconstrução e pode ser entregue a qualquer outro desenvolvedor do mundo sem virar um projeto de migração.',
     'about.story.b3':
       'Sabemos o custo do outro caminho porque o percorremos. A versão anterior deste site era a reimplementação caprichada de um template comprado. Funcionava, parecia profissional e não tinha nenhuma ideia dentro. Refizemos do zero.',
     'about.where.h': 'Onde estamos',
@@ -601,13 +601,13 @@ export const ui = {
 
     /* --- Footer --------------------------------------------------------- */
     'footer.blurb':
-      'Um estúdio web na Alemanha e no Luxemburgo. Sites feitos à mão para clientes na Europa e no Brasil.',
+      'Um estúdio web na Alemanha e no Luxemburgo. Sites sob medida para clientes na Europa e no Brasil.',
     'footer.nav': 'Páginas',
     'footer.legalNav': 'Jurídico',
     'footer.legal': 'Aviso legal',
     'footer.privacy': 'Privacidade',
     'footer.rights': 'Todos os direitos reservados.',
-    'footer.built': 'Feito à mão. Sem rastreadores, sem cookies, sem banner de consentimento.',
+    'footer.built': 'Feito sob medida. Sem rastreadores, sem cookies, sem banner de consentimento.',
 
     /* --- Legal ---------------------------------------------------------- */
     'legal.title': 'Aviso legal — DesignActiv',
@@ -659,7 +659,7 @@ export const ui = {
     'home.process.h2': 'Quatro passos, e o resultado é seu.',
     'home.process.s1.h': 'Escopo e preço',
     'home.process.s2.h': 'Design no navegador',
-    'home.process.s3.h': 'Construção à mão',
+    'home.process.s3.h': 'Construção do zero',
     'home.process.s4.h': 'Entrega',
     'home.process.s1.b':
       'Você conta do que precisa, e nós escrevemos um escopo com o preço junto — combinado antes de qualquer trabalho começar.',
