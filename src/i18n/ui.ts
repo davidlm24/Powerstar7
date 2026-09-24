@@ -204,7 +204,7 @@ export const ui = {
       'We know the cost of the other road because we walked it. This site’s previous version was a careful reimplementation of a purchased template. It worked, it looked professional, and it had no ideas in it. We rebuilt it from nothing.',
     'about.where.h': 'Where we are',
     'about.where.b':
-      'Germany and Luxembourg, working in English and Portuguese. Luxembourg is a three-language country with a large Portuguese-speaking community, and a good share of our clients are Brazilian — so multilingual work is routine here rather than an add-on.',
+      'Germany and Luxembourg, working in English and Portuguese. Luxembourg is a three-language country with a large Portuguese-speaking community, and a good share of our clients are Brazilian — so multilingual work is routine here, and each extra language is priced up front.',
     'about.how.h': 'How we work',
     'about.how.1.h': 'You own it',
     'about.how.1.b':
@@ -535,7 +535,7 @@ export const ui = {
       'Sabemos o custo do outro caminho porque o percorremos. A versão anterior deste site era a reimplementação caprichada de um template comprado. Funcionava, parecia profissional e não tinha nenhuma ideia dentro. Refizemos do zero.',
     'about.where.h': 'Onde estamos',
     'about.where.b':
-      'Alemanha e Luxemburgo, trabalhando em inglês e português. O Luxemburgo é um país de três idiomas com uma grande comunidade lusófona, e boa parte dos nossos clientes é brasileira — então trabalho multilíngue aqui é rotina, não um adicional.',
+      'Alemanha e Luxemburgo, trabalhando em inglês e português. O Luxemburgo é um país de três idiomas com uma grande comunidade lusófona, e boa parte dos nossos clientes é brasileira — então trabalho multilíngue aqui é rotina, e cada idioma a mais tem preço definido desde o início.',
     'about.how.h': 'Como trabalhamos',
     'about.how.1.h': 'É seu',
     'about.how.1.b':
