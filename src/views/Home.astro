@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import AgencyStats from '../components/AgencyStats.astro';
 import InkDefs from '../components/InkDefs.astro';
 import Illustration from '../components/Illustration.astro';
 import Closing from '../components/Closing.astro';
@@ -54,7 +53,7 @@ const position = [
   {/* --- Hero ------------------------------------------------------------
       No photograph exists and none is coming, so type is the image: one
       sentence at 104px, 5.8x body, against the old site's 1.94x. It says what
-      a small business is actually buying, and the subtitle says who from.
+      a small business gets, and the subtitle says what we do to get it there.
       What is NOT here: a recoloured <em> in the middle of the sentence, the
       hero device every AI image generator and every SaaS template produces.
       The accent lands on the full stop instead, echoing the wordmark. */}
@@ -81,14 +80,6 @@ const position = [
       </div>
     </div>
   </section>
-
-  {/* --- The studio, in numbers -----------------------------------------
-      Set larger than the pitch, on purpose (REBUILD-BRIEF.md §3.6). These
-      are the agency's own figures and live in src/data/agency.json — unlike
-      the measured page weight they replaced, a visitor cannot check them,
-      so they have to be kept true by hand. The measured figures moved to
-      the Work page, where they back a claim instead of leading the page. */}
-  <AgencyStats lang={lang} />
 
   {/* --- What we do -------------------------------------------------------
       Layout B from the illustration options, which David picked: copy-led
@@ -184,26 +175,6 @@ const position = [
           ))
         }
       </ol>
-    </div>
-  </section>
-
-  {/* --- Work, honestly --------------------------------------------------
-      There is no portfolio. The page says so in its own voice rather than
-      showing six placeholder tiles, which is what the old site did — and
-      the six images it pointed at were 2 KB of solid black. */}
-  <section class="honest rails">
-    <div class="container row row--statement honest__inner">
-      <div class="honest__head row__title">
-        <p class="label">{t('home.work.label')}</p>
-        <h2 class="honest__h2">{t('home.work.h2')}</h2>
-      </div>
-      <div class="honest__body row__body">
-        <p>{t('home.work.body')}</p>
-        <p>{t('home.work.body2')}</p>
-        <p class="honest__link">
-          <a href={route('work', lang)}>{t('home.work.link')} &rarr;</a>
-        </p>
-      </div>
     </div>
   </section>
 
@@ -655,8 +626,7 @@ const position = [
   /* --col-pad buys clearance from a divider. The outer two edges have no
      divider to clear — the page-edge rail that used to sit there is gone — so
      the padding there was holding the band's text 3rem off nothing and making
-     its measure 6rem narrower than the heading directly above it. Same orphan
-     as the one in AgencyStats, same fix. */
+     its measure 6rem narrower than the heading directly above it. */
   /* --accent-fn, not --accent. This band used to be inverted, where --accent
      resolves to --on-ink-blue at 6.40:1. On the light ground the display blue
      is 3.97:1, and 13px needs 4.5:1 — so the index would have failed the
@@ -677,34 +647,6 @@ const position = [
   .point__b {
     color: var(--fg-muted);
     font-size: var(--t-small);
-  }
-
-  /* --- Honest ------------------------------------------------------------ */
-
-  .honest {
-    padding-block: var(--section-y);
-  }
-
-
-
-  .honest__h2 {
-    margin-block-start: var(--s3);
-    max-width: 14ch;
-  }
-
-
-
-  .honest__body {
-    display: grid;
-    gap: var(--s3);
-    max-width: var(--measure);
-    color: var(--fg-muted);
-  }
-
-  .honest__link a {
-    color: var(--fg);
-    font-weight: var(--weight-medium);
-    text-underline-offset: 0.25em;
   }
 
   /* --- Narrow ------------------------------------------------------------ */

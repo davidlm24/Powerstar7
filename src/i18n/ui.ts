@@ -48,9 +48,9 @@ export const CONTACT = {
 export const ui = {
   en: {
     'site.name': 'DesignActiv',
-    'site.tagline': 'Web studio · Germany & Luxembourg',
+    'site.tagline': 'Web agency for small businesses',
     'site.description':
-      'DesignActiv is a father-and-son studio building websites for small businesses in Luxembourg and Germany: built from scratch, yours to keep, in English and Portuguese.',
+      'DesignActiv is a web agency for small businesses: website design and development, branding, SEO, email and automation, and ongoing care. Built from scratch, yours to keep, in English and Portuguese.',
 
     'nav.home': 'Home',
     'nav.work': 'Work',
@@ -65,10 +65,10 @@ export const ui = {
     'nav.langSwitch': 'Ver em português',
 
     /* --- Home ---------------------------------------------------------- */
-    'home.title': 'DesignActiv — web studio, Germany & Luxembourg',
-    'home.h1': 'A website, and someone to call.',
+    'home.title': 'DesignActiv — web agency for small businesses',
+    'home.h1': 'Websites that bring in business.',
     'home.lead':
-      'We’re a father and son building websites for small businesses in Luxembourg and Germany, in English and Portuguese. One of us builds and looks after your site; the other is the person you talk to.',
+      'DesignActiv is a web agency for small businesses. We design and build your website, then help people find it, with branding, SEO, email and ongoing care when you need them.',
     'home.cta': 'Start a project',
     'home.cta.secondary': 'See prices',
     'closing.lead':
@@ -97,10 +97,10 @@ export const ui = {
     'home.services.h2': 'Five things, done properly.',
     'home.services.link': 'All services',
 
-    'home.position.label': 'The position',
-    'home.position.h2': 'Custom-built is the whole argument.',
+    'home.position.label': 'Custom-built',
+    'home.position.h2': 'Why not a website builder?',
     'home.position.body':
-      'A page builder gives you someone else’s structure, a subscription you cannot leave, and a payload to match. We write the HTML, the CSS and the handful of lines of JavaScript for your site alone. It costs more attention and it produces a site that is faster, easier to reach, and genuinely yours.',
+      'A website builder is quick to start. It also hands you someone else’s structure, a subscription you cannot leave, and a payload to match. We write the HTML, the CSS and the handful of lines of JavaScript for your site alone. It costs more attention, and it produces a site that is faster, easier to reach, and genuinely yours.',
 
     'home.position.one.h': 'It loads before they leave',
     'home.position.one.b':
@@ -112,13 +112,6 @@ export const ui = {
     'home.position.three.b':
       'Domain, repository and hosting account are registered in your name, with us as a collaborator. Every project ships with a handover document. You are never locked to our availability.',
 
-    'home.work.label': 'Work',
-    'home.work.h2': 'The honest state of this page.',
-    'home.work.body':
-      'DesignActiv is early. Client work is under way and the first case studies are not public yet, so there is nothing to show here — and we would rather say that than fill the page with six grey rectangles labelled “Project 1”.',
-    'home.work.body2':
-      'What we can show is this site: how it is built, what it weighs, and how it behaves on a bad connection with a screen reader running.',
-    'home.work.link': 'What we can show',
 
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Services — DesignActiv',
@@ -186,9 +179,9 @@ export const ui = {
 
     /* --- About ---------------------------------------------------------- */
     'about.title': 'About — DesignActiv',
-    'about.h1': 'A small studio in two countries.',
+    'about.h1': 'Small enough to know your project.',
     'about.lead':
-      'DesignActiv works out of Germany and Luxembourg, with clients across Europe and in Brazil. Small enough that the person you brief is the person who builds it.',
+      'DesignActiv is a small web agency working with clients wherever they are. The person you brief is the person who builds it.',
     'about.story.h': 'Why custom-built',
     'about.story.b1':
       'Most small-business sites are assembled in a builder, on someone else’s template, paying rent for the privilege. It is fast to start and expensive to leave: the structure is not yours, the payload is not negotiable, and the day you want something the template does not do, you are stuck.',
@@ -196,9 +189,9 @@ export const ui = {
       'We took the other road: custom code, written for each business on Astro, with a simple editor where the client needs to change things themselves. It takes longer. It also produces a site that loads in a fraction of the weight, passes accessibility checks, keeps its own SEO through a rebuild, and can be handed to any other developer on earth without a migration project.',
     'about.story.b3':
       'We know the cost of the other road because we walked it. This site’s previous version was a careful reimplementation of a purchased template. It worked, it looked professional, and it had no ideas in it. We rebuilt it from nothing.',
-    'about.where.h': 'Where we are',
+    'about.where.h': 'Where we work',
     'about.where.b':
-      'Germany and Luxembourg, working in English and Portuguese. Luxembourg is a three-language country with a large Portuguese-speaking community, and a good share of our clients are Brazilian — so multilingual work is routine here, and each extra language is priced up front.',
+      'We are based in Germany and Luxembourg and work remotely with clients wherever they are, in English and Portuguese. Multilingual sites are routine for us, and each extra language is priced up front.',
     'about.how.h': 'How we work',
     'about.how.1.h': 'You own it',
     'about.how.1.b':
@@ -249,7 +242,7 @@ export const ui = {
 
     /* --- Footer --------------------------------------------------------- */
     'footer.blurb':
-      'A web studio in Germany and Luxembourg. Custom-built sites for clients across Europe and Brazil.',
+      'A web agency for small businesses: custom-built websites, branding, SEO, email and care.',
     'footer.nav': 'Pages',
     'footer.legalNav': 'Legal',
     'footer.legal': 'Legal notice',
@@ -261,7 +254,7 @@ export const ui = {
     'legal.title': 'Legal notice — DesignActiv',
     'legal.h1': 'Legal notice',
     'legal.lead':
-      'DesignActiv is a small web studio run from Germany and Luxembourg. This page carries the details German law requires a business website to publish.',
+      'DesignActiv is a small web agency. This page carries the details German law requires a business website to publish.',
     'legal.basis': 'Information pursuant to § 5 DDG',
     'legal.todo.h': 'This page is not complete.',
     'legal.todo.b':
@@ -396,9 +389,9 @@ export const ui = {
 
   pt: {
     'site.name': 'DesignActiv',
-    'site.tagline': 'Estúdio web · Alemanha e Luxemburgo',
+    'site.tagline': 'Agência web para pequenas empresas',
     'site.description':
-      'A DesignActiv é o estúdio de um pai e um filho que fazem sites para pequenos negócios no Luxemburgo e na Alemanha: feitos do zero, seus de verdade, em português e inglês.',
+      'A DesignActiv é uma agência web para pequenas empresas: design e desenvolvimento de sites, identidade visual, SEO, e-mail e automação, e manutenção contínua. Feitos do zero, seus de verdade, em português e inglês.',
 
     'nav.home': 'Início',
     'nav.work': 'Trabalhos',
@@ -413,10 +406,10 @@ export const ui = {
     'nav.langSwitch': 'View in English',
 
     /* --- Home ---------------------------------------------------------- */
-    'home.title': 'DesignActiv — estúdio web, Alemanha e Luxemburgo',
-    'home.h1': 'Um site, e alguém para quem ligar.',
+    'home.title': 'DesignActiv — agência web para pequenas empresas',
+    'home.h1': 'Sites que trazem clientes.',
     'home.lead':
-      'Somos pai e filho e fazemos sites para pequenos negócios no Luxemburgo e na Alemanha, em português e inglês. Um de nós constrói e cuida do seu site; o outro é a pessoa com quem você fala.',
+      'A DesignActiv é uma agência web para pequenas empresas. Criamos e construímos seu site e ajudamos as pessoas a encontrá-lo, com identidade visual, SEO, e-mail e manutenção quando você precisar.',
     'home.cta': 'Começar um projeto',
     'home.cta.secondary': 'Ver preços',
     'closing.lead':
@@ -445,10 +438,10 @@ export const ui = {
     'home.services.h2': 'Cinco coisas, bem feitas.',
     'home.services.link': 'Todos os serviços',
 
-    'home.position.label': 'A posição',
-    'home.position.h2': 'Feito sob medida é o argumento inteiro.',
+    'home.position.label': 'Sob medida',
+    'home.position.h2': 'Por que não um construtor de sites?',
     'home.position.body':
-      'Um construtor de sites entrega a estrutura de outra pessoa, uma assinatura da qual você não consegue sair e um peso à altura. Nós escrevemos o HTML, o CSS e as poucas linhas de JavaScript só para o seu site. Custa mais atenção e resulta num site mais rápido, mais fácil de acessar e genuinamente seu.',
+      'Um construtor de sites é rápido para começar. Mas também entrega a estrutura de outra pessoa, uma assinatura da qual você não consegue sair e um peso à altura. Nós escrevemos o HTML, o CSS e as poucas linhas de JavaScript só para o seu site. Custa mais atenção e resulta num site mais rápido, mais fácil de acessar e genuinamente seu.',
 
     'home.position.one.h': 'Carrega antes de a pessoa desistir',
     'home.position.one.b':
@@ -460,13 +453,6 @@ export const ui = {
     'home.position.three.b':
       'Domínio, repositório e conta de hospedagem ficam no seu nome, com a gente como colaboradora. Todo projeto sai com um documento de transferência. Você nunca fica preso à nossa disponibilidade.',
 
-    'home.work.label': 'Trabalhos',
-    'home.work.h2': 'O estado honesto desta página.',
-    'home.work.body':
-      'A DesignActiv está começando. Há trabalho de cliente em andamento e os primeiros estudos de caso ainda não são públicos, então não há o que mostrar aqui — e preferimos dizer isso a encher a página com seis retângulos cinzentos chamados “Projeto 1”.',
-    'home.work.body2':
-      'O que podemos mostrar é este site: como foi construído, quanto pesa e como se comporta numa conexão ruim com um leitor de tela ligado.',
-    'home.work.link': 'O que podemos mostrar',
 
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Serviços — DesignActiv',
@@ -534,9 +520,9 @@ export const ui = {
 
     /* --- About ---------------------------------------------------------- */
     'about.title': 'Sobre nós — DesignActiv',
-    'about.h1': 'Um estúdio pequeno em dois países.',
+    'about.h1': 'Pequena o bastante para conhecer seu projeto.',
     'about.lead':
-      'A DesignActiv trabalha a partir da Alemanha e do Luxemburgo, com clientes pela Europa e no Brasil. Pequena o bastante para que quem recebe o briefing seja quem constrói.',
+      'A DesignActiv é uma pequena agência web que trabalha com clientes onde quer que estejam. Quem recebe o briefing é quem constrói.',
     'about.story.h': 'Por que sob medida',
     'about.story.b1':
       'A maioria dos sites de pequenas empresas é montada num construtor, sobre o template de outra pessoa, pagando aluguel pelo privilégio. É rápido de começar e caro de abandonar: a estrutura não é sua, o peso não é negociável e, no dia em que você quiser algo que o template não faz, você trava.',
@@ -544,9 +530,9 @@ export const ui = {
       'Escolhemos o outro caminho: código sob medida, escrito para cada negócio em Astro, com um editor simples quando o cliente precisa alterar algo sozinho. Demora mais. Também resulta num site que carrega com uma fração do peso, passa em verificações de acessibilidade, mantém o próprio SEO através de uma reconstrução e pode ser entregue a qualquer outro desenvolvedor do mundo sem virar um projeto de migração.',
     'about.story.b3':
       'Sabemos o custo do outro caminho porque o percorremos. A versão anterior deste site era a reimplementação caprichada de um template comprado. Funcionava, parecia profissional e não tinha nenhuma ideia dentro. Refizemos do zero.',
-    'about.where.h': 'Onde estamos',
+    'about.where.h': 'Onde trabalhamos',
     'about.where.b':
-      'Alemanha e Luxemburgo, trabalhando em inglês e português. O Luxemburgo é um país de três idiomas com uma grande comunidade lusófona, e boa parte dos nossos clientes é brasileira — então trabalho multilíngue aqui é rotina, e cada idioma a mais tem preço definido desde o início.',
+      'Temos base na Alemanha e no Luxemburgo e trabalhamos a distância com clientes onde quer que estejam, em português e inglês. Sites multilíngues são rotina para nós, e cada idioma a mais tem preço definido desde o início.',
     'about.how.h': 'Como trabalhamos',
     'about.how.1.h': 'É seu',
     'about.how.1.b':
@@ -597,7 +583,7 @@ export const ui = {
 
     /* --- Footer --------------------------------------------------------- */
     'footer.blurb':
-      'Um estúdio web na Alemanha e no Luxemburgo. Sites sob medida para clientes na Europa e no Brasil.',
+      'Uma agência web para pequenas empresas: sites sob medida, identidade visual, SEO, e-mail e manutenção.',
     'footer.nav': 'Páginas',
     'footer.legalNav': 'Jurídico',
     'footer.legal': 'Aviso legal',
@@ -609,7 +595,7 @@ export const ui = {
     'legal.title': 'Aviso legal — DesignActiv',
     'legal.h1': 'Aviso legal',
     'legal.lead':
-      'A DesignActiv é um pequeno estúdio web que funciona a partir da Alemanha e do Luxemburgo. Esta página traz os dados que a lei alemã exige que um site comercial publique.',
+      'A DesignActiv é uma pequena agência web. Esta página traz os dados que a lei alemã exige que um site comercial publique.',
     'legal.basis': 'Informações conforme o § 5 DDG',
     'legal.todo.h': 'Esta página não está completa.',
     'legal.todo.b':
