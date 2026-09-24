@@ -22,6 +22,10 @@ files. That is deliberate: with file output the Portuguese home page builds to
 *both* `/pt.html` and a `/pt/` directory, and every host has to guess which
 one `/pt` means.
 
+`npm run check` typechecks every `.astro` and `.ts` file against Astro's strict
+preset, including the i18n parity assertion in `src/i18n/ui.ts`. It needs the dev
+dependencies that `npm ci` installs.
+
 To check the built output locally before pushing:
 
 ```bash
@@ -131,7 +135,8 @@ that links out, not as an iframe.
       the client's information to share, so get their sign-off or cut the
       block (it is marked in `src/views/Work.astro`)
 - [ ] Regenerate `public/assets/img/og-card.png` to match the rebuilt design
-- [ ] `npm run build && npm run measure && npm run build` so the published
+- [ ] `npm run check && npm run build && npm run measure && npm run build`, so the
+      types hold and the published
       figures match what actually ships
 - [ ] Verify the redirects against the live host:
       ```bash
