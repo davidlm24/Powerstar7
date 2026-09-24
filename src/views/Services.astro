@@ -2,7 +2,6 @@
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import Closing from '../components/Closing.astro';
-import Notice from '../components/Notice.astro';
 import { useTranslations, type Lang } from '../i18n/ui';
 import { PRICING, euros } from '../data/pricing';
 
@@ -82,13 +81,18 @@ const services = [
   },
 ] as const;
 
-/* Questions only. Every answer is an unfilled slot in the markup — these are
-   the questions a small business actually asks a studio, but what the studio
-   says back is not mine to invent. */
+/* The questions a small business actually asks a studio, and the answers.
+   Most answers restate commitments made elsewhere on the site. The two that
+   quote a price take it from src/data/pricing.ts, so an answer can never
+   disagree with the price card above it. Drafts, written 2026-09-24. */
 const faqs = [
-  t('services.faq.q1'), t('services.faq.q2'), t('services.faq.q3'),
-  t('services.faq.q4'), t('services.faq.q5'), t('services.faq.q6'),
-  t('services.faq.q7'),
+  { q: t('services.faq.q1'), a: t('services.faq.a1') },
+  { q: t('services.faq.q2'), a: t('services.faq.a2') },
+  { q: t('services.faq.q3'), a: t('services.faq.a3') },
+  { q: t('services.faq.q4'), a: t('services.faq.a4') },
+  { q: t('services.faq.q5'), a: t('services.faq.a5', { price: eur(PRICING.addons.language) }) },
+  { q: t('services.faq.q6'), a: t('services.faq.a6') },
+  { q: t('services.faq.q7'), a: t('services.faq.a7', { price: eur(PRICING.care) }) },
 ];
 ---
 
@@ -202,13 +206,9 @@ const faqs = [
   {/* --- FAQ ---------------------------------------------------------------
       <details>/<summary>, so it opens and closes with no JavaScript at all
       and arrives keyboard-accessible with its expanded state announced. The
-      site ships one 12 KB script; an accordion is not worth adding to it.
-      The Notice sits here now because the answers are the one part of this
-      page still unfilled — the prices above are real. */}
+      site ships one 12 KB script; an accordion is not worth adding to it. */}
   <section class="faq rails">
     <div class="container">
-      <Notice title={t('services.todo.h')} body={t('services.todo.b')} />
-
       <div class="faq__head">
         <p class="label">{t('services.faq.label')}</p>
         <h2>{t('services.faq.h2')}</h2>
@@ -216,13 +216,11 @@ const faqs = [
 
       <div class="faqs">
         {
-          faqs.map((q) => (
+          faqs.map((f) => (
             <details class="faq-item">
-              <summary class="faq-item__q">{q}</summary>
+              <summary class="faq-item__q">{f.q}</summary>
               <div class="faq-item__a">
-                <span class="pending">
-                  &lt;{lang === 'pt' ? 'resposta' : 'answer'}&gt;
-                </span>
+                <p>{f.a}</p>
               </div>
             </details>
           ))
@@ -399,13 +397,14 @@ const faqs = [
   /* --- FAQ ---------------------------------------------------------------- */
 
   .faq {
-    padding-block-end: var(--section-y);
+    padding-block: var(--s6) var(--section-y);
+    border-top: 1px solid var(--rule);
   }
 
   .faq__head {
     display: grid;
     gap: var(--s3);
-    margin-block: var(--s6);
+    margin-block-end: var(--s6);
   }
 
   .faqs {

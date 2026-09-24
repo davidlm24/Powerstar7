@@ -301,12 +301,13 @@ export const ui = {
     'nf.home': 'Back to the home page',
 
     /* --- Process, pricing and FAQ -------------------------------------
-       Added with the three new sections. The step names and descriptions,
-       the pricing copy and the questions are drafts: they restate
-       commitments the site already makes elsewhere, so nothing here claims
-       anything new. The prices themselves live in src/data/pricing.ts. Every
-       FAQ ANSWER is still an unfilled slot in the markup, not a string here.
-       See DEPLOY.md. */
+       Added with the three new sections. Everything here is a draft. The
+       steps and most answers restate commitments the site already makes
+       elsewhere; two answers add new ones (a date in every scope, and an
+       editor for clients who update the site themselves), flagged in
+       DEPLOY.md. Prices are never typed here: they live in
+       src/data/pricing.ts and come in as {price}, so an answer cannot
+       disagree with the price card above it. */
     'home.process.label': 'How we work',
     'home.process.h2': 'Four steps, and you own the result.',
     'home.process.s1.h': 'Scope and price',
@@ -376,10 +377,20 @@ export const ui = {
     'services.faq.q5': 'Do you work in languages other than English?',
     'services.faq.q6': 'What does "accessible" mean in practice?',
     'services.faq.q7': 'Do you keep working on it after launch?',
-
-    'services.todo.h': 'One section here is not finished.',
-    'services.todo.b':
-      'The answers below are unfilled. They are shown as slots rather than invented, because a made-up answer is worse than no answer. They must be completed before launch.',
+    'services.faq.a1':
+      'It depends on what the site has to do, so the timeline goes into the written scope next to the price — you have a date before anything starts. The biggest variable is usually content: text and photos arriving when agreed keep it on schedule.',
+    'services.faq.a2':
+      'To start, just a short description of the business and what the site needs to do — the contact form asks for exactly that. Once the scope is agreed, we need your text, photos and logo, and access to your domain if you already have one. If any of that doesn’t exist yet, say so: it goes into the scope.',
+    'services.faq.a3':
+      'Yes, if you want to. If you’ll be updating it yourself, we add a simple editor for your text, prices and photos, and it goes into the scope and the price. Changes to the structure stay with us, and Website care includes a small change every month if you’d rather not touch it at all.',
+    'services.faq.a4':
+      'You take everything with you. The domain, the code and the hosting account are in your name from the start, with a written handover guide — so leaving just means ending Website care, if you have it, not asking for your own site back.',
+    'services.faq.a5':
+      'Yes. We talk with you in English or Portuguese, and read German. The site itself can be in several languages at once — French and German are common in Luxembourg — and each language beyond the first is priced up front, from {price}.',
+    'services.faq.a6':
+      'It means people who can’t use a mouse, don’t see well or use a screen reader can still use your site. We build to WCAG 2.1 AA, the recognised standard, and test every page with a keyboard and a screen reader. It also makes the site easier to use on a cheap phone in bright sun.',
+    'services.faq.a7':
+      'If you want us to. Website care costs {price} a month and covers hosting, updates, backups, monitoring, priority support and one small change each month. It is optional — without it, anything later is quoted when you need it.',
   },
 
   pt: {
@@ -636,9 +647,8 @@ export const ui = {
       'O link pode estar antigo, ou talvez tenhamos movido a página durante a reconstrução. O site é pequeno o bastante para que tudo esteja a um clique.',
     'nf.home': 'Voltar para a página inicial',
 
-    /* Ver a nota em inglês. As respostas do FAQ ainda são espaços por
-       preencher na marcação, não strings neste arquivo; os preços ficam em
-       src/data/pricing.ts. */
+    /* Ver a nota em inglês. Os preços nunca são digitados aqui: ficam em
+       src/data/pricing.ts e entram como {price}. */
     'home.process.label': 'Como trabalhamos',
     'home.process.h2': 'Quatro passos, e o resultado é seu.',
     'home.process.s1.h': 'Escopo e preço',
@@ -708,10 +718,20 @@ export const ui = {
     'services.faq.q5': 'Vocês trabalham em outros idiomas além do inglês?',
     'services.faq.q6': 'O que significa "acessível" na prática?',
     'services.faq.q7': 'Vocês continuam cuidando do site depois do lançamento?',
-
-    'services.todo.h': 'Uma seção aqui não está terminada.',
-    'services.todo.b':
-      'As respostas abaixo ainda não estão preenchidas. Aparecem como espaços vazios em vez de inventadas, porque uma resposta inventada é pior do que nenhuma. Precisam ser completadas antes do lançamento.',
+    'services.faq.a1':
+      'Depende do que o site precisa fazer, então o prazo entra no escopo escrito, junto com o preço — você tem uma data antes de qualquer coisa começar. O que mais pesa costuma ser o conteúdo: textos e fotos chegando quando combinado mantêm o cronograma.',
+    'services.faq.a2':
+      'Para começar, só uma descrição curta do negócio e do que o site precisa fazer — é exatamente o que o formulário de contato pede. Depois de combinado o escopo, precisamos dos seus textos, fotos e logotipo, e do acesso ao seu domínio, se você já tiver um. Se alguma dessas coisas ainda não existir, é só dizer: isso entra no escopo.',
+    'services.faq.a3':
+      'Sim, se você quiser. Se for você quem vai atualizar o site, incluímos um editor simples para textos, preços e fotos, e ele entra no escopo e no preço. Mudanças na estrutura ficam com a gente, e a Manutenção do site inclui uma pequena alteração por mês, se você preferir não mexer em nada.',
+    'services.faq.a4':
+      'Você leva tudo. O domínio, o código e a conta de hospedagem ficam no seu nome desde o início, com um guia de entrega por escrito — então sair é só encerrar a Manutenção do site, se você tiver, e não pedir o seu próprio site de volta.',
+    'services.faq.a5':
+      'Sim. Falamos com você em inglês ou português, e lemos alemão. O site em si pode ter vários idiomas ao mesmo tempo — francês e alemão são comuns no Luxemburgo — e cada idioma além do primeiro tem preço definido desde o início, a partir de {price}.',
+    'services.faq.a6':
+      'Significa que pessoas que não usam mouse, que enxergam mal ou que usam leitor de tela conseguem usar o seu site do mesmo jeito. Construímos seguindo o WCAG 2.1 AA, o padrão reconhecido, e testamos cada página com teclado e leitor de tela. Isso também deixa o site mais fácil de usar num celular barato, sob sol forte.',
+    'services.faq.a7':
+      'Se você quiser. A Manutenção do site custa {price} por mês e cobre hospedagem, atualizações, backups, monitoramento, suporte prioritário e uma pequena alteração mensal. É opcional — sem ela, qualquer coisa depois é orçada quando você precisar.',
   },
 } as const;
 
