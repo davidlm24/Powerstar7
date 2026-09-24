@@ -134,10 +134,15 @@ that links out, not as an iframe.
 - [ ] Decide whether the unlaunched client project stays on `/work` — it is
       the client's information to share, so get their sign-off or cut the
       block (it is marked in `src/views/Work.astro`)
-- [ ] Regenerate `public/assets/img/og-card.png` to match the rebuilt design
+- [x] Regenerate `public/assets/img/og-card.png` to match the rebuilt design. Done
+      in 1e3cbd9 and checked 2026-09-24: 1200x630, the warm ground and the three
+      "No"s, referenced with an absolute URL and its dimensions on every page. Two
+      things it does not do yet: the Portuguese pages share the English card, and
+      it names neither of the two people behind the studio. Both are worth redoing
+      once the father-and-son copy lands, because a WhatsApp referral sees this
+      card before it sees the site.
 - [ ] `npm run check && npm run build && npm run measure && npm run build`, so the
-      types hold and the published
-      figures match what actually ships
+      types hold and the published figures match what actually ships
 - [ ] Verify the redirects against the live host:
       ```bash
       curl -sI https://www.designactiv.com/about-us | head -2
