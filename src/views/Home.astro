@@ -30,16 +30,17 @@ const services = [
   { n: '05', key: 'hosting', illo: 'plug', name: t('svc.hosting.name'), b: t('svc.hosting.body') },
 ] as const;
 
-/* The four step NAMES restate commitments the site already makes elsewhere —
-   a written scope with a price attached (About), design reviewed on real
-   devices (Services), a hand-written front end, a handover document (the
-   position section). Nothing here claims anything new. The descriptions are
-   unfilled slots, not invented sentences. */
+/* Each step restates a commitment the site already makes elsewhere: a
+   written scope with the price attached (About), design reviewed on real
+   devices (Services), code with no builder underneath and WCAG AA as the
+   floor (Services), and a handover in the client's name with a written guide
+   (the position section). So nothing here claims anything new. The
+   descriptions are drafts, written 2026-09-24; rewrite them freely. */
 const steps = [
-  t('home.process.s1.h'),
-  t('home.process.s2.h'),
-  t('home.process.s3.h'),
-  t('home.process.s4.h'),
+  { h: t('home.process.s1.h'), b: t('home.process.s1.b') },
+  { h: t('home.process.s2.h'), b: t('home.process.s2.b') },
+  { h: t('home.process.s3.h'), b: t('home.process.s3.b') },
+  { h: t('home.process.s4.h'), b: t('home.process.s4.b') },
 ];
 
 const position = [
@@ -175,15 +176,11 @@ const position = [
 
       <ol class="steps">
         {
-          steps.map((name, i) => (
+          steps.map((s, i) => (
             <li class="step">
               <span class="step__n">{String(i + 1).padStart(2, '0')}</span>
-              <h3 class="step__h">{name}</h3>
-              <p class="step__b">
-                <span class="pending">
-                  &lt;{lang === 'pt' ? 'uma frase sobre este passo' : 'one sentence on this step'}&gt;
-                </span>
-              </p>
+              <h3 class="step__h">{s.h}</h3>
+              <p class="step__b">{s.b}</p>
             </li>
           ))
         }
@@ -754,6 +751,21 @@ const position = [
 
     .point + .point {
       border-inline-start: 0;
+    }
+  }
+
+  /* One step to a row on a phone. Two abreast suited the step NAMES, which
+     were all this timeline carried at first; with a sentence under each, a
+     130px column set it two or three words to a line and up to eleven lines
+     deep. Below 30rem, which covers every portrait phone, each step gets the
+     full width. */
+  @media (max-width: 30rem) {
+    .steps {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .step {
+      padding-inline-end: 0;
     }
   }
 </style>

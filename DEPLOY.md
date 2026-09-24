@@ -100,18 +100,22 @@ that links out, not as an iframe.
       case studies, their card layout, the data file and the amber badge colour
       that existed only for them are gone. Real case studies go in when there is
       real work to show.
-- [ ] **Fill the sixteen unfilled slots** — thirty-two, counting
-      Portuguese. Three sections ship with
-      `.pending` placeholders rather than invented content, and each one
-      renders visibly as `<angle brackets>` on the live site:
-      - four step descriptions in the home page process timeline
-      - five prices on `/services` (the `<amount>` slots)
+- [ ] **Fill the remaining unfilled slots** — ten, twenty counting
+      Portuguese. They ship as `.pending` placeholders rather than invented
+      content, and each one renders visibly as `<angle brackets>` on the live
+      site:
       - seven answers in the `/services` FAQ
+      - one supporting line under the closing link (one component, shown on
+        the home, About, Services and Work pages)
+      - the lead lines under the Legal and Privacy page headings
 
-      The drafted step names and FAQ questions restate commitments the site
-      already makes elsewhere, so they claim nothing new — but they are
-      drafts, and rewriting them is free. Both `/services` sections carry a
-      Notice saying they are unfinished; delete it once they are.
+      Done 2026-09-24: the five prices (now in `src/data/pricing.ts`) and the
+      four process step descriptions on the home page, which are drafts and
+      free to rewrite. The Impressum fields are their own item below.
+
+      The drafted FAQ questions restate commitments the site already makes
+      elsewhere, so they claim nothing new, but they are drafts too. The FAQ
+      carries a Notice saying it is unfinished; delete it once it is not.
 
       Remember Portuguese. The parity guard in `src/i18n/ui.ts` fails the
       build when a key is missing from one language, but it cannot tell you

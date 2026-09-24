@@ -301,17 +301,26 @@ export const ui = {
     'nf.home': 'Back to the home page',
 
     /* --- Process, pricing and FAQ -------------------------------------
-       Added with the three new sections. The step names, the pricing lead
-       and the questions are drafts: they restate commitments the site
-       already makes elsewhere, so nothing here claims anything new. Every
-       ANSWER, every PRICE and every step description is an unfilled slot in
-       the markup, not a string here. See DEPLOY.md. */
+       Added with the three new sections. The step names and descriptions,
+       the pricing copy and the questions are drafts: they restate
+       commitments the site already makes elsewhere, so nothing here claims
+       anything new. The prices themselves live in src/data/pricing.ts. Every
+       FAQ ANSWER is still an unfilled slot in the markup, not a string here.
+       See DEPLOY.md. */
     'home.process.label': 'How we work',
     'home.process.h2': 'Four steps, and you own the result.',
     'home.process.s1.h': 'Scope and price',
     'home.process.s2.h': 'Design in the browser',
     'home.process.s3.h': 'Build by hand',
     'home.process.s4.h': 'Handover',
+    'home.process.s1.b':
+      'You tell us what you need, and we write it up as a scope with the price attached — agreed before any work starts.',
+    'home.process.s2.b':
+      'We design straight into a working page, so you review the real site on your own phone — not a picture of it.',
+    'home.process.s3.b':
+      'We build it as custom code, with no template or page builder underneath, so it loads fast and works for everyone who visits.',
+    'home.process.s4.b':
+      'The domain, the code and the hosting are handed over in your name, with a written guide — plus Website care, if you want someone to keep it running.',
 
     'services.pricing.label': 'What things cost',
     'services.pricing.h2': 'Fixed scope, named price.',
@@ -627,15 +636,23 @@ export const ui = {
       'O link pode estar antigo, ou talvez tenhamos movido a página durante a reconstrução. O site é pequeno o bastante para que tudo esteja a um clique.',
     'nf.home': 'Voltar para a página inicial',
 
-    /* Ver a nota em inglês: apenas a cópia real tem chave aqui. As respostas,
-       os preços e as descrições dos passos são espaços por preencher na
-       marcação, não strings neste ficheiro. */
+    /* Ver a nota em inglês. As respostas do FAQ ainda são espaços por
+       preencher na marcação, não strings neste arquivo; os preços ficam em
+       src/data/pricing.ts. */
     'home.process.label': 'Como trabalhamos',
     'home.process.h2': 'Quatro passos, e o resultado é seu.',
     'home.process.s1.h': 'Escopo e preço',
     'home.process.s2.h': 'Design no navegador',
     'home.process.s3.h': 'Construção à mão',
     'home.process.s4.h': 'Entrega',
+    'home.process.s1.b':
+      'Você conta do que precisa, e nós escrevemos um escopo com o preço junto — combinado antes de qualquer trabalho começar.',
+    'home.process.s2.b':
+      'Fazemos o design direto em uma página que já funciona, então você revisa o site de verdade no seu próprio celular — não uma imagem dele.',
+    'home.process.s3.b':
+      'Construímos o site em código sob medida, sem template nem construtor de sites por baixo, então ele carrega rápido e funciona para todo mundo que o visita.',
+    'home.process.s4.b':
+      'Domínio, código e hospedagem ficam no seu nome, com um guia por escrito — e a Manutenção do site, se você quiser alguém cuidando dele.',
 
     'services.pricing.label': 'Quanto custa',
     'services.pricing.h2': 'Escopo fechado, preço com nome.',
