@@ -270,9 +270,9 @@ export const ui = {
       'A German legal notice must carry a real name, postal address, contact details and, where applicable, VAT and register numbers. Those details are not published here yet. This page must be completed before the site goes live.',
     'legal.contact.h': 'Contact',
     'legal.responsible.h': 'Responsible for content',
-    'legal.disputes.h': 'EU dispute resolution',
+    'legal.disputes.h': 'Consumer dispute resolution',
     'legal.disputes.b':
-      'The European Commission provides a platform for online dispute resolution. We are neither obliged nor willing to take part in dispute resolution proceedings before a consumer arbitration board.',
+      'We are neither obliged nor willing to take part in dispute resolution proceedings before a consumer arbitration board.',
 
     /* --- Privacy -------------------------------------------------------- */
     'privacy.title': 'Privacy — DesignActiv',
@@ -623,9 +623,9 @@ export const ui = {
       'Um aviso legal alemão precisa trazer nome real, endereço postal, dados de contato e, quando aplicável, número de IVA e de registro. Esses dados ainda não estão publicados aqui. Esta página precisa ser concluída antes de o site ir ao ar.',
     'legal.contact.h': 'Contato',
     'legal.responsible.h': 'Responsável pelo conteúdo',
-    'legal.disputes.h': 'Resolução de litígios na UE',
+    'legal.disputes.h': 'Resolução de conflitos de consumo',
     'legal.disputes.b':
-      'A Comissão Europeia disponibiliza uma plataforma de resolução de litígios online. Não somos obrigados nem dispostos a participar de procedimentos de arbitragem perante um órgão de defesa do consumidor.',
+      'Não somos obrigados nem dispostos a participar de procedimentos de arbitragem perante um órgão de defesa do consumidor.',
 
     /* --- Privacy -------------------------------------------------------- */
     'privacy.title': 'Privacidade — DesignActiv',
