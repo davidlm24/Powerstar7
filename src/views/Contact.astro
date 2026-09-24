@@ -31,12 +31,15 @@ const formCopy = JSON.stringify({
   unconfigured: t('contact.unconfigured'),
 });
 
+/* What someone is choosing between, in the same names the Services page
+   prices them under: the project, the care plan, the add-ons. Not one
+   option per discipline — that was the old five-service menu, and it asked
+   a visitor to know whether their problem was "SEO" before they had
+   written a word. */
 const topics = [
-  t('contact.form.topic.web'),
-  t('contact.form.topic.brand'),
-  t('contact.form.topic.seo'),
-  t('contact.form.topic.email'),
-  t('contact.form.topic.hosting'),
+  t('contact.form.topic.website'),
+  t('contact.form.topic.care'),
+  t('contact.form.topic.extras'),
   t('contact.form.topic.other'),
 ];
 ---
