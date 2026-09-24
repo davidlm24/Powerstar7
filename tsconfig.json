@@ -1,5 +1,29 @@
 {
-  "extends": "astro/tsconfigs/strict",
+  /* Astro's strict preset (astro/tsconfigs/strict and the base it extends),
+     written out instead of extended. Worktrees live INSIDE the main checkout,
+     at .claude/worktrees/, and the build's resolver reads the tsconfig.json of
+     the checkout above as well as its own. An "extends" pointing into
+     node_modules then fails wherever that parent has no node_modules — which
+     broke every build and every dev page except the pre-compiled home page.
+     Written out, the file resolves anywhere. Keep these in step with the
+     preset if Astro changes it. */
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "jsx": "preserve",
+    "strict": true
+  },
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  /* .claude/ holds tooling and any nested worktrees, never site source. */
+  "exclude": ["dist", ".claude"]
 }
