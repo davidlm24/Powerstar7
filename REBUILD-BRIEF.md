@@ -193,7 +193,7 @@ work. Currently locked by owner preference — worth revisiting.
 
 | Item | State |
 |---|---|
-| Legal Notice (Impressum) | **Placeholder. Legally required (§5 TMG). Launch blocker.** |
+| Legal Notice (Impressum) | **Placeholder. Legally required (§5 DDG). Launch blocker.** |
 | Privacy policy | Responsible-party blank; needs lawyer review |
 | Phone / address | `+49 (0) 000 000 0000` and "Street and number, 10000 Berlin" — fake, on every page |
 | Email | `hello@designactiv.com` — confirmed live 2026-09-19 |

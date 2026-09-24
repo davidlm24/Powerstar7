@@ -118,9 +118,11 @@ that links out, not as an iframe.
       they lead the home page. Unlike the page-weight figures they replaced,
       a visitor cannot verify them — so a stale number here is a claim, not
       a typo.
-- [ ] **Legal notice (Impressum) completed — legally required under § 5 TMG.
+- [ ] **Legal notice (Impressum) completed — legally required under § 5 DDG.
       This is a launch blocker.** Real name, postal address, contact details,
-      and VAT/register numbers where applicable.
+      and VAT/register numbers where applicable. (§ 5 DDG, in the
+      Digitale-Dienste-Gesetz, replaced § 5 TMG on 14 May 2024. Have the lawyer
+      reviewing the privacy policy confirm the citation.)
 - [ ] Privacy policy: responsible party and competent supervisory authority
       named; text reviewed by a lawyer
 - [ ] `hello@designactiv.com` verified as a real, monitored inbox

@@ -104,7 +104,7 @@ tracking, no header that turns into a glass pill.
 The site is honest about what does not exist yet, rather than shipping
 placeholders styled to look finished. Before launch, see the checklist in
 [DEPLOY.md](DEPLOY.md) — the legal notice in particular is a **launch
-blocker** under § 5 TMG.
+blocker** under § 5 DDG.
 
 ## `REBUILD-BRIEF.md`
 

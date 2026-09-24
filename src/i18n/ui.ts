@@ -264,7 +264,7 @@ export const ui = {
     'legal.h1': 'Legal notice',
     'legal.lead':
       'DesignActiv is a small web studio run from Germany and Luxembourg. This page carries the details German law requires a business website to publish.',
-    'legal.tmg': 'Information pursuant to § 5 TMG',
+    'legal.basis': 'Information pursuant to § 5 DDG',
     'legal.todo.h': 'This page is not complete.',
     'legal.todo.b':
       'A German legal notice must carry a real name, postal address, contact details and, where applicable, VAT and register numbers. Those details are not published here yet. This page must be completed before the site goes live.',
@@ -617,7 +617,7 @@ export const ui = {
     'legal.h1': 'Aviso legal',
     'legal.lead':
       'A DesignActiv é um pequeno estúdio web que funciona a partir da Alemanha e do Luxemburgo. Esta página traz os dados que a lei alemã exige que um site comercial publique.',
-    'legal.tmg': 'Informações conforme o § 5 TMG',
+    'legal.basis': 'Informações conforme o § 5 DDG',
     'legal.todo.h': 'Esta página não está completa.',
     'legal.todo.b':
       'Um aviso legal alemão precisa trazer nome real, endereço postal, dados de contato e, quando aplicável, número de IVA e de registro. Esses dados ainda não estão publicados aqui. Esta página precisa ser concluída antes de o site ir ao ar.',
