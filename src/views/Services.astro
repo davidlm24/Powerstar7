@@ -114,9 +114,14 @@ const faqs = [
         <article class="plan plan--design">
           <p class="plan__kind">{t('services.design.kind')}</p>
           <h3 class="plan__name">{t('services.design.name')}</h3>
+          {/* Both spans on ONE line with a real space between them. Astro's
+              HTML compression deletes whitespace that crosses a line break, so
+              the gap then existed only in CSS, and the text itself read
+              "From€750" to anything that reads text rather than layout: copy
+              and paste, search snippets, some screen readers. The flex gap
+              still sets the visible spacing; the space is for everything else. */}
           <p class="plan__price">
-            <span class="plan__unit">{t('services.pricing.from')}</span>
-            <span class="plan__amount">{eur(PRICING.design)}</span>
+            <span class="plan__unit">{t('services.pricing.from')}</span> <span class="plan__amount">{eur(PRICING.design)}</span>
           </p>
           <p class="plan__note">{t('services.design.note')}</p>
           <h4 class="plan__includes">{t('services.pricing.includes')}</h4>
@@ -129,8 +134,7 @@ const faqs = [
           <p class="plan__kind">{t('services.care.kind')}</p>
           <h3 class="plan__name">{t('services.care.name')}</h3>
           <p class="plan__price">
-            <span class="plan__amount">{eur(PRICING.care)}</span>
-            <span class="plan__unit">{t('services.pricing.perMonth')}</span>
+            <span class="plan__amount">{eur(PRICING.care)}</span> <span class="plan__unit">{t('services.pricing.perMonth')}</span>
           </p>
           <p class="plan__note">{t('services.care.note')}</p>
           <h4 class="plan__includes">{t('services.pricing.includes')}</h4>
