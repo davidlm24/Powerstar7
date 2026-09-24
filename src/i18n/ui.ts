@@ -246,6 +246,7 @@ export const ui = {
     'contact.ok': 'Thanks — your message is on its way. We will come back to you shortly.',
     'contact.fail': 'Sorry, sending failed. Please email us directly at {email}.',
     'contact.mailtoOpening': 'Opening your email app. If nothing happens, write to {email}.',
+    'contact.mailSubject': 'Website enquiry',
     'contact.unconfigured': 'This form is not connected yet — please email us at {email}.',
 
     'contact.direct.h': 'Or write to us directly',
@@ -576,6 +577,7 @@ export const ui = {
     'contact.ok': 'Obrigado — sua mensagem está a caminho. Retornamos em breve.',
     'contact.fail': 'Desculpe, o envio falhou. Escreva direto para {email}.',
     'contact.mailtoOpening': 'Abrindo seu aplicativo de e-mail. Se nada acontecer, escreva para {email}.',
+    'contact.mailSubject': 'Contato pelo site',
     'contact.unconfigured': 'Este formulário ainda não está conectado — escreva para {email}.',
 
     'contact.direct.h': 'Ou escreva direto para nós',

@@ -240,9 +240,15 @@
           setStatus('error', String(copy.unconfigured).replace('{email}', ''));
           return;
         }
+        /* The subject prefix comes from the page's copy like every other
+           string here, so a Portuguese visitor is not handed an English
+           subject line. The English fallback only covers a page that
+           predates the key; with no topic, there is no dangling dash. */
         window.location.href =
           'mailto:' + email +
-          '?subject=' + encodeURIComponent('Website enquiry — ' + (data.get('topic') || '')) +
+          '?subject=' + encodeURIComponent(
+            [copy.subject || 'Website enquiry', data.get('topic')].filter(Boolean).join(' — ')
+          ) +
           '&body=' + encodeURIComponent(
             (data.get('name') || '') + '\n' +
             (data.get('email') || '') + '\n' +
