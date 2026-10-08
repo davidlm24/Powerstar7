@@ -164,7 +164,7 @@ export const ui = {
     'work.this.label': 'Built by us',
     'work.this.h': 'This website',
     'work.this.b':
-      'This site is built the way we build custom sites for clients: written from scratch, fast on a weak connection, usable with a keyboard or a screen reader, and free of trackers. The figures below are measured from the site you are looking at.',
+      'It is built the way we build custom sites for clients: written from scratch, fast on a weak connection, usable with a keyboard or a screen reader, and free of trackers. The figures below are measured from the site you are looking at.',
     'work.this.list.1': 'Custom code, no page builder, no framework runtime',
     'work.this.list.2': 'Zero third-party requests, so no consent banner',
     'work.this.list.3': 'Every colour pair contrast-checked against WCAG, not eyeballed',
@@ -501,7 +501,7 @@ export const ui = {
     'work.this.label': 'Feito por nós',
     'work.this.h': 'Este site',
     'work.this.b':
-      'Este site foi construído do jeito que fazemos sites sob medida para clientes: escrito do zero, rápido numa conexão fraca, utilizável com teclado ou leitor de tela, e sem rastreadores. Os números abaixo foram medidos no site que você está vendo.',
+      'Foi construído do jeito que fazemos sites sob medida para clientes: escrito do zero, rápido numa conexão fraca, utilizável com teclado ou leitor de tela, e sem rastreadores. Os números abaixo foram medidos no site que você está vendo.',
     'work.this.list.1': 'Código sob medida, sem construtor de sites, sem runtime de framework',
     'work.this.list.2': 'Zero requisições a terceiros, portanto sem banner de consentimento',
     'work.this.list.3': 'Cada par de cores verificado contra a WCAG, não no olho',
