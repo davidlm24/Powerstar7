@@ -108,18 +108,20 @@ that links out, not as an iframe.
       free to rewrite: the five prices (now in `src/data/pricing.ts`), the four
       process step descriptions, the seven FAQ answers, the line under the
       closing link, and the leads under the Legal and Privacy headings. Two FAQ
-      answers make commitments the site did not make before, so check them
-      first: **every scope includes a date**, and **an editor is added, and
-      priced, when a client will update the site themselves**. The Impressum
+      answers make commitments the site did not make before, and David
+      confirmed both on 2026-10-08: **every scope includes a date**, and **an
+      editor is added, and priced, when a client will update the site
+      themselves**. Keep to them. The Impressum
       fields are their own item below, and they are the only `.pending`
       placeholders left.
 
       Remember Portuguese. The parity guard in `src/i18n/ui.ts` fails the
       build when a key is missing from one language, but it cannot tell you
       that a Portuguese string is still sitting in English.
-- [ ] **Set the studio's real numbers** in `src/data/agency.json`. They are
-      currently the honest values for 2026-09-19 (0 delivered, 1 client) and
-      they lead the home page. Unlike the page-weight figures they replaced,
+- [ ] **Set the studio's real numbers** in `src/data/agency.json` before the
+      stats band comes back. It was taken off the home page on 2026-09-24, and
+      the file still holds the values for 2026-09-19 (0 delivered, 1 client).
+      Only a blocker if the band returns. Unlike the page-weight figures they replaced,
       a visitor cannot verify them — so a stale number here is a claim, not
       a typo.
 - [ ] **Legal notice (Impressum) completed — legally required under § 5 DDG.
