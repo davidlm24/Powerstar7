@@ -178,26 +178,26 @@ export const ui = {
     'about.h1': 'Small enough to know your project.',
     'about.lead':
       'DesignActiv is a small web agency working with clients wherever they are. The person you brief is the person who builds it.',
-    'about.story.h': 'Why custom-built',
+    'about.story.h': 'What custom-\u2060built gets you',
     'about.story.b1':
-      'Most small-business sites are assembled in a builder, on someone else’s template, paying rent for the privilege. It is fast to start and expensive to leave: the structure is not yours, the payload is not negotiable, and the day you want something the template does not do, you are stuck.',
+      'A site that loads fast, even on a weak phone signal, so visitors don’t give up before it appears.',
     'about.story.b2':
-      'We took the other road: custom code, written for each business on Astro, with a simple editor where the client needs to change things themselves. It takes longer. It also produces a site that loads in a fraction of the weight, passes accessibility checks, keeps its own SEO through a rebuild, and can be handed to any other developer on earth without a migration project.',
+      'A site that works with a keyboard or a screen reader, and keeps its place in search when it changes.',
     'about.story.b3':
-      'We know the cost of the other road because we walked it. This site’s previous version was a careful reimplementation of a purchased template. It worked, it looked professional, and it had no ideas in it. We rebuilt it from nothing.',
+      'A site you own outright, with a simple editor where you need one, and a care plan only if you want it.',
     'about.where.h': 'Where we work',
     'about.where.b':
       'We are based in Germany and Luxembourg and work remotely with clients wherever they are, in English and Portuguese. Multilingual sites are routine for us, and each extra language is priced up front.',
     'about.how.h': 'How we work',
     'about.how.1.h': 'You own it',
     'about.how.1.b':
-      'Domain, repository and hosting in your name. A handover document in every project. No dependency on us being available.',
+      'Domain, code and hosting in your name, and a written handover guide when the site goes live. No dependency on us being available.',
     'about.how.2.h': 'Fixed scope, named price',
     'about.how.2.b':
       'A written scope before anything starts, and a price attached to it. Changes are quoted, not absorbed and resented.',
     'about.how.3.h': 'Accessible by default',
     'about.how.3.b':
-      'WCAG AA is the floor on every project, not a line item you can decline. It is also, quietly, what makes a site work on a bad phone.',
+      'WCAG AA, the recognised accessibility standard, is our baseline, not an add-on you can decline. It is also, quietly, what makes a site work on a bad phone.',
 
     /* --- Contact -------------------------------------------------------- */
     'contact.title': 'Contact — DesignActiv',
@@ -515,26 +515,26 @@ export const ui = {
     'about.h1': 'Pequena o bastante para conhecer seu projeto.',
     'about.lead':
       'A DesignActiv é uma pequena agência web que trabalha com clientes onde quer que estejam. Quem recebe o briefing é quem constrói.',
-    'about.story.h': 'Por que sob medida',
+    'about.story.h': 'O que você ganha com um site sob medida',
     'about.story.b1':
-      'A maioria dos sites de pequenas empresas é montada num construtor, sobre o template de outra pessoa, pagando aluguel pelo privilégio. É rápido de começar e caro de abandonar: a estrutura não é sua, o peso não é negociável e, no dia em que você quiser algo que o template não faz, você trava.',
+      'Um site que carrega rápido, mesmo com sinal fraco no celular, para que ninguém desista antes de ele aparecer.',
     'about.story.b2':
-      'Escolhemos o outro caminho: código sob medida, escrito para cada negócio em Astro, com um editor simples quando o cliente precisa alterar algo sozinho. Demora mais. Também resulta num site que carrega com uma fração do peso, passa em verificações de acessibilidade, mantém o próprio SEO através de uma reconstrução e pode ser entregue a qualquer outro desenvolvedor do mundo sem virar um projeto de migração.',
+      'Um site que funciona com teclado ou leitor de tela, e mantém sua posição nas buscas quando muda.',
     'about.story.b3':
-      'Sabemos o custo do outro caminho porque o percorremos. A versão anterior deste site era a reimplementação caprichada de um template comprado. Funcionava, parecia profissional e não tinha nenhuma ideia dentro. Refizemos do zero.',
+      'Um site que é seu de verdade, com um editor simples onde você precisar, e um plano de manutenção só se você quiser.',
     'about.where.h': 'Onde trabalhamos',
     'about.where.b':
       'Temos base na Alemanha e no Luxemburgo e trabalhamos a distância com clientes onde quer que estejam, em português e inglês. Sites multilíngues são rotina para nós, e cada idioma a mais tem preço definido desde o início.',
     'about.how.h': 'Como trabalhamos',
     'about.how.1.h': 'É seu',
     'about.how.1.b':
-      'Domínio, repositório e hospedagem no seu nome. Um documento de transferência em todo projeto. Nenhuma dependência da nossa disponibilidade.',
+      'Domínio, código e hospedagem no seu nome, e um guia de transferência por escrito quando o site for ao ar. Nenhuma dependência da nossa disponibilidade.',
     'about.how.2.h': 'Escopo fechado, preço nomeado',
     'about.how.2.b':
       'Um escopo escrito antes de qualquer coisa começar, e um preço preso a ele. Mudanças são orçadas, não absorvidas a contragosto.',
     'about.how.3.h': 'Acessível por padrão',
     'about.how.3.b':
-      'WCAG AA é o piso em todo projeto, não um item que dá para recusar. É também, discretamente, o que faz um site funcionar num celular ruim.',
+      'WCAG AA, o padrão reconhecido de acessibilidade, é a nossa base, não um extra que dá para recusar. É também, discretamente, o que faz um site funcionar num celular ruim.',
 
     /* --- Contact -------------------------------------------------------- */
     'contact.title': 'Contato — DesignActiv',
