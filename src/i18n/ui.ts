@@ -122,7 +122,7 @@ export const ui = {
 
     'svc.web.name': 'Web design & development',
     'svc.web.body':
-      'Design and build, as one job rather than two. Custom code on Astro — no template, no page builder — with a simple editor where the people who own the site need to change it. Accessible to WCAG AA as a floor, not an upgrade.',
+      'Design and build, as one job rather than two: a site made for your business, not adapted from a template, with a simple editor where you need to change things yourself. Accessible to WCAG AA as standard, not an upgrade.',
     'svc.web.d1': 'Design in the browser, reviewed on real devices',
     'svc.web.d2': 'Custom front end, no builder lock-in',
     'svc.web.d3': 'WCAG AA, tested with a keyboard and a screen reader',
@@ -141,12 +141,12 @@ export const ui = {
     'svc.seo.d2': 'Structured data and multilingual hreflang',
     'svc.seo.d3': 'Core Web Vitals, measured on the live site',
 
-    'svc.email.name': 'Email marketing',
+    'svc.email.name': 'Email & automation',
     'svc.email.body':
-      'Campaigns and automations that render the same in Outlook as everywhere else, with consent handled the way the GDPR actually requires rather than the way most templates assume.',
-    'svc.email.d1': 'Template built and tested across clients',
-    'svc.email.d2': 'Consent and unsubscribe handled correctly',
-    'svc.email.d3': 'Automations, with reporting you can read',
+      'Business email set up properly on your own domain, plus the small automations that save you time: booking confirmations, form replies, and enquiries landing where you’ll see them. Bigger workflows are quoted as process automation.',
+    'svc.email.d1': 'Email on your own domain, set up and tested',
+    'svc.email.d2': 'Automatic replies and confirmations',
+    'svc.email.d3': 'Forms and enquiries routed to where you work',
 
     'svc.hosting.name': 'Website care',
     'svc.hosting.body':
@@ -459,7 +459,7 @@ export const ui = {
 
     'svc.web.name': 'Design e desenvolvimento web',
     'svc.web.body':
-      'Design e construção como um trabalho só, não dois. Código sob medida em Astro — sem template, sem construtor de sites — com um editor simples quando quem é dono do site precisa alterá-lo. Acessível conforme WCAG AA como piso, não como upgrade.',
+      'Design e construção como um trabalho só, não dois: um site feito para o seu negócio, não adaptado de um template, com um editor simples onde você precisar mudar algo sozinho. Acessível conforme WCAG AA como padrão, não como upgrade.',
     'svc.web.d1': 'Design feito no navegador, revisado em aparelhos reais',
     'svc.web.d2': 'Front-end sob medida, sem amarras de construtor',
     'svc.web.d3': 'WCAG AA, testado com teclado e leitor de tela',
@@ -478,12 +478,12 @@ export const ui = {
     'svc.seo.d2': 'Dados estruturados e hreflang multilíngue',
     'svc.seo.d3': 'Core Web Vitals, medidos no site no ar',
 
-    'svc.email.name': 'E-mail marketing',
+    'svc.email.name': 'E-mail e automação',
     'svc.email.body':
-      'Campanhas e automações que aparecem igual no Outlook e em todo o resto, com consentimento tratado como a LGPD e o GDPR realmente exigem, e não como a maioria dos templates presume.',
-    'svc.email.d1': 'Template construído e testado nos principais clientes de e-mail',
-    'svc.email.d2': 'Consentimento e descadastro tratados corretamente',
-    'svc.email.d3': 'Automações, com relatórios que dá para ler',
+      'E-mail profissional configurado direito no seu próprio domínio, mais as pequenas automações que poupam seu tempo: confirmações de agendamento, respostas de formulário e contatos chegando onde você vai ver. Fluxos maiores são orçados como automação de processos.',
+    'svc.email.d1': 'E-mail no seu próprio domínio, configurado e testado',
+    'svc.email.d2': 'Respostas e confirmações automáticas',
+    'svc.email.d3': 'Formulários e contatos encaminhados para onde você trabalha',
 
     'svc.hosting.name': 'Manutenção do site',
     'svc.hosting.body':
