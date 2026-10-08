@@ -157,14 +157,14 @@ export const ui = {
 
     /* --- Work ----------------------------------------------------------- */
     'work.title': 'Work — DesignActiv',
-    'work.h1': 'Nothing to show yet.',
+    'work.h1': 'Proof, before the portfolio.',
     'work.lead':
-      'DesignActiv is early, and the first client sites are still in build. Rather than fill this page with placeholders, here is what we can put in front of you today.',
+      'Our first client sites are being built now and will appear here once they launch. Until then, the best evidence of how we work is this site itself.',
 
-    'work.this.label': 'Exhibit A',
+    'work.this.label': 'Built by us',
     'work.this.h': 'This website',
     'work.this.b':
-      'The most honest thing we can show is the thing you are reading. It was rebuilt from scratch after the previous version turned out to be a faithful reimplementation of a template — which taught us more than a successful project would have.',
+      'This site is built the way we build custom sites for clients: written from scratch, fast on a weak connection, usable with a keyboard or a screen reader, and free of trackers. The figures below are measured from the site you are looking at.',
     'work.this.list.1': 'Custom code, no page builder, no framework runtime',
     'work.this.list.2': 'Zero third-party requests, so no consent banner',
     'work.this.list.3': 'Every colour pair contrast-checked against WCAG, not eyeballed',
@@ -494,14 +494,14 @@ export const ui = {
 
     /* --- Work ----------------------------------------------------------- */
     'work.title': 'Trabalhos — DesignActiv',
-    'work.h1': 'Ainda não há o que mostrar.',
+    'work.h1': 'Provas, antes do portfólio.',
     'work.lead':
-      'A DesignActiv está começando, e os primeiros sites de clientes ainda estão em construção. Em vez de encher esta página de placeholders, aqui está o que podemos colocar na sua frente hoje.',
+      'Nossos primeiros sites de clientes estão em construção e vão aparecer aqui quando forem ao ar. Até lá, a melhor prova de como trabalhamos é este próprio site.',
 
-    'work.this.label': 'Prova A',
+    'work.this.label': 'Feito por nós',
     'work.this.h': 'Este site',
     'work.this.b':
-      'A coisa mais honesta que podemos mostrar é o que você está lendo. Ele foi refeito do zero depois que a versão anterior se revelou uma reimplementação fiel de um template — o que ensinou mais do que um projeto bem-sucedido teria ensinado.',
+      'Este site foi construído do jeito que fazemos sites sob medida para clientes: escrito do zero, rápido numa conexão fraca, utilizável com teclado ou leitor de tela, e sem rastreadores. Os números abaixo foram medidos no site que você está vendo.',
     'work.this.list.1': 'Código sob medida, sem construtor de sites, sem runtime de framework',
     'work.this.list.2': 'Zero requisições a terceiros, portanto sem banner de consentimento',
     'work.this.list.3': 'Cada par de cores verificado contra a WCAG, não no olho',
