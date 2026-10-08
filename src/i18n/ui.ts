@@ -187,7 +187,7 @@ export const ui = {
       'A site you own outright, with a simple editor where you need one, and a care plan only if you want it.',
     'about.where.h': 'Where we work',
     'about.where.b':
-      'We are based in Germany and Luxembourg and work remotely with clients wherever they are, in English and Portuguese. Multilingual sites are routine for us, and each extra language is priced up front.',
+      'We are based in Germany and Luxembourg and work remotely, in English and Portuguese. Multilingual sites are routine for us, and each extra language is priced up front.',
     'about.how.h': 'How we work',
     'about.how.1.h': 'You own it',
     'about.how.1.b':
@@ -524,7 +524,7 @@ export const ui = {
       'Um site que é seu de verdade, com um editor simples onde você precisar, e um plano de manutenção só se você quiser.',
     'about.where.h': 'Onde trabalhamos',
     'about.where.b':
-      'Temos base na Alemanha e no Luxemburgo e trabalhamos a distância com clientes onde quer que estejam, em português e inglês. Sites multilíngues são rotina para nós, e cada idioma a mais tem preço definido desde o início.',
+      'Temos base na Alemanha e no Luxemburgo e trabalhamos a distância, em português e inglês. Sites multilíngues são rotina para nós, e cada idioma a mais tem preço definido desde o início.',
     'about.how.h': 'Como trabalhamos',
     'about.how.1.h': 'É seu',
     'about.how.1.b':
