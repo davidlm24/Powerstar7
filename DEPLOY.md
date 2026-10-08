@@ -133,9 +133,8 @@ that links out, not as an iframe.
       named; text reviewed by a lawyer
 - [ ] `hello@designactiv.com` verified as a real, monitored inbox
 - [ ] Form endpoint configured, and a test submission actually received
-- [ ] Decide whether the unlaunched client project stays on `/work` — it is
-      the client's information to share, so get their sign-off or cut the
-      block (it is marked in `src/views/Work.astro`)
+- [x] The unlaunched client project is cut from `/work` (2026-10-08), until
+      the client agrees to be shown. Restore it from git history when they do.
 - [x] Social cards regenerated with the new hero, in English (`og-card.png`)
       and Portuguese (`og-card-pt.png`, used on /pt pages). Remake them with
       `node scripts/og-card.mjs` whenever the hero changes.

@@ -161,10 +161,6 @@ export const ui = {
     'work.lead':
       'DesignActiv is early, and the first client sites are still in build. Rather than fill this page with placeholders, here is what we can put in front of you today.',
 
-    'work.case.label': 'In build',
-    'work.case.h': 'First client site, in progress',
-    'work.case.b':
-      'A salon in Luxembourg: French-language, custom booking flow, a draggable before-and-after comparison and an overlapping image collage — the two pieces a template builder fights you on. It goes public here when it launches and the client is happy for us to show it.',
     'work.this.label': 'Exhibit A',
     'work.this.h': 'This website',
     'work.this.b':
@@ -502,10 +498,6 @@ export const ui = {
     'work.lead':
       'A DesignActiv está começando, e os primeiros sites de clientes ainda estão em construção. Em vez de encher esta página de placeholders, aqui está o que podemos colocar na sua frente hoje.',
 
-    'work.case.label': 'Em construção',
-    'work.case.h': 'Primeiro site de cliente, em andamento',
-    'work.case.b':
-      'Um salão no Luxemburgo: em francês, com fluxo de agendamento sob medida, um comparador de antes e depois arrastável e uma colagem de imagens sobrepostas — justamente as duas coisas contra as quais um construtor de sites briga. Entra aqui quando for ao ar e a cliente autorizar.',
     'work.this.label': 'Prova A',
     'work.this.h': 'Este site',
     'work.this.b':
