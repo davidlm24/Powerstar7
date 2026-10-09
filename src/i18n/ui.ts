@@ -193,7 +193,7 @@ export const ui = {
     'about.how.1.h': 'You own it',
     'about.how.1.b':
       'Your proposal says which domain, code and hosting accounts are yours, and you get a written handover guide when the site goes live.',
-    'about.how.2.h': 'Fixed scope, named price',
+    'about.how.2.h': 'A clear proposal',
     'about.how.2.b':
       'We agree on the work, price and timeline before starting. If the scope changes, we quote the extra work first.',
     'about.how.3.h': 'Designed to be accessible',
@@ -315,7 +315,7 @@ export const ui = {
       'You get the access and the written handover guide agreed in your proposal — plus Website care, if you want someone to keep it running.',
 
     'services.pricing.label': 'What things cost',
-    'services.pricing.h2': 'Fixed scope, named price.',
+    'services.pricing.h2': 'Know the scope and price before work starts.',
     'services.pricing.lead':
       'Every project is quoted against a written scope, and the price is attached to it before anything starts. Changes are quoted too, rather than absorbed and resented.',
     'services.pricing.from': 'From',
@@ -531,7 +531,7 @@ export const ui = {
     'about.how.1.h': 'É seu',
     'about.how.1.b':
       'A proposta diz quais contas de domínio, código e hospedagem são suas, e você recebe um guia de transferência por escrito quando o site for ao ar.',
-    'about.how.2.h': 'Escopo fechado, preço nomeado',
+    'about.how.2.h': 'Uma proposta clara',
     'about.how.2.b':
       'Combinamos o trabalho, o preço e o prazo antes de começar. Se o escopo mudar, orçamos o trabalho extra primeiro.',
     'about.how.3.h': 'Pensado para ser acessível',
@@ -647,7 +647,7 @@ export const ui = {
       'Você recebe os acessos e o guia de transferência por escrito combinados na proposta — e a Manutenção do site, se você quiser alguém cuidando dele.',
 
     'services.pricing.label': 'Quanto custa',
-    'services.pricing.h2': 'Escopo fechado, preço com nome.',
+    'services.pricing.h2': 'Saiba o escopo e o preço antes de começarmos.',
     'services.pricing.lead':
       'Cada projeto é orçado a partir de um escopo escrito, e o preço fica ligado a ele antes de começar seja o que for. As alterações também são orçadas, em vez de absorvidas a contragosto.',
     'services.pricing.from': 'A partir de',
