@@ -300,17 +300,17 @@ export const ui = {
        src/data/pricing.ts and come in as {price}, so an answer cannot
        disagree with the price card above it. */
     'home.process.label': 'How we work',
-    'home.process.h2': 'Four steps, and you own the result.',
+    'home.process.h2': 'From first conversation to launch.',
     'home.process.s1.h': 'Scope and price',
-    'home.process.s2.h': 'Design in the browser',
-    'home.process.s3.h': 'Build from scratch',
+    'home.process.s2.h': 'Review the design',
+    'home.process.s3.h': 'Build and test',
     'home.process.s4.h': 'Handover',
     'home.process.s1.b':
       'You tell us what you need, and we write it up as a scope with the price attached — agreed before any work starts.',
     'home.process.s2.b':
       'We design straight into a working page, so you review the real site on your own phone — not a picture of it.',
     'home.process.s3.b':
-      'We build it as custom code, with no template or page builder underneath, so it loads fast and works for everyone who visits.',
+      'We build and test the agreed site on phones and computers, checking that visitors can find information and contact you easily.',
     'home.process.s4.b':
       'You get the access and the written handover guide agreed in your proposal — plus Website care, if you want someone to keep it running.',
 
@@ -632,17 +632,17 @@ export const ui = {
     /* Ver a nota em inglês. Os preços nunca são digitados aqui: ficam em
        src/data/pricing.ts e entram como {price}. */
     'home.process.label': 'Como trabalhamos',
-    'home.process.h2': 'Quatro passos, e o resultado é seu.',
+    'home.process.h2': 'Da primeira conversa ao lançamento.',
     'home.process.s1.h': 'Escopo e preço',
-    'home.process.s2.h': 'Design no navegador',
-    'home.process.s3.h': 'Construção do zero',
+    'home.process.s2.h': 'Revise o design',
+    'home.process.s3.h': 'Criação e testes',
     'home.process.s4.h': 'Entrega',
     'home.process.s1.b':
       'Você conta do que precisa, e nós escrevemos um escopo com o preço junto — combinado antes de qualquer trabalho começar.',
     'home.process.s2.b':
       'Fazemos o design direto em uma página que já funciona, então você revisa o site de verdade no seu próprio celular — não uma imagem dele.',
     'home.process.s3.b':
-      'Construímos o site em código sob medida, sem template nem construtor de sites por baixo, então ele carrega rápido e funciona para todo mundo que o visita.',
+      'Criamos e testamos o site combinado em celulares e computadores, conferindo se as pessoas encontram as informações e conseguem falar com você.',
     'home.process.s4.b':
       'Você recebe os acessos e o guia de transferência por escrito combinados na proposta — e a Manutenção do site, se você quiser alguém cuidando dele.',
 
