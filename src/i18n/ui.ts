@@ -135,7 +135,7 @@ export const ui = {
 
     'svc.seo.name': 'SEO',
     'svc.seo.body':
-      'The technical half done properly — structure, speed, markup, multilingual routing and redirects that help a rebuild keep the search visibility the old site earned. No keyword spam, no link schemes.',
+      'Help search engines understand your site and help customers find the right pages. The work can include page titles, site structure, speed checks and redirects when replacing an existing site. We’ll specify what is included in your proposal.',
     'svc.seo.d1': 'Review of your existing site, if you have one',
     'svc.seo.d2': 'Page titles and information that help search engines',
     'svc.seo.d3': 'Speed checks after launch',
@@ -473,7 +473,7 @@ export const ui = {
 
     'svc.seo.name': 'SEO',
     'svc.seo.body':
-      'A metade técnica bem feita — estrutura, velocidade, marcação, rotas multilíngues e redirecionamentos que ajudam uma reconstrução a manter a visibilidade que o site antigo conquistou. Sem spam de palavra-chave, sem esquemas de links.',
+      'Ajude os buscadores a entender seu site e os clientes a encontrar as páginas certas. O trabalho pode incluir títulos das páginas, organização do site, testes de velocidade e redirecionamentos ao substituir um site existente. A proposta dirá o que está incluído.',
     'svc.seo.d1': 'Análise do seu site atual, se você tiver um',
     'svc.seo.d2': 'Títulos e informações que ajudam os buscadores',
     'svc.seo.d3': 'Testes de velocidade depois do lançamento',
