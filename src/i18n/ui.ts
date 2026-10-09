@@ -185,7 +185,7 @@ export const ui = {
     'about.story.b2':
       'A site that works with a keyboard or a screen reader, and is structured so search engines can understand it.',
     'about.story.b3':
-      'A site you own outright, with a simple editor where you need one, and a care plan only if you want it.',
+      'You know what you can edit and what you receive at launch, with a care plan only if you want one.',
     'about.where.h': 'Where we work',
     'about.where.b':
       'We are based in Germany and Luxembourg and work remotely, in English and Portuguese. Multilingual sites are routine for us, and each extra language is priced up front.',
@@ -195,8 +195,8 @@ export const ui = {
       'Your proposal says which domain, code and hosting accounts are yours, and you get a written handover guide when the site goes live.',
     'about.how.2.h': 'Fixed scope, named price',
     'about.how.2.b':
-      'A written scope before anything starts, and a price attached to it. Changes are quoted, not absorbed and resented.',
-    'about.how.3.h': 'Accessible by default',
+      'We agree on the work, price and timeline before starting. If the scope changes, we quote the extra work first.',
+    'about.how.3.h': 'Designed to be accessible',
     'about.how.3.b':
       'We design for readability, keyboard use and screen readers, and check the agreed pages before launch. It is also, quietly, what makes a site work on a bad phone.',
 
@@ -523,7 +523,7 @@ export const ui = {
     'about.story.b2':
       'Um site que funciona com teclado ou leitor de tela, e é estruturado para que os buscadores o entendam.',
     'about.story.b3':
-      'Um site que é seu de verdade, com um editor simples onde você precisar, e um plano de manutenção só se você quiser.',
+      'Você sabe o que pode editar e o que recebe no lançamento, e só contrata um plano de manutenção se quiser.',
     'about.where.h': 'Onde trabalhamos',
     'about.where.b':
       'Temos base na Alemanha e no Luxemburgo e trabalhamos a distância, em português e inglês. Sites multilíngues são rotina para nós, e cada idioma a mais tem preço definido desde o início.',
@@ -533,8 +533,8 @@ export const ui = {
       'A proposta diz quais contas de domínio, código e hospedagem são suas, e você recebe um guia de transferência por escrito quando o site for ao ar.',
     'about.how.2.h': 'Escopo fechado, preço nomeado',
     'about.how.2.b':
-      'Um escopo escrito antes de qualquer coisa começar, e um preço preso a ele. Mudanças são orçadas, não absorvidas a contragosto.',
-    'about.how.3.h': 'Acessível por padrão',
+      'Combinamos o trabalho, o preço e o prazo antes de começar. Se o escopo mudar, orçamos o trabalho extra primeiro.',
+    'about.how.3.h': 'Pensado para ser acessível',
     'about.how.3.b':
       'Projetamos pensando em leitura, uso pelo teclado e leitores de tela, e conferimos as páginas combinadas antes do lançamento. É também, discretamente, o que faz um site funcionar num celular ruim.',
 
