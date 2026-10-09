@@ -11,6 +11,17 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
+/* The measured figures sit under their own "Technical details" label, dated,
+   because a visitor cannot check them but a reader who wants proof can use them. */
+const measuredOn = metrics.measuredAt
+  ? new Intl.DateTimeFormat(lang === 'pt' ? 'pt-BR' : 'en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(new Date(metrics.measuredAt))
+  : '';
+
 const evidence = [
   t('work.this.list.1'),
   t('work.this.list.2'),
@@ -49,6 +60,10 @@ const evidence = [
 
           {
             metrics.measuredAt !== null && metrics.weightKb > 0 && (
+              <div class="details">
+                <p class="details__h">
+                  {t('work.this.details')} · {t('work.this.measured', { date: measuredOn })}
+                </p>
               <dl class="figures">
                 <div>
                   <dt>{t('home.proof.weight')}</dt>
@@ -66,6 +81,7 @@ const evidence = [
                   <dd>{metrics.thirdPartyRequests}</dd>
                 </div>
               </dl>
+              </div>
             )
           }
         </div>
@@ -147,10 +163,26 @@ const evidence = [
     color: var(--fg-muted);
   }
 
+  .details {
+    display: grid;
+    gap: var(--s3);
+    max-width: var(--measure);
+    padding-block-start: var(--s4);
+    border-top: 1px solid var(--rule);
+  }
+
+  .details__h {
+    margin: 0;
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-micro);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
   .figures dd {
     margin: 0.35rem 0 0;
     font-family: var(--font-display);
-    font-size: 2rem;
+    font-size: 1.5rem;
     /* --weight-medium: the display weight is 400 now, and tabular figures at
        400 read as a placeholder rather than as a measured result. */
     font-weight: var(--weight-medium);

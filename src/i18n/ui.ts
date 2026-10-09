@@ -96,14 +96,14 @@ export const ui = {
     'home.services.h2': 'Five things, done properly.',
     'home.services.link': 'All services',
 
-    'home.position.label': 'Custom-built',
-    'home.position.h2': 'Why not a website builder?',
+    'home.position.label': 'Choosing the right setup',
+    'home.position.h2': 'A website that fits your business.',
     'home.position.body':
-      'A website builder is quick to start. It also hands you someone else’s structure, a subscription you cannot leave, and a payload to match. We write the HTML, the CSS and the handful of lines of JavaScript for your site alone. It costs more attention, and it produces a site that is faster, easier to reach, and genuinely yours.',
+      'Some businesses need a simple site they can update themselves. Others need a more tailored build. We’ll recommend an approach based on what your site must do, who will update it and what you want to spend.',
 
-    'home.position.one.h': 'It loads before they leave',
+    'home.position.one.h': 'Easy for visitors to use',
     'home.position.one.b':
-      'No framework runtime, no builder payload, no fonts fetched from another continent. Weight is a design decision and we treat it as one.',
+      'We plan for clear pages, readable text and quick loading, including on phones and slower connections.',
     'home.position.two.h': 'No consent banner, because nothing to consent to',
     'home.position.two.b':
       'The site sets no cookies and makes no third-party requests. Fonts are served from this domain, so there is nothing that needs your consent.',
@@ -163,11 +163,13 @@ export const ui = {
     'work.this.label': 'Built by us',
     'work.this.h': 'This website',
     'work.this.b':
-      'It is built the way we build custom sites for clients: written from scratch, fast on a weak connection, usable with a keyboard or a screen reader, and free of trackers. The figures below are measured from the site you are looking at.',
-    'work.this.list.1': 'Custom code, no page builder, no framework runtime',
-    'work.this.list.2': 'No cookies and no third-party requests, so no cookie banner is needed',
-    'work.this.list.3': 'Every colour pair contrast-checked against WCAG, not eyeballed',
-    'work.this.list.4': 'Keyboard and screen-reader paths tested',
+      'This site is our own example: quick to open, easy to read, and clear about what we offer and what it costs.',
+    'work.this.list.1': 'Opens quickly, even on a slow phone connection',
+    'work.this.list.2': 'Easy to read, and works with a keyboard or screen reader',
+    'work.this.list.3': 'No cookies or trackers',
+    'work.this.list.4': 'Services and prices easy to find',
+    'work.this.details': 'Technical details',
+    'work.this.measured': 'Measured {date}',
     'work.next.h': 'Want to be the first case study?',
     'work.next.b':
       'Early projects get disproportionate attention. If you have something to build, now is a good moment to talk.',
@@ -225,7 +227,7 @@ export const ui = {
     'contact.err.message': 'Please tell us a little about the project.',
     'contact.err.one': 'One field needs attention before we can send this.',
     'contact.err.many': '{n} fields need attention before we can send this.',
-    'contact.ok': 'Thanks — your message is on its way. We will come back to you shortly.',
+    'contact.ok': 'Thanks — your message has been sent. We’ll reply by email.',
     'contact.fail': 'Sorry, sending failed. Please email us directly at {email}.',
     'contact.mailtoOpening': 'Opening your email app. If nothing happens, write to {email}.',
     'contact.mailSubject': 'Website enquiry',
@@ -432,14 +434,14 @@ export const ui = {
     'home.services.h2': 'Cinco coisas, bem feitas.',
     'home.services.link': 'Todos os serviços',
 
-    'home.position.label': 'Sob medida',
-    'home.position.h2': 'Por que não um construtor de sites?',
+    'home.position.label': 'Escolhendo a melhor solução',
+    'home.position.h2': 'Um site que faz sentido para o seu negócio.',
     'home.position.body':
-      'Um construtor de sites é rápido para começar. Mas também entrega a estrutura de outra pessoa, uma assinatura da qual você não consegue sair e um peso à altura. Nós escrevemos o HTML, o CSS e as poucas linhas de JavaScript só para o seu site. Custa mais atenção e resulta num site mais rápido, mais fácil de acessar e genuinamente seu.',
+      'Alguns negócios precisam de um site simples que possam atualizar sozinhos. Outros precisam de uma solução mais personalizada. Vamos recomendar o caminho de acordo com as funções do site, quem vai atualizá-lo e quanto você pretende investir.',
 
-    'home.position.one.h': 'Carrega antes de a pessoa desistir',
+    'home.position.one.h': 'Fácil para seus clientes usarem',
     'home.position.one.b':
-      'Sem runtime de framework, sem peso de construtor, sem fontes buscadas em outro continente. Peso é uma decisão de design e nós o tratamos como tal.',
+      'Planejamos páginas claras, texto fácil de ler e carregamento rápido, inclusive no celular e em conexões mais lentas.',
     'home.position.two.h': 'Sem banner de consentimento, porque não há o que consentir',
     'home.position.two.b':
       'O site não grava cookies e não faz requisições a terceiros. As fontes vêm deste domínio, então não há nada que dependa do seu consentimento.',
@@ -499,11 +501,13 @@ export const ui = {
     'work.this.label': 'Feito por nós',
     'work.this.h': 'Este site',
     'work.this.b':
-      'Foi construído do jeito que fazemos sites sob medida para clientes: escrito do zero, rápido numa conexão fraca, utilizável com teclado ou leitor de tela, e sem rastreadores. Os números abaixo foram medidos no site que você está vendo.',
-    'work.this.list.1': 'Código sob medida, sem construtor de sites, sem runtime de framework',
-    'work.this.list.2': 'Sem cookies e sem requisições a terceiros, então não é preciso banner de cookies',
-    'work.this.list.3': 'Cada par de cores verificado contra a WCAG, não no olho',
-    'work.this.list.4': 'Caminhos de teclado e leitor de tela testados',
+      'Este site é o nosso próprio exemplo: abre rápido, é fácil de ler e deixa claro o que oferecemos e quanto custa.',
+    'work.this.list.1': 'Abre rápido, mesmo numa conexão lenta de celular',
+    'work.this.list.2': 'Fácil de ler, e funciona com teclado ou leitor de tela',
+    'work.this.list.3': 'Sem cookies nem rastreadores',
+    'work.this.list.4': 'Serviços e preços fáceis de encontrar',
+    'work.this.details': 'Detalhes técnicos',
+    'work.this.measured': 'Medido em {date}',
     'work.next.h': 'Quer ser o primeiro estudo de caso?',
     'work.next.b':
       'Projetos iniciais recebem uma atenção desproporcional. Se você tem algo para construir, este é um bom momento para conversar.',
@@ -561,7 +565,7 @@ export const ui = {
     'contact.err.message': 'Conte um pouco sobre o projeto, por favor.',
     'contact.err.one': 'Um campo precisa de atenção antes de enviarmos.',
     'contact.err.many': '{n} campos precisam de atenção antes de enviarmos.',
-    'contact.ok': 'Obrigado — sua mensagem está a caminho. Retornamos em breve.',
+    'contact.ok': 'Obrigado — sua mensagem foi enviada. Vamos responder por e-mail.',
     'contact.fail': 'Desculpe, o envio falhou. Escreva direto para {email}.',
     'contact.mailtoOpening': 'Abrindo seu aplicativo de e-mail. Se nada acontecer, escreva para {email}.',
     'contact.mailSubject': 'Contato pelo site',
