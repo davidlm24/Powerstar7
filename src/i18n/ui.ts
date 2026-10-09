@@ -170,9 +170,9 @@ export const ui = {
     'work.this.list.4': 'Services and prices easy to find',
     'work.this.details': 'Technical details',
     'work.this.measured': 'Measured {date}',
-    'work.next.h': 'Want to be the first case study?',
+    'work.next.h': 'Have a project in mind?',
     'work.next.b':
-      'Early projects get disproportionate attention. If you have something to build, now is a good moment to talk.',
+      'Tell us what your business needs. We’ll let you know how we can help and what the next step would be.',
 
     /* --- About ---------------------------------------------------------- */
     'about.title': 'About — DesignActiv',
@@ -508,9 +508,9 @@ export const ui = {
     'work.this.list.4': 'Serviços e preços fáceis de encontrar',
     'work.this.details': 'Detalhes técnicos',
     'work.this.measured': 'Medido em {date}',
-    'work.next.h': 'Quer ser o primeiro estudo de caso?',
+    'work.next.h': 'Tem um projeto em mente?',
     'work.next.b':
-      'Projetos iniciais recebem uma atenção desproporcional. Se você tem algo para construir, este é um bom momento para conversar.',
+      'Conte do que seu negócio precisa. Vamos dizer como podemos ajudar e qual seria o próximo passo.',
 
     /* --- About ---------------------------------------------------------- */
     'about.title': 'Sobre nós — DesignActiv',
