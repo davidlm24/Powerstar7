@@ -121,35 +121,35 @@ export const ui = {
 
     'svc.web.name': 'Web design & development',
     'svc.web.body':
-      'Design and build, as one job rather than two: a site made for your business, not adapted from a template, with a simple editor where you need to change things yourself. Built to be accessible from the start, not added as an upgrade.',
+      'We design and build your site as one job, not two: made for your business rather than adapted from a template, with a simple editor where you need to change things yourself. Built to be accessible from the start, not added as an upgrade.',
     'svc.web.d1': 'Design in the browser, reviewed on real devices',
     'svc.web.d2': 'Custom front end, no builder lock-in',
     'svc.web.d3': 'Keyboard and screen-reader checks on the agreed pages',
 
     'svc.brand.name': 'Branding',
     'svc.brand.body':
-      'Wordmark, palette, type system and the rules that keep them coherent once other people start using them. Delivered as working files and a written system, not a PDF of moodboards.',
+      'We create your logo, colours and typefaces, plus the rules that keep them consistent once other people start using them. You get working files and a written guide, not a PDF of moodboards.',
     'svc.brand.d1': 'Wordmark and usage rules',
     'svc.brand.d2': 'Type and colour system, contrast-checked',
     'svc.brand.d3': 'Asset pack and a written guide',
 
     'svc.seo.name': 'SEO',
     'svc.seo.body':
-      'Help search engines understand your site and help customers find the right pages. The work can include page titles, site structure, speed checks and redirects when replacing an existing site. We’ll specify what is included in your proposal.',
+      'We help search engines understand your site and help customers find the right pages. That can include page titles, site structure, speed checks and redirects when replacing an existing site. We’ll specify what is included in your proposal.',
     'svc.seo.d1': 'Review of your existing site, if you have one',
     'svc.seo.d2': 'Page titles and information that help search engines',
     'svc.seo.d3': 'Speed checks after launch',
 
     'svc.email.name': 'Email & automation',
     'svc.email.body':
-      'Business email set up properly on your own domain, plus the small automations that save you time: booking confirmations, form replies, and enquiries landing where you’ll see them. Bigger workflows are quoted as process automation.',
+      'We set up business email properly on your own domain, plus the small automations that save you time: booking confirmations, form replies, and enquiries landing where you’ll see them. Bigger workflows are quoted as process automation.',
     'svc.email.d1': 'Email on your own domain, set up and tested',
     'svc.email.d2': 'Automatic replies and confirmations',
     'svc.email.d3': 'Forms and enquiries routed to where you work',
 
     'svc.hosting.name': 'Website care',
     'svc.hosting.body':
-      'Hosting, updates, backups, uptime monitoring and a person who answers. A retainer, not a lock-in: your handover guide explains how to move the site if you leave.',
+      'We host your site and look after it: updates, backups, uptime monitoring and a person who answers. A retainer, not a lock-in: your handover guide explains how to move the site if you leave.',
     'svc.hosting.d1': 'Hosting account details explained at handover',
     'svc.hosting.d2': 'Monitoring, backups and updates',
     'svc.hosting.d3': 'A named person who answers email',
@@ -459,35 +459,35 @@ export const ui = {
 
     'svc.web.name': 'Design e desenvolvimento web',
     'svc.web.body':
-      'Design e construção como um trabalho só, não dois: um site feito para o seu negócio, não adaptado de um template, com um editor simples onde você precisar mudar algo sozinho. Pensado para ser acessível desde o início, e não acrescentado como um upgrade.',
+      'Desenhamos e construímos seu site como um trabalho só, não dois: feito para o seu negócio, e não adaptado de um template, com um editor simples onde você precisar mudar algo sozinho. Pensado para ser acessível desde o início, e não acrescentado como um upgrade.',
     'svc.web.d1': 'Design feito no navegador, revisado em aparelhos reais',
     'svc.web.d2': 'Front-end sob medida, sem amarras de construtor',
     'svc.web.d3': 'Verificações com teclado e leitor de tela nas páginas combinadas',
 
     'svc.brand.name': 'Branding',
     'svc.brand.body':
-      'Logotipo, paleta, sistema tipográfico e as regras que mantêm tudo coerente depois que outras pessoas começam a usar. Entregue como arquivos de trabalho e um sistema escrito, não um PDF de moodboards.',
+      'Criamos seu logotipo, suas cores e suas fontes, com as regras que mantêm tudo coerente depois que outras pessoas começam a usar. Você recebe arquivos de trabalho e um guia por escrito, não um PDF de moodboards.',
     'svc.brand.d1': 'Logotipo e regras de uso',
     'svc.brand.d2': 'Sistema de cor e tipografia, com contraste verificado',
     'svc.brand.d3': 'Pacote de arquivos e um guia escrito',
 
     'svc.seo.name': 'SEO',
     'svc.seo.body':
-      'Ajude os buscadores a entender seu site e os clientes a encontrar as páginas certas. O trabalho pode incluir títulos das páginas, organização do site, testes de velocidade e redirecionamentos ao substituir um site existente. A proposta dirá o que está incluído.',
+      'Ajudamos os buscadores a entender seu site e os clientes a encontrar as páginas certas. Isso pode incluir títulos das páginas, organização do site, testes de velocidade e redirecionamentos ao substituir um site existente. A proposta dirá o que está incluído.',
     'svc.seo.d1': 'Análise do seu site atual, se você tiver um',
     'svc.seo.d2': 'Títulos e informações que ajudam os buscadores',
     'svc.seo.d3': 'Testes de velocidade depois do lançamento',
 
     'svc.email.name': 'E-mail e automação',
     'svc.email.body':
-      'E-mail profissional configurado direito no seu próprio domínio, mais as pequenas automações que poupam seu tempo: confirmações de agendamento, respostas de formulário e contatos chegando onde você vai ver. Fluxos maiores são orçados como automação de processos.',
+      'Configuramos direito o e-mail profissional no seu próprio domínio, mais as pequenas automações que poupam seu tempo: confirmações de agendamento, respostas de formulário e contatos chegando onde você vai ver. Fluxos maiores são orçados como automação de processos.',
     'svc.email.d1': 'E-mail no seu próprio domínio, configurado e testado',
     'svc.email.d2': 'Respostas e confirmações automáticas',
     'svc.email.d3': 'Formulários e contatos encaminhados para onde você trabalha',
 
     'svc.hosting.name': 'Manutenção do site',
     'svc.hosting.body':
-      'Hospedagem, atualizações, backups, monitoramento e uma pessoa que responde. Um contrato mensal, não uma armadilha: o guia de transferência explica como levar o site se você sair.',
+      'Hospedamos seu site e cuidamos dele: atualizações, backups, monitoramento e uma pessoa que responde. Um contrato mensal, não uma armadilha: o guia de transferência explica como levar o site se você sair.',
     'svc.hosting.d1': 'Dados da conta de hospedagem explicados na entrega',
     'svc.hosting.d2': 'Monitoramento, backups e atualizações',
     'svc.hosting.d3': 'Uma pessoa com nome que responde e-mail',
