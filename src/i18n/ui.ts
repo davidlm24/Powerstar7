@@ -136,9 +136,9 @@ export const ui = {
     'svc.seo.name': 'SEO',
     'svc.seo.body':
       'The technical half done properly — structure, speed, markup, multilingual routing and redirects that help a rebuild keep the search visibility the old site earned. No keyword spam, no link schemes.',
-    'svc.seo.d1': 'Technical audit and redirect mapping',
-    'svc.seo.d2': 'Structured data and multilingual hreflang',
-    'svc.seo.d3': 'Core Web Vitals, measured on the live site',
+    'svc.seo.d1': 'Review of your existing site, if you have one',
+    'svc.seo.d2': 'Page titles and information that help search engines',
+    'svc.seo.d3': 'Speed checks after launch',
 
     'svc.email.name': 'Email & automation',
     'svc.email.body':
@@ -317,7 +317,7 @@ export const ui = {
     'services.pricing.label': 'What things cost',
     'services.pricing.h2': 'Know the scope and price before work starts.',
     'services.pricing.lead':
-      'Every project is quoted against a written scope, and the price is attached to it before anything starts. Changes are quoted too, rather than absorbed and resented.',
+      'We put the agreed work, price and timeline in writing. If you request more work later, we’ll quote it before doing it.',
     'services.pricing.from': 'From',
     'services.pricing.includes': 'What’s included',
     'services.pricing.perMonth': 'per month',
@@ -474,9 +474,9 @@ export const ui = {
     'svc.seo.name': 'SEO',
     'svc.seo.body':
       'A metade técnica bem feita — estrutura, velocidade, marcação, rotas multilíngues e redirecionamentos que ajudam uma reconstrução a manter a visibilidade que o site antigo conquistou. Sem spam de palavra-chave, sem esquemas de links.',
-    'svc.seo.d1': 'Auditoria técnica e mapa de redirecionamentos',
-    'svc.seo.d2': 'Dados estruturados e hreflang multilíngue',
-    'svc.seo.d3': 'Core Web Vitals, medidos no site no ar',
+    'svc.seo.d1': 'Análise do seu site atual, se você tiver um',
+    'svc.seo.d2': 'Títulos e informações que ajudam os buscadores',
+    'svc.seo.d3': 'Testes de velocidade depois do lançamento',
 
     'svc.email.name': 'E-mail e automação',
     'svc.email.body':
@@ -649,7 +649,7 @@ export const ui = {
     'services.pricing.label': 'Quanto custa',
     'services.pricing.h2': 'Saiba o escopo e o preço antes de começarmos.',
     'services.pricing.lead':
-      'Cada projeto é orçado a partir de um escopo escrito, e o preço fica ligado a ele antes de começar seja o que for. As alterações também são orçadas, em vez de absorvidas a contragosto.',
+      'Registramos por escrito o trabalho combinado, o preço e o prazo. Se você pedir algo a mais depois, vamos enviar um orçamento antes de executar.',
     'services.pricing.from': 'A partir de',
     'services.pricing.includes': 'O que está incluído',
     'services.pricing.perMonth': 'por mês',
