@@ -258,6 +258,8 @@ export const ui = {
       'A German legal notice must carry a real name, postal address, contact details and, where applicable, VAT and register numbers. Those details are not published here yet. This page must be completed before the site goes live.',
     'legal.contact.h': 'Contact',
     'legal.responsible.h': 'Responsible for content',
+    'legal.vat.h': 'VAT ID',
+    'legal.register.h': 'Commercial register',
 
     /* --- Privacy -------------------------------------------------------- */
     'privacy.title': 'Privacy — DesignActiv',
@@ -596,6 +598,8 @@ export const ui = {
       'Um aviso legal alemão precisa trazer nome real, endereço postal, dados de contato e, quando aplicável, número de IVA e de registro. Esses dados ainda não estão publicados aqui. Esta página precisa ser concluída antes de o site ir ao ar.',
     'legal.contact.h': 'Contato',
     'legal.responsible.h': 'Responsável pelo conteúdo',
+    'legal.vat.h': 'Número de IVA',
+    'legal.register.h': 'Registro comercial',
 
     /* --- Privacy -------------------------------------------------------- */
     'privacy.title': 'Privacidade — DesignActiv',

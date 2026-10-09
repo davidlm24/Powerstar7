@@ -35,6 +35,16 @@ const t = useTranslations(lang);
           <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
         </p>
 
+        <h2>{t('legal.vat.h')}</h2>
+        <p class="pending">
+          &lt;{lang === 'pt' ? 'número de IVA, se houver' : 'VAT ID, if any'}&gt;
+        </p>
+
+        <h2>{t('legal.register.h')}</h2>
+        <p class="pending">
+          &lt;{lang === 'pt' ? 'tribunal de registro e número, se houver' : 'register court and number, if any'}&gt;
+        </p>
+
         <h2>{t('legal.responsible.h')}</h2>
         <p class="pending">
           &lt;{lang === 'pt' ? 'nome e endereço do responsável' : 'name and address of the person responsible'}&gt;
