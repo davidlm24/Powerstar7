@@ -272,7 +272,7 @@ export const ui = {
       'Our host records standard access logs — IP address, time, requested page, referrer and user agent — which are necessary to deliver the site and keep it secure. Legal basis: Art. 6(1)(f) GDPR, our legitimate interest in operating the site.',
     'privacy.form.h': 'The contact form',
     'privacy.form.b':
-      'If you write to us, we process the name, email address and message you send in order to reply. Legal basis: Art. 6(1)(b) and (f) GDPR. We keep the correspondence for as long as it takes to deal with your enquiry and any legal retention periods that apply, and we do not use it for marketing.',
+      'If you write to us, we process the name, email address, company or business name (if you give one), topic and message you send in order to reply. Legal basis: Art. 6(1)(b) and (f) GDPR. We keep the correspondence for as long as it takes to deal with your enquiry and any legal retention periods that apply, and we do not use it for marketing.',
     'privacy.fonts.h': 'Fonts and third parties',
     'privacy.fonts.b':
       'There are no third parties. Typefaces are served from this domain rather than from Google Fonts, so your IP address is never passed to another provider in order to render text. There are no embedded maps, videos, chat widgets, pixels or social buttons.',
@@ -610,7 +610,7 @@ export const ui = {
       'Nosso provedor registra logs de acesso padrão — endereço IP, horário, página solicitada, referenciador e agente de usuário — necessários para entregar o site e mantê-lo seguro. Base legal: art. 6(1)(f) do GDPR, nosso interesse legítimo em operar o site.',
     'privacy.form.h': 'O formulário de contato',
     'privacy.form.b':
-      'Se você nos escrever, tratamos o nome, o e-mail e a mensagem enviados para poder responder. Base legal: art. 6(1)(b) e (f) do GDPR. Guardamos a correspondência pelo tempo necessário para resolver a solicitação e cumprir prazos legais de retenção, e não a usamos para marketing.',
+      'Se você nos escrever, tratamos o nome, o e-mail, a empresa ou nome do negócio (se você informar), o assunto e a mensagem enviados para poder responder. Base legal: art. 6(1)(b) e (f) do GDPR. Guardamos a correspondência pelo tempo necessário para resolver a solicitação e cumprir prazos legais de retenção, e não a usamos para marketing.',
     'privacy.fonts.h': 'Fontes e terceiros',
     'privacy.fonts.b':
       'Não há terceiros. As fontes são servidas a partir deste domínio, e não do Google Fonts, então seu endereço IP nunca é repassado a outro provedor para exibir texto. Não há mapas incorporados, vídeos, chats, pixels ou botões de redes sociais.',
