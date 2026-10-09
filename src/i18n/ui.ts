@@ -106,10 +106,10 @@ export const ui = {
       'No framework runtime, no builder payload, no fonts fetched from another continent. Weight is a design decision and we treat it as one.',
     'home.position.two.h': 'No consent banner, because nothing to consent to',
     'home.position.two.b':
-      'Zero third-party requests. Fonts self-hosted. After the Munich ruling on Google Fonts and the wave of Abmahnungen that followed, this is a legal position, not an aesthetic one.',
-    'home.position.three.h': 'You own every part of it',
+      'The site sets no cookies and makes no third-party requests. Fonts are served from this domain, so there is nothing that needs your consent.',
+    'home.position.three.h': 'You know what you own',
     'home.position.three.b':
-      'Domain, repository and hosting account are registered in your name, with us as a collaborator. Every project ships with a handover document. You are never locked to our availability.',
+      'Your proposal says which domain, code and hosting accounts are yours, and you get a written handover guide at launch, so you can manage or move the site later.',
 
 
     /* --- Services ------------------------------------------------------- */
@@ -121,10 +121,10 @@ export const ui = {
 
     'svc.web.name': 'Web design & development',
     'svc.web.body':
-      'Design and build, as one job rather than two: a site made for your business, not adapted from a template, with a simple editor where you need to change things yourself. Accessible to WCAG AA as standard, not an upgrade.',
+      'Design and build, as one job rather than two: a site made for your business, not adapted from a template, with a simple editor where you need to change things yourself. Built to be accessible from the start, not added as an upgrade.',
     'svc.web.d1': 'Design in the browser, reviewed on real devices',
     'svc.web.d2': 'Custom front end, no builder lock-in',
-    'svc.web.d3': 'WCAG AA, tested with a keyboard and a screen reader',
+    'svc.web.d3': 'Keyboard and screen-reader checks on the agreed pages',
 
     'svc.brand.name': 'Branding',
     'svc.brand.body':
@@ -135,7 +135,7 @@ export const ui = {
 
     'svc.seo.name': 'SEO',
     'svc.seo.body':
-      'The technical half done properly — structure, speed, markup, multilingual routing and the redirect map that stops a rebuild throwing away years of ranking. No keyword spam, no link schemes.',
+      'The technical half done properly — structure, speed, markup, multilingual routing and redirects that help a rebuild keep the search visibility the old site earned. No keyword spam, no link schemes.',
     'svc.seo.d1': 'Technical audit and redirect mapping',
     'svc.seo.d2': 'Structured data and multilingual hreflang',
     'svc.seo.d3': 'Core Web Vitals, measured on the live site',
@@ -149,8 +149,8 @@ export const ui = {
 
     'svc.hosting.name': 'Website care',
     'svc.hosting.body':
-      'Hosting on infrastructure registered in your name, with updates, backups, uptime monitoring and a person who answers. A retainer, not a lock-in: you can take the account and go.',
-    'svc.hosting.d1': 'Hosting in your account, not ours',
+      'Hosting, updates, backups, uptime monitoring and a person who answers. A retainer, not a lock-in: your handover guide explains how to move the site if you leave.',
+    'svc.hosting.d1': 'Hosting account details explained at handover',
     'svc.hosting.d2': 'Monitoring, backups and updates',
     'svc.hosting.d3': 'A named person who answers email',
 
@@ -165,9 +165,9 @@ export const ui = {
     'work.this.b':
       'It is built the way we build custom sites for clients: written from scratch, fast on a weak connection, usable with a keyboard or a screen reader, and free of trackers. The figures below are measured from the site you are looking at.',
     'work.this.list.1': 'Custom code, no page builder, no framework runtime',
-    'work.this.list.2': 'Zero third-party requests, so no consent banner',
+    'work.this.list.2': 'No cookies and no third-party requests, so no cookie banner is needed',
     'work.this.list.3': 'Every colour pair contrast-checked against WCAG, not eyeballed',
-    'work.this.list.4': 'Keyboard and screen-reader paths tested on every page',
+    'work.this.list.4': 'Keyboard and screen-reader paths tested',
     'work.next.h': 'Want to be the first case study?',
     'work.next.b':
       'Early projects get disproportionate attention. If you have something to build, now is a good moment to talk.',
@@ -181,7 +181,7 @@ export const ui = {
     'about.story.b1':
       'A site that loads fast, even on a weak phone signal, so visitors don’t give up before it appears.',
     'about.story.b2':
-      'A site that works with a keyboard or a screen reader, and keeps its place in search when it changes.',
+      'A site that works with a keyboard or a screen reader, and is structured so search engines can understand it.',
     'about.story.b3':
       'A site you own outright, with a simple editor where you need one, and a care plan only if you want it.',
     'about.where.h': 'Where we work',
@@ -190,13 +190,13 @@ export const ui = {
     'about.how.h': 'How we work',
     'about.how.1.h': 'You own it',
     'about.how.1.b':
-      'Domain, code and hosting in your name, and a written handover guide when the site goes live. No dependency on us being available.',
+      'Your proposal says which domain, code and hosting accounts are yours, and you get a written handover guide when the site goes live.',
     'about.how.2.h': 'Fixed scope, named price',
     'about.how.2.b':
       'A written scope before anything starts, and a price attached to it. Changes are quoted, not absorbed and resented.',
     'about.how.3.h': 'Accessible by default',
     'about.how.3.b':
-      'WCAG AA, the recognised accessibility standard, is our baseline, not an add-on you can decline. It is also, quietly, what makes a site work on a bad phone.',
+      'We design for readability, keyboard use and screen readers, and check the agreed pages before launch. It is also, quietly, what makes a site work on a bad phone.',
 
     /* --- Contact -------------------------------------------------------- */
     'contact.title': 'Contact — DesignActiv',
@@ -310,7 +310,7 @@ export const ui = {
     'home.process.s3.b':
       'We build it as custom code, with no template or page builder underneath, so it loads fast and works for everyone who visits.',
     'home.process.s4.b':
-      'The domain, the code and the hosting are handed over in your name, with a written guide — plus Website care, if you want someone to keep it running.',
+      'You get the access and the written handover guide agreed in your proposal — plus Website care, if you want someone to keep it running.',
 
     'services.pricing.label': 'What things cost',
     'services.pricing.h2': 'Fixed scope, named price.',
@@ -343,7 +343,7 @@ export const ui = {
     'services.care.i3': 'Security and platform updates',
     'services.care.i4': 'Backups',
     'services.care.i5': 'One small content change a month',
-    'services.care.i6': 'Priority support',
+    'services.care.i6': 'Email support',
     'services.care.small':
       'A small change is a new photo, updated prices or opening hours, or a paragraph of text. Anything bigger — a new page or section — is quoted before we start it.',
 
@@ -373,13 +373,13 @@ export const ui = {
     'services.faq.a3':
       'Yes, if you want to. If you’ll be updating it yourself, we add a simple editor for your text, prices and photos, and it goes into the scope and the price. Changes to the structure stay with us, and Website care includes a small change every month if you’d rather not touch it at all.',
     'services.faq.a4':
-      'You take everything with you. The domain, the code and the hosting account are in your name from the start, with a written handover guide — so leaving just means ending Website care, if you have it, not asking for your own site back.',
+      'You are not locked in. Your proposal and handover guide say which domain, code and hosting accounts are yours and how to move the site, so leaving means ending Website care, if you have it, not asking for your own site back.',
     'services.faq.a5':
       'Yes. We talk with you in English or Portuguese, and read German. The site itself can be in several languages at once — French and German are common in Luxembourg — and each language beyond the first is priced up front, from {price}.',
     'services.faq.a6':
-      'It means people who can’t use a mouse, don’t see well or use a screen reader can still use your site. We build to WCAG 2.1 AA, the recognised standard, and test every page with a keyboard and a screen reader. It also makes the site easier to use on a cheap phone in bright sun.',
+      'It means people who can’t use a mouse, don’t see well or use a screen reader can still use your site. We design with accessibility in mind and check the agreed pages with a keyboard and a screen reader before launch. It also makes the site easier to use on a cheap phone in bright sun.',
     'services.faq.a7':
-      'If you want us to. Website care costs {price} a month and covers hosting, updates, backups, monitoring, priority support and one small change each month. It is optional — without it, anything later is quoted when you need it.',
+      'If you want us to. Website care costs {price} a month and covers hosting, updates, backups, monitoring, email support and one small change each month. It is optional — without it, anything later is quoted when you need it.',
   },
 
   pt: {
@@ -442,10 +442,10 @@ export const ui = {
       'Sem runtime de framework, sem peso de construtor, sem fontes buscadas em outro continente. Peso é uma decisão de design e nós o tratamos como tal.',
     'home.position.two.h': 'Sem banner de consentimento, porque não há o que consentir',
     'home.position.two.b':
-      'Zero requisições a terceiros. Fontes hospedadas aqui. Depois da decisão de Munique sobre o Google Fonts e da onda de notificações extrajudiciais que se seguiu, isso é uma posição jurídica, não estética.',
-    'home.position.three.h': 'Tudo pertence a você',
+      'O site não grava cookies e não faz requisições a terceiros. As fontes vêm deste domínio, então não há nada que dependa do seu consentimento.',
+    'home.position.three.h': 'Você sabe o que é seu',
     'home.position.three.b':
-      'Domínio, repositório e conta de hospedagem ficam no seu nome, com a gente como colaboradora. Todo projeto sai com um documento de transferência. Você nunca fica preso à nossa disponibilidade.',
+      'A proposta diz quais contas de domínio, código e hospedagem são suas, e você recebe um guia de transferência por escrito no lançamento, para poder administrar ou levar o site depois.',
 
 
     /* --- Services ------------------------------------------------------- */
@@ -457,10 +457,10 @@ export const ui = {
 
     'svc.web.name': 'Design e desenvolvimento web',
     'svc.web.body':
-      'Design e construção como um trabalho só, não dois: um site feito para o seu negócio, não adaptado de um template, com um editor simples onde você precisar mudar algo sozinho. Acessível conforme WCAG AA como padrão, não como upgrade.',
+      'Design e construção como um trabalho só, não dois: um site feito para o seu negócio, não adaptado de um template, com um editor simples onde você precisar mudar algo sozinho. Pensado para ser acessível desde o início, e não acrescentado como um upgrade.',
     'svc.web.d1': 'Design feito no navegador, revisado em aparelhos reais',
     'svc.web.d2': 'Front-end sob medida, sem amarras de construtor',
-    'svc.web.d3': 'WCAG AA, testado com teclado e leitor de tela',
+    'svc.web.d3': 'Verificações com teclado e leitor de tela nas páginas combinadas',
 
     'svc.brand.name': 'Branding',
     'svc.brand.body':
@@ -471,7 +471,7 @@ export const ui = {
 
     'svc.seo.name': 'SEO',
     'svc.seo.body':
-      'A metade técnica bem feita — estrutura, velocidade, marcação, rotas multilíngues e o mapa de redirecionamentos que impede uma reconstrução de jogar fora anos de posicionamento. Sem spam de palavra-chave, sem esquemas de links.',
+      'A metade técnica bem feita — estrutura, velocidade, marcação, rotas multilíngues e redirecionamentos que ajudam uma reconstrução a manter a visibilidade que o site antigo conquistou. Sem spam de palavra-chave, sem esquemas de links.',
     'svc.seo.d1': 'Auditoria técnica e mapa de redirecionamentos',
     'svc.seo.d2': 'Dados estruturados e hreflang multilíngue',
     'svc.seo.d3': 'Core Web Vitals, medidos no site no ar',
@@ -485,8 +485,8 @@ export const ui = {
 
     'svc.hosting.name': 'Manutenção do site',
     'svc.hosting.body':
-      'Hospedagem em infraestrutura registrada no seu nome, com atualizações, backups, monitoramento e uma pessoa que responde. Um contrato mensal, não uma armadilha: você pode pegar a conta e ir embora.',
-    'svc.hosting.d1': 'Hospedagem na sua conta, não na nossa',
+      'Hospedagem, atualizações, backups, monitoramento e uma pessoa que responde. Um contrato mensal, não uma armadilha: o guia de transferência explica como levar o site se você sair.',
+    'svc.hosting.d1': 'Dados da conta de hospedagem explicados na entrega',
     'svc.hosting.d2': 'Monitoramento, backups e atualizações',
     'svc.hosting.d3': 'Uma pessoa com nome que responde e-mail',
 
@@ -501,9 +501,9 @@ export const ui = {
     'work.this.b':
       'Foi construído do jeito que fazemos sites sob medida para clientes: escrito do zero, rápido numa conexão fraca, utilizável com teclado ou leitor de tela, e sem rastreadores. Os números abaixo foram medidos no site que você está vendo.',
     'work.this.list.1': 'Código sob medida, sem construtor de sites, sem runtime de framework',
-    'work.this.list.2': 'Zero requisições a terceiros, portanto sem banner de consentimento',
+    'work.this.list.2': 'Sem cookies e sem requisições a terceiros, então não é preciso banner de cookies',
     'work.this.list.3': 'Cada par de cores verificado contra a WCAG, não no olho',
-    'work.this.list.4': 'Caminhos de teclado e leitor de tela testados em todas as páginas',
+    'work.this.list.4': 'Caminhos de teclado e leitor de tela testados',
     'work.next.h': 'Quer ser o primeiro estudo de caso?',
     'work.next.b':
       'Projetos iniciais recebem uma atenção desproporcional. Se você tem algo para construir, este é um bom momento para conversar.',
@@ -517,7 +517,7 @@ export const ui = {
     'about.story.b1':
       'Um site que carrega rápido, mesmo com sinal fraco no celular, para que ninguém desista antes de ele aparecer.',
     'about.story.b2':
-      'Um site que funciona com teclado ou leitor de tela, e mantém sua posição nas buscas quando muda.',
+      'Um site que funciona com teclado ou leitor de tela, e é estruturado para que os buscadores o entendam.',
     'about.story.b3':
       'Um site que é seu de verdade, com um editor simples onde você precisar, e um plano de manutenção só se você quiser.',
     'about.where.h': 'Onde trabalhamos',
@@ -526,13 +526,13 @@ export const ui = {
     'about.how.h': 'Como trabalhamos',
     'about.how.1.h': 'É seu',
     'about.how.1.b':
-      'Domínio, código e hospedagem no seu nome, e um guia de transferência por escrito quando o site for ao ar. Nenhuma dependência da nossa disponibilidade.',
+      'A proposta diz quais contas de domínio, código e hospedagem são suas, e você recebe um guia de transferência por escrito quando o site for ao ar.',
     'about.how.2.h': 'Escopo fechado, preço nomeado',
     'about.how.2.b':
       'Um escopo escrito antes de qualquer coisa começar, e um preço preso a ele. Mudanças são orçadas, não absorvidas a contragosto.',
     'about.how.3.h': 'Acessível por padrão',
     'about.how.3.b':
-      'WCAG AA, o padrão reconhecido de acessibilidade, é a nossa base, não um extra que dá para recusar. É também, discretamente, o que faz um site funcionar num celular ruim.',
+      'Projetamos pensando em leitura, uso pelo teclado e leitores de tela, e conferimos as páginas combinadas antes do lançamento. É também, discretamente, o que faz um site funcionar num celular ruim.',
 
     /* --- Contact -------------------------------------------------------- */
     'contact.title': 'Contato — DesignActiv',
@@ -640,7 +640,7 @@ export const ui = {
     'home.process.s3.b':
       'Construímos o site em código sob medida, sem template nem construtor de sites por baixo, então ele carrega rápido e funciona para todo mundo que o visita.',
     'home.process.s4.b':
-      'Domínio, código e hospedagem ficam no seu nome, com um guia por escrito — e a Manutenção do site, se você quiser alguém cuidando dele.',
+      'Você recebe os acessos e o guia de transferência por escrito combinados na proposta — e a Manutenção do site, se você quiser alguém cuidando dele.',
 
     'services.pricing.label': 'Quanto custa',
     'services.pricing.h2': 'Escopo fechado, preço com nome.',
@@ -673,7 +673,7 @@ export const ui = {
     'services.care.i3': 'Atualizações de segurança e da plataforma',
     'services.care.i4': 'Backups',
     'services.care.i5': 'Uma pequena alteração de conteúdo por mês',
-    'services.care.i6': 'Suporte prioritário',
+    'services.care.i6': 'Suporte por e-mail',
     'services.care.small':
       'Uma pequena alteração é uma foto nova, preços ou horários atualizados, ou um parágrafo de texto. Qualquer coisa maior — uma página ou seção nova — é orçada antes de começarmos.',
 
@@ -703,13 +703,13 @@ export const ui = {
     'services.faq.a3':
       'Sim, se você quiser. Se for você quem vai atualizar o site, incluímos um editor simples para textos, preços e fotos, e ele entra no escopo e no preço. Mudanças na estrutura ficam com a gente, e a Manutenção do site inclui uma pequena alteração por mês, se você preferir não mexer em nada.',
     'services.faq.a4':
-      'Você leva tudo. O domínio, o código e a conta de hospedagem ficam no seu nome desde o início, com um guia de entrega por escrito — então sair é só encerrar a Manutenção do site, se você tiver, e não pedir o seu próprio site de volta.',
+      'Você não fica preso. A proposta e o guia de transferência dizem quais contas de domínio, código e hospedagem são suas e como levar o site, então sair é só encerrar a Manutenção do site, se você tiver, e não pedir o seu próprio site de volta.',
     'services.faq.a5':
       'Sim. Falamos com você em inglês ou português, e lemos alemão. O site em si pode ter vários idiomas ao mesmo tempo — francês e alemão são comuns no Luxemburgo — e cada idioma além do primeiro tem preço definido desde o início, a partir de {price}.',
     'services.faq.a6':
-      'Significa que pessoas que não usam mouse, que enxergam mal ou que usam leitor de tela conseguem usar o seu site do mesmo jeito. Construímos seguindo o WCAG 2.1 AA, o padrão reconhecido, e testamos cada página com teclado e leitor de tela. Isso também deixa o site mais fácil de usar num celular barato, sob sol forte.',
+      'Significa que pessoas que não usam mouse, que enxergam mal ou que usam leitor de tela conseguem usar o seu site do mesmo jeito. Pensamos a acessibilidade desde o design e conferimos as páginas combinadas com teclado e leitor de tela antes do lançamento. Isso também deixa o site mais fácil de usar num celular barato, sob sol forte.',
     'services.faq.a7':
-      'Se você quiser. A Manutenção do site custa {price} por mês e cobre hospedagem, atualizações, backups, monitoramento, suporte prioritário e uma pequena alteração mensal. É opcional — sem ela, qualquer coisa depois é orçada quando você precisar.',
+      'Se você quiser. A Manutenção do site custa {price} por mês e cobre hospedagem, atualizações, backups, monitoramento, suporte por e-mail e uma pequena alteração mensal. É opcional — sem ela, qualquer coisa depois é orçada quando você precisar.',
   },
 } as const;
 
