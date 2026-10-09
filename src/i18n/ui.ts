@@ -290,7 +290,7 @@ export const ui = {
     'nf.title': 'Page not found — DesignActiv',
     'nf.h1': 'That page is not here.',
     'nf.lead':
-      'The link may be old, or we may have moved the page during the rebuild. The site is small enough that everything is one click away.',
+      'The link may be old, or the page may have moved. You can find our services, prices and contact details from the home page.',
     'nf.home': 'Back to the home page',
 
     /* --- Process, pricing and FAQ -------------------------------------
@@ -630,7 +630,7 @@ export const ui = {
     'nf.title': 'Página não encontrada — DesignActiv',
     'nf.h1': 'Essa página não está aqui.',
     'nf.lead':
-      'O link pode estar antigo, ou talvez tenhamos movido a página durante a reconstrução. O site é pequeno o bastante para que tudo esteja a um clique.',
+      'O link pode estar desatualizado ou a página pode ter mudado. Na página inicial, você encontra nossos serviços, preços e formas de contato.',
     'nf.home': 'Voltar para a página inicial',
 
     /* Ver a nota em inglês. Os preços nunca são digitados aqui: ficam em
