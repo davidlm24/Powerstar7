@@ -48,7 +48,6 @@ export const CONTACT = {
 export const ui = {
   en: {
     'site.name': 'DesignActiv',
-    'site.tagline': 'Web agency for small businesses',
     'site.description':
       'DesignActiv is a web agency for small businesses: website design and development, branding, SEO, email and automation, and ongoing care. Built from scratch, yours to keep, in English and Portuguese.',
 
@@ -201,9 +200,9 @@ export const ui = {
 
     /* --- Contact -------------------------------------------------------- */
     'contact.title': 'Contact — DesignActiv',
-    'contact.h1': 'Tell us what you are building.',
+    'contact.h1': 'Tell us about your project.',
     'contact.lead':
-      'A short description is enough to start. We reply to everything, usually within a working day.',
+      'A few lines are enough to start. We reply to everything, usually within a working day.',
     'contact.form.name': 'Your name',
     'contact.form.email': 'Email',
     'contact.form.company': 'Company or project',
@@ -213,9 +212,9 @@ export const ui = {
     'contact.form.topic.care': 'Website care',
     'contact.form.topic.extras': 'Branding, email or automation',
     'contact.form.topic.other': 'Something else',
-    'contact.form.message': 'What are you building?',
+    'contact.form.message': 'About your project',
     'contact.form.messageHint':
-      'What it is, roughly when you need it, and anything that is already decided.',
+      'What you need, roughly when you need it, and anything already decided.',
     'contact.form.submit': 'Send message',
     'contact.form.sending': 'Sending…',
     'contact.form.trap': 'Leave this field empty',
@@ -385,7 +384,6 @@ export const ui = {
 
   pt: {
     'site.name': 'DesignActiv',
-    'site.tagline': 'Agência web para pequenas empresas',
     'site.description':
       'A DesignActiv é uma agência web para pequenas empresas: design e desenvolvimento de sites, identidade visual, SEO, e-mail e automação, e manutenção contínua. Feitos do zero, seus de verdade, em português e inglês.',
 
@@ -538,9 +536,9 @@ export const ui = {
 
     /* --- Contact -------------------------------------------------------- */
     'contact.title': 'Contato — DesignActiv',
-    'contact.h1': 'Conte o que você está construindo.',
+    'contact.h1': 'Conte sobre o seu projeto.',
     'contact.lead':
-      'Uma descrição curta já basta para começar. Respondemos tudo, normalmente em um dia útil.',
+      'Poucas linhas já bastam para começar. Respondemos tudo, normalmente em um dia útil.',
     'contact.form.name': 'Seu nome',
     'contact.form.email': 'E-mail',
     'contact.form.company': 'Empresa ou projeto',
@@ -550,9 +548,9 @@ export const ui = {
     'contact.form.topic.care': 'Manutenção do site',
     'contact.form.topic.extras': 'Marca, e-mail ou automação',
     'contact.form.topic.other': 'Outra coisa',
-    'contact.form.message': 'O que você está construindo?',
+    'contact.form.message': 'Sobre o seu projeto',
     'contact.form.messageHint':
-      'O que é, mais ou menos quando precisa ficar pronto e o que já estiver decidido.',
+      'O que você precisa, mais ou menos para quando, e o que já estiver decidido.',
     'contact.form.submit': 'Enviar mensagem',
     'contact.form.sending': 'Enviando…',
     'contact.form.trap': 'Deixe este campo vazio',

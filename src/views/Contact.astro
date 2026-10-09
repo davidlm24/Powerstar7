@@ -118,7 +118,6 @@ const topics = [
         <h2 class="direct__h">{t('contact.direct.h')}</h2>
         <p class="direct__b">{t('contact.direct.b')}</p>
         <a class="direct__email" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
-        <p class="direct__note">{t('site.tagline')}</p>
       </aside>
     </div>
   </section>
@@ -288,16 +287,6 @@ const topics = [
     font-size: 1.125rem;
     font-weight: var(--weight-medium);
     letter-spacing: -0.02em;
-  }
-
-  .direct__note {
-    margin-block-start: var(--s4);
-    padding-block-start: var(--s3);
-    border-top: 1px solid var(--rule);
-    font-size: var(--t-micro);
-    letter-spacing: var(--tr-micro);
-    text-transform: uppercase;
-    color: var(--fg-muted);
   }
 
   @media (max-width: 60rem) {
