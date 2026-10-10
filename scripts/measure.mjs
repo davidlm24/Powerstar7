@@ -20,7 +20,8 @@
    Google Font or an embedded map on any other page would have shipped
    without a word.
 
-   Node standard library only.
+   Node standard library only, apart from the margin-note glyph check, which
+   reads the trimmed note font with fontkitten (already installed via Astro).
    ========================================================================= */
 'use strict';
 
@@ -28,6 +29,7 @@ import { readFile, writeFile, stat, readdir } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { create as openFont } from 'fontkitten';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(ROOT, 'dist');
@@ -112,6 +114,52 @@ async function audit() {
   return { pages: pages.length, sheets: sheets.length };
 }
 
+/* --- Margin-note glyphs ------------------------------------------------------
+   The notes are set in a Caveat trimmed to the characters they use
+   (scripts/subset-note-font.mjs). A note edited to include a new character
+   would quietly fall back to a system font for that letter, so every character
+   of every built note is checked against the file. Run `npm run fonts:notes`
+   to regenerate the font after changing a note. */
+
+const NOTE_FONT = path.join(DIST, 'assets', 'fonts', 'caveat-notes.woff2');
+
+const decode = (t) =>
+  t
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&');
+
+async function noteGlyphs() {
+  const font = openFont(await readFile(NOTE_FONT));
+  const files = (await readdir(DIST, { recursive: true }))
+    .map((f) => f.split(path.sep).join('/'))
+    .filter((f) => f.endsWith('.html'));
+  const missing = new Map();
+  let notes = 0;
+  for (const page of files) {
+    const html = await readFile(path.join(DIST, page), 'utf8');
+    for (const [, text] of html.matchAll(/<span class="note__text"[^>]*>([^<]*)<\/span>/g)) {
+      notes++;
+      for (const ch of decode(text)) {
+        if (ch === ' ' || font.hasGlyphForCodePoint(ch.codePointAt(0))) continue;
+        missing.set(ch, [...(missing.get(ch) || []), page]);
+      }
+    }
+  }
+  if (missing.size) {
+    throw new Error(
+      'Margin notes use characters the trimmed note font does not have:\n  ' +
+        [...missing].map(([ch, pages]) => `"${ch}" on ${[...new Set(pages)].join(', ')}`).join('\n  ') +
+        '\nRun npm run fonts:notes to regenerate caveat-notes.woff2.'
+    );
+  }
+  return notes;
+}
+
 /* --- The home page measurement --------------------------------------------- */
 
 /** Everything the home page pulls from this origin, in load order. */
@@ -150,7 +198,10 @@ async function collect() {
          English and Portuguese both sit entirely inside the Latin subset —
          ã õ ç á é í ó ú are all under U+00FF. Counting latin-ext here would
          inflate the page by ~77 KB that no visitor ever receives. */
-      if (!/-latin\.woff2$/i.test(url)) continue;
+      /* The margin-note face is not unicode-ranged: it downloads on any page
+         that shows a note, so it counts exactly when this page has one. */
+      const noteFont = /caveat-notes\.woff2$/i.test(url);
+      if (noteFont ? !/class="note[ "]/.test(html) : !/-latin\.woff2$/i.test(url)) continue;
       assets.add(url.split('?')[0]);
     }
   }
@@ -170,6 +221,7 @@ const bytes = async (rel) => {
 const kb = (n) => Math.round((n / 1024) * 10) / 10;
 
 const audited = await audit();
+const noteCount = await noteGlyphs();
 const assets = await collect();
 const entry = await bytes('/index.html');
 
@@ -196,6 +248,7 @@ const metrics = {
 await writeFile(OUT, JSON.stringify(metrics, null, 2) + '\n');
 
 console.log(`site: ${audited.pages} pages and ${audited.sheets} stylesheets audited, 0 third-party requests`);
+console.log(`notes: ${noteCount} margin notes, every character present in the note font`);
 console.log(`home page: ${metrics.requests} requests, ${metrics.weightKb} KB over the wire`);
 console.log(`           ${metrics.weightRawKb} KB uncompressed, ${metrics.thirdPartyRequests} third-party`);
 for (const a of metrics.assets) console.log(`           · ${a}`);

@@ -9,14 +9,17 @@
     "build": "astro build",
     "preview": "node .claude/serve.js",
     "check": "astro check",
-    "measure": "node scripts/measure.mjs"
+    "measure": "node scripts/measure.mjs",
+    "fonts:notes": "node scripts/subset-note-font.mjs"
   },
   "dependencies": {
     "astro": "^7.3.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@fontsource/caveat": "5.3.0",
     "@types/node": "^24.13.6",
+    "subset-font": "2.9.0",
     "typescript": "^6.0.3"
   }
 }
