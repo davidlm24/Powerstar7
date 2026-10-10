@@ -217,6 +217,8 @@
   --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
   --font-text: 'Source Sans 3', ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+  /* Margin notes only (MarginNote.astro). Trimmed to the note characters. */
+  --font-hand: 'Caveat Notes', 'Segoe Print', 'Bradley Hand', cursive;
 
   /* The floor is set by the longest hero line in the WIDEST language, not
      by taste: "Sem rastreadores." measures 8.17em, so at a 320px viewport

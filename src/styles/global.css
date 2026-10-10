@@ -24,7 +24,11 @@ html {
 }
 
 body {
-  background: var(--bg);
+  /* The hero's grain, at its softest, across the whole page: texture, not
+     a filter. A tiled data-URI background, so it costs no request and no
+     layer; sections that paint their own ground (the footer) cover it. */
+  background-color: var(--bg);
+  background-image: var(--grain-soft);
   color: var(--fg);
   font-family: var(--font-text);
   font-size: var(--t-body);
@@ -573,4 +577,158 @@ a:hover { text-decoration-thickness: 2px; }
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* --- The ink kit ----------------------------------------------------------
+   Three small hand-drawn devices that repeat across the site so the paper
+   ground never reads as blank: an underline under one phrase per heading, a
+   margin note, and doodles at section edges. All decoration (aria-hidden or
+   background), all drawn in the illustration grammar above, none loaded from
+   anywhere. Chosen by David as direction B, "Ink in the margins". */
+
+/* The underline. One hand-drawn stroke under the key phrase of a heading
+   (src/lib/mark.ts wraps the phrase). A background image rather than a child
+   element, so it follows the phrase across a line break: box-decoration-break
+   gives each line fragment its own stroke.
+
+   The SVG carries its own turbulence wobble, because a background image cannot
+   reach the page's #ink-line filter. Its stroke is --blue (#0e6fff) written out
+   by hand: a data URI cannot read a custom property, so if --blue ever
+   changes, change it here too. */
+.ink-mark {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 14' preserveAspectRatio='none'%3E%3Cfilter id='w' x='-5%25' y='-60%25' width='110%25' height='220%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.06' numOctaves='2' seed='4' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='3'/%3E%3C/filter%3E%3Cpath d='M3 9 C 60 3, 120 12, 180 7 S 270 4, 297 8' fill='none' stroke='%230e6fff' stroke-width='3' stroke-linecap='round' vector-effect='non-scaling-stroke' filter='url(%23w)'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0.3em;
+  padding-block-end: 0.04em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* It wipes in once, left to right, as if drawn. Only for people who have not
+   asked for less motion; everyone else simply sees it finished. */
+@media (prefers-reduced-motion: no-preference) {
+  .ink-mark {
+    animation: ink-wipe 0.9s 0.35s var(--ease) both;
+  }
+}
+
+@keyframes ink-wipe {
+  from { background-size: 0% 0.3em; }
+}
+
+/* The margin note (MarginNote.astro). In the flow up to 960px, out in the
+   margin with its arrow above it. */
+.note {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  inline-size: fit-content;
+  max-inline-size: 15ch;
+  margin-block-start: var(--s3);
+  margin-inline-start: auto;
+  /* The tilt swings a corner outwards; this keeps it clear of the rail. */
+  margin-inline-end: var(--s2);
+  font-family: var(--font-hand);
+  font-weight: 500;
+  font-size: 1.5rem;
+  line-height: 1.05;
+  color: var(--fg);
+  text-align: end;
+  rotate: -4deg;
+  pointer-events: none;
+}
+
+.note__arrow {
+  display: none;
+  inline-size: 5.5rem;
+  block-size: auto;
+  overflow: visible;
+}
+
+.note__arrow .illo__line {
+  stroke-width: 2.4;
+}
+
+/* 60.0625rem, not 60rem: the site's two-column rows collapse at max-width
+   60rem, which includes 960px itself. Starting one pixel later means a note
+   never lifts into a margin that has just stacked away. */
+@media (min-width: 60.0625rem) {
+  .note {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: var(--note-top, auto);
+    inset-block-end: var(--note-bottom, auto);
+    inset-inline-start: var(--note-start, auto);
+    inset-inline-end: var(--note-end, auto);
+    margin: 0;
+    align-items: flex-start;
+    text-align: start;
+  }
+
+  .note__arrow {
+    display: block;
+    margin-inline-start: -1.75rem;
+    margin-block-start: var(--s1);
+  }
+
+  /* An arrow that climbs leaves from above the words, not below them. */
+  .note--up-left {
+    flex-direction: column-reverse;
+  }
+
+  .note--up-left .note__arrow {
+    margin-block: 0 var(--s1);
+  }
+
+  /* Mirrored: the words sit below and to the left of the target, and the arrow
+     leaves from their top-right corner. */
+  .note--up-right {
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    text-align: end;
+  }
+
+  .note--up-right .note__arrow {
+    margin-block: 0 var(--s1);
+    margin-inline: 0 -1.75rem;
+  }
+
+  .note--left {
+    flex-direction: row-reverse;
+    align-items: center;
+  }
+
+  .note--left .note__arrow {
+    margin: 0 var(--s1) 0 0;
+  }
+}
+
+/* Doodles (Doodle.astro): in a section's margin, clear of the text and the
+   rails. Hidden where the margin is too narrow to hold one. */
+.doodle {
+  display: none;
+}
+
+@media (min-width: 48rem) {
+  .doodle {
+    display: block;
+    position: absolute;
+    z-index: 0;
+    inline-size: 2.75rem;
+    block-size: auto;
+    pointer-events: none;
+  }
+
+  .doodle--squiggle { inline-size: 5.5rem; }
+
+  .doodle--top-end { inset-block-start: var(--s5); inset-inline-end: calc(var(--rail-x) + var(--s4)); }
+  .doodle--top-start { inset-block-start: var(--s5); inset-inline-start: calc(var(--rail-x) + var(--s4)); }
+  .doodle--bottom-end { inset-block-end: var(--s5); inset-inline-end: calc(var(--rail-x) + var(--s4)); }
+  .doodle--bottom-start { inset-block-end: var(--s5); inset-inline-start: calc(var(--rail-x) + var(--s4)); }
+
+  /* The illustration offsets are sized for a 120-unit drawing; a 48-unit
+     doodle wants the same misprint at its own scale. */
+  .doodle .illo__flat { transform: translate(3px, -2px); }
+  .doodle .illo__line { stroke-width: 2.2; }
 }

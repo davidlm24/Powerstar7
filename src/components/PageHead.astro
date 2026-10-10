@@ -1,11 +1,16 @@
 ---
+import { splitMark } from '../lib/mark';
+
 interface Props {
   label: string;
   title: string;
   lead?: string;
+  /** A phrase from the title to underline in ink. Must appear in it verbatim. */
+  mark?: string;
 }
 
-const { label, title, lead } = Astro.props;
+const { label, title, lead, mark } = Astro.props;
+const parts = mark ? splitMark(title, mark) : null;
 ---
 
 {/* The inner-page header. Deliberately NOT the dark hero slab the old site
@@ -14,9 +19,14 @@ const { label, title, lead } = Astro.props;
     below the home hero (96px against 140px), so the home page stays the
     loudest thing on the site. */}
 <section class="page-head rails">
+  {/* A soft blue wash in the top corner, the quiet sibling of the home
+      hero's. Blue only: the purple field stays the hero's alone. */}
+  <div class="page-head__fx" aria-hidden="true"></div>
   <div class="container">
     <p class="label">{label}</p>
-    <h1 class="page-head__h1">{title}</h1>
+    <h1 class="page-head__h1">
+      {parts ? (<>{parts.before}<span class="ink-mark">{parts.mark}</span>{parts.after}</>) : title}
+    </h1>
     {
       /* Either the string prop or a `lead` slot. The slot exists because a
          .pending placeholder is markup and cannot travel as a string. */
@@ -30,6 +40,22 @@ const { label, title, lead } = Astro.props;
 <style>
   .page-head {
     padding-block: var(--s6) var(--s7);
+  }
+
+  /* Behind the rails (z -1) and the text. At 20% blue its strongest point
+     still leaves the --ink-muted lead above 4.5:1; the hero measured
+     5.0:1 at 26%. No drift and no pointer parallax: one moving field per
+     site is the hero's. */
+  .page-head__fx {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    background: radial-gradient(
+      38% 70% at 88% 0%,
+      color-mix(in srgb, var(--blue) 20%, transparent),
+      transparent 70%
+    );
+    pointer-events: none;
   }
 
   .page-head__h1 {

@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
+import Doodle from '../components/Doodle.astro';
 import Closing from '../components/Closing.astro';
 import { useTranslations, type Lang } from '../i18n/ui';
 
@@ -19,12 +20,13 @@ const how = [
 ---
 
 <Base lang={lang} page="about" title={t('about.title')} description={t('about.lead')}>
-  <PageHead label={t('nav.about')} title={t('about.h1')} lead={t('about.lead')} />
+  <PageHead label={t('nav.about')} title={t('about.h1')} lead={t('about.lead')} mark={t('about.mark')} />
 
   {/* No team grid. The old site carried three cards reading "Name Surname"
       over a placeholder portrait. A studio that cannot yet name its people
       says what it does instead. */}
   <section class="story rails">
+    <Doodle kind="squiggle" pos="bottom-end" />
     <div class="container row story__inner">
       <h2 class="story__h row__title">{t('about.story.h')}</h2>
       <div class="prose row__body">
