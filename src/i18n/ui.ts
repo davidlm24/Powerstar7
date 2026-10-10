@@ -126,15 +126,15 @@ export const ui = {
     'svc.web.name': 'Web design & development',
     'svc.web.body':
       'We design and build your site as one job, not two: made for your business rather than adapted from a template, with a simple editor where you need to change things yourself. Built to be accessible from the start, not added as an upgrade.',
-    'svc.web.d1': 'Design in the browser, reviewed on real devices',
-    'svc.web.d2': 'Custom front end, no builder lock-in',
+    'svc.web.d1': 'Review it on your own phone and computer before launch',
+    'svc.web.d2': 'Pages and features agreed in your proposal',
     'svc.web.d3': 'Keyboard and screen-reader checks on the agreed pages',
 
     'svc.brand.name': 'Branding',
     'svc.brand.body':
       'We create your logo, colours and typefaces, plus the rules that keep them consistent once other people start using them. You get working files and a written guide, not a PDF of moodboards.',
-    'svc.brand.d1': 'Wordmark and usage rules',
-    'svc.brand.d2': 'Type and colour system, contrast-checked',
+    'svc.brand.d1': 'Your logo, with simple rules for using it',
+    'svc.brand.d2': 'Colours and typefaces that are easy to read',
     'svc.brand.d3': 'Asset pack and a written guide',
 
     'svc.seo.name': 'SEO',
@@ -475,15 +475,15 @@ export const ui = {
     'svc.web.name': 'Design e desenvolvimento web',
     'svc.web.body':
       'Desenhamos e construímos seu site como um trabalho só, não dois: feito para o seu negócio, e não adaptado de um template, com um editor simples onde você precisar mudar algo sozinho. Pensado para ser acessível desde o início, e não acrescentado como um upgrade.',
-    'svc.web.d1': 'Design feito no navegador, revisado em aparelhos reais',
-    'svc.web.d2': 'Front-end sob medida, sem amarras de construtor',
+    'svc.web.d1': 'Revise no seu celular e no computador antes do lançamento',
+    'svc.web.d2': 'Páginas e funções definidas na proposta',
     'svc.web.d3': 'Verificações com teclado e leitor de tela nas páginas combinadas',
 
     'svc.brand.name': 'Branding',
     'svc.brand.body':
       'Criamos seu logotipo, suas cores e suas fontes, com as regras que mantêm tudo coerente depois que outras pessoas começam a usar. Você recebe arquivos de trabalho e um guia por escrito, não um PDF de moodboards.',
-    'svc.brand.d1': 'Logotipo e regras de uso',
-    'svc.brand.d2': 'Sistema de cor e tipografia, com contraste verificado',
+    'svc.brand.d1': 'Seu logotipo, com regras simples de uso',
+    'svc.brand.d2': 'Cores e fontes fáceis de ler',
     'svc.brand.d3': 'Pacote de arquivos e um guia escrito',
 
     'svc.seo.name': 'SEO',
