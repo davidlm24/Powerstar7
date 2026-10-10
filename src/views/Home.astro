@@ -215,6 +215,16 @@ const position = [
     }
   }
 
+  /* Room for the margin note under the buttons. The hero clips its overflow
+     (for the wash), and --section-y scales with the viewport, so between
+     961px and ~1180px it left the note's last line cut off. The note reaches
+     about 141px below the buttons; this keeps it inside with room to spare. */
+  @media (min-width: 60.0625rem) {
+    .hero {
+      padding-block-end: max(var(--section-y), 10.5rem);
+    }
+  }
+
   /* --- The wash ----------------------------------------------------------
      Two soft fields of colour behind the type, blue and purple, drifting
      slowly against each other. This is the site's second authored moment
