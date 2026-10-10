@@ -192,7 +192,7 @@ export const ui = {
     'about.story.b2':
       'A site that works with a keyboard or a screen reader, and is structured so search engines can understand it.',
     'about.story.b3':
-      'You know what you can edit and what you receive at launch, with a care plan only if you want one.',
+      'A site you know how to run: what you can edit, what you receive at launch, and a care plan only if you want one.',
     'about.where.h': 'Where we work',
     'about.where.b':
       'We are based in Germany and Luxembourg and work remotely, in English and Portuguese. Multilingual sites are routine for us, and each extra language is priced up front.',
@@ -541,7 +541,7 @@ export const ui = {
     'about.story.b2':
       'Um site que funciona com teclado ou leitor de tela, e é estruturado para que os buscadores o entendam.',
     'about.story.b3':
-      'Você sabe o que pode editar e o que recebe no lançamento, e só contrata um plano de manutenção se quiser.',
+      'Um site que você sabe administrar: o que pode editar, o que recebe no lançamento e um plano de manutenção só se quiser.',
     'about.where.h': 'Onde trabalhamos',
     'about.where.b':
       'Temos base na Alemanha e no Luxemburgo e trabalhamos a distância, em português e inglês. Sites multilíngues são rotina para nós, e cada idioma a mais tem preço definido desde o início.',
