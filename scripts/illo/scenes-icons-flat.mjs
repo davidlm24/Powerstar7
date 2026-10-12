@@ -52,11 +52,6 @@ function brand(x, y) {
     if (seg(x, y, x0, y0, x1, y1) < 0.02) v = LINE;
   }
   if (r < 0.41) v = Math.max(v, out(r - 0.41, 0.018) ? LINE : IN);         // the glass
-  const fil = Math.min(                                                     // filament
-    seg(x, y, 1.0, 0.54, 1.07, 0.38), seg(x, y, 1.07, 0.38, 1.14, 0.54),
-    seg(x, y, 1.14, 0.54, 1.21, 0.38),
-  );
-  if (r < 0.39 && fil < 0.017) v = LINE;
   if (y > 0.8 && x > 1.06 && Math.hypot(Math.max(0, 1.12 - x), 0) < 0.3) { // the base, cut
     v = Math.max(v, IN);
     for (const ly of [0.83, 0.9, 0.97]) if (out(Math.abs(y - ly), 0.009)) v = LINE;
@@ -97,21 +92,22 @@ function email(x, y) {
   return v;
 }
 
-/** Website care: half a shield, cut right through its check. */
+/** Website care: a traditional shield, its right side cut by the edge —
+    flat top, straight sides to the waist, arcs meeting at a visible tip. */
 function hosting(x, y) {
-  const cx = 1.34;
-  const upper = rbox(x, y, cx, 0.28, 0.48, 0.22, 0.12);
-  const lower = Math.max(
-    Math.hypot(x - (cx - 0.74), y - 0.24) - 1.06,
-    Math.hypot(x - (cx + 0.74), y - 0.24) - 1.06,
-    0.4 - y,
+  const cx = 1.14;
+  const upper = rbox(x, y, cx, 0.25, 0.5, 0.19, 0.1);                        // top, y 0.06..0.44
+  const lower = Math.max(                                                    // waist 0.5 wide at 0.42, tip at (cx, 0.96)
+    Math.hypot(x - (cx - 0.2144), y - 0.26) - 0.732,
+    Math.hypot(x - (cx + 0.2144), y - 0.26) - 0.732,
+    0.42 - y,
   );
   const sh = Math.min(upper, lower);
   if (sh > 0.0) return 0;
   let v = out(sh, 0.018) ? LINE : IN;
-  if (out(sh + 0.075, 0.013)) v = Math.max(v, DETAIL);                       // inner rim
-  const ck = Math.min(seg(x, y, 0.96, 0.48, 1.1, 0.66), seg(x, y, 1.1, 0.66, EDGE + 0.1, 0.26));
-  if (ck < 0.052) v = LINE;                                                  // the check
+  if (out(sh + 0.07, 0.013)) v = Math.max(v, DETAIL);                        // inner rim
+  const ck = Math.min(seg(x, y, 0.92, 0.46, 1.06, 0.62), seg(x, y, 1.06, 0.62, 1.27, 0.3));
+  if (ck < 0.05) v = LINE;                                                   // the check
   return v;
 }
 

@@ -454,7 +454,8 @@ const position = [
     grid-area: art;
     align-self: center;
     --illo-cell: 4px;
-    --reveal-wait: 2rem;
+    /* 1rem: parked past the rail, the box must still clear the gutter. */
+    --reveal-wait: 1rem;
     margin-inline-end: calc(-1 * var(--line-gap));
   }
 

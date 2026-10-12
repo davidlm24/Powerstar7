@@ -168,7 +168,9 @@ const topics = [
      spans the whole container on a phone. */
   .direct__illo {
     --illo-cell: 3.4px;
-    --reveal-wait: 2rem;
+    /* 0.5rem: on a phone the gutter is small and the parked box must not
+       scroll the page sideways. */
+    --reveal-wait: 0.5rem;
     margin-block-end: var(--s4);
     margin-inline-end: calc(-1 * var(--line-gap));
   }

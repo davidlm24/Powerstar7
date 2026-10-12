@@ -352,21 +352,21 @@ a:hover { text-decoration-thickness: 2px; }
   color: var(--accent);
 }
 
-/* The home hero's moving piece (flow.ts): an editor typing a page, the
-   preview building beside it, a terminal running the build. It owns the
-   right side of the hero (David: "takes more of the right side"), fading
-   out only towards the headline and the buttons, so the copy stays on
-   clear paper. */
+/* The home hero's moving piece (flow.ts): the "tecido de sinal" David
+   picked — a full field of tones flowing in slow waves, a scanline
+   sweeping through. It owns the right side of the hero, fading out towards
+   the headline and the buttons, so the copy stays on clear paper. */
 .ascii--flow {
   position: absolute;
   z-index: -1;
   inset-block-start: var(--s5);
   inset-inline-end: var(--rail-x);
   --ascii-cell: clamp(4px, 0.5vw, 7px);
-  /* 0.4 is the ceiling the old field settled at behind the display
-     headline: the Portuguese hero line runs deep into the art, and the
-     masks cannot save it, so the base opacity is the guard. */
-  opacity: 0.4;
+  /* The weave covers its whole box, where the old field was sparse lines,
+     so the same perceived weight needs a lower alpha: 0.3 here reads like
+     the 0.4 the sparse field was accepted at behind the Portuguese
+     headline. */
+  opacity: 0.3;
   -webkit-mask-image:
     linear-gradient(to right, transparent 8%, #000 56%),
     linear-gradient(to bottom, #000 55%, transparent 94%);
@@ -381,14 +381,14 @@ a:hover { text-decoration-thickness: 2px; }
    it steps further back. */
 @media (min-width: 48rem) and (max-width: 74.99rem) {
   .ascii--flow {
-    opacity: 0.3;
+    opacity: 0.22;
   }
 }
 
 @media (max-width: 47.99rem) {
   .ascii--flow {
     --ascii-cell: 2.6px;
-    opacity: 0.25;
+    opacity: 0.16;
   }
 }
 
