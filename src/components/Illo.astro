@@ -1,15 +1,15 @@
 ---
-/* One illustration: half-block text (scripts/illustrations.mjs), lit 3D
-   scenes in space ░ ▒ ▓ █ ▀ ▄. The icons are flat 2D drawings, oversized
-   and cut at their right edge, always in blue; everything shimmers like the
-   page figures, and an icon also DECODEs — the character flicker — when its
-   zone is hovered or focused (site.js).
+/* One illustration (scripts/illustrations.mjs makes them all).
 
-   variant:
-   - icon:  a service icon, in its lane or column; drifts in on reveal when
-            the parent asks (data-reveal).
-   - field: the figure in a page heading, behind the text, fading towards it.
-   - aside: the smaller second figure in a later section, wide screens only.
+   icon — "D2 adesivo" (David, 2026-10-12): the 3D scene softly shaded,
+   dithered to 1 bit by Floyd–Steinberg, shipped as a PNG MASK at 1x and
+   2x. The page colours it (blue on paper; the dark-ground render in the
+   on-ink blue inside .invert) and cuts a sticker halo around it with
+   drop-shadows (global.css). Hover resolves it from coarse pixels to the
+   picture (site.js, through the inlined frames); the idle loop is a
+   gentle float. It drifts in on reveal when the parent asks (data-reveal).
+
+   field / aside — half-block text, shimmering; the page figures.
 
    Decoration by contract: aria-hidden, and data-nosnippet. */
 import manifest from '../data/illo.json';
@@ -19,19 +19,28 @@ export type IlloName = keyof typeof manifest;
 interface Props {
   name: IlloName;
   variant: 'icon' | 'field' | 'aside';
-  /** Inside a dark band: the light-on-dark render. */
+  /** Inside a dark band: the light-on-dark render and its frames. */
   onDark?: boolean;
   class?: string;
 }
 
 const { name, variant, onDark, class: className } = Astro.props;
-const entry = manifest[name] as { cols: number; rows: number; light: string; dark?: string };
-const text = (onDark && entry.dark) || entry.light;
+const entry = manifest[name] as {
+  kind: string; w?: number; h?: number; frames?: Record<string, string[]>;
+  cols?: number; rows?: number; light?: string;
+};
+const file = (tone: string, scale: string) => `url(/assets/illo/${name}${tone}${scale}.png)`;
+const tone = onDark ? '-dark' : '';
+const style = variant === 'icon'
+  ? [`--ar:${entry.w}/${entry.h}`, `--l1:${file(tone, '')}`, `--l2:${file(tone, '@2x')}`].join(';')
+  : undefined;
+const frames = variant === 'icon' ? entry.frames?.[onDark ? 'dark' : 'light'] : undefined;
+/* Each icon floats from its own moment, so a row never moves in step. */
+const offset = ((Object.keys(manifest).indexOf(name) * 1.7) % 7).toFixed(1);
 ---
 
 <div class:list={['illo', `illo--${variant}`, className]} aria-hidden="true" data-nosnippet>
-  <pre
-    data-decode={variant === 'icon' ? '' : undefined}
-    data-shimmer
-    data-cols={entry.cols}>{text}</pre>
+  {variant === 'icon'
+    ? <span class="illo__img" style={`${style};--sd:-${offset}s`} data-frames={JSON.stringify(frames)}></span>
+    : <pre data-shimmer>{entry.light}</pre>}
 </div>

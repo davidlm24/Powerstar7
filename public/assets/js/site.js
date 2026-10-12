@@ -443,58 +443,39 @@
     revealEls.forEach(function (el) { revealIO.observe(el); });
   }
 
-  /* ---------- illustration decode ---------------------------------------- */
+  /* ---------- sticker resolve -------------------------------------------- */
 
-  /* On hover or keyboard focus, an icon decodes into place: every character
-     flickers through the shades and settles, sweeping left to right with a
-     little scatter, over about half a second — while the zone's CSS fades
-     it from faint grey to the full blue. It always ends on the text it was
-     built as. Skipped for anyone who asked for less motion. A zone is
-     whatever hoverable block holds the icon: a home lane, a Services row,
-     the contact aside. */
-  var decodeGlyphs = '░▒▓█▀▄';
+  /* On hover or keyboard focus, a sticker icon resolves from coarse to
+     fine: the same picture at an eighth, then a quarter of its resolution
+     (the frames Illo.astro inlines), then itself, over about a third of a
+     second. Leaving always restores it. Skipped for anyone who asked for
+     less motion. A zone is whatever hoverable block holds the icon: a home
+     lane, a Services row, the contact aside. */
   document.querySelectorAll('[data-decode-zone]').forEach(function (zone) {
-    var pre = zone.querySelector('pre[data-decode]');
-    if (!pre) return;
-    var base = pre.textContent;
-    var width = Number(pre.getAttribute('data-cols')) || 100;
-    var frame = 0;
-    function decode() {
-      if (asciiCalm.matches || document.hidden) return;
-      cancelAnimationFrame(frame);
-      pre.dataset.decoding = '1';
-      var duration = 520;
-      var settle = [];
-      var col = 0;
-      for (var k = 0; k < base.length; k++) {
-        var ch = base.charAt(k);
-        if (ch === '\n') { col = 0; settle.push(-1); continue; }
-        settle.push(ch === ' ' ? -1 : ((col / width) * 0.6 + Math.random() * 0.4) * duration);
-        col++;
-      }
-      var start = performance.now();
-      (function step(now) {
-        var elapsed = now - start;
-        var out = '';
-        for (var k = 0; k < base.length; k++) {
-          out += settle[k] < 0 || elapsed >= settle[k]
-            ? base.charAt(k)
-            : decodeGlyphs.charAt(Math.floor(Math.random() * decodeGlyphs.length));
-        }
-        pre.textContent = out;
-        if (elapsed < duration) frame = requestAnimationFrame(step);
-        else { pre.textContent = base; delete pre.dataset.decoding; }
-      })(start);
+    var img = zone.querySelector('.illo__img[data-frames]');
+    if (!img) return;
+    var frames = JSON.parse(img.getAttribute('data-frames'));
+    var timers = [];
+    function show(url) {
+      var v = url ? 'url(' + url + ')' : '';
+      img.style.webkitMaskImage = v;
+      img.style.maskImage = v;
     }
-    /* Leaving always settles it, so a decode cut short can never leave the
-       icon scrambled. */
     function settle() {
-      cancelAnimationFrame(frame);
-      delete pre.dataset.decoding;
-      pre.textContent = base;
+      timers.forEach(clearTimeout);
+      timers = [];
+      show('');
     }
-    zone.addEventListener('mouseenter', decode);
-    zone.addEventListener('focus', decode);
+    function resolve() {
+      if (asciiCalm.matches || document.hidden) return;
+      settle();
+      frames.forEach(function (url, n) {
+        timers.push(setTimeout(function () { show(url); }, n * 110));
+      });
+      timers.push(setTimeout(settle, frames.length * 110));
+    }
+    zone.addEventListener('mouseenter', resolve);
+    zone.addEventListener('focus', resolve);
     zone.addEventListener('mouseleave', settle);
     zone.addEventListener('blur', settle);
   });

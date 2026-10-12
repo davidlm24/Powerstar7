@@ -414,20 +414,43 @@ a:hover { text-decoration-thickness: 2px; }
   white-space: pre;
 }
 
-/* Icons: flat, just blue, incomplete on purpose — each drawing runs off
-   its own right edge, and that edge sits ON the layout's line, which cuts
-   it (David: "vindo da direita, cortando mesmo na borda"). The box
-   shrink-wraps the art and hugs the right, so the cut lands on the line.
-   Hover plays only the decode (site.js); there is no state change. The
-   idle loop is the same shimmer the page figures run. */
-.illo--icon pre {
-  width: fit-content;
-  color: var(--accent);
-  opacity: 0.85;
+/* Icons: "D2 adesivo" (David) — the detailed 1-bit render as a mask the
+   page colours, cut out like a sticker: a hard pale halo around the
+   silhouette (drop-shadows see the masked alpha), a hand-placed tilt, a
+   gentle float. Hover resolves it from coarse pixels (site.js). On a dark
+   band the art turns to the on-ink blue and the halo to paper. */
+.illo--icon .illo__img {
+  display: block;
+  width: var(--illo-w, 13rem);
+  aspect-ratio: var(--ar);
+  background-color: var(--illo-ink, var(--accent-fn));
+  -webkit-mask: -webkit-image-set(var(--l1) 1x, var(--l2) 2x) center / 100% 100% no-repeat;
+  mask: image-set(var(--l1) 1x, var(--l2) 2x) center / 100% 100% no-repeat;
+  image-rendering: pixelated;
+  transform: rotate(-3.5deg);
+  filter:
+    drop-shadow(3px 0 0 var(--illo-halo, var(--paper-hi)))
+    drop-shadow(-3px 0 0 var(--illo-halo, var(--paper-hi)))
+    drop-shadow(0 3px 0 var(--illo-halo, var(--paper-hi)))
+    drop-shadow(0 -3px 0 var(--illo-halo, var(--paper-hi)));
 }
 
-.invert .illo--icon pre {
-  color: var(--on-ink-blue);
+.invert .illo--icon .illo__img {
+  --illo-ink: var(--on-ink-blue);
+  --illo-halo: var(--paper);
+}
+
+/* The loop: a slow float, each icon from its own moment (--sd), only for
+   those who have not asked for less motion. The figures shimmer instead. */
+@media (prefers-reduced-motion: no-preference) {
+  .illo--icon .illo__img {
+    animation: illo-float 7s ease-in-out var(--sd, 0s) infinite;
+  }
+}
+
+@keyframes illo-float {
+  0%, 100% { transform: rotate(-3.5deg) translateY(0); }
+  50% { transform: rotate(-3.5deg) translateY(-4px); }
 }
 
 /* The page figure. Right of the heading, behind it, fading to nothing towards

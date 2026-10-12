@@ -446,17 +446,13 @@ const position = [
     color: var(--fg-muted);
   }
 
-  /* The 100-column art at 4px fills the 15rem track — and reaches
-     --line-gap past the content edge, so its cut edge lands exactly ON the
-     page's rail. Decoration may touch a line; content may not. The icons
-     come in from the right, like the drawings themselves. */
+  /* The sticker fills most of the 15rem track; whole, tilted, never cut.
+     It still drifts in from the right. */
   .lane__art {
     grid-area: art;
     align-self: center;
-    --illo-cell: 4px;
-    /* 1rem: parked past the rail, the box must still clear the gutter. */
+    --illo-w: 12.5rem;
     --reveal-wait: 1rem;
-    margin-inline-end: calc(-1 * var(--line-gap));
   }
 
   /* Inline after the name now: the end of the lane belongs to the art,
@@ -509,7 +505,7 @@ const position = [
     }
 
     .lane__art {
-      --illo-cell: 2.4px;
+      --illo-w: 8rem;
     }
   }
 

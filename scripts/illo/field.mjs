@@ -111,6 +111,27 @@ export function ditherBayer(ink, W, H) {
   return out;
 }
 
+/** 1-bit by Floyd–Steinberg error diffusion, serpentine — the organic
+    dither David picked for the sticker icons (D2). */
+export function ditherFS(ink, W, H) {
+  const buf = Float32Array.from(ink), out = new Uint8Array(W * H);
+  for (let j = 0; j < H; j++) {
+    const rev = j & 1;
+    for (let n = 0; n < W; n++) {
+      const i = rev ? W - 1 - n : n, k = j * W + i, d = rev ? -1 : 1;
+      const v = buf[k], o = v > 0.5 ? 1 : 0, err = v - o;
+      out[k] = o;
+      if (i + d >= 0 && i + d < W) buf[k + d] += err * 7 / 16;
+      if (j + 1 < H) {
+        if (i - d >= 0 && i - d < W) buf[k + W - d] += err * 3 / 16;
+        buf[k + W] += err * 5 / 16;
+        if (i + d >= 0 && i + d < W) buf[k + W + d] += err * 1 / 16;
+      }
+    }
+  }
+  return out;
+}
+
 /**
  * The same lit field, drawn in one of four styles. Ink is 0..1 coverage;
  * mode 'dark' maps brightness to ink instead (light marks on a dark band).
