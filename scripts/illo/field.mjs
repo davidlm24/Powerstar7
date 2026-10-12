@@ -1,8 +1,9 @@
 /* Lights a scene into an "ink field": coverage 0..1 at every pixel. Light
    from the top left, thick contours at silhouettes and between parts, soft
-   cast shadows; inkFor() then draws it in a style. The site uses 'cel'
-   (picked by David, 2026-10-12): two hard tones per part, a highlight and a
-   cast shadow, dithered to 1 bit by an 8x8 Bayer matrix. */
+   cast shadows; inkFor() then draws it in a style. The site uses 'soft':
+   David picked 'cel', then asked for less 3D (2026-10-12), so it keeps the
+   two tones per part but gently, with no highlight and no cast shadow.
+   Dithered to 1 bit by an 8x8 Bayer matrix. */
 
 const clamp = (v, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
 const norm = (v) => { const n = Math.hypot(...v); return v.map((c) => c / n); };
@@ -115,6 +116,7 @@ export function ditherBayer(ink, W, H) {
  * mode 'dark' maps brightness to ink instead (light marks on a dark band).
  *   3d    full lighting, bevels, highlights, cast shadows
  *   cel   flat colours, posterized: a lit side, a shadow side, a highlight
+ *   soft  cel, quieter: a gentle shadow side, no highlight, no cast shadow
  *   flat  one flat tone per part, outlines, no lighting, no shadows
  *   line  outlines, with the printed details kept as tints
  */
@@ -134,6 +136,10 @@ export function inkFor(f, style, mode = 'light') {
       const shadeSide = f.ndl[k] < 0.625 || f.selfSh[k];
       let b = shadeSide ? a * 0.42 : Math.min(1, a * 1.02);       // two hard tones per part
       if (f.spec[k] > 0.18) b = 1;                                // a hard highlight
+      v = dark ? clamp(0.12 + 0.85 * b) : clamp(0.04 + 1.0 * Math.pow(1 - b, 1.1));
+    } else if (style === 'soft') {
+      // the same split as cel, a third as deep; nothing thrown on the paper
+      const b = f.ndl[k] < 0.625 ? a * 0.76 : Math.min(1, a * 1.02);
       v = dark ? clamp(0.12 + 0.85 * b) : clamp(0.04 + 1.0 * Math.pow(1 - b, 1.1));
     } else if (style === 'flat') {
       v = dark ? clamp(0.12 + 0.75 * a) : clamp(0.04 + 0.9 * Math.pow(1 - a, 0.9));

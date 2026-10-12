@@ -7,9 +7,9 @@
 
    Each scene (scripts/illo/scenes-*.mjs) is a small 3D model: rounded,
    bevelled parts lit from the top left, with thick contours and soft cast
-   shadows (field.mjs). It is drawn in the cel-shaded style David picked
-   (2026-10-12): two hard tones per part, a highlight, a cast shadow. Then it
-   is dithered to one bit with an 8x8 Bayer matrix.
+   shadows (field.mjs). It is drawn soft (David, 2026-10-12: cel-shaded,
+   then "less 3D"): two gentle tones per part, no highlight, no cast
+   shadow. Then it is dithered to one bit with an 8x8 Bayer matrix.
 
    Every picture is written at 1x and 2x, each dithered at its own size. A 2x
    ordered dither shown at 1x with nearest-neighbour sampling keeps only a
@@ -54,7 +54,7 @@ const uri = (buf) => 'data:image/png;base64,' + buf.toString('base64');
 
 /** One tone of one picture: the 2x and 1x files, and the hover frames. */
 function draw(field, w, h, tone, frames) {
-  const ink2 = inkFor(field, 'cel', tone);
+  const ink2 = inkFor(field, 'soft', tone);
   const at2 = sampler(ink2, w * 2, h * 2);
   const ink1 = new Float32Array(w * h);
   for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) ink1[j * w + i] = at2(i * 2, j * 2, i * 2 + 2, j * 2 + 2);

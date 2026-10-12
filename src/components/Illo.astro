@@ -1,5 +1,5 @@
 ---
-/* One illustration: a 1-bit cel-shaded picture (scripts/illustrations.mjs),
+/* One illustration: a 1-bit, softly shaded picture (scripts/illustrations.mjs),
    drawn as a CSS mask so its colour comes from the page. Blue on paper; in a
    dark band (.invert) it switches to the dark-ground render, in white.
 
@@ -26,8 +26,11 @@ interface Props {
 const { name, variant, onDark, class: className } = Astro.props;
 const entry = manifest[name] as { w: number; h: number; frames?: Record<string, string[]> };
 const file = (tone: string, scale: string) => `url(/assets/illo/${name}${tone}${scale}.png)`;
+/* Each picture starts its loop at its own moment, so a row never moves in step. */
+const offset = ((Object.keys(manifest).indexOf(name) * 1.3) % 6.5).toFixed(1);
 const style = [
   `--ar:${entry.w}/${entry.h}`,
+  `--sd:-${offset}s`,
   `--l1:${file('', '')}`,
   `--l2:${file('', '@2x')}`,
   ...(onDark ? [`--d1:${file('-dark', '')}`, `--d2:${file('-dark', '@2x')}`] : []),

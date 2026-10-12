@@ -353,7 +353,7 @@ a:hover { text-decoration-thickness: 2px; }
 }
 
 /* The home hero's moving field (flow.ts): abstract, and the largest piece of
-   the kit. It covers the right of the hero from top to bottom, fading out
+   the kit, made of scrolling code shown only along drifting contour bands. It covers the right of the hero from top to bottom, fading out
    towards the headline (left) and towards the buttons (bottom), so the copy
    and the buttons stay on clear paper. */
 .ascii--flow {
@@ -389,7 +389,7 @@ a:hover { text-decoration-thickness: 2px; }
 }
 
 /* --- The illustrations ---------------------------------------------------
-   Small 3D models drawn cel-shaded and dithered to one bit (picked by David,
+   Small 3D models drawn softly shaded and dithered to one bit (David,
    2026-10-12; scripts/illustrations.mjs makes the files, Illo.astro places
    them). Each file is a mask, so the colour is the page's: the functional
    blue on paper, and on a dark band the white render (David: "on dark
@@ -400,6 +400,7 @@ a:hover { text-decoration-thickness: 2px; }
   pointer-events: none;
   user-select: none;
   --illo-ink: var(--blue-fn);
+  --illo-scan: rgb(245 242 235 / 0.72);
 }
 
 .illo__img {
@@ -415,11 +416,55 @@ a:hover { text-decoration-thickness: 2px; }
    the paper render if a picture has no dark version. */
 .invert .illo {
   --illo-ink: var(--on-ink);
+  --illo-scan: rgb(27 26 22 / 0.55);
 }
 
 .invert .illo__img {
   -webkit-mask-image: -webkit-image-set(var(--d1, var(--l1)) 1x, var(--d2, var(--l2)) 2x);
   mask-image: image-set(var(--d1, var(--l1)) 1x, var(--d2, var(--l2)) 2x);
+}
+
+/* The loop, like the hero's field: every picture is always gently alive.
+   A soft scan band sweeps down through it, clipped to its own shape by its
+   mask (a pale band on paper, a dim one on a dark band), then rests; the
+   icons also float a few pixels. Each picture starts at its own moment
+   (--sd, from Illo.astro), so a row of them never moves in step. Only for
+   anyone who has not asked for less motion. */
+.illo__img {
+  position: relative;
+  overflow: hidden;
+}
+
+.illo__img::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: -40%;
+  block-size: 40%;
+  background: linear-gradient(to bottom, transparent, var(--illo-scan), transparent);
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .illo__img::after {
+    animation: illo-scan 6.5s linear var(--sd, 0s) infinite;
+  }
+
+  .illo--icon .illo__img {
+    animation: illo-float 7s ease-in-out var(--sd, 0s) infinite;
+  }
+}
+
+/* 40% tall, starting 40% above: 350% of its own height carries it clear
+   below. The last stretch is the rest between sweeps. */
+@keyframes illo-scan {
+  0% { transform: translateY(0); }
+  55%, 100% { transform: translateY(350%); }
+}
+
+@keyframes illo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
 }
 
 /* The page figure. Right of the heading, behind it, fading to nothing towards
