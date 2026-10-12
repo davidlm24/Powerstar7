@@ -113,7 +113,7 @@ const position = [
                   <p class="lane__b">{s.b}</p>
                 </div>
                 <span class="lane__art">
-                  <span class="icon-panel" aria-hidden="true">
+                  <span class="icon-wash" aria-hidden="true">
                     <Ascii icon={s.key} variant="icon" />
                   </span>
                 </span>
@@ -441,12 +441,11 @@ const position = [
     color: var(--fg-muted);
   }
 
-  /* The 36-column canvas at 7.5px, plus the panel's padding, fills the
-     14rem track. */
+  /* The 64-column canvas at 5.5px fills the 14rem track. */
   .lane__art {
     grid-area: art;
     align-self: center;
-    --ascii-cell: 7.5px;
+    --ascii-cell: 5.5px;
   }
 
   .lane__go {
@@ -483,27 +482,28 @@ const position = [
   }
 
   /* --- The reveal ---------------------------------------------------------
-     Each lane's icon panel waits invisible at the end of the lane. On hover
-     or keyboard focus it slides in from the right — the purple-to-blue block
-     with the hand-set icon in light type — while the decode animation
-     (site.js) flickers the icon into place character by character. With less
-     motion asked for, it fades in where it stands and the decode is skipped. */
-  .lane :global(.icon-panel) {
+     Each lane's icon waits invisible at the end of the lane. On hover or
+     keyboard focus it comes in from the right — the soft hero-wash gradient
+     and the ink icon together, dissolving into the paper with no edge —
+     while the decode animation (site.js) flickers the icon into place.
+     Slower than --dur on purpose: a wash materializes, a control reacts.
+     With less motion asked for, it fades in where it stands, decoded. */
+  .lane :global(.icon-wash) {
     opacity: 0;
-    transform: translateX(1.25rem);
+    transform: translateX(var(--wash-wait, 2rem));
     transition:
-      opacity var(--dur) var(--ease),
-      transform var(--dur) var(--ease);
+      opacity 320ms var(--ease),
+      transform 320ms var(--ease);
   }
 
-  .lane:hover :global(.icon-panel),
-  .lane:focus-visible :global(.icon-panel) {
+  .lane:hover :global(.icon-wash),
+  .lane:focus-visible :global(.icon-wash) {
     opacity: 1;
     transform: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .lane :global(.icon-panel) {
+    .lane :global(.icon-wash) {
       transform: none;
     }
   }
@@ -519,7 +519,15 @@ const position = [
     }
 
     .lane__art {
-      --ascii-cell: 4px;
+      --ascii-cell: 3.5px;
+    }
+
+    /* The waiting position scales with the track: at 2rem the parked icon
+       box reaches the arrow column here. Invisible, but boxes should not
+       overlap even at rest. A variable, so the reduced-motion transform:
+       none above still wins. */
+    .lane__art {
+      --wash-wait: 1rem;
     }
   }
 

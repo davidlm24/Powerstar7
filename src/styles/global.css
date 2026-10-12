@@ -450,21 +450,54 @@ a:hover { text-decoration-thickness: 2px; }
   }
 }
 
-/* The icon panel: the one place the ASCII sits on its own ground rather than
-   on the paper. A square-cornered purple-to-blue block — purple's second
-   fenced use, David's ask (see tokens.css) — with the hand-set icon in light
-   paper type on top. The two hues are near neighbours, so the gradient stays
-   slight. Decoration by contract: every panel carries aria-hidden, and the
-   light-on-gradient pairing is never asked to pass as text. */
-.icon-panel {
+/* The icon wash: the hero's own gradient language under an icon, and never
+   a box (David, 2026-10-12: "no box, just transitioning to the background").
+   Two soft radials — purple and blue at the hero wash's 26% — bleed past the
+   icon on every side and dissolve into the paper, so no edge exists
+   anywhere. The icon sits on it in ink, the dark-on-pale-gradient pairing
+   webhero runs: full contrast where the old light-on-gradient went muddy.
+   On a dark band --fg flips to light and the wash reads as a glow. Purple's
+   second fenced use (tokens.css). Decoration by contract: aria-hidden. */
+.icon-wash {
+  position: relative;
   display: grid;
   place-items: center;
-  padding: var(--s3);
-  background: linear-gradient(135deg, var(--purple), var(--blue));
 }
 
-.icon-panel .ascii pre {
-  color: rgb(252 250 246 / 0.95);
+.icon-wash::before {
+  content: '';
+  position: absolute;
+  inset: -28% -20%;
+  background:
+    radial-gradient(
+      42% 46% at 64% 30%,
+      color-mix(in srgb, var(--purple) 26%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      46% 50% at 36% 68%,
+      color-mix(in srgb, var(--blue) 26%, transparent),
+      transparent 72%
+    );
+  pointer-events: none;
+}
+
+/* On a phone the sideways bleed has nowhere to go: the pseudo's transparent
+   box runs past the viewport and scrolls the page sideways (the gradient is
+   box-relative, so a tighter box stays edgeless — it just hugs closer). */
+@media (max-width: 47.99rem) {
+  .icon-wash::before {
+    inset: -16% 0;
+  }
+}
+
+/* Above its own wash. */
+.icon-wash .ascii {
+  position: relative;
+}
+
+.icon-wash .ascii pre {
+  color: var(--fg);
 }
 
 /* A callout: "^ start here". Small text carrying meaning, so --accent-fn. */

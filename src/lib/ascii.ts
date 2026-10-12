@@ -233,116 +233,130 @@ const FIGURES = {
 export type FigureName = keyof typeof FIGURES;
 export type IconName = 'web' | 'brand' | 'seo' | 'email' | 'hosting';
 
-/* --- Service icons: hand-set, not generated -------------------------------
-   The first icons were the old drawings pushed through the brightness field,
-   and at icon size that lost every silhouette — David's example was the
-   plug, "unrecognizable" (2026-10-12). These are set by hand, character by
-   character, so each one reads at a glance. They sit in light type on the
-   purple-to-blue panels (.icon-panel in global.css), and the decode
-   animation in site.js plays over them unchanged. Printable ASCII only,
-   like everything else in this file. */
+/* --- Service icons: generated like the page figures, drawn with MASS ------
+   Two failed passes taught this (David, 2026-10-12): the old drawings pushed
+   through the brightness field lost every silhouette, and hand-set line art
+   read thin — "the shield looks like an upside-down triangle". What works is
+   what the page figures already do: thick SOLID strokes (a fill of the
+   widened distance, never a thin edge glow), shaded interiors the dither
+   turns into texture, one bold silhouette per icon. Drawn at 64x30 so the
+   detail has room. They sit on .icon-wash — the hero's soft purple-and-blue
+   gradient language, no box — in ink, for contrast on the pale wash. */
 
-const ICON_ART: Record<IconName, string> = {
-  /** Web design & development: a browser, the page taking shape in it. */
-  web: `
-.________________________________.
-| o o o  .____________________.  |
-|________|____________________|__|
-|                                |
-|   @@@@@@@@@@@@@@@@@@@@@        |
-|   @@@@@@@@@@@@@@.              |
-|                                |
-|   ---------------------------  |
-|   -----------------------      |
-|                                |
-|   .________.   .________.      |
-|   |@@@@@@@@|   |        |      |
-|   '--------'   '--------'      |
-|________________________________|`,
+/** A solid stroke along a→b, half-width w. */
+const stroke = (x: number, y: number, ax: number, ay: number, bx: number, by: number, w: number) =>
+  fill(seg(x, y, ax, ay, bx, by) - w, 0.015);
 
-  /** Branding: a lit bulb — the idea, then the mark. */
-  brand: `
-       .        |        .
-        .       |       .
-         \\      |      /
-          \\     |     /
-       _.--"""""""""--._
-  -- .'                 '. --
-    /                     \\
-   |      \\         /      |
----|       \\       /       |---
-   |        \\     /        |
-    \\        \\/\\/         /
-     '.       ||         .'
-       '-.____||_____.-'
-          |________|
-          |________|
-           '.____.'
-              --`,
+const ICONS: Record<IconName, Figure> = {
+  /** Web design & development: a browser, a page with real weight in it. */
+  web: (x, y) => {
+    const win = box(x, y, 0.5, 0.52, 0.46, 0.42);
+    let v = edge(win, 0.012);
+    const bar = box(x, y, 0.5, 0.18, 0.46, 0.08);                                   // chrome
+    v = max(v, bar < 0 ? 0.3 : 0, edge(bar, 0.01));
+    for (const dx of [0.1, 0.19, 0.28]) v = max(v, fill(Math.hypot(x - dx, y - 0.18) - 0.02, 0.012));
+    v = max(v, fill(box(x, y, 0.63, 0.18, 0.26, 0.03), 0.015) * 0.85);              // address
+    v = max(v, fill(box(x, y, 0.33, 0.38, 0.22, 0.035), 0.014));                    // headline
+    v = max(v, fill(box(x, y, 0.27, 0.47, 0.16, 0.035), 0.014));
+    v = max(v, fill(Math.hypot(x - 0.47, y - 0.48) - 0.022, 0.012));                // full stop
+    const img = box(x, y, 0.77, 0.49, 0.15, 0.15);                                  // image, hatched
+    v = max(v, edge(img, 0.009), img < 0 ? ((Math.floor((x * 2 + y) * 40) % 2) ? 0.5 : 0.15) : 0);
+    for (const ly of [0.6, 0.65, 0.7]) v = max(v, edge(seg(x, y, 0.1, ly, 0.52, ly), 0.007) * 0.6);
+    v = max(v, fill(box(x, y, 0.2, 0.82, 0.1, 0.04), 0.012));                       // buttons
+    v = max(v, edge(box(x, y, 0.47, 0.82, 0.1, 0.04), 0.008) * 0.9);
+    return v;
+  },
 
-  /** SEO: a magnifier over the text, the right line found and enlarged. */
-  seo: `
- ==============================
- ===================
-           .--------.
- ======   /          \\   =====
-         |    @@@@    |
- ====    |    @@@@@@  |    ===
-         |            |
- ======   \\          /   =====
-           '--------'\\
-                \\     \\
- ==========      \\     \\
-                  \\_____\\
- ===================
- ==============================`,
+  /** Branding: a lit bulb, glowing from the centre out. */
+  brand: (x, y) => {
+    const r = Math.hypot(x - 0.5, y - 0.38);
+    let v = edge(r - 0.26, 0.014);                                                  // glass
+    v = max(v, r < 0.26 ? 0.18 + 0.5 * clamp(1 - r / 0.26) : 0);                    // glow
+    v = max(v, stroke(x, y, 0.41, 0.5, 0.455, 0.38, 0.018));                        // filament
+    v = max(v, stroke(x, y, 0.455, 0.38, 0.5, 0.5, 0.018));
+    v = max(v, stroke(x, y, 0.5, 0.5, 0.545, 0.38, 0.018));
+    v = max(v, stroke(x, y, 0.545, 0.38, 0.59, 0.5, 0.018));
+    const base = box(x, y, 0.5, 0.77, 0.11, 0.07);                                  // screw base
+    v = max(v, edge(base, 0.012), base < 0 ? 0.35 : 0);
+    for (const ly of [0.73, 0.77, 0.81]) v = max(v, edge(seg(x, y, 0.39, ly, 0.61, ly), 0.008) * 0.9);
+    v = max(v, fill(box(x, y, 0.5, 0.875, 0.055, 0.022), 0.012));                   // tip
+    for (let k = 0; k < 7; k++) {                                                   // rays
+      const a = Math.PI + (k / 6) * Math.PI;
+      v = max(v, stroke(x, y, 0.5 + Math.cos(a) * 0.33, 0.38 + Math.sin(a) * 0.33,
+        0.5 + Math.cos(a) * 0.45, 0.38 + Math.sin(a) * 0.45, 0.012) * 0.9);
+    }
+    return v;
+  },
 
-  /** Email & automation: an envelope, on its way. */
-  email: `
-     .__________________________.
-     |\\                        /|
-     | \\                      / |
-  -- |  \\                    /  |
-     |   \\                  /   |
----- |    \\.______________./    |
-     |    /                \\    |
-  -- |   /                  \\   |
-     |  /                    \\  |
-     | /                      \\ |
-     |/________________________\\|`,
+  /** SEO: a magnifier over the page, the right line found and enlarged. */
+  seo: (x, y) => {
+    let v = 0;
+    [0.12, 0.2, 0.28, 0.36, 0.44, 0.52, 0.6, 0.68, 0.76, 0.88].forEach((ly, k) => { // the text
+      v = max(v, edge(seg(x, y, 0.06, ly, k % 3 === 2 ? 0.76 : 0.9, ly), 0.008) * 0.4);
+    });
+    const r = Math.hypot(x - 0.46, y - 0.42);
+    if (r < 0.24) v = 0.12;                                                         // lens clears the page
+    if (r < 0.22) {
+      v = max(v, fill(box(x, y, 0.46, 0.37, 0.14, 0.032), 0.014));                  // the found line, bold
+      v = max(v, fill(box(x, y, 0.43, 0.47, 0.1, 0.03), 0.014) * 0.7);
+    }
+    v = max(v, edge(r - 0.24, 0.016), edge(r - 0.275, 0.012) * 0.85);               // double rim
+    v = max(v, r < 0.22 && r > 0.15 && x < 0.42 && y < 0.36 ? 0.55 : 0);            // glare
+    v = max(v, stroke(x, y, 0.64, 0.6, 0.85, 0.84, 0.035));                         // handle
+    return v;
+  },
 
-  /** Website care: a shield with a check — looked after, handled. */
-  hosting: `
-   ._______________________.
-   |                       |
-   |                 @@@   |
-   |                @@@    |
-   '.     @@       @@@    .'
-     \\     @@     @@@     /
-      \\     @@   @@@     /
-       \\     @@ @@@     /
-        '.    @@@@    .'
-          \\    @@    /
-           '.       .'
-             \\     /
-              '.  .'
-                \\/`,
+  /** Email & automation: the envelope, shaded, on its way. */
+  email: (x, y) => {
+    const env = box(x, y, 0.54, 0.5, 0.34, 0.26);
+    let v = edge(env, 0.012);
+    v = max(v, env < 0 ? 0.16 + 0.22 * clamp((y - 0.24) / 0.52) : 0);               // body shading
+    v = max(v, stroke(x, y, 0.2, 0.26, 0.54, 0.58, 0.016));                         // the flap
+    v = max(v, stroke(x, y, 0.88, 0.26, 0.54, 0.58, 0.016));
+    v = max(v, edge(seg(x, y, 0.2, 0.76, 0.46, 0.6), 0.009) * 0.7);                 // bottom folds
+    v = max(v, edge(seg(x, y, 0.88, 0.76, 0.62, 0.6), 0.009) * 0.7);
+    v = max(v, edge(seg(x, y, 0.0, 0.38, 0.13, 0.38), 0.012) * 0.85);               // motion
+    v = max(v, edge(seg(x, y, -0.06, 0.5, 0.1, 0.5), 0.012) * 0.85);
+    v = max(v, edge(seg(x, y, 0.0, 0.62, 0.13, 0.62), 0.012) * 0.85);
+    return v;
+  },
+
+  /** Website care: a shield — straight-sided to the waist, then the point,
+      so it reads as a badge and never as a triangle. The field clears
+      around the check, so the check sits proud of the texture. */
+  hosting: (x, y) => {
+    // upper: a straight-sided box; lower: two wide arcs meeting at the point
+    const upper = box(x, y, 0.5, 0.26, 0.3, 0.16);
+    const lower = Math.max(
+      Math.hypot(x - 0.02, y - 0.24) - 0.8,
+      Math.hypot(x - 0.98, y - 0.24) - 0.8,
+      0.42 - y,
+    );
+    const sh = Math.min(upper, lower);
+    // the check, as a distance, so the field can keep clear of it
+    const ck = Math.min(
+      seg(x, y, 0.36, 0.42, 0.47, 0.56) - 0.042,
+      seg(x, y, 0.47, 0.56, 0.67, 0.26) - 0.042,
+    );
+    let v = edge(sh, 0.014);                                                        // outer border
+    v = max(v, edge(sh + 0.05, 0.01) * 0.8);                                        // inner line
+    v = max(v, sh < -0.055 && ck > 0.07 ? 0.3 + 0.2 * clamp(1 - (y - 0.1) / 0.6) : 0); // the field
+    v = max(v, fill(ck, 0.016));                                                    // the check
+    return v;
+  },
 };
 
-/* Every icon is centred on ONE canvas, so every panel on the site is the
-   same size whatever the art inside it. */
-export const ICON_COLS = 36;
-export const ICON_ROWS = 17;
+/* One canvas for all five, so the washes line up page to page. */
+export const ICON_COLS = 64;
+export const ICON_ROWS = 30;
 
 export interface RenderOptions {
   /** How strongly the ordered dither textures the shading, 0..1. */
   dither?: number;
 }
 
-/** Draws a figure into a block of text, `cols` characters by `rows` lines. */
-export function renderFigure(name: FigureName, cols: number, rows: number, opts: RenderOptions = {}): string {
-  const f: Figure = FIGURES[name];
-  const dither = opts.dither ?? 0.12;
+/** The quantizer: a brightness field to rows of ramp characters. */
+function paint(f: Figure, cols: number, rows: number, dither: number): string[] {
   const aspect = (cols * CELL) / rows;
   const steps = RAMP.length - 1;
   const lines: string[] = [];
@@ -361,23 +375,21 @@ export function renderFigure(name: FigureName, cols: number, rows: number, opts:
     }
     lines.push(line.replace(/\s+$/, ''));
   }
-  return lines.join('\n');
+  return lines;
 }
 
-/** An icon, centred on the shared ICON_COLS x ICON_ROWS canvas. */
+/** Draws a figure into a block of text, `cols` characters by `rows` lines. */
+export function renderFigure(name: FigureName, cols: number, rows: number, opts: RenderOptions = {}): string {
+  return paint(FIGURES[name], cols, rows, opts.dither ?? 0.12).join('\n');
+}
+
+/** An icon, painted like a figure, on the shared ICON_COLS x ICON_ROWS grid. */
 export function renderIcon(name: IconName): string {
-  const lines = ICON_ART[name].replace(/^\n/, '').split('\n').map((l) => l.replace(/\s+$/, ''));
-  const w = Math.max(...lines.map((l) => l.length));
-  const padX = Math.max(0, Math.floor((ICON_COLS - w) / 2));
-  const padY = Math.max(0, Math.floor((ICON_ROWS - lines.length) / 2));
-  const out: string[] = [];
-  for (let j = 0; j < ICON_ROWS; j++) {
-    const src = lines[j - padY] ?? '';
-    // Empty rows keep one space: a trailing run of truly empty lines collapses
-    // in <pre>, and the panels would then differ in height icon by icon.
-    out.push((' '.repeat(padX) + src).replace(/\s+$/, '') || ' ');
-  }
-  return out.join('\n');
+  return paint(ICONS[name], ICON_COLS, ICON_ROWS, 0.4)
+    // Empty rows keep one space: a trailing run of truly empty lines
+    // collapses in <pre>, and the icons would differ in height.
+    .map((l) => l || ' ')
+    .join('\n');
 }
 
 /** A dotted divider row, long enough for the widest layout; CSS clips it. */

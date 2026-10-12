@@ -187,12 +187,12 @@ const faqs = [
           <section class:list={['svc', 'row', i === 1 && 'invert']} id={s.id} data-decode-zone>
             <div class="svc__index row__title">
               <span class="svc__n">{s.n}</span>
-              {/* The service's icon, on the gradient panel, filling the column
-                  that used to run empty beside the copy (David, 2026-10-12).
+              {/* The service's icon on its soft wash, filling the column that
+                  used to run empty beside the copy (David, 2026-10-12).
                   Visible at rest; the decode plays on hover (site.js). It
                   lives inside the sticky block, so it travels with the
                   number. Decorative: the heading opposite says everything. */}
-              <div class="icon-panel svc__art" aria-hidden="true">
+              <div class="icon-wash svc__art" aria-hidden="true">
                 <Ascii icon={s.id} variant="icon" />
               </div>
             </div>
@@ -517,8 +517,8 @@ const faqs = [
      never outgrows the column it fills. Below 60rem the column collapses
      into the flow, so the panel goes the way the home lanes' art does. */
   .svc__art {
-    margin-block-start: var(--s4);
-    --ascii-cell: clamp(4.5px, 0.52vw, 7px);
+    margin-block-start: var(--s5);
+    --ascii-cell: clamp(3.8px, 0.42vw, 6px);
   }
 
   @media (max-width: 60rem) {
