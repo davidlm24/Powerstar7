@@ -1,13 +1,13 @@
 ---
-/* The home hero's moving ASCII field (src/lib/flow.ts). The first frame is
-   drawn here at build time, so the page shows it with no script at all; the
-   page's own script keeps it moving (Home.astro).
+/* The home hero's moving piece (src/lib/flow.ts): an editor typing a page,
+   a preview building beside it, a terminal running the build. The finished
+   frame is drawn here at build time, so the page shows it with no script at
+   all; the page's own script keeps it moving (Home.astro).
 
    Decoration, by contract: aria-hidden, and data-nosnippet so search engines
-   never quote a row of characters as the page's summary. The text is plain
-   ASCII, so the page's own monospace font draws it and nothing is
-   downloaded. The illustrations are pictures, not text: see Illo.astro. */
-import { renderFlow } from '../lib/flow';
+   never quote a row of characters as the page's summary. The text is drawn
+   by the page's own monospace font and nothing is downloaded. */
+import { renderFlow, FLOW_COLS, FLOW_ROWS } from '../lib/flow';
 
 interface Props {
   variant: 'flow';
@@ -17,8 +17,8 @@ interface Props {
 }
 
 const { variant, class: className } = Astro.props;
-const cols = Astro.props.cols ?? 130;
-const rows = Astro.props.rows ?? 66;
+const cols = Astro.props.cols ?? FLOW_COLS;
+const rows = Astro.props.rows ?? FLOW_ROWS;
 const text = renderFlow(cols, rows, 0);
 ---
 

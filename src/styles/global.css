@@ -352,114 +352,109 @@ a:hover { text-decoration-thickness: 2px; }
   color: var(--accent);
 }
 
-/* The home hero's moving field (flow.ts): abstract, and the largest piece of
-   the kit, made of scrolling code shown only along drifting contour bands. It covers the right of the hero from top to bottom, fading out
-   towards the headline (left) and towards the buttons (bottom), so the copy
-   and the buttons stay on clear paper. */
+/* The home hero's moving piece (flow.ts): an editor typing a page, the
+   preview building beside it, a terminal running the build. It owns the
+   right side of the hero (David: "takes more of the right side"), fading
+   out only towards the headline and the buttons, so the copy stays on
+   clear paper. */
 .ascii--flow {
   position: absolute;
   z-index: -1;
-  inset-block-start: 0;
+  inset-block-start: var(--s5);
   inset-inline-end: var(--rail-x);
-  --ascii-cell: clamp(5px, 0.62vw, 8.5px);
+  --ascii-cell: clamp(4px, 0.5vw, 7px);
+  /* 0.4 is the ceiling the old field settled at behind the display
+     headline: the Portuguese hero line runs deep into the art, and the
+     masks cannot save it, so the base opacity is the guard. */
   opacity: 0.4;
   -webkit-mask-image:
-    linear-gradient(to right, transparent 5%, #000 65%),
-    linear-gradient(to bottom, #000 38%, transparent 70%);
+    linear-gradient(to right, transparent 8%, #000 56%),
+    linear-gradient(to bottom, #000 55%, transparent 94%);
   -webkit-mask-composite: source-in;
   mask-image:
-    linear-gradient(to right, transparent 5%, #000 65%),
-    linear-gradient(to bottom, #000 38%, transparent 70%);
+    linear-gradient(to right, transparent 8%, #000 56%),
+    linear-gradient(to bottom, #000 55%, transparent 94%);
   mask-composite: intersect;
 }
 
-/* Between phone and wide desktop the headline reaches further into the
-   field, so it steps further back. */
+/* Between phone and wide desktop the headline reaches further into it, so
+   it steps further back. */
 @media (min-width: 48rem) and (max-width: 74.99rem) {
   .ascii--flow {
-    opacity: 0.28;
+    opacity: 0.3;
   }
 }
 
 @media (max-width: 47.99rem) {
   .ascii--flow {
-    --ascii-cell: 4px;
-    opacity: 0.2;
+    --ascii-cell: 2.6px;
+    opacity: 0.25;
   }
 }
 
 /* --- The illustrations ---------------------------------------------------
-   Small 3D models drawn softly shaded and dithered to one bit (David,
-   2026-10-12; scripts/illustrations.mjs makes the files, Illo.astro places
-   them). Each file is a mask, so the colour is the page's: the functional
-   blue on paper, and on a dark band the white render (David: "on dark
-   background keep it white"). image-set() hands a 2x screen the file drawn
-   for it, so a pixel of the dither is a pixel of the screen. */
+   Half-block text (scripts/illustrations.mjs makes it, Illo.astro places
+   it): small 3D scenes drawn almost flat in space ░ ▒ ▓ █ ▀ ▄. Text, so the
+   page colours it and the kit's own animations play on it. Block glyphs are
+   at least a line tall in every common monospace, so at line-height 1 the
+   rows can only overlap — invisible in one colour — never gap. */
 
 .illo {
   pointer-events: none;
   user-select: none;
-  --illo-ink: var(--blue-fn);
-  --illo-scan: rgb(245 242 235 / 0.72);
 }
 
-.illo__img {
-  display: block;
-  width: 100%;
-  aspect-ratio: var(--ar);
-  background-color: var(--illo-ink);
-  -webkit-mask: -webkit-image-set(var(--l1) 1x, var(--l2) 2x) center / 100% 100% no-repeat;
-  mask: image-set(var(--l1) 1x, var(--l2) 2x) center / 100% 100% no-repeat;
+.illo pre {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--illo-cell, 4px);
+  line-height: 1;
+  letter-spacing: 0;
+  font-variant-ligatures: none;
+  white-space: pre;
 }
 
-/* A dark band: the render drawn for a dark ground, in white. Falls back to
-   the paper render if a picture has no dark version. */
-.invert .illo {
-  --illo-ink: var(--on-ink);
-  --illo-scan: rgb(27 26 22 / 0.55);
+/* Icons: barely there at rest, and they DECODE into the full blue on hover
+   or keyboard focus of their zone — site.js flickers the characters while
+   these colours cross over (David: "while idle it's less visible, on hover
+   it decodes to be more visible in the blue"). */
+.illo--icon pre {
+  color: var(--fg-muted);
+  opacity: 0.45;
+  transition:
+    color 300ms var(--ease),
+    opacity 300ms var(--ease);
 }
 
-.invert .illo__img {
-  -webkit-mask-image: -webkit-image-set(var(--d1, var(--l1)) 1x, var(--d2, var(--l2)) 2x);
-  mask-image: image-set(var(--d1, var(--l1)) 1x, var(--d2, var(--l2)) 2x);
+[data-decode-zone]:hover .illo--icon pre,
+[data-decode-zone]:focus-visible .illo--icon pre {
+  color: var(--accent-fn);
+  opacity: 1;
 }
 
-/* The loop, like the hero's field: every picture is always gently alive.
-   A soft scan band sweeps down through it, clipped to its own shape by its
-   mask (a pale band on paper, a dim one on a dark band), then rests; the
-   icons also float a few pixels. Each picture starts at its own moment
-   (--sd, from Illo.astro), so a row of them never moves in step. Only for
-   anyone who has not asked for less motion. */
-.illo__img {
-  position: relative;
-  overflow: hidden;
+/* On a dark band the icon stays white (David), dim at rest, full on hover —
+   the zone and the band are the same element on the Services rows, hence
+   both selector shapes. */
+.invert .illo--icon pre {
+  color: var(--on-ink);
+  opacity: 0.3;
 }
 
-.illo__img::after {
-  content: '';
-  position: absolute;
-  inset-inline: 0;
-  inset-block-start: -40%;
-  block-size: 40%;
-  background: linear-gradient(to bottom, transparent, var(--illo-scan), transparent);
-  transform: translateY(0);
+.invert[data-decode-zone]:hover .illo--icon pre,
+.invert[data-decode-zone]:focus-visible .illo--icon pre,
+.invert [data-decode-zone]:hover .illo--icon pre,
+.invert [data-decode-zone]:focus-visible .illo--icon pre {
+  color: var(--on-ink);
+  opacity: 1;
 }
 
+/* The loop: icons float a few pixels, each starting at its own moment
+   (--sd, from Illo.astro), so a row never moves in step. The figures get
+   their life from the shimmer (site.js) instead. */
 @media (prefers-reduced-motion: no-preference) {
-  .illo__img::after {
-    animation: illo-scan 6.5s linear var(--sd, 0s) infinite;
-  }
-
-  .illo--icon .illo__img {
+  .illo--icon pre {
     animation: illo-float 7s ease-in-out var(--sd, 0s) infinite;
   }
-}
-
-/* 40% tall, starting 40% above: 350% of its own height carries it clear
-   below. The last stretch is the rest between sweeps. */
-@keyframes illo-scan {
-  0% { transform: translateY(0); }
-  55%, 100% { transform: translateY(350%); }
 }
 
 @keyframes illo-float {
@@ -469,15 +464,14 @@ a:hover { text-decoration-thickness: 2px; }
 
 /* The page figure. Right of the heading, behind it, fading to nothing towards
    the copy (the linear mask) and at its own edges (the radial one), so no
-   letter ever sits on a dense patch of the drawing. It grows with the
-   viewport up to the width its file was drawn at. */
+   letter ever sits on a dense patch of the drawing. */
 .illo--field {
   position: absolute;
   z-index: -1;
   inset-block-start: 50%;
   inset-inline-end: calc(var(--rail-x) + var(--s3));
   transform: translateY(-50%);
-  width: clamp(253px, 36.5vw, 456px);
+  --illo-cell: clamp(4px, 0.56vw, 6.9px);
   opacity: 0.55;
   -webkit-mask-image:
     radial-gradient(closest-side, #000 50%, transparent 100%),
@@ -487,6 +481,11 @@ a:hover { text-decoration-thickness: 2px; }
     radial-gradient(closest-side, #000 50%, transparent 100%),
     linear-gradient(to right, transparent, #000 45%);
   mask-composite: intersect;
+}
+
+.illo--field pre,
+.illo--aside pre {
+  color: var(--accent);
 }
 
 /* On a tablet the intro runs wide under the figure, so it steps back. */
@@ -503,7 +502,7 @@ a:hover { text-decoration-thickness: 2px; }
     inset-block-start: var(--s3);
     inset-inline-end: 0;
     transform: none;
-    width: 228px;
+    --illo-cell: 2.6px;
     opacity: 0.2;
   }
 }
@@ -522,7 +521,7 @@ a:hover { text-decoration-thickness: 2px; }
     z-index: -1;
     inset-block-start: var(--s6);
     inset-inline-end: calc(var(--rail-x) + var(--s4));
-    width: min(17.9vw, 244px);
+    --illo-cell: clamp(4px, 0.44vw, 6.3px);
     opacity: 0.5;
     -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent 100%);
     mask-image: radial-gradient(closest-side, #000 60%, transparent 100%);
@@ -590,10 +589,9 @@ a:hover { text-decoration-thickness: 2px; }
   transform: none;
 }
 
-/* Above its own wash, and as wide as the space it is given. */
+/* Above its own wash. */
 .icon-wash .illo {
   position: relative;
-  width: 100%;
 }
 
 /* A callout: "^ start here". Small text carrying meaning, so --accent-fn. */

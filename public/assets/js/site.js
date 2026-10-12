@@ -381,6 +381,48 @@
 
   var asciiCalm = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+  /* ---------- illustration shimmer --------------------------------------- */
+
+  /* The page figures (pre[data-shimmer], from Illo.astro) shimmer: a few
+     characters at a time step one shade up or down and back, like a screen
+     refreshing. Only figures on screen, only while the tab is visible, and
+     never for anyone who asked for less motion. The figure always returns
+     to the text it was built with. Edge glyphs (▀ ▄) are not on the ramp,
+     so they sit still and the drawing keeps its outline. */
+  var illoRamp = ' ░▒▓█';
+  var illoFigures = document.querySelectorAll('pre[data-shimmer]');
+  if (illoFigures.length && 'IntersectionObserver' in window) {
+    var illoOnScreen = [];
+    var illoBase = new Map();
+    var illoSeen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var at = illoOnScreen.indexOf(e.target);
+        if (e.isIntersecting && at < 0) illoOnScreen.push(e.target);
+        if (!e.isIntersecting && at >= 0) {
+          illoOnScreen.splice(at, 1);
+          e.target.textContent = illoBase.get(e.target);
+        }
+      });
+    });
+    illoFigures.forEach(function (pre) {
+      illoBase.set(pre, pre.textContent);
+      illoSeen.observe(pre);
+    });
+    setInterval(function () {
+      if (asciiCalm.matches || document.hidden) return;
+      illoOnScreen.forEach(function (pre) {
+        var chars = illoBase.get(pre).split('');
+        var n = Math.max(4, Math.floor(chars.length * 0.012));
+        for (var k = 0; k < n; k++) {
+          var p = Math.floor(Math.random() * chars.length);
+          var r = illoRamp.indexOf(chars[p]);
+          if (r > 0) chars[p] = illoRamp.charAt(Math.max(1, Math.min(illoRamp.length - 1, r + (Math.random() < 0.5 ? -1 : 1))));
+        }
+        pre.textContent = chars.join('');
+      });
+    }, 170);
+  }
+
   /* ---------- reveal on scroll ------------------------------------------- */
 
   /* The Services icons come in from the left as their row scrolls into
@@ -400,39 +442,56 @@
     revealEls.forEach(function (el) { revealIO.observe(el); });
   }
 
-  /* ---------- illustration resolve -------------------------------------- */
+  /* ---------- illustration decode ---------------------------------------- */
 
-  /* On hover or keyboard focus, an icon resolves from coarse to fine: it
-     shows the same picture at an eighth, then a quarter of its resolution
-     (the frames Illo.astro inlines), then itself again, over about a third
-     of a second. Leaving always restores it. Skipped for anyone who asked
-     for less motion. A zone is whatever hoverable block holds the icon: a
-     home lane, a Services row, the contact aside. */
+  /* On hover or keyboard focus, an icon decodes into place: every character
+     flickers through the shades and settles, sweeping left to right with a
+     little scatter, over about half a second — while the zone's CSS fades
+     it from faint grey to the full blue. It always ends on the text it was
+     built as. Skipped for anyone who asked for less motion. A zone is
+     whatever hoverable block holds the icon: a home lane, a Services row,
+     the contact aside. */
+  var decodeGlyphs = '░▒▓█▀▄';
   document.querySelectorAll('[data-decode-zone]').forEach(function (zone) {
-    var img = zone.querySelector('.illo__img[data-frames]');
-    if (!img) return;
-    var frames = JSON.parse(img.getAttribute('data-frames'));
-    var timers = [];
-    function show(url) {
-      var v = url ? 'url(' + url + ')' : '';
-      img.style.webkitMaskImage = v;
-      img.style.maskImage = v;
-    }
-    function settle() {
-      timers.forEach(clearTimeout);
-      timers = [];
-      show('');
-    }
-    function resolve() {
+    var pre = zone.querySelector('pre[data-decode]');
+    if (!pre) return;
+    var base = pre.textContent;
+    var width = Number(pre.getAttribute('data-cols')) || 100;
+    var frame = 0;
+    function decode() {
       if (asciiCalm.matches || document.hidden) return;
-      settle();
-      frames.forEach(function (url, n) {
-        timers.push(setTimeout(function () { show(url); }, n * 110));
-      });
-      timers.push(setTimeout(settle, frames.length * 110));
+      cancelAnimationFrame(frame);
+      var duration = 520;
+      var settle = [];
+      var col = 0;
+      for (var k = 0; k < base.length; k++) {
+        var ch = base.charAt(k);
+        if (ch === '\n') { col = 0; settle.push(-1); continue; }
+        settle.push(ch === ' ' ? -1 : ((col / width) * 0.6 + Math.random() * 0.4) * duration);
+        col++;
+      }
+      var start = performance.now();
+      (function step(now) {
+        var elapsed = now - start;
+        var out = '';
+        for (var k = 0; k < base.length; k++) {
+          out += settle[k] < 0 || elapsed >= settle[k]
+            ? base.charAt(k)
+            : decodeGlyphs.charAt(Math.floor(Math.random() * decodeGlyphs.length));
+        }
+        pre.textContent = out;
+        if (elapsed < duration) frame = requestAnimationFrame(step);
+        else pre.textContent = base;
+      })(start);
     }
-    zone.addEventListener('mouseenter', resolve);
-    zone.addEventListener('focus', resolve);
+    /* Leaving always settles it, so a decode cut short can never leave the
+       icon scrambled. */
+    function settle() {
+      cancelAnimationFrame(frame);
+      pre.textContent = base;
+    }
+    zone.addEventListener('mouseenter', decode);
+    zone.addEventListener('focus', decode);
     zone.addEventListener('mouseleave', settle);
     zone.addEventListener('blur', settle);
   });

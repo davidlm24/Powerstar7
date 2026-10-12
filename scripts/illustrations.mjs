@@ -1,46 +1,44 @@
-/* Renders every illustration on the site to 1-bit PNGs.
+/* Renders every illustration on the site as HALF-BLOCK text.
 
      npm run illo
 
    Run it after changing a scene in scripts/illo/, and commit what it writes:
-   the build only reads the files, so it stays fast.
+   the build only reads the file, so it stays fast.
 
    Each scene (scripts/illo/scenes-*.mjs) is a small 3D model: rounded,
-   bevelled parts lit from the top left, with thick contours and soft cast
-   shadows (field.mjs). It is drawn soft (David, 2026-10-12: cel-shaded,
-   then "less 3D"): two gentle tones per part, no highlight, no cast
-   shadow. Then it is dithered to one bit with an 8x8 Bayer matrix.
+   bevelled parts lit from the top left, with thick contours (field.mjs). It
+   is shaded almost flat (David, 2026-10-12: cel-shaded, then less 3D twice):
+   a whisper of a shadow side, no highlight, no cast shadow. Then it becomes
+   text, two vertical samples per character — the half-blocks and shades
+   (space ░ ▒ ▓ █ ▀ ▄) David picked over the 1-bit bitmaps — so the hover
+   decode and the shimmer work on it like on any text.
 
-   Every picture is written at 1x and 2x, each dithered at its own size. A 2x
-   ordered dither shown at 1x with nearest-neighbour sampling keeps only a
-   quarter of its thresholds and goes solid, so the 1x file is not a shrunk
-   2x one. The page picks between them with image-set().
+   Icons are rendered a step zoomed out, so no drawing ever touches its
+   frame (the lamp's rays were being cut). Icons also get a dark-ground
+   version, drawn light-on-dark, for the inverted bands.
 
-   The files are masks: index 0 is transparent and index 1 opaque, and the
-   colour comes from the page (Illo.astro), blue on paper. Icons are also
-   drawn for a dark ground, where they show in white: the same model, with
-   light mapped to ink instead of shade.
-
-   Written:
-     public/assets/illo/<name>[-dark][@2x].png
-     src/data/illo.json  (sizes, and the coarse frames the hover resolves
-                          through, inlined because they are a few hundred
-                          bytes each) */
-import { mkdirSync, writeFileSync } from 'node:fs';
+   Written: src/data/illo.json — { name: { kind, cols, rows, light, dark? } }.
+   The strings are plain lines joined with \n; Illo.astro puts them in a
+   <pre>, so the characters ARE the picture and gzip eats the repetition. */
+import { writeFileSync } from 'node:fs';
+import { gzipSync } from 'node:zlib';
 import { ICONS } from './illo/scenes-icons.mjs';
 import { PAGES } from './illo/scenes-pages.mjs';
-import { computeField, inkFor, sampler, ditherBayer } from './illo/field.mjs';
-import { png1 } from './illo/png.mjs';
+import { computeField, inkFor, sampler } from './illo/field.mjs';
 
-/* Display sizes at 1x, matching where each kind sits:
-   - icon:  a home lane's 14rem art track (224px); the Services column and the
-            contact aside draw it at that size or smaller.
-   - field: the page-heading figure at its widest (the old 84x38 grid at 9px).
-   - aside: the second figure on Home and Services, at its widest. */
+/* A monospace cell is ~0.6 as wide as it is tall at line-height 1; block
+   glyphs are drawn at least a line tall in every common mono, so rows can
+   only overlap (invisible in one colour), never gap. */
+const ADV = 0.6;
+
+/* Character grids per kind, from each kind's display box:
+   - icon:  a home lane's 14rem art track (224x172 at 1x);
+   - field: the page-heading figure at its widest (456x344);
+   - aside: the second figure on Home and Services (244x226). */
 const KINDS = {
-  icon: { w: 224, h: 172, dark: true, frames: true },
-  field: { w: 456, h: 344 },
-  aside: { w: 244, h: 226 },
+  icon: { cols: 100, box: [224, 172], dark: true, zoom: 1.1 },
+  field: { cols: 110, box: [456, 344], zoom: 1.02 },
+  aside: { cols: 64, box: [244, 226], zoom: 1.02 },
 };
 const LIST = [
   ...['web', 'brand', 'seo', 'email', 'hosting'].map((name) => ({ name, kind: 'icon', scene: ICONS[name] })),
@@ -48,51 +46,47 @@ const LIST = [
   ...['fit', 'question'].map((name) => ({ name, kind: 'aside', scene: PAGES[name] })),
 ];
 
-const OUT = 'public/assets/illo';
-mkdirSync(OUT, { recursive: true });
-const uri = (buf) => 'data:image/png;base64,' + buf.toString('base64');
+const SHADES = ' ░▒▓█';
 
-/** One tone of one picture: the 2x and 1x files, and the hover frames. */
-function draw(field, w, h, tone, frames) {
-  const ink2 = inkFor(field, 'soft', tone);
-  const at2 = sampler(ink2, w * 2, h * 2);
-  const ink1 = new Float32Array(w * h);
-  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) ink1[j * w + i] = at2(i * 2, j * 2, i * 2 + 2, j * 2 + 2);
-  const out = {
-    x2: png1(ditherBayer(ink2, w * 2, h * 2), w * 2, h * 2),
-    x1: png1(ditherBayer(ink1, w, h), w, h),
-  };
-  if (frames) {
-    // the same picture at 1/8 and 1/4 resolution, blown back up in blocks
-    const at1 = sampler(ink1, w, h);
-    out.frames = [8, 4].map((k) => {
-      const sw = Math.ceil(w / k), sh = Math.ceil(h / k), small = new Float32Array(sw * sh);
-      for (let j = 0; j < sh; j++) for (let i = 0; i < sw; i++) small[j * sw + i] = at1(i * k, j * k, (i + 1) * k, (j + 1) * k);
-      const sb = ditherBayer(small, sw, sh), big = new Uint8Array(w * h);
-      for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) big[j * w + i] = sb[Math.floor(j / k) * sw + Math.floor(i / k)];
-      return uri(png1(big, w, h));
-    });
+/** One tone of one picture as half-block text: rows x cols characters, each
+    carrying two vertical samples; mixed cells fall back to a shade. */
+function draw(field, cols, rows, tone) {
+  const ink = inkFor(field, 'soft', tone);
+  const at = sampler(ink, field.W, field.H);
+  const sx = field.W / cols, sy = field.H / (rows * 2);
+  const lines = [];
+  for (let r = 0; r < rows; r++) {
+    let line = '';
+    for (let c = 0; c < cols; c++) {
+      const t = at(c * sx, r * 2 * sy, (c + 1) * sx, (r * 2 + 1) * sy);
+      const b = at(c * sx, (r * 2 + 1) * sy, (c + 1) * sx, (r * 2 + 2) * sy);
+      const lt = Math.round(t * 4), lb = Math.round(b * 4);
+      let ch;
+      if (Math.abs(lt - lb) <= 1) ch = SHADES[Math.round(((t + b) / 2) * 4)];
+      else ch = t > 0.5 ? (b > 0.5 ? '█' : '▀') : b > 0.5 ? '▄' : SHADES[Math.round(Math.max(t, b) * 2)];
+      line += ch;
+    }
+    // Empty rows keep one space: a trailing run of truly empty lines
+    // collapses in <pre>, and the pictures would differ in height.
+    lines.push(line.replace(/\s+$/, '') || ' ');
   }
-  return out;
+  return lines.join('\n');
 }
 
 const manifest = {};
 const t0 = Date.now();
-let bytes = 0;
 for (const { name, kind, scene } of LIST) {
-  const { w, h, dark, frames } = KINDS[kind];
-  const field = computeField(scene, w * 2, h * 2, w / h);
-  const entry = { kind, w, h };
-  for (const tone of dark ? ['light', 'dark'] : ['light']) {
-    const r = draw(field, w, h, tone, frames);
-    const base = `${OUT}/${name}${tone === 'dark' ? '-dark' : ''}`;
-    writeFileSync(`${base}.png`, r.x1);
-    writeFileSync(`${base}@2x.png`, r.x2);
-    bytes += r.x1.length + r.x2.length;
-    if (r.frames) (entry.frames ??= {})[tone] = r.frames;
-    console.log(`${name}${tone === 'dark' ? '-dark' : ''}: ${(r.x1.length / 1024).toFixed(1)} KB, @2x ${(r.x2.length / 1024).toFixed(1)} KB`);
-  }
+  const { cols, box, dark, zoom } = KINDS[kind];
+  const [W, H] = box;
+  const rows = Math.round((H * cols * ADV) / W);
+  // zoomed out a touch, so nothing is cut at the frame
+  const sc = (x, y) => scene(0.5 + (x - 0.5) * zoom, 0.5 + (y - 0.5) * zoom);
+  const field = computeField(sc, cols * 3, rows * 6, W / H);
+  const entry = { kind, cols, rows, light: draw(field, cols, rows, 'light') };
+  if (dark) entry.dark = draw(field, cols, rows, 'dark');
   manifest[name] = entry;
+  console.log(`${name}: ${cols}x${rows}${entry.dark ? ' +dark' : ''}`);
 }
-writeFileSync('src/data/illo.json', JSON.stringify(manifest, null, 2) + '\n');
-console.log(`${LIST.length} illustrations, ${(bytes / 1024).toFixed(0)} KB of PNG, in ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+const json = JSON.stringify(manifest, null, 1) + '\n';
+writeFileSync('src/data/illo.json', json);
+console.log(`${LIST.length} illustrations, ${(json.length / 1024).toFixed(0)} KB of text (${(gzipSync(json).length / 1024).toFixed(0)} KB gzipped), in ${((Date.now() - t0) / 1000).toFixed(0)}s`);

@@ -138,8 +138,8 @@ export function inkFor(f, style, mode = 'light') {
       if (f.spec[k] > 0.18) b = 1;                                // a hard highlight
       v = dark ? clamp(0.12 + 0.85 * b) : clamp(0.04 + 1.0 * Math.pow(1 - b, 1.1));
     } else if (style === 'soft') {
-      // the same split as cel, a third as deep; nothing thrown on the paper
-      const b = f.ndl[k] < 0.625 ? a * 0.76 : Math.min(1, a * 1.02);
+      // the same split as cel, barely there; nothing thrown on the paper
+      const b = f.ndl[k] < 0.625 ? a * 0.85 : Math.min(1, a * 1.02);
       v = dark ? clamp(0.12 + 0.85 * b) : clamp(0.04 + 1.0 * Math.pow(1 - b, 1.1));
     } else if (style === 'flat') {
       v = dark ? clamp(0.12 + 0.75 * a) : clamp(0.04 + 0.9 * Math.pow(1 - a, 0.9));

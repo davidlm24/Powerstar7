@@ -353,9 +353,14 @@ const position = [
     flex: none;
   }
 
-  /* The outlined button gets the paper behind it, so the hero's moving field
-     never shows through its label. On plain paper it looks exactly as
-     before. */
+  /* The outlined button and the prices callout get the paper behind them,
+     so the hero's moving piece never shows through their text. On plain
+     paper they look exactly as before. (The Portuguese one-line headline
+     lifts the whole foot into the art at wide widths.) */
+  .hero :global(.callout) {
+    background: var(--bg);
+  }
+
   .hero :global(.btn--quiet) {
     --btn-bg: var(--bg);
   }
@@ -442,10 +447,11 @@ const position = [
     color: var(--fg-muted);
   }
 
-  /* The icon fills the 14rem track, the width its file was drawn at. */
+  /* The 100-column art at 3.7px fills the 14rem track. */
   .lane__art {
     grid-area: art;
     align-self: center;
+    --illo-cell: 3.7px;
   }
 
   .lane__go {
@@ -497,6 +503,7 @@ const position = [
     }
 
     .lane__art {
+      --illo-cell: 2.4px;
       /* The gap to the lane name is only --s3 here; the full 2rem waiting
          offset would park the (invisible) icon box over the heading. */
       --reveal-wait: -0.75rem;

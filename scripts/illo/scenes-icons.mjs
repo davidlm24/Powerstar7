@@ -33,11 +33,11 @@ export function web(x, y) {
 /** Branding: a lightbulb — glass dome, filament, threaded base, rays. */
 export function brand(x, y) {
   const s = new St();
-  const cx = 0.5, cy = 0.38;
+  const cx = 0.5, cy = 0.4;
   // rays: tubes, sitting on the paper
   for (let k = 0; k < 7; k++) {
     const a = Math.PI + 0.12 + (k / 6) * (Math.PI - 0.24);
-    const r0 = 0.36, r1 = 0.47;
+    const r0 = 0.34, r1 = 0.43;   // cy - r1 clears the frame: nothing cut off
     s.tube(seg(x, y, cx + Math.cos(a) * r0, cy + Math.sin(a) * r0, cx + Math.cos(a) * r1, cy + Math.sin(a) * r1), 0.034, 0, 0.7);
   }
   s.dome(x, y, cx, cy, 0.3, 0, 0.26, 0.97);                               // the glass
@@ -46,11 +46,11 @@ export function brand(x, y) {
   s.slab(neck, 0, 0.16, 0.08, 0.95);
   // filament, printed on the glass, with its two supports
   const fil = Math.min(
-    seg(x, y, 0.4, 0.44, 0.45, 0.33), seg(x, y, 0.45, 0.33, 0.5, 0.44),
-    seg(x, y, 0.5, 0.44, 0.55, 0.33), seg(x, y, 0.55, 0.33, 0.6, 0.44),
+    seg(x, y, 0.4, 0.46, 0.45, 0.35), seg(x, y, 0.45, 0.35, 0.5, 0.46),
+    seg(x, y, 0.5, 0.46, 0.55, 0.35), seg(x, y, 0.55, 0.35, 0.6, 0.46),
   );
   s.ink(fil - 0.013, 0.3);
-  s.ink(Math.min(seg(x, y, 0.4, 0.44, 0.44, 0.62), seg(x, y, 0.6, 0.44, 0.56, 0.62)) - 0.008, 0.5);
+  s.ink(Math.min(seg(x, y, 0.4, 0.46, 0.44, 0.62), seg(x, y, 0.6, 0.46, 0.56, 0.62)) - 0.008, 0.5);
   // threaded base: a cylinder across x, with grooves
   const base = rbox(x, y, cx, 0.77, 0.12, 0.085, 0.03);
   if (base < 0) {

@@ -140,14 +140,6 @@ async function collect() {
     }
   }
 
-  /* The illustrations: CSS masks whose files come in through custom
-     properties on the element (Illo.astro). Counted at 1x on paper, which is
-     what a standard screen downloads; a 2x screen takes the @2x file
-     instead, and the white -dark render only loads inside a dark band. */
-  for (const [, style] of html.matchAll(/\sstyle\s*=\s*"([^"]*)"/gi)) {
-    for (const [, url] of style.matchAll(/--l1:\s*url\(\s*["']?([^"')\s]+)["']?\s*\)/gi)) assets.add(url.split('?')[0]);
-  }
-
   // Fonts referenced from the bundled CSS that the page actually loads.
   for (const href of [...assets]) {
     if (!href.endsWith('.css')) continue;
