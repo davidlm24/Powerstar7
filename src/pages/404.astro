@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import Ascii from '../components/Ascii.astro';
+import Illo from '../components/Illo.astro';
 import { useTranslations, route, ROUTES } from '../i18n/ui';
 
 /* One 404 serves both languages — the host cannot know which language a
@@ -17,7 +17,7 @@ const links = (['home', 'work', 'services', 'about', 'contact'] as const).map((k
 
 <Base lang="en" title={t('nf.title')}>
   <section class="nf rails">
-    <Ascii figure="nf" variant="field" />
+    <Illo name="nf" variant="field" />
     <div class="container">
       <p class="label">404</p>
       <h1 class="nf__h1">{t('nf.h1')}</h1>

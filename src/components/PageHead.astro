@@ -1,14 +1,13 @@
 ---
-import Ascii from './Ascii.astro';
+import Illo, { type IlloName } from './Illo.astro';
 import AsciiDivider from './AsciiDivider.astro';
-import type { FigureName } from '../lib/ascii';
 
 interface Props {
   label: string;
   title: string;
   lead?: string;
-  /** The page's ASCII figure, drawn from what the page is about. */
-  figure?: FigureName;
+  /** The page's illustration, drawn from what the page is about. */
+  figure?: IlloName;
   /** A blinking cursor after the lead, for the page that asks you to type. */
   cursor?: boolean;
 }
@@ -22,7 +21,7 @@ const { label, title, lead, figure, cursor } = Astro.props;
     below the home hero (96px against 140px), so the home page stays the
     loudest thing on the site. */}
 <section class="page-head rails">
-  {figure && <Ascii figure={figure} variant="field" />}
+  {figure && <Illo name={figure} variant="field" />}
   <div class="container">
     <p class="label">{label}</p>
     <h1 class="page-head__h1">{title}</h1>

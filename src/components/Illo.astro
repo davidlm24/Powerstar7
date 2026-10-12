@@ -1,0 +1,40 @@
+---
+/* One illustration: a 1-bit cel-shaded picture (scripts/illustrations.mjs),
+   drawn as a CSS mask so its colour comes from the page. Blue on paper; in a
+   dark band (.invert) it switches to the dark-ground render, in white.
+
+   variant:
+   - icon:  a service icon. Sits in its lane or column; drifts in on reveal
+            when the parent asks (data-reveal), and resolves from coarse to
+            fine on hover (site.js, through the inlined frames).
+   - field: the figure in a page heading, behind the text, fading towards it.
+   - aside: the smaller second figure in a later section, wide screens only.
+
+   Decoration by contract: aria-hidden, and data-nosnippet. */
+import manifest from '../data/illo.json';
+
+export type IlloName = keyof typeof manifest;
+
+interface Props {
+  name: IlloName;
+  variant: 'icon' | 'field' | 'aside';
+  /** Inside a dark band: hover frames for the white render. */
+  onDark?: boolean;
+  class?: string;
+}
+
+const { name, variant, onDark, class: className } = Astro.props;
+const entry = manifest[name] as { w: number; h: number; frames?: Record<string, string[]> };
+const file = (tone: string, scale: string) => `url(/assets/illo/${name}${tone}${scale}.png)`;
+const style = [
+  `--ar:${entry.w}/${entry.h}`,
+  `--l1:${file('', '')}`,
+  `--l2:${file('', '@2x')}`,
+  ...(onDark ? [`--d1:${file('-dark', '')}`, `--d2:${file('-dark', '@2x')}`] : []),
+].join(';');
+const frames = entry.frames?.[onDark ? 'dark' : 'light'];
+---
+
+<div class:list={['illo', `illo--${variant}`, className]} aria-hidden="true" data-nosnippet>
+  <span class="illo__img" style={style} data-frames={frames ? JSON.stringify(frames) : undefined}></span>
+</div>

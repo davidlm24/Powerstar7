@@ -379,47 +379,7 @@
     );
   }
 
-  /* ---------- ASCII shimmer ----------------------------------------------- */
-
-  /* The page figures (pre[data-shimmer], from Ascii.astro) shimmer: a few
-     characters at a time step one notch up or down the brightness ramp and
-     back, like a screen refreshing. Only figures on screen, only while the tab
-     is visible, and never for anyone who asked for less motion. The figure
-     always returns to the text it was built with. */
-  var asciiRamp = ' .:-=+*#%@';
-  var asciiFigures = document.querySelectorAll('pre[data-shimmer]');
   var asciiCalm = window.matchMedia('(prefers-reduced-motion: reduce)');
-  if (asciiFigures.length && 'IntersectionObserver' in window) {
-    var asciiOnScreen = [];
-    var asciiBase = new Map();
-    var asciiSeen = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        var at = asciiOnScreen.indexOf(e.target);
-        if (e.isIntersecting && at < 0) asciiOnScreen.push(e.target);
-        if (!e.isIntersecting && at >= 0) {
-          asciiOnScreen.splice(at, 1);
-          e.target.textContent = asciiBase.get(e.target);
-        }
-      });
-    });
-    asciiFigures.forEach(function (pre) {
-      asciiBase.set(pre, pre.textContent);
-      asciiSeen.observe(pre);
-    });
-    setInterval(function () {
-      if (asciiCalm.matches || document.hidden) return;
-      asciiOnScreen.forEach(function (pre) {
-        var chars = asciiBase.get(pre).split('');
-        var n = Math.max(4, Math.floor(chars.length * 0.015));
-        for (var k = 0; k < n; k++) {
-          var p = Math.floor(Math.random() * chars.length);
-          var r = asciiRamp.indexOf(chars[p]);
-          if (r > 0) chars[p] = asciiRamp.charAt(Math.max(1, Math.min(asciiRamp.length - 1, r + (Math.random() < 0.5 ? -1 : 1))));
-        }
-        pre.textContent = chars.join('');
-      });
-    }, 160);
-  }
 
   /* ---------- reveal on scroll ------------------------------------------- */
 
@@ -440,55 +400,39 @@
     revealEls.forEach(function (el) { revealIO.observe(el); });
   }
 
-  /* ---------- ASCII icon decode ------------------------------------------ */
+  /* ---------- illustration resolve -------------------------------------- */
 
-  /* On hover or keyboard focus, an icon decodes into place: every
-     character flickers through the ramp and settles, sweeping left to right
-     with a little scatter, over about half a second. It always ends on the
-     icon it was built as. Skipped for anyone who asked for less motion.
-     A zone is whatever hoverable block holds the icon: a home lane, a
-     Services row, the contact aside. */
-  var decodeGlyphs = '.:-=+*#%@';
+  /* On hover or keyboard focus, an icon resolves from coarse to fine: it
+     shows the same picture at an eighth, then a quarter of its resolution
+     (the frames Illo.astro inlines), then itself again, over about a third
+     of a second. Leaving always restores it. Skipped for anyone who asked
+     for less motion. A zone is whatever hoverable block holds the icon: a
+     home lane, a Services row, the contact aside. */
   document.querySelectorAll('[data-decode-zone]').forEach(function (zone) {
-    var pre = zone.querySelector('pre[data-decode]');
-    if (!pre) return;
-    var base = pre.textContent;
-    var width = Number(pre.getAttribute('data-cols')) || 36;
-    var frame = 0;
-    function decode() {
-      if (asciiCalm.matches || document.hidden) return;
-      cancelAnimationFrame(frame);
-      var duration = 520;
-      var settle = [];
-      var col = 0;
-      for (var k = 0; k < base.length; k++) {
-        var ch = base.charAt(k);
-        if (ch === '\n') { col = 0; settle.push(-1); continue; }
-        settle.push(ch === ' ' ? -1 : ((col / width) * 0.6 + Math.random() * 0.4) * duration);
-        col++;
-      }
-      var start = performance.now();
-      (function step(now) {
-        var elapsed = now - start;
-        var out = '';
-        for (var k = 0; k < base.length; k++) {
-          out += settle[k] < 0 || elapsed >= settle[k]
-            ? base.charAt(k)
-            : decodeGlyphs.charAt(Math.floor(Math.random() * decodeGlyphs.length));
-        }
-        pre.textContent = out;
-        if (elapsed < duration) frame = requestAnimationFrame(step);
-        else pre.textContent = base;
-      })(start);
+    var img = zone.querySelector('.illo__img[data-frames]');
+    if (!img) return;
+    var frames = JSON.parse(img.getAttribute('data-frames'));
+    var timers = [];
+    function show(url) {
+      var v = url ? 'url(' + url + ')' : '';
+      img.style.webkitMaskImage = v;
+      img.style.maskImage = v;
     }
-    /* Leaving always settles it, so a decode cut short (the tab hidden
-       mid-animation pauses the frames) can never leave the icon scrambled. */
     function settle() {
-      cancelAnimationFrame(frame);
-      pre.textContent = base;
+      timers.forEach(clearTimeout);
+      timers = [];
+      show('');
     }
-    zone.addEventListener('mouseenter', decode);
-    zone.addEventListener('focus', decode);
+    function resolve() {
+      if (asciiCalm.matches || document.hidden) return;
+      settle();
+      frames.forEach(function (url, n) {
+        timers.push(setTimeout(function () { show(url); }, n * 110));
+      });
+      timers.push(setTimeout(settle, frames.length * 110));
+    }
+    zone.addEventListener('mouseenter', resolve);
+    zone.addEventListener('focus', resolve);
     zone.addEventListener('mouseleave', settle);
     zone.addEventListener('blur', settle);
   });

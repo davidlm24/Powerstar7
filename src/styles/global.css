@@ -328,13 +328,13 @@ a:hover { text-decoration-thickness: 2px; }
 }
 
 /* --- The ASCII kit --------------------------------------------------------
-   Every page draws its own figure in plain keyboard characters, from what the
-   page is about (src/lib/ascii.ts), plus a small set of ASCII devices that
-   repeat: rule labels, callouts and dotted dividers. Chosen by David as
-   direction C ("both"). Nothing is downloaded: the system monospace draws it.
+   Plain keyboard characters where the site talks in type: the home hero's
+   moving field (flow.ts), rule labels, callouts and dotted dividers. Chosen
+   by David as direction C ("both"). The system monospace draws it, so
+   nothing is downloaded. The pictures are no longer ASCII: see "The
+   illustrations" below.
 
-   All of it is decoration, aria-hidden, and kept off the text: a figure fades
-   out towards the copy it sits behind. */
+   All of it is decoration, aria-hidden, and kept off the text. */
 
 .ascii {
   pointer-events: none;
@@ -350,47 +350,6 @@ a:hover { text-decoration-thickness: 2px; }
   font-variant-ligatures: none;
   white-space: pre;
   color: var(--accent);
-}
-
-/* The page figure. Right of the heading, behind it, fading to nothing towards
-   the copy (the linear mask) and at its own edges (the radial one), so no
-   letter ever sits on a dense patch of characters. The cell size follows the
-   viewport, so the figure keeps its proportions from 961px up. */
-.ascii--field {
-  position: absolute;
-  z-index: -1;
-  inset-block-start: 50%;
-  inset-inline-end: calc(var(--rail-x) + var(--s3));
-  transform: translateY(-50%);
-  --ascii-cell: clamp(5px, 0.72vw, 9px);
-  opacity: 0.55;
-  -webkit-mask-image:
-    radial-gradient(closest-side, #000 50%, transparent 100%),
-    linear-gradient(to right, transparent, #000 45%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    radial-gradient(closest-side, #000 50%, transparent 100%),
-    linear-gradient(to right, transparent, #000 45%);
-  mask-composite: intersect;
-}
-
-/* On a tablet the intro runs wide under the figure, so it steps back. */
-@media (min-width: 48rem) and (max-width: 60rem) {
-  .ascii--field {
-    opacity: 0.22;
-  }
-}
-
-/* On a phone there is no free side, so the figure climbs to the top corner
-   and fades much further back. */
-@media (max-width: 47.99rem) {
-  .ascii--field {
-    inset-block-start: var(--s3);
-    inset-inline-end: 0;
-    transform: none;
-    --ascii-cell: 4.5px;
-    opacity: 0.2;
-  }
 }
 
 /* The home hero's moving field (flow.ts): abstract, and the largest piece of
@@ -429,21 +388,96 @@ a:hover { text-decoration-thickness: 2px; }
   }
 }
 
+/* --- The illustrations ---------------------------------------------------
+   Small 3D models drawn cel-shaded and dithered to one bit (picked by David,
+   2026-10-12; scripts/illustrations.mjs makes the files, Illo.astro places
+   them). Each file is a mask, so the colour is the page's: the functional
+   blue on paper, and on a dark band the white render (David: "on dark
+   background keep it white"). image-set() hands a 2x screen the file drawn
+   for it, so a pixel of the dither is a pixel of the screen. */
+
+.illo {
+  pointer-events: none;
+  user-select: none;
+  --illo-ink: var(--blue-fn);
+}
+
+.illo__img {
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--ar);
+  background-color: var(--illo-ink);
+  -webkit-mask: -webkit-image-set(var(--l1) 1x, var(--l2) 2x) center / 100% 100% no-repeat;
+  mask: image-set(var(--l1) 1x, var(--l2) 2x) center / 100% 100% no-repeat;
+}
+
+/* A dark band: the render drawn for a dark ground, in white. Falls back to
+   the paper render if a picture has no dark version. */
+.invert .illo {
+  --illo-ink: var(--on-ink);
+}
+
+.invert .illo__img {
+  -webkit-mask-image: -webkit-image-set(var(--d1, var(--l1)) 1x, var(--d2, var(--l2)) 2x);
+  mask-image: image-set(var(--d1, var(--l1)) 1x, var(--d2, var(--l2)) 2x);
+}
+
+/* The page figure. Right of the heading, behind it, fading to nothing towards
+   the copy (the linear mask) and at its own edges (the radial one), so no
+   letter ever sits on a dense patch of the drawing. It grows with the
+   viewport up to the width its file was drawn at. */
+.illo--field {
+  position: absolute;
+  z-index: -1;
+  inset-block-start: 50%;
+  inset-inline-end: calc(var(--rail-x) + var(--s3));
+  transform: translateY(-50%);
+  width: clamp(253px, 36.5vw, 456px);
+  opacity: 0.55;
+  -webkit-mask-image:
+    radial-gradient(closest-side, #000 50%, transparent 100%),
+    linear-gradient(to right, transparent, #000 45%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(closest-side, #000 50%, transparent 100%),
+    linear-gradient(to right, transparent, #000 45%);
+  mask-composite: intersect;
+}
+
+/* On a tablet the intro runs wide under the figure, so it steps back. */
+@media (min-width: 48rem) and (max-width: 60rem) {
+  .illo--field {
+    opacity: 0.22;
+  }
+}
+
+/* On a phone there is no free side, so the figure climbs to the top corner
+   and fades much further back. */
+@media (max-width: 47.99rem) {
+  .illo--field {
+    inset-block-start: var(--s3);
+    inset-inline-end: 0;
+    transform: none;
+    width: 228px;
+    opacity: 0.2;
+  }
+}
+
 /* The second, smaller figure on the longer pages: top right of its section,
    beside the heading. Below 1280px the headings (the Portuguese ones
    especially) run into that corner, so it waits for a wide screen. */
-.ascii--aside {
+.illo--aside {
   display: none;
 }
 
 @media (min-width: 80rem) {
-  .ascii--aside {
+  .illo--aside {
     display: block;
     position: absolute;
     z-index: -1;
     inset-block-start: var(--s6);
     inset-inline-end: calc(var(--rail-x) + var(--s4));
-    --ascii-cell: clamp(5px, 0.55vw, 7.5px);
+    width: min(17.9vw, 244px);
     opacity: 0.5;
     -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent 100%);
     mask-image: radial-gradient(closest-side, #000 60%, transparent 100%);
@@ -457,7 +491,7 @@ a:hover { text-decoration-thickness: 2px; }
    anywhere, and quieter than the hero's 26% — at 15% it is a tint, not a
    backdrop (David: less opacity). The icon sits on it in the functional
    blue, the darker of the accent pair, so blue art keeps real contrast on
-   the pale wash; on a dark band the role flips to the on-ink blue. Purple's
+   the pale wash; on a dark band it is drawn in white. Purple's
    second fenced use (tokens.css). Decoration by contract: aria-hidden. */
 .icon-wash {
   position: relative;
@@ -511,13 +545,10 @@ a:hover { text-decoration-thickness: 2px; }
   transform: none;
 }
 
-/* Above its own wash. */
-.icon-wash .ascii {
+/* Above its own wash, and as wide as the space it is given. */
+.icon-wash .illo {
   position: relative;
-}
-
-.icon-wash .ascii pre {
-  color: var(--accent-fn);
+  width: 100%;
 }
 
 /* A callout: "^ start here". Small text carrying meaning, so --accent-fn. */

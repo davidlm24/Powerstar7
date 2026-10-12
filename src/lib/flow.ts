@@ -7,8 +7,8 @@
    (Home.astro's script), so the two can never disagree. It is plain maths:
    no dependency, nothing fetched. */
 
-/* The same ramp as ascii.ts, written out rather than imported: this module is
-   bundled for the browser, and importing ascii.ts would ship every figure. */
+/* The brightness ramp, dark to bright. This module is bundled for the
+   browser, so it carries what it needs and imports nothing. */
 const RAMP = ' .:-=+*#%@';
 const CELL = 0.6;
 

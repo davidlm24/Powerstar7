@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
-import Ascii from '../components/Ascii.astro';
+import Illo from '../components/Illo.astro';
 import AsciiCallout from '../components/AsciiCallout.astro';
 import { useTranslations, CONTACT, type Lang } from '../i18n/ui';
 
@@ -104,13 +104,13 @@ const topics = [
       <aside class="direct" data-decode-zone>
         {/* This is the lightest page on the site — 91 words against 296 on the
             next — and a form is controls, not reading. One large object at the
-            head of the direct panel is the weight it was missing: the ASCII
+            head of the direct panel is the weight it was missing: the
             envelope, because it is the one object here that means what the
             panel does.
             Decorative by contract: aria-hidden, beside a real heading. */}
         <div class="direct__illo">
           <div class="icon-wash" aria-hidden="true">
-            <Ascii icon="email" variant="icon" />
+            <Illo name="email" variant="icon" />
           </div>
         </div>
 
@@ -167,8 +167,7 @@ const topics = [
      room. Capped so the gradient panel never runs full-bleed when the aside
      spans the whole container on a phone. */
   .direct__illo {
-    --ascii-cell: 6.5px;
-    max-width: 20rem;
+    max-width: 15rem;
     margin-block-end: var(--s4);
   }
 

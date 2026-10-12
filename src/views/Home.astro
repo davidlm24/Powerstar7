@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Ascii from '../components/Ascii.astro';
+import Illo from '../components/Illo.astro';
 import AsciiCallout from '../components/AsciiCallout.astro';
 import AsciiDivider from '../components/AsciiDivider.astro';
 import Closing from '../components/Closing.astro';
@@ -91,10 +92,10 @@ const position = [
   {/* --- What we do -------------------------------------------------------
       Layout B from the illustration options, which David picked: copy-led
       lanes, one service to a row, instead of five cards. Each service keeps
-      its own small ASCII icon, which waits at the end of the lane and types
-      itself in when the lane is pointed at or focused, so the section reads
-      as type first and art second. With no hover to wait for (touch), the
-      icons simply sit there. */}
+      its own illustration at the end of the lane, which drifts in as the
+      lane scrolls into view and resolves from coarse to fine when the lane
+      is pointed at or focused, so the section reads as type first and art
+      second. With no hover (touch), the icons simply sit there. */}
   <section class="services rails">
     <div class="container">
       <div class="services__head">
@@ -114,7 +115,7 @@ const position = [
                 </div>
                 <span class="lane__art">
                   <span class="icon-wash" aria-hidden="true" data-reveal>
-                    <Ascii icon={s.key} variant="icon" cols={88} rows={44} />
+                    <Illo name={s.key} variant="icon" />
                   </span>
                 </span>
                 <span class="lane__go" aria-hidden="true">&rarr;</span>
@@ -136,7 +137,7 @@ const position = [
 
   {/* --- Position --------------------------------------------------------- */}
   <section class="position rails">
-    <Ascii figure="fit" variant="aside" />
+    <Illo name="fit" variant="aside" />
 
     <div class="container">
       <div class="position__head">
@@ -441,12 +442,10 @@ const position = [
     color: var(--fg-muted);
   }
 
-  /* The 88-column canvas at 4.2px fills the 14rem track: the same grid and
-     detail the Services rows carry. */
+  /* The icon fills the 14rem track, the width its file was drawn at. */
   .lane__art {
     grid-area: art;
     align-self: center;
-    --ascii-cell: 4.2px;
   }
 
   .lane__go {
@@ -484,7 +483,8 @@ const position = [
 
   /* The icons sit in the lanes at rest, like the Services rows: they drift
      in from the left as their lane first scrolls into view (the shared
-     [data-reveal] behaviour, site.js), and the decode still plays on hover. */
+     [data-reveal] behaviour, site.js), and resolve from coarse to fine on
+     hover. */
 
   /* Narrower, the art track shrinks; below 48rem it goes. There is no room
      for it beside copy set at 30px, so the lane stacks — index and arrow on
@@ -497,7 +497,6 @@ const position = [
     }
 
     .lane__art {
-      --ascii-cell: 2.7px;
       /* The gap to the lane name is only --s3 here; the full 2rem waiting
          offset would park the (invisible) icon box over the heading. */
       --reveal-wait: -0.75rem;
