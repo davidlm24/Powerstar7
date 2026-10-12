@@ -492,6 +492,23 @@ a:hover { text-decoration-thickness: 2px; }
   }
 }
 
+/* The scroll reveal: a marked icon waits left of its place and drifts in,
+   wash and all, when its row first scrolls into view (site.js). The waiting
+   class is only ever ADDED by that script, so without JavaScript, or with
+   less motion asked for, nothing here applies and the icon is simply there. */
+.reveal-wait {
+  opacity: 0;
+  transform: translateX(-2rem);
+  transition:
+    opacity 480ms var(--ease),
+    transform 480ms var(--ease);
+}
+
+.reveal-wait.reveal-in {
+  opacity: 1;
+  transform: none;
+}
+
 /* Above its own wash. */
 .icon-wash .ascii {
   position: relative;

@@ -259,9 +259,11 @@ const ICONS: Record<IconName, Figure> = {
     v = max(v, fill(box(x, y, 0.33, 0.38, 0.22, 0.035), 0.014));                    // headline
     v = max(v, fill(box(x, y, 0.27, 0.47, 0.16, 0.035), 0.014));
     v = max(v, fill(Math.hypot(x - 0.47, y - 0.48) - 0.022, 0.012));                // full stop
-    const img = box(x, y, 0.77, 0.49, 0.15, 0.15);                                  // image, hatched
+    for (const nx of [0.62, 0.72, 0.82]) v = max(v, fill(box(x, y, nx, 0.29, 0.032, 0.012), 0.01) * 0.6); // nav
+    const img = box(x, y, 0.77, 0.49, 0.15, 0.13);                                  // image, hatched
     v = max(v, edge(img, 0.009), img < 0 ? ((Math.floor((x * 2 + y) * 40) % 2) ? 0.5 : 0.15) : 0);
     for (const ly of [0.6, 0.65, 0.7]) v = max(v, edge(seg(x, y, 0.1, ly, 0.52, ly), 0.007) * 0.6);
+    for (const ly of [0.68, 0.72, 0.76]) v = max(v, edge(seg(x, y, 0.62, ly, 0.9, ly), 0.006) * 0.5); // side column
     v = max(v, fill(box(x, y, 0.2, 0.82, 0.1, 0.04), 0.012));                       // buttons
     v = max(v, edge(box(x, y, 0.47, 0.82, 0.1, 0.04), 0.008) * 0.9);
     return v;
@@ -276,6 +278,11 @@ const ICONS: Record<IconName, Figure> = {
     v = max(v, stroke(x, y, 0.455, 0.38, 0.5, 0.5, 0.018));
     v = max(v, stroke(x, y, 0.5, 0.5, 0.545, 0.38, 0.018));
     v = max(v, stroke(x, y, 0.545, 0.38, 0.59, 0.5, 0.018));
+    v = max(v, stroke(x, y, 0.41, 0.5, 0.41, 0.58, 0.012), stroke(x, y, 0.59, 0.5, 0.59, 0.58, 0.012)); // supports
+    const hl = Math.hypot(x - 0.42, y - 0.29);                                      // glass highlight
+    v = max(v, hl > 0.09 && hl < 0.12 && x < 0.46 && y < 0.33 ? 0.85 : 0);
+    for (const [sx, sy] of [[0.12, 0.12], [0.88, 0.09], [0.07, 0.52], [0.93, 0.48]]) // sparks
+      v = max(v, edge(Math.hypot(x - sx, y - sy) - 0.014, 0.01) * 0.75);
     const base = box(x, y, 0.5, 0.77, 0.11, 0.07);                                  // screw base
     v = max(v, edge(base, 0.012), base < 0 ? 0.35 : 0);
     for (const ly of [0.73, 0.77, 0.81]) v = max(v, edge(seg(x, y, 0.39, ly, 0.61, ly), 0.008) * 0.9);
@@ -291,9 +298,10 @@ const ICONS: Record<IconName, Figure> = {
   /** SEO: a magnifier over the page, the right line found and enlarged. */
   seo: (x, y) => {
     let v = 0;
-    [0.12, 0.2, 0.28, 0.36, 0.44, 0.52, 0.6, 0.68, 0.76, 0.88].forEach((ly, k) => { // the text
-      v = max(v, edge(seg(x, y, 0.06, ly, k % 3 === 2 ? 0.76 : 0.9, ly), 0.008) * 0.4);
+    [0.08, 0.15, 0.22, 0.29, 0.36, 0.43, 0.5, 0.57, 0.64, 0.71, 0.81, 0.9].forEach((ly, k) => { // the text
+      v = max(v, edge(seg(x, y, 0.06, ly, [0.9, 0.84, 0.76, 0.88][k % 4], ly), 0.008) * 0.4);
     });
+    v = max(v, fill(box(x, y, 0.12, 0.81, 0.05, 0.016), 0.01) * 0.6);               // a bold lede below
     const r = Math.hypot(x - 0.46, y - 0.42);
     if (r < 0.24) v = 0.12;                                                         // lens clears the page
     if (r < 0.22) {
@@ -303,6 +311,10 @@ const ICONS: Record<IconName, Figure> = {
     v = max(v, edge(r - 0.24, 0.016), edge(r - 0.275, 0.012) * 0.85);               // double rim
     v = max(v, r < 0.22 && r > 0.15 && x < 0.42 && y < 0.36 ? 0.55 : 0);            // glare
     v = max(v, stroke(x, y, 0.64, 0.6, 0.85, 0.84, 0.035));                         // handle
+    for (const t of [0.35, 0.6]) {                                                  // grip bands, carved
+      const px = 0.64 + 0.21 * t, py = 0.6 + 0.24 * t;
+      if (seg(x, y, px + 0.034, py - 0.03, px - 0.034, py + 0.03) - 0.012 < 0) v = Math.min(v, 0.2);
+    }
     return v;
   },
 
@@ -315,6 +327,10 @@ const ICONS: Record<IconName, Figure> = {
     v = max(v, stroke(x, y, 0.88, 0.26, 0.54, 0.58, 0.016));
     v = max(v, edge(seg(x, y, 0.2, 0.76, 0.46, 0.6), 0.009) * 0.7);                 // bottom folds
     v = max(v, edge(seg(x, y, 0.88, 0.76, 0.62, 0.6), 0.009) * 0.7);
+    const st = box(x, y, 0.77, 0.36, 0.045, 0.052);                                 // the stamp
+    v = max(v, edge(st, 0.008), st < 0 ? ((Math.floor((x + y) * 52) % 2) ? 0.6 : 0.25) : 0);
+    v = max(v, edge(seg(x, y, 0.42, 0.67, 0.66, 0.67), 0.007) * 0.6);               // the address
+    v = max(v, edge(seg(x, y, 0.46, 0.71, 0.62, 0.71), 0.007) * 0.5);
     v = max(v, edge(seg(x, y, 0.0, 0.38, 0.13, 0.38), 0.012) * 0.85);               // motion
     v = max(v, edge(seg(x, y, -0.06, 0.5, 0.1, 0.5), 0.012) * 0.85);
     v = max(v, edge(seg(x, y, 0.0, 0.62, 0.13, 0.62), 0.012) * 0.85);
@@ -341,6 +357,8 @@ const ICONS: Record<IconName, Figure> = {
     let v = edge(sh, 0.014);                                                        // outer border
     v = max(v, edge(sh + 0.05, 0.01) * 0.8);                                        // inner line
     v = max(v, sh < -0.055 && ck > 0.07 ? 0.3 + 0.2 * clamp(1 - (y - 0.1) / 0.6) : 0); // the field
+    for (const rx of [0.29, 0.4, 0.5, 0.6, 0.71])                                   // rivets
+      v = max(v, fill(Math.hypot(x - rx, y - 0.17) - 0.014, 0.01));
     v = max(v, fill(ck, 0.016));                                                    // the check
     return v;
   },
@@ -383,9 +401,9 @@ export function renderFigure(name: FigureName, cols: number, rows: number, opts:
   return paint(FIGURES[name], cols, rows, opts.dither ?? 0.12).join('\n');
 }
 
-/** An icon, painted like a figure, on the shared ICON_COLS x ICON_ROWS grid. */
-export function renderIcon(name: IconName): string {
-  return paint(ICONS[name], ICON_COLS, ICON_ROWS, 0.4)
+/** An icon, painted like a figure; ICON_COLS x ICON_ROWS unless asked larger. */
+export function renderIcon(name: IconName, cols = ICON_COLS, rows = ICON_ROWS): string {
+  return paint(ICONS[name], cols, rows, 0.4)
     // Empty rows keep one space: a trailing run of truly empty lines
     // collapses in <pre>, and the icons would differ in height.
     .map((l) => l || ' ')

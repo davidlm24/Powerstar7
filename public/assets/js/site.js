@@ -421,6 +421,25 @@
     }, 160);
   }
 
+  /* ---------- reveal on scroll ------------------------------------------- */
+
+  /* The Services icons come in from the left as their row scrolls into
+     view, once. The waiting state exists only after this script adds it, so
+     with no JavaScript, or with less motion asked for, the icons are simply
+     there. */
+  var revealEls = document.querySelectorAll('[data-reveal]');
+  if (revealEls.length && 'IntersectionObserver' in window && !asciiCalm.matches) {
+    revealEls.forEach(function (el) { el.classList.add('reveal-wait'); });
+    var revealIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('reveal-in');
+        revealIO.unobserve(entry.target);
+      });
+    }, { threshold: 0.3 });
+    revealEls.forEach(function (el) { revealIO.observe(el); });
+  }
+
   /* ---------- ASCII icon decode ------------------------------------------ */
 
   /* On hover or keyboard focus, an icon decodes into place: every

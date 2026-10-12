@@ -39,7 +39,7 @@ const rows = Astro.props.rows ?? size[1];
 
 let text: string;
 if (variant === 'flow') text = renderFlow(cols, rows, 0);
-else if (variant === 'icon' && icon) text = renderIcon(icon);
+else if (variant === 'icon' && icon) text = renderIcon(icon, cols, rows);
 else if (figure) text = renderFigure(figure, cols, rows, { dither: variant === 'field' ? 0.35 : 0.3 });
 else throw new Error(`Ascii (${variant}) needs a figure or an icon`);
 ---

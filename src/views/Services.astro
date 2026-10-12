@@ -192,8 +192,8 @@ const faqs = [
                   Visible at rest; the decode plays on hover (site.js). It
                   lives inside the sticky block, so it travels with the
                   number. Decorative: the heading opposite says everything. */}
-              <div class="icon-wash svc__art" aria-hidden="true">
-                <Ascii icon={s.id} variant="icon" />
+              <div class="icon-wash svc__art" aria-hidden="true" data-reveal>
+                <Ascii icon={s.id} variant="icon" cols={88} rows={44} />
               </div>
             </div>
 
@@ -516,9 +516,11 @@ const faqs = [
   /* Sized to the title track: the cell follows the viewport so the panel
      never outgrows the column it fills. Below 60rem the column collapses
      into the flow, so the panel goes the way the home lanes' art does. */
+  /* The 88-column grid: double the home lanes' detail, filling the column
+      (David: bigger, with good details of the object). */
   .svc__art {
-    margin-block-start: var(--s5);
-    --ascii-cell: clamp(3.8px, 0.42vw, 6px);
+    margin-block-start: var(--s4);
+    --ascii-cell: clamp(3px, 0.32vw, 5px);
   }
 
   @media (max-width: 60rem) {
