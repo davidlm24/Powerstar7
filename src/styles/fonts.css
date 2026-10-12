@@ -66,18 +66,3 @@
     U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
     U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-
-/* --- Margin notes ---------------------------------------------------------
-   Caveat, trimmed to the characters the notes use by
-   scripts/subset-note-font.mjs (50 KB down to about 14 KB). Not preloaded:
-   the file is only fetched on pages that actually show a note.
-   scripts/measure.mjs fails the build if a note uses a character this file
-   does not have. */
-
-@font-face {
-  font-family: 'Caveat Notes';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/assets/fonts/caveat-notes.woff2') format('woff2');
-}

@@ -1,8 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
-import MarginNote from '../components/MarginNote.astro';
-import Doodle from '../components/Doodle.astro';
 import Closing from '../components/Closing.astro';
 import { useTranslations, type Lang } from '../i18n/ui';
 import { PRICING, euros } from '../data/pricing';
@@ -99,7 +97,7 @@ const faqs = [
 ---
 
 <Base lang={lang} page="services" title={t('services.title')} description={t('services.lead')}>
-  <PageHead label={t('nav.services')} title={t('services.h1')} lead={t('services.lead')} mark={t('services.mark')} />
+  <PageHead label={t('nav.services')} title={t('services.h1')} lead={t('services.lead')} />
 
   {/* --- What things cost -------------------------------------------------
       First on the page, because it is the question a referral arrives with.
@@ -109,7 +107,6 @@ const faqs = [
       quieter of the two: a smaller number, on the far side of the rule. The
       id is what the home page links to. */}
   <section class="pricing rails" id="pricing">
-    <Doodle kind="dots" pos="top-end" />
     <div class="container">
       <div class="pricing__head">
         <p class="label">{t('services.pricing.label')}</p>
@@ -121,11 +118,6 @@ const faqs = [
         <article class="plan plan--design">
           <p class="plan__kind">{t('services.design.kind')}</p>
           <h3 class="plan__name">{t('services.design.name')}</h3>
-          <MarginNote
-            text={t('services.note')}
-            arrow="down-left"
-            style="--note-top: -1.25rem; --note-start: calc(7.5rem + 7.8vw)"
-          />
           {/* Both spans on ONE line with a real space between them. Astro's
               HTML compression deletes whitespace that crosses a line break, so
               the gap then existed only in CSS, and the text itself read
@@ -216,7 +208,6 @@ const faqs = [
       and arrives keyboard-accessible with its expanded state announced. The
       site ships one 12 KB script; an accordion is not worth adding to it. */}
   <section class="faq rails">
-    <Doodle kind="spark" pos="top-end" />
     <div class="container">
       <div class="faq__head">
         <p class="label">{t('services.faq.label')}</p>
@@ -271,7 +262,6 @@ const faqs = [
   }
 
   .plan--design {
-    position: relative;
     padding-inline-end: var(--col-pad);
   }
 

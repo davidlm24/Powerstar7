@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
-import MarginNote from '../components/MarginNote.astro';
+import InkDefs from '../components/InkDefs.astro';
 import Illustration from '../components/Illustration.astro';
 import { useTranslations, CONTACT, type Lang } from '../i18n/ui';
 
@@ -46,9 +46,14 @@ const topics = [
 ---
 
 <Base lang={lang} page="contact" title={t('contact.title')} description={t('contact.lead')}>
-  <PageHead label={t('nav.contact')} title={t('contact.h1')} lead={t('contact.lead')} mark={t('contact.mark')} />
+  <PageHead label={t('nav.contact')} title={t('contact.h1')} lead={t('contact.lead')} />
 
   <section class="contact rails">
+    {/* Once per page, above the illustration that references its filter ids.
+        Out of flow, so it is not a grid item in .contact__inner — which is
+        why it sits outside that element rather than inside it. */}
+    <InkDefs />
+
     <div class="container contact__inner">
       {/* TODO before launch: set data-endpoint to the real form handler.
           Until then the form composes an email instead — and says that is
@@ -85,11 +90,6 @@ const topics = [
           <p class="field__hint" id="message-hint">{t('contact.form.messageHint')}</p>
           <textarea id="message" name="message" rows="6" aria-describedby="message-hint" required
           ></textarea>
-          <MarginNote
-            text={t('contact.note')}
-            arrow="up-left"
-            style="--note-top: calc(100% + var(--s2)); --note-end: 0"
-          />
         </div>
 
         {/* Honeypot. Hidden from sight and from assistive technology, so no
@@ -180,9 +180,7 @@ const topics = [
   }
 
 
-  /* Positioned so the margin note can sit beside the message box. */
   .field {
-    position: relative;
     display: grid;
     gap: 0.4rem;
   }

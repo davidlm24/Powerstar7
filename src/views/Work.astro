@@ -1,8 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
-import MarginNote from '../components/MarginNote.astro';
-import Doodle from '../components/Doodle.astro';
 import Closing from '../components/Closing.astro';
 import { useTranslations, metrics, type Lang } from '../i18n/ui';
 
@@ -33,7 +31,7 @@ const evidence = [
 ---
 
 <Base lang={lang} page="work" title={t('work.title')} description={t('work.lead')}>
-  <PageHead label={t('nav.work')} title={t('work.h1')} lead={t('work.lead')} mark={t('work.mark')} />
+  <PageHead label={t('nav.work')} title={t('work.h1')} lead={t('work.lead')} />
 
   {/* The site itself as the evidence, until client work can be shown. The
       old site put six tiles here labelled "Project 1" through "Project 6",
@@ -51,11 +49,6 @@ const evidence = [
         <header class="exhibit__head row__title">
           <p class="label">{t('work.this.label')}</p>
           <h2 class="exhibit__h">{t('work.this.h')}</h2>
-          <MarginNote
-            text={t('work.note')}
-            arrow="up-left"
-            style="--note-top: calc(100% + var(--s2)); --note-start: 7rem"
-          />
         </header>
 
         <div class="exhibit__body row__body">
@@ -97,7 +90,6 @@ const evidence = [
   </div>
 
   <section class="next rails">
-    <Doodle kind="spark" pos="top-end" />
     <div class="container next__inner">
       <h2 class="next__h">{t('work.next.h')}</h2>
       <p class="next__b measure">{t('work.next.b')}</p>
@@ -115,11 +107,6 @@ const evidence = [
   .exhibit {
     padding-block: var(--s6);
     border-top: 1px solid var(--rule);
-  }
-
-  /* Positioned so the margin note can sit under the heading. */
-  .exhibit__head {
-    position: relative;
   }
 
   .exhibit__h {

@@ -1,11 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
+import InkDefs from '../components/InkDefs.astro';
 import Illustration from '../components/Illustration.astro';
 import Closing from '../components/Closing.astro';
-import MarginNote from '../components/MarginNote.astro';
-import Doodle from '../components/Doodle.astro';
 import { useTranslations, route, type Lang } from '../i18n/ui';
-import { splitMark } from '../lib/mark';
 
 interface Props {
   lang: Lang;
@@ -13,10 +11,6 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-
-/* The headline without its full stop (the stop is drawn separately, in blue),
-   split around the phrase that gets the ink underline. */
-const hero = splitMark(t('home.h1').replace(/\.$/, ''), t('home.mark'));
 
 /* The lane bodies reuse svc.*.body — the same descriptions the Services page
    carries. Not a shortcut: they are already written, already translated, and
@@ -74,9 +68,7 @@ const position = [
 
     <div class="container">
       <h1 class="hero__h1">
-        <span
-          >{hero.before}<span class="ink-mark">{hero.mark}</span>{hero.after}<b aria-hidden="true">.</b></span
-        >
+        <span>{t('home.h1').replace(/\.$/, '')}<b aria-hidden="true">.</b></span>
       </h1>
 
       <div class="hero__foot">
@@ -84,11 +76,6 @@ const position = [
         <div class="hero__actions">
           <a class="btn" href={route('contact', lang)}>{t('home.cta')}</a>
           <a class="btn btn--quiet" href={`${route('services', lang)}#pricing`}>{t('home.cta.secondary')}</a>
-          <MarginNote
-            text={t('home.note')}
-            arrow="up-right"
-            style="--note-top: calc(100% + var(--s3)); --note-end: 5rem"
-          />
         </div>
       </div>
     </div>
@@ -102,12 +89,13 @@ const position = [
       first and art second. With no hover to wait for (touch), the drawings
       simply sit there, finished. */}
   <section class="services rails">
-    <Doodle kind="spark" pos="top-end" />
     <div class="container">
       <div class="services__head">
         <p class="label">{t('home.services.label')}</p>
         <h2>{t('home.services.h2')}</h2>
       </div>
+
+      <InkDefs />
 
       <ul class="lanes">
         {
@@ -170,7 +158,6 @@ const position = [
       "how"), and a process is a SEQUENCE — so it gets one continuous rule
       with a node where each step starts, instead of four separate boxes. */}
   <section class="process rails">
-    <Doodle kind="squiggle" pos="bottom-start" />
     <div class="container">
       <div class="process__head">
         <p class="label">{t('home.process.label')}</p>
@@ -212,16 +199,6 @@ const position = [
   @supports not (overflow: clip) {
     .hero {
       overflow: hidden;
-    }
-  }
-
-  /* Room for the margin note under the buttons. The hero clips its overflow
-     (for the wash), and --section-y scales with the viewport, so between
-     961px and ~1180px it left the note's last line cut off. The note reaches
-     about 141px below the buttons; this keeps it inside with room to spare. */
-  @media (min-width: 60.0625rem) {
-    .hero {
-      padding-block-end: max(var(--section-y), 10.5rem);
     }
   }
 
@@ -289,7 +266,7 @@ const position = [
     to { transform: translate3d(3%, 2%, 0) scale(1.09); }
   }
 
-  .hero__h1 > span {
+  .hero__h1 span {
     display: block;
   }
 
@@ -310,9 +287,7 @@ const position = [
     margin-block-start: var(--s6);
   }
 
-  /* Positioned so the margin note can sit just below the buttons. */
   .hero__actions {
-    position: relative;
     display: flex;
     flex-wrap: wrap;
     gap: var(--s2);

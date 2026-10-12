@@ -66,12 +66,10 @@ export const ui = {
     /* --- Home ---------------------------------------------------------- */
     'home.title': 'DesignActiv — web agency for small businesses',
     'home.h1': 'Websites that bring in business.',
-    'home.mark': 'bring in business',
     'home.lead':
       'DesignActiv is a web agency for small businesses. We design and build your website, then help people find it, with branding, SEO, email and ongoing care when you need them.',
     'home.cta': 'Start a project',
     'home.cta.secondary': 'See prices',
-    'home.note': 'Yes, our prices are public',
     'closing.lead':
       'Tell us about it in a few lines — you’ll hear back, usually within a working day, and if it’s a fit you get a written scope with the price attached.',
 
@@ -117,8 +115,6 @@ export const ui = {
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Services — DesignActiv',
     'services.h1': 'What it costs, and what you get.',
-    'services.mark': 'what you get',
-    'services.note': 'Start here',
     'services.lead':
       'One price to build your site, one to keep it looked after — and a person who answers when something needs to change.',
     'services.deliverables': 'What you get',
@@ -161,8 +157,6 @@ export const ui = {
     /* --- Work ----------------------------------------------------------- */
     'work.title': 'Work — DesignActiv',
     'work.h1': 'Proof, before the portfolio.',
-    'work.mark': 'the portfolio',
-    'work.note': 'You’re looking at it',
     'work.lead':
       'Our first client sites are being built now and will appear here once they launch. Until then, the best evidence of how we work is this site itself.',
 
@@ -183,7 +177,6 @@ export const ui = {
     /* --- About ---------------------------------------------------------- */
     'about.title': 'About — DesignActiv',
     'about.h1': 'Small enough to know your project.',
-    'about.mark': 'your project',
     'about.lead':
       'DesignActiv is a small web agency working with clients wherever they are. The person you brief is the person who builds it.',
     'about.story.h': 'What custom-\u2060built gets you',
@@ -210,8 +203,6 @@ export const ui = {
     /* --- Contact -------------------------------------------------------- */
     'contact.title': 'Contact — DesignActiv',
     'contact.h1': 'Tell us about your project.',
-    'contact.mark': 'your project',
-    'contact.note': 'Short is fine',
     'contact.lead':
       'A few lines are enough to start. We reply to everything, usually within a working day.',
     'contact.form.name': 'Your name',
@@ -415,12 +406,10 @@ export const ui = {
     /* --- Home ---------------------------------------------------------- */
     'home.title': 'DesignActiv — agência web para pequenas empresas',
     'home.h1': 'Sites que trazem clientes.',
-    'home.mark': 'trazem clientes',
     'home.lead':
       'A DesignActiv é uma agência web para pequenas empresas. Criamos e construímos seu site e ajudamos as pessoas a encontrá-lo, com identidade visual, SEO, e-mail e manutenção quando você precisar.',
     'home.cta': 'Começar um projeto',
     'home.cta.secondary': 'Ver preços',
-    'home.note': 'Sim, nossos preços são públicos',
     'closing.lead':
       'Conte em poucas linhas — você recebe uma resposta, normalmente em um dia útil, e, se fizer sentido, um escopo por escrito com o preço junto.',
 
@@ -466,8 +455,6 @@ export const ui = {
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Serviços — DesignActiv',
     'services.h1': 'Quanto custa, e o que você recebe.',
-    'services.mark': 'o que você recebe',
-    'services.note': 'Comece por aqui',
     'services.lead':
       'Um preço para construir o seu site, outro para cuidar dele depois — e uma pessoa que responde quando algo precisa mudar.',
     'services.deliverables': 'O que você recebe',
@@ -510,8 +497,6 @@ export const ui = {
     /* --- Work ----------------------------------------------------------- */
     'work.title': 'Trabalhos — DesignActiv',
     'work.h1': 'Provas, antes do portfólio.',
-    'work.mark': 'portfólio',
-    'work.note': 'É este que você está vendo',
     'work.lead':
       'Nossos primeiros sites de clientes estão em construção e vão aparecer aqui quando forem ao ar. Até lá, a melhor prova de como trabalhamos é este próprio site.',
 
@@ -532,7 +517,6 @@ export const ui = {
     /* --- About ---------------------------------------------------------- */
     'about.title': 'Sobre nós — DesignActiv',
     'about.h1': 'Pequena o bastante para conhecer seu projeto.',
-    'about.mark': 'seu projeto',
     'about.lead':
       'A DesignActiv é uma pequena agência web que trabalha com clientes onde quer que estejam. Quem recebe o briefing é quem constrói.',
     'about.story.h': 'O que você ganha com um site sob medida',
@@ -559,8 +543,6 @@ export const ui = {
     /* --- Contact -------------------------------------------------------- */
     'contact.title': 'Contato — DesignActiv',
     'contact.h1': 'Conte sobre o seu projeto.',
-    'contact.mark': 'seu projeto',
-    'contact.note': 'Curto já está ótimo',
     'contact.lead':
       'Poucas linhas já bastam para começar. Respondemos tudo, normalmente em um dia útil.',
     'contact.form.name': 'Seu nome',
