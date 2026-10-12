@@ -1,7 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
-import InkDefs from '../components/InkDefs.astro';
-import Illustration from '../components/Illustration.astro';
+import Ascii from '../components/Ascii.astro';
+import AsciiCallout from '../components/AsciiCallout.astro';
+import AsciiDivider from '../components/AsciiDivider.astro';
 import Closing from '../components/Closing.astro';
 import { useTranslations, route, type Lang } from '../i18n/ui';
 
@@ -22,11 +23,11 @@ const t = useTranslations(lang);
    t(`svc.${key}.body`) needs an `as any` cast and that quietly removes the
    type protection from every key it touches. */
 const services = [
-  { n: '01', key: 'web', illo: 'browser', name: t('svc.web.name'), b: t('svc.web.body') },
-  { n: '02', key: 'brand', illo: 'bulb', name: t('svc.brand.name'), b: t('svc.brand.body') },
-  { n: '03', key: 'seo', illo: 'magnifier', name: t('svc.seo.name'), b: t('svc.seo.body') },
-  { n: '04', key: 'email', illo: 'envelope', name: t('svc.email.name'), b: t('svc.email.body') },
-  { n: '05', key: 'hosting', illo: 'plug', name: t('svc.hosting.name'), b: t('svc.hosting.body') },
+  { n: '01', key: 'web', icon: 'browser', name: t('svc.web.name'), b: t('svc.web.body') },
+  { n: '02', key: 'brand', icon: 'bulb', name: t('svc.brand.name'), b: t('svc.brand.body') },
+  { n: '03', key: 'seo', icon: 'magnifier', name: t('svc.seo.name'), b: t('svc.seo.body') },
+  { n: '04', key: 'email', icon: 'envelope', name: t('svc.email.name'), b: t('svc.email.body') },
+  { n: '05', key: 'hosting', icon: 'plug', name: t('svc.hosting.name'), b: t('svc.hosting.body') },
 ] as const;
 
 /* Each step restates a commitment the site already makes elsewhere: a
@@ -65,6 +66,7 @@ const position = [
         wash's percentages — and the measured contrast ceiling on them — hold
         without being re-derived. */}
     <div class="hero__fx" aria-hidden="true"></div>
+    <Ascii figure="home" variant="field" cols={66} rows={25} />
 
     <div class="container">
       <h1 class="hero__h1">
@@ -76,6 +78,7 @@ const position = [
         <div class="hero__actions">
           <a class="btn" href={route('contact', lang)}>{t('home.cta')}</a>
           <a class="btn btn--quiet" href={`${route('services', lang)}#pricing`}>{t('home.cta.secondary')}</a>
+          <AsciiCallout text={t('home.callout')} align="end" />
         </div>
       </div>
     </div>
@@ -84,18 +87,16 @@ const position = [
   {/* --- What we do -------------------------------------------------------
       Layout B from the illustration options, which David picked: copy-led
       lanes, one service to a row, instead of five cards. Each service keeps
-      its own drawing, but it waits at the end of the lane and draws itself in
-      when the lane is pointed at or focused — so the section reads as type
-      first and art second. With no hover to wait for (touch), the drawings
-      simply sit there, finished. */}
+      its own small ASCII icon, which waits at the end of the lane and types
+      itself in when the lane is pointed at or focused, so the section reads
+      as type first and art second. With no hover to wait for (touch), the
+      icons simply sit there. */}
   <section class="services rails">
     <div class="container">
       <div class="services__head">
         <p class="label">{t('home.services.label')}</p>
         <h2>{t('home.services.h2')}</h2>
       </div>
-
-      <InkDefs />
 
       <ul class="lanes">
         {
@@ -108,7 +109,7 @@ const position = [
                   <p class="lane__b">{s.b}</p>
                 </div>
                 <span class="lane__art">
-                  <Illustration name={s.illo} />
+                  <Ascii icon={s.icon} variant="icon" />
                 </span>
                 <span class="lane__go" aria-hidden="true">&rarr;</span>
               </a>
@@ -123,13 +124,13 @@ const position = [
     </div>
   </section>
 
-  {/* A breather between two light sections, from trace.so, which sets a
-      diagonal hatch between its bands. Decorative and empty by contract —
-      .rails so the page-edge verticals run through it unbroken. */}
-  <div class="hatch rails" aria-hidden="true"></div>
+  {/* A breather between two light sections: a dotted ASCII row, where a
+      diagonal hatch used to be. */}
+  <AsciiDivider />
 
   {/* --- Position --------------------------------------------------------- */}
   <section class="position rails">
+    <Ascii figure="fit" variant="aside" cols={36} rows={20} />
 
     <div class="container">
       <div class="position__head">
@@ -266,6 +267,18 @@ const position = [
     to { transform: translate3d(3%, 2%, 0) scale(1.09); }
   }
 
+  /* The browser figure hangs from the top right of the hero, so it ends
+     above the buttons rather than running behind them. */
+  @media (min-width: 48rem) {
+    .hero :global(.ascii--field) {
+      inset-block-start: var(--s6);
+      transform: none;
+      /* The headline here runs nearly the full width, so the figure sits
+         further back than on the inner pages. */
+      opacity: 0.35;
+    }
+  }
+
   .hero__h1 span {
     display: block;
   }
@@ -368,7 +381,7 @@ const position = [
   .lane__art {
     grid-area: art;
     align-self: center;
-    --illo-size: 100%;
+    --ascii-cell: 13px;
   }
 
   .lane__go {
@@ -405,81 +418,35 @@ const position = [
   }
 
   /* --- The reveal ---------------------------------------------------------
-     Where a pointer can hover, the art waits hidden at the end of its lane
-     and arrives on hover or keyboard focus. Touch screens get none of this:
-     with nothing to wait for, their drawings are simply there. */
-  @media (hover: hover) and (pointer: fine) {
-    .lane__art {
-      opacity: 0;
-      transition: opacity 160ms var(--ease);
-    }
-
-    .lane:hover .lane__art,
-    .lane:focus-visible .lane__art {
-      opacity: 1;
-    }
+     Each lane's ASCII icon sits muted at the end of the lane. Where a pointer
+     can hover, it waits hidden and is typed in on hover or keyboard focus: a
+     left-to-right wipe in character-sized steps, so it arrives the way text
+     does on a terminal. Touch screens, and anyone who asked for less motion,
+     simply see it. */
+  .lane :global(.ascii--icon pre) {
+    color: var(--fg-muted);
+    transition: color var(--dur) var(--ease);
   }
 
-  /* With motion allowed, the art is not faded in — it is drawn. The ink
-     strokes itself on mark by mark, in the order Illustration.astro numbers
-     them (outline, detail, then the energy ticks), and the flat blue prints a
-     beat later, slipping off-register as it lands: the misprint that is the
-     whole character of the style, happening in front of you.
+  .lane:hover :global(.ascii--icon pre),
+  .lane:focus-visible :global(.ascii--icon pre) {
+    color: var(--accent-fn);
+  }
 
-     Transitions rather than @keyframes, for two reasons. The motion budget's
-     two keyframes stay spent. And a transition reverses from wherever it has
-     got to, so sweeping the pointer down the list never queues five
-     animations — each lane simply unwinds. Leaving is faster than arriving
-     and has no stagger, so the list never lags behind the pointer. */
   @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-    .lane__art {
-      opacity: 1;
-    }
-
-    /* pathLength="1" on every path makes "1 2" one whole stroke followed by
-       a gap longer than any path — so an offset just past 1 hides it cleanly,
-       with no round-cap dot left at its start, and 0 draws it whole. */
-    .lane :global(.illo__line > path) {
-      stroke-dasharray: 1 2;
-      stroke-dashoffset: 1.05;
-      transition: stroke-dashoffset 180ms var(--ease);
-    }
-
-    .lane:hover :global(.illo__line > path),
-    .lane:focus-visible :global(.illo__line > path) {
-      stroke-dashoffset: 0;
-      transition: stroke-dashoffset 420ms var(--ease) calc(var(--i, 0) * 35ms);
-    }
-
-    .lane :global(.illo__dot) {
-      opacity: 0;
-      transition: opacity 120ms var(--ease);
-    }
-
-    .lane:hover :global(.illo__dot),
-    .lane:focus-visible :global(.illo__dot) {
-      opacity: 1;
-      transition: opacity 200ms var(--ease) 240ms;
-    }
-
-    /* Starts in register, directly behind the line, and slips out to the
-       house offset as it prints — the same translate(8px, -6px) it rests at
-       everywhere else on the site. */
-    .lane :global(.illo__flat) {
-      opacity: 0;
-      transform: translate(0, 0);
+    .lane :global(.ascii--icon pre) {
+      clip-path: inset(0 100% 0 0);
       transition:
-        opacity 160ms var(--ease),
-        transform 180ms var(--ease);
+        clip-path 160ms steps(8),
+        color var(--dur) var(--ease);
     }
 
-    .lane:hover :global(.illo__flat),
-    .lane:focus-visible :global(.illo__flat) {
-      opacity: 0.5;
-      transform: translate(8px, -6px);
+    .lane:hover :global(.ascii--icon pre),
+    .lane:focus-visible :global(.ascii--icon pre) {
+      clip-path: inset(0 0 0 0);
       transition:
-        opacity 300ms var(--ease) 120ms,
-        transform 460ms var(--ease) 120ms;
+        clip-path 420ms steps(16),
+        color var(--dur) var(--ease);
     }
   }
 

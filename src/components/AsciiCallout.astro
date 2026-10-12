@@ -1,0 +1,19 @@
+---
+/* A short aside in the ASCII voice, pointing up at the thing just above it:
+   "^ start here", or, set to the right, "yes, our prices are public ^".
+
+   Decoration, by contract: aria-hidden, and it only repeats what the page
+   already says. In the flow, right after its target, so it can never cover
+   anything at any width. */
+interface Props {
+  text: string;
+  /** Which edge of the target it hangs from. The caret goes on that side. */
+  align?: 'start' | 'end';
+}
+
+const { text, align = 'start' } = Astro.props;
+---
+
+<p class:list={['callout', `callout--${align}`]} aria-hidden="true">
+  {align === 'start' ? `^ ${text}` : `${text} ^`}
+</p>

@@ -1,0 +1,10 @@
+---
+/* A dotted ASCII row between two sections. It replaced the diagonal hatch on
+   the home page and follows every inner page heading. Decorative and empty of
+   meaning, so aria-hidden; .rails so the page-edge lines run through it. */
+import { DIVIDER } from '../lib/ascii';
+---
+
+<div class="ascii-divider rails" aria-hidden="true" data-nosnippet>
+  <div class="container"><span>{DIVIDER}</span></div>
+</div>

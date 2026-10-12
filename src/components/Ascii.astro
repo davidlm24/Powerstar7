@@ -1,0 +1,37 @@
+---
+/* One ASCII figure or icon (src/lib/ascii.ts), drawn at build time.
+
+   variant:
+   - field: the large figure in a page heading. Sits behind the text, fades out
+     towards it, and shimmers.
+   - aside: a smaller second figure in a later section. Shimmers. Hidden on
+     phones.
+   - icon: a small hand-set outline (the service lanes, the contact panel).
+     Static.
+
+   Decoration, by contract: aria-hidden, and data-nosnippet so search engines
+   never quote a row of dots as the page's summary. The text is plain ASCII, so
+   the page's own monospace font draws it and nothing is downloaded. */
+import { renderFigure, renderIcon, type FigureName, type IconName } from '../lib/ascii';
+
+interface Props {
+  figure?: FigureName;
+  icon?: IconName;
+  variant: 'field' | 'aside' | 'icon';
+  cols?: number;
+  rows?: number;
+  class?: string;
+}
+
+const { figure, icon, variant, cols = 64, rows = 30, class: className } = Astro.props;
+
+if (!figure && !icon) throw new Error('Ascii needs a figure or an icon');
+const text = figure
+  ? renderFigure(figure, cols, rows, { dither: variant === 'field' ? 0.14 : 0.08 })
+  : renderIcon(icon!);
+const shimmer = variant !== 'icon';
+---
+
+<div class:list={['ascii', `ascii--${variant}`, className]} aria-hidden="true" data-nosnippet>
+  <pre data-shimmer={shimmer ? '' : undefined}>{text}</pre>
+</div>

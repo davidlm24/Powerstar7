@@ -378,4 +378,46 @@
       { passive: true }
     );
   }
+
+  /* ---------- ASCII shimmer ----------------------------------------------- */
+
+  /* The page figures (pre[data-shimmer], from Ascii.astro) shimmer: a few
+     characters at a time step one notch up or down the brightness ramp and
+     back, like a screen refreshing. Only figures on screen, only while the tab
+     is visible, and never for anyone who asked for less motion. The figure
+     always returns to the text it was built with. */
+  var asciiRamp = ' .:-=+*#%@';
+  var asciiFigures = document.querySelectorAll('pre[data-shimmer]');
+  var asciiCalm = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (asciiFigures.length && 'IntersectionObserver' in window) {
+    var asciiOnScreen = [];
+    var asciiBase = new Map();
+    var asciiSeen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var at = asciiOnScreen.indexOf(e.target);
+        if (e.isIntersecting && at < 0) asciiOnScreen.push(e.target);
+        if (!e.isIntersecting && at >= 0) {
+          asciiOnScreen.splice(at, 1);
+          e.target.textContent = asciiBase.get(e.target);
+        }
+      });
+    });
+    asciiFigures.forEach(function (pre) {
+      asciiBase.set(pre, pre.textContent);
+      asciiSeen.observe(pre);
+    });
+    setInterval(function () {
+      if (asciiCalm.matches || document.hidden) return;
+      asciiOnScreen.forEach(function (pre) {
+        var chars = asciiBase.get(pre).split('');
+        var n = Math.max(4, Math.floor(chars.length * 0.015));
+        for (var k = 0; k < n; k++) {
+          var p = Math.floor(Math.random() * chars.length);
+          var r = asciiRamp.indexOf(chars[p]);
+          if (r > 0) chars[p] = asciiRamp.charAt(Math.max(1, Math.min(asciiRamp.length - 1, r + (Math.random() < 0.5 ? -1 : 1))));
+        }
+        pre.textContent = chars.join('');
+      });
+    }, 160);
+  }
 })();

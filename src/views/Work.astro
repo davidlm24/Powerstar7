@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
+import AsciiCallout from '../components/AsciiCallout.astro';
 import Closing from '../components/Closing.astro';
 import { useTranslations, metrics, type Lang } from '../i18n/ui';
 
@@ -31,7 +32,7 @@ const evidence = [
 ---
 
 <Base lang={lang} page="work" title={t('work.title')} description={t('work.lead')}>
-  <PageHead label={t('nav.work')} title={t('work.h1')} lead={t('work.lead')} />
+  <PageHead label={t('nav.work')} title={t('work.h1')} lead={t('work.lead')} figure="work" />
 
   {/* The site itself as the evidence, until client work can be shown. The
       old site put six tiles here labelled "Project 1" through "Project 6",
@@ -49,6 +50,7 @@ const evidence = [
         <header class="exhibit__head row__title">
           <p class="label">{t('work.this.label')}</p>
           <h2 class="exhibit__h">{t('work.this.h')}</h2>
+          <AsciiCallout text={t('work.callout')} />
         </header>
 
         <div class="exhibit__body row__body">

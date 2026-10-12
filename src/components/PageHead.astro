@@ -1,11 +1,19 @@
 ---
+import Ascii from './Ascii.astro';
+import AsciiDivider from './AsciiDivider.astro';
+import type { FigureName } from '../lib/ascii';
+
 interface Props {
   label: string;
   title: string;
   lead?: string;
+  /** The page's ASCII figure, drawn from what the page is about. */
+  figure?: FigureName;
+  /** A blinking cursor after the lead, for the page that asks you to type. */
+  cursor?: boolean;
 }
 
-const { label, title, lead } = Astro.props;
+const { label, title, lead, figure, cursor } = Astro.props;
 ---
 
 {/* The inner-page header. Deliberately NOT the dark hero slab the old site
@@ -14,6 +22,7 @@ const { label, title, lead } = Astro.props;
     below the home hero (96px against 140px), so the home page stays the
     loudest thing on the site. */}
 <section class="page-head rails">
+  {figure && <Ascii figure={figure} variant="field" />}
   <div class="container">
     <p class="label">{label}</p>
     <h1 class="page-head__h1">{title}</h1>
@@ -21,11 +30,14 @@ const { label, title, lead } = Astro.props;
       /* Either the string prop or a `lead` slot. The slot exists because a
          .pending placeholder is markup and cannot travel as a string. */
       (lead || Astro.slots.has('lead')) && (
-        <p class="lead page-head__lead">{lead ?? <slot name="lead" />}</p>
+        <p class="lead page-head__lead">
+          {lead ?? <slot name="lead" />}{cursor && <span class="cursor" aria-hidden="true">_</span>}
+        </p>
       )
     }
   </div>
 </section>
+<AsciiDivider />
 
 <style>
   .page-head {

@@ -1,8 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
-import InkDefs from '../components/InkDefs.astro';
-import Illustration from '../components/Illustration.astro';
+import Ascii from '../components/Ascii.astro';
+import AsciiCallout from '../components/AsciiCallout.astro';
 import { useTranslations, CONTACT, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -46,14 +46,9 @@ const topics = [
 ---
 
 <Base lang={lang} page="contact" title={t('contact.title')} description={t('contact.lead')}>
-  <PageHead label={t('nav.contact')} title={t('contact.h1')} lead={t('contact.lead')} />
+  <PageHead label={t('nav.contact')} title={t('contact.h1')} lead={t('contact.lead')} figure="contact" cursor />
 
   <section class="contact rails">
-    {/* Once per page, above the illustration that references its filter ids.
-        Out of flow, so it is not a grid item in .contact__inner — which is
-        why it sits outside that element rather than inside it. */}
-    <InkDefs />
-
     <div class="container contact__inner">
       {/* TODO before launch: set data-endpoint to the real form handler.
           Until then the form composes an email instead — and says that is
@@ -90,6 +85,7 @@ const topics = [
           <p class="field__hint" id="message-hint">{t('contact.form.messageHint')}</p>
           <textarea id="message" name="message" rows="6" aria-describedby="message-hint" required
           ></textarea>
+          <AsciiCallout text={t('contact.callout')} />
         </div>
 
         {/* Honeypot. Hidden from sight and from assistive technology, so no
@@ -108,11 +104,12 @@ const topics = [
       <aside class="direct">
         {/* This is the lightest page on the site — 91 words against 296 on the
             next — and a form is controls, not reading. One large object at the
-            head of the direct panel is the weight it was missing. The envelope
-            because it is the one object here that means what the panel does.
+            head of the direct panel is the weight it was missing: the ASCII
+            envelope, because it is the one object here that means what the
+            panel does.
             Decorative by contract: aria-hidden, beside a real heading. */}
         <div class="direct__illo">
-          <Illustration name="envelope" />
+          <Ascii icon="envelope" variant="icon" />
         </div>
 
         <h2 class="direct__h">{t('contact.direct.h')}</h2>
@@ -167,7 +164,7 @@ const topics = [
   /* Larger than the cards' 7.5rem default: alone on the page rather than one
      of five. No drift — that belongs to the cards, which are links. */
   .direct__illo {
-    --illo-size: 10rem;
+    --ascii-cell: 15px;
     margin-block-end: var(--s4);
   }
 

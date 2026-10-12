@@ -70,6 +70,7 @@ export const ui = {
       'DesignActiv is a web agency for small businesses. We design and build your website, then help people find it, with branding, SEO, email and ongoing care when you need them.',
     'home.cta': 'Start a project',
     'home.cta.secondary': 'See prices',
+    'home.callout': 'yes, our prices are public',
     'closing.lead':
       'Tell us about it in a few lines — you’ll hear back, usually within a working day, and if it’s a fit you get a written scope with the price attached.',
 
@@ -115,6 +116,7 @@ export const ui = {
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Services — DesignActiv',
     'services.h1': 'What it costs, and what you get.',
+    'services.callout': 'start here',
     'services.lead':
       'One price to build your site, one to keep it looked after — and a person who answers when something needs to change.',
     'services.deliverables': 'What you get',
@@ -157,6 +159,7 @@ export const ui = {
     /* --- Work ----------------------------------------------------------- */
     'work.title': 'Work — DesignActiv',
     'work.h1': 'Proof, before the portfolio.',
+    'work.callout': 'you’re looking at it',
     'work.lead':
       'Our first client sites are being built now and will appear here once they launch. Until then, the best evidence of how we work is this site itself.',
 
@@ -203,6 +206,7 @@ export const ui = {
     /* --- Contact -------------------------------------------------------- */
     'contact.title': 'Contact — DesignActiv',
     'contact.h1': 'Tell us about your project.',
+    'contact.callout': 'short is fine',
     'contact.lead':
       'A few lines are enough to start. We reply to everything, usually within a working day.',
     'contact.form.name': 'Your name',
@@ -410,6 +414,7 @@ export const ui = {
       'A DesignActiv é uma agência web para pequenas empresas. Criamos e construímos seu site e ajudamos as pessoas a encontrá-lo, com identidade visual, SEO, e-mail e manutenção quando você precisar.',
     'home.cta': 'Começar um projeto',
     'home.cta.secondary': 'Ver preços',
+    'home.callout': 'sim, nossos preços são públicos',
     'closing.lead':
       'Conte em poucas linhas — você recebe uma resposta, normalmente em um dia útil, e, se fizer sentido, um escopo por escrito com o preço junto.',
 
@@ -455,6 +460,7 @@ export const ui = {
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Serviços — DesignActiv',
     'services.h1': 'Quanto custa, e o que você recebe.',
+    'services.callout': 'comece por aqui',
     'services.lead':
       'Um preço para construir o seu site, outro para cuidar dele depois — e uma pessoa que responde quando algo precisa mudar.',
     'services.deliverables': 'O que você recebe',
@@ -497,6 +503,7 @@ export const ui = {
     /* --- Work ----------------------------------------------------------- */
     'work.title': 'Trabalhos — DesignActiv',
     'work.h1': 'Provas, antes do portfólio.',
+    'work.callout': 'é este que você está vendo',
     'work.lead':
       'Nossos primeiros sites de clientes estão em construção e vão aparecer aqui quando forem ao ar. Até lá, a melhor prova de como trabalhamos é este próprio site.',
 
@@ -543,6 +550,7 @@ export const ui = {
     /* --- Contact -------------------------------------------------------- */
     'contact.title': 'Contato — DesignActiv',
     'contact.h1': 'Conte sobre o seu projeto.',
+    'contact.callout': 'curto já está ótimo',
     'contact.lead':
       'Poucas linhas já bastam para começar. Respondemos tudo, normalmente em um dia útil.',
     'contact.form.name': 'Seu nome',
