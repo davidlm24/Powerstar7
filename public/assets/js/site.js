@@ -381,49 +381,6 @@
 
   var asciiCalm = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* ---------- illustration shimmer --------------------------------------- */
-
-  /* The page figures (pre[data-shimmer], from Illo.astro) shimmer: a few
-     characters at a time step one shade up or down and back, like a screen
-     refreshing. Only figures on screen, only while the tab is visible, and
-     never for anyone who asked for less motion. The figure always returns
-     to the text it was built with. Edge glyphs (▀ ▄) are not on the ramp,
-     so they sit still and the drawing keeps its outline. */
-  var illoRamp = ' ░▒▓█';
-  var illoFigures = document.querySelectorAll('pre[data-shimmer]');
-  if (illoFigures.length && 'IntersectionObserver' in window) {
-    var illoOnScreen = [];
-    var illoBase = new Map();
-    var illoSeen = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        var at = illoOnScreen.indexOf(e.target);
-        if (e.isIntersecting && at < 0) illoOnScreen.push(e.target);
-        if (!e.isIntersecting && at >= 0) {
-          illoOnScreen.splice(at, 1);
-          e.target.textContent = illoBase.get(e.target);
-        }
-      });
-    });
-    illoFigures.forEach(function (pre) {
-      illoBase.set(pre, pre.textContent);
-      illoSeen.observe(pre);
-    });
-    setInterval(function () {
-      if (asciiCalm.matches || document.hidden) return;
-      illoOnScreen.forEach(function (pre) {
-        if (pre.dataset.decoding) return;
-        var chars = illoBase.get(pre).split('');
-        var n = Math.max(4, Math.floor(chars.length * 0.012));
-        for (var k = 0; k < n; k++) {
-          var p = Math.floor(Math.random() * chars.length);
-          var r = illoRamp.indexOf(chars[p]);
-          if (r > 0) chars[p] = illoRamp.charAt(Math.max(1, Math.min(illoRamp.length - 1, r + (Math.random() < 0.5 ? -1 : 1))));
-        }
-        pre.textContent = chars.join('');
-      });
-    }, 170);
-  }
-
   /* ---------- reveal on scroll ------------------------------------------- */
 
   /* The Services icons come in from the left as their row scrolls into

@@ -16,52 +16,31 @@
    render (ink = brightness) for the inverted bands. The coarse frames the
    hover resolves through are inlined in the manifest.
 
-   FIGURES — the page headings and the two asides stay HALF-BLOCK TEXT
-   (space ░ ▒ ▓ █ ▀ ▄), shimmering like before.
+   FIGURES — the page headings and the two asides get the same treatment
+   (David: "faz as figuras dos cabeçalhos em adesivo D2 também"), light
+   ground only, no hover frames: they are background decoration, faded
+   towards the copy by the page's own masks.
 
    Written:
-     public/assets/illo/<name>[-dark][@2x].png   (icons)
-     src/data/illo.json                          (everything) */
+     public/assets/illo/<name>[-dark][@2x].png
+     src/data/illo.json */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 import { ICONS } from './illo/scenes-icons.mjs';
 import { PAGES } from './illo/scenes-pages.mjs';
 import { computeField, inkFor, sampler, ditherFS, ditherBayer } from './illo/field.mjs';
+/* eslint-disable no-unused-vars -- ditherBayer draws the coarse hover frames */
 import { png1 } from './illo/png.mjs';
 
-const ADV = 0.6;
 const KINDS = {
-  field: { cols: 110, box: [456, 344], zoom: 1.02 },
-  aside: { cols: 64, box: [244, 226], zoom: 1.02 },
+  field: { box: [456, 344] },
+  aside: { box: [244, 226] },
 };
 const ICON_W = 224, ICON_H = 172;              // the 1x slot
-const SHADES = ' ░▒▓█';
 
 const OUT = 'public/assets/illo';
 mkdirSync(OUT, { recursive: true });
 const uri = (b) => 'data:image/png;base64,' + b.toString('base64');
-
-/** Half-block text from a lit field (the figures). */
-function drawText(field, cols, rows, tone) {
-  const ink = inkFor(field, 'soft', tone);
-  const at = sampler(ink, field.W, field.H);
-  const sx = field.W / cols, sy = field.H / (rows * 2);
-  const lines = [];
-  for (let r = 0; r < rows; r++) {
-    let line = '';
-    for (let c = 0; c < cols; c++) {
-      const t = at(c * sx, r * 2 * sy, (c + 1) * sx, (r * 2 + 1) * sy);
-      const b = at(c * sx, (r * 2 + 1) * sy, (c + 1) * sx, (r * 2 + 2) * sy);
-      const lt = Math.round(t * 4), lb = Math.round(b * 4);
-      let ch;
-      if (Math.abs(lt - lb) <= 1) ch = SHADES[Math.round(((t + b) / 2) * 4)];
-      else ch = t > 0.5 ? (b > 0.5 ? '█' : '▀') : b > 0.5 ? '▄' : SHADES[Math.round(Math.max(t, b) * 2)];
-      line += ch;
-    }
-    lines.push(line.replace(/\s+$/, '') || ' ');
-  }
-  return lines.join('\n');
-}
 
 const manifest = {};
 const t0 = Date.now();
@@ -99,16 +78,23 @@ for (const name of Object.keys(ICONS)) {
   manifest[name] = entry;
 }
 
-/* --- the half-block figures --------------------------------------------- */
+/* --- the figure stickers ------------------------------------------------- */
 for (const [kind, names] of [['field', ['services', 'work', 'about', 'contact', 'legal', 'privacy', 'nf']], ['aside', ['fit', 'question']]]) {
-  const { cols, box, zoom } = KINDS[kind];
-  const [W, H] = box;
-  const rows = Math.round((H * cols * ADV) / W);
+  const [W, H] = KINDS[kind].box;
   for (const name of names) {
-    const sc = (x, y) => PAGES[name](0.5 + (x - 0.5) * zoom, 0.5 + (y - 0.5) * zoom);
-    const field = computeField(sc, cols * 3, rows * 6, W / H);
-    manifest[name] = { kind, cols, rows, light: drawText(field, cols, rows, 'light') };
-    console.log(`${name}: ${cols}x${rows} text`);
+    const sc = (x, y) => PAGES[name](0.5 + (x - 0.5) * 1.06, 0.5 + (y - 0.5) * 1.06);
+    const field = computeField(sc, W * 2, H * 2, W / H);
+    const ink2 = inkFor(field, 'soft', 'light');
+    const at2 = sampler(ink2, field.W, field.H);
+    const ink1 = new Float32Array(W * H);
+    for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) ink1[j * W + i] = at2(i * 2, j * 2, i * 2 + 2, j * 2 + 2);
+    const x2 = png1(ditherFS(ink2, field.W, field.H), field.W, field.H);
+    const x1 = png1(ditherFS(ink1, W, H), W, H);
+    writeFileSync(`${OUT}/${name}.png`, x1);
+    writeFileSync(`${OUT}/${name}@2x.png`, x2);
+    bytes += x1.length + x2.length;
+    manifest[name] = { kind, w: W, h: H };
+    console.log(`${name}: ${(x1.length / 1024).toFixed(1)} KB, @2x ${(x2.length / 1024).toFixed(1)} KB`);
   }
 }
 
