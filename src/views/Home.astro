@@ -110,7 +110,7 @@ const position = [
               <a class="lane" data-decode-zone href={`${route('services', lang)}#${s.key}`}>
                 <span class="lane__n">{s.n}</span>
                 <div class="lane__text">
-                  <h3 class="lane__name">{s.name}</h3>
+                  <h3 class="lane__name">{s.name} <span class="lane__go" aria-hidden="true">&rarr;</span></h3>
                   <p class="lane__b">{s.b}</p>
                 </div>
                 <span class="lane__art">
@@ -118,7 +118,6 @@ const position = [
                     <Illo name={s.key} variant="icon" />
                   </span>
                 </span>
-                <span class="lane__go" aria-hidden="true">&rarr;</span>
               </a>
             </li>
           ))
@@ -409,8 +408,8 @@ const position = [
      only the art centres on the lane. */
   .lane {
     display: grid;
-    grid-template-columns: 3.5rem minmax(0, 1fr) 14rem 2rem;
-    grid-template-areas: 'n text art go';
+    grid-template-columns: 3.5rem minmax(0, 1fr) 15rem;
+    grid-template-areas: 'n text art';
     align-items: baseline;
     column-gap: var(--s4);
     padding-block: var(--s4);
@@ -447,16 +446,22 @@ const position = [
     color: var(--fg-muted);
   }
 
-  /* The 100-column art at 3.7px fills the 14rem track. */
+  /* The 100-column art at 4px fills the 15rem track — and reaches
+     --line-gap past the content edge, so its cut edge lands exactly ON the
+     page's rail. Decoration may touch a line; content may not. The icons
+     come in from the right, like the drawings themselves. */
   .lane__art {
     grid-area: art;
     align-self: center;
-    --illo-cell: 3.7px;
+    --illo-cell: 4px;
+    --reveal-wait: 2rem;
+    margin-inline-end: calc(-1 * var(--line-gap));
   }
 
+  /* Inline after the name now: the end of the lane belongs to the art,
+     which is cut by the rail there. */
   .lane__go {
-    grid-area: go;
-    justify-self: end;
+    display: inline-block;
     font-size: var(--t-h3);
     line-height: 1;
     /* --accent-fn, not --accent: a graphic carrying meaning at small size,
@@ -498,24 +503,21 @@ const position = [
      than squeezed. It is decorative; the lane says everything without it. */
   @media (max-width: 60rem) {
     .lane {
-      grid-template-columns: 2.5rem minmax(0, 1fr) 9rem 1.5rem;
+      grid-template-columns: 2.5rem minmax(0, 1fr) 9rem;
       column-gap: var(--s3);
     }
 
     .lane__art {
       --illo-cell: 2.4px;
-      /* The gap to the lane name is only --s3 here; the full 2rem waiting
-         offset would park the (invisible) icon box over the heading. */
-      --reveal-wait: -0.75rem;
     }
   }
 
   @media (max-width: 47.99rem) {
     .lane {
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr);
       grid-template-areas:
-        'n go'
-        'text text';
+        'n'
+        'text';
       row-gap: var(--s2);
     }
 

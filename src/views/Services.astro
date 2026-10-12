@@ -517,9 +517,13 @@ const faqs = [
      fills the column (David: bigger, with good details of the object).
      Below 60rem the column collapses into the flow, so the icon goes the
      way the home lanes' art does. */
+  /* The art's cut edge lands ON the divider between the columns, and the
+     reveal comes in from the right, like the drawings themselves. */
   .svc__art {
     margin-block-start: var(--s4);
     --illo-cell: clamp(2.4px, 0.28vw, 4px);
+    --reveal-wait: 2rem;
+    margin-inline-end: calc(-1 * var(--col-pad));
   }
 
   @media (max-width: 60rem) {

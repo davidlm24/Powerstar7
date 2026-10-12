@@ -1,10 +1,9 @@
 ---
 /* One illustration: half-block text (scripts/illustrations.mjs), lit 3D
-   scenes drawn almost flat in space ░ ▒ ▓ █ ▀ ▄. Text, so the colour is the
-   page's and the animations are the kit's own: icons sit faint and muted at
-   rest and DECODE into the full blue on hover (site.js + the zone styles);
-   the larger figures shimmer. In a dark band (.invert) an icon uses its
-   dark-ground render, in white.
+   scenes in space ░ ▒ ▓ █ ▀ ▄. The icons are flat 2D drawings, oversized
+   and cut at their right edge, always in blue; everything shimmers like the
+   page figures, and an icon also DECODEs — the character flicker — when its
+   zone is hovered or focused (site.js).
 
    variant:
    - icon:  a service icon, in its lane or column; drifts in on reveal when
@@ -28,14 +27,11 @@ interface Props {
 const { name, variant, onDark, class: className } = Astro.props;
 const entry = manifest[name] as { cols: number; rows: number; light: string; dark?: string };
 const text = (onDark && entry.dark) || entry.light;
-/* Each icon starts its float at its own moment, so a row never moves in step. */
-const offset = ((Object.keys(manifest).indexOf(name) * 1.7) % 7).toFixed(1);
 ---
 
 <div class:list={['illo', `illo--${variant}`, className]} aria-hidden="true" data-nosnippet>
   <pre
-    style={`--sd:-${offset}s`}
     data-decode={variant === 'icon' ? '' : undefined}
-    data-shimmer={variant !== 'icon' ? '' : undefined}
+    data-shimmer
     data-cols={entry.cols}>{text}</pre>
 </div>

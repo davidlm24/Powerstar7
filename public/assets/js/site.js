@@ -411,6 +411,7 @@
     setInterval(function () {
       if (asciiCalm.matches || document.hidden) return;
       illoOnScreen.forEach(function (pre) {
+        if (pre.dataset.decoding) return;
         var chars = illoBase.get(pre).split('');
         var n = Math.max(4, Math.floor(chars.length * 0.012));
         for (var k = 0; k < n; k++) {
@@ -461,6 +462,7 @@
     function decode() {
       if (asciiCalm.matches || document.hidden) return;
       cancelAnimationFrame(frame);
+      pre.dataset.decoding = '1';
       var duration = 520;
       var settle = [];
       var col = 0;
@@ -481,13 +483,14 @@
         }
         pre.textContent = out;
         if (elapsed < duration) frame = requestAnimationFrame(step);
-        else pre.textContent = base;
+        else { pre.textContent = base; delete pre.dataset.decoding; }
       })(start);
     }
     /* Leaving always settles it, so a decode cut short can never leave the
        icon scrambled. */
     function settle() {
       cancelAnimationFrame(frame);
+      delete pre.dataset.decoding;
       pre.textContent = base;
     }
     zone.addEventListener('mouseenter', decode);

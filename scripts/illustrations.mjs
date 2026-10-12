@@ -22,7 +22,7 @@
    <pre>, so the characters ARE the picture and gzip eats the repetition. */
 import { writeFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
-import { ICONS } from './illo/scenes-icons.mjs';
+import { FLAT_ICONS, flatInk } from './illo/scenes-icons-flat.mjs';
 import { PAGES } from './illo/scenes-pages.mjs';
 import { computeField, inkFor, sampler } from './illo/field.mjs';
 
@@ -36,12 +36,15 @@ const ADV = 0.6;
    - field: the page-heading figure at its widest (456x344);
    - aside: the second figure on Home and Services (244x226). */
 const KINDS = {
-  icon: { cols: 100, box: [224, 172], dark: true, zoom: 1.1 },
+  /* Icons are FLAT 2D drawings (scenes-icons-flat.mjs), oversized and cut
+     at the canvas's right edge, one render for every ground: the page
+     colours the text. The figures keep the softly lit 3D scenes. */
+  icon: { cols: 100, box: [224, 172], flat: true, zoom: 1 },
   field: { cols: 110, box: [456, 344], zoom: 1.02 },
   aside: { cols: 64, box: [244, 226], zoom: 1.02 },
 };
 const LIST = [
-  ...['web', 'brand', 'seo', 'email', 'hosting'].map((name) => ({ name, kind: 'icon', scene: ICONS[name] })),
+  ...['web', 'brand', 'seo', 'email', 'hosting'].map((name) => ({ name, kind: 'icon', scene: FLAT_ICONS[name] })),
   ...['services', 'work', 'about', 'contact', 'legal', 'privacy', 'nf'].map((name) => ({ name, kind: 'field', scene: PAGES[name] })),
   ...['fit', 'question'].map((name) => ({ name, kind: 'aside', scene: PAGES[name] })),
 ];
@@ -73,19 +76,47 @@ function draw(field, cols, rows, tone) {
   return lines.join('\n');
 }
 
+/** A flat drawing, sampled straight to half-blocks: no lighting at all.
+    The scene's x runs over the canvas's aspect (right edge = the cut). */
+function drawFlat(scene, cols, rows, R) {
+  const ink = flatInk(scene);
+  const lines = [];
+  for (let r = 0; r < rows; r++) {
+    let line = '';
+    for (let c = 0; c < cols; c++) {
+      let t = 0, b = 0;
+      for (const u of [0.25, 0.75]) {
+        t += ink(((c + u) / cols) * R, (r * 2 + 0.5) / (rows * 2)) / 2;
+        b += ink(((c + u) / cols) * R, (r * 2 + 1.5) / (rows * 2)) / 2;
+      }
+      const lt = Math.round(t * 4), lb = Math.round(b * 4);
+      let ch;
+      if (Math.abs(lt - lb) <= 1) ch = SHADES[Math.round(((t + b) / 2) * 4)];
+      else ch = t > 0.5 ? (b > 0.5 ? '█' : '▀') : b > 0.5 ? '▄' : SHADES[Math.round(Math.max(t, b) * 2)];
+      line += ch;
+    }
+    lines.push(line.replace(/\s+$/, '') || ' ');
+  }
+  return lines.join('\n');
+}
+
 const manifest = {};
 const t0 = Date.now();
 for (const { name, kind, scene } of LIST) {
-  const { cols, box, dark, zoom } = KINDS[kind];
+  const { cols, box, flat, zoom } = KINDS[kind];
   const [W, H] = box;
   const rows = Math.round((H * cols * ADV) / W);
-  // zoomed out a touch, so nothing is cut at the frame
-  const sc = (x, y) => scene(0.5 + (x - 0.5) * zoom, 0.5 + (y - 0.5) * zoom);
-  const field = computeField(sc, cols * 3, rows * 6, W / H);
-  const entry = { kind, cols, rows, light: draw(field, cols, rows, 'light') };
-  if (dark) entry.dark = draw(field, cols, rows, 'dark');
+  let entry;
+  if (flat) {
+    entry = { kind, cols, rows, light: drawFlat(scene, cols, rows, (cols * ADV) / rows) };
+  } else {
+    // zoomed out a touch, so nothing is cut at the frame
+    const sc = (x, y) => scene(0.5 + (x - 0.5) * zoom, 0.5 + (y - 0.5) * zoom);
+    const field = computeField(sc, cols * 3, rows * 6, W / H);
+    entry = { kind, cols, rows, light: draw(field, cols, rows, 'light') };
+  }
   manifest[name] = entry;
-  console.log(`${name}: ${cols}x${rows}${entry.dark ? ' +dark' : ''}`);
+  console.log(`${name}: ${cols}x${rows}${flat ? ' flat' : ''}`);
 }
 const json = JSON.stringify(manifest, null, 1) + '\n';
 writeFileSync('src/data/illo.json', json);

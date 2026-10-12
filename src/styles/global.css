@@ -414,52 +414,20 @@ a:hover { text-decoration-thickness: 2px; }
   white-space: pre;
 }
 
-/* Icons: barely there at rest, and they DECODE into the full blue on hover
-   or keyboard focus of their zone — site.js flickers the characters while
-   these colours cross over (David: "while idle it's less visible, on hover
-   it decodes to be more visible in the blue"). */
+/* Icons: flat, just blue, incomplete on purpose — each drawing runs off
+   its own right edge, and that edge sits ON the layout's line, which cuts
+   it (David: "vindo da direita, cortando mesmo na borda"). The box
+   shrink-wraps the art and hugs the right, so the cut lands on the line.
+   Hover plays only the decode (site.js); there is no state change. The
+   idle loop is the same shimmer the page figures run. */
 .illo--icon pre {
-  color: var(--fg-muted);
-  opacity: 0.45;
-  transition:
-    color 300ms var(--ease),
-    opacity 300ms var(--ease);
+  width: fit-content;
+  color: var(--accent);
+  opacity: 0.85;
 }
 
-[data-decode-zone]:hover .illo--icon pre,
-[data-decode-zone]:focus-visible .illo--icon pre {
-  color: var(--accent-fn);
-  opacity: 1;
-}
-
-/* On a dark band the icon stays white (David), dim at rest, full on hover —
-   the zone and the band are the same element on the Services rows, hence
-   both selector shapes. */
 .invert .illo--icon pre {
-  color: var(--on-ink);
-  opacity: 0.3;
-}
-
-.invert[data-decode-zone]:hover .illo--icon pre,
-.invert[data-decode-zone]:focus-visible .illo--icon pre,
-.invert [data-decode-zone]:hover .illo--icon pre,
-.invert [data-decode-zone]:focus-visible .illo--icon pre {
-  color: var(--on-ink);
-  opacity: 1;
-}
-
-/* The loop: icons float a few pixels, each starting at its own moment
-   (--sd, from Illo.astro), so a row never moves in step. The figures get
-   their life from the shimmer (site.js) instead. */
-@media (prefers-reduced-motion: no-preference) {
-  .illo--icon pre {
-    animation: illo-float 7s ease-in-out var(--sd, 0s) infinite;
-  }
-}
-
-@keyframes illo-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+  color: var(--on-ink-blue);
 }
 
 /* The page figure. Right of the heading, behind it, fading to nothing towards
@@ -537,16 +505,21 @@ a:hover { text-decoration-thickness: 2px; }
    blue, the darker of the accent pair, so blue art keeps real contrast on
    the pale wash; on a dark band it is drawn in white. Purple's
    second fenced use (tokens.css). Decoration by contract: aria-hidden. */
+/* The wash hugs its art and anchors right, so the drawing's cut edge is
+   the box's edge, flush on the layout's line. */
 .icon-wash {
   position: relative;
-  display: grid;
-  place-items: center;
+  display: block;
+  width: fit-content;
+  margin-inline-start: auto;
 }
 
+/* The glow bleeds up, down and left only: the right edge is the cut, and
+   a bleed there would push past the rail and scroll the page sideways. */
 .icon-wash::before {
   content: '';
   position: absolute;
-  inset: -28% -20%;
+  inset: -26% 0 -26% -24%;
   background:
     radial-gradient(
       42% 46% at 64% 30%,
