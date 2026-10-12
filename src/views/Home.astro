@@ -113,8 +113,8 @@ const position = [
                   <p class="lane__b">{s.b}</p>
                 </div>
                 <span class="lane__art">
-                  <span class="icon-wash" aria-hidden="true">
-                    <Ascii icon={s.key} variant="icon" />
+                  <span class="icon-wash" aria-hidden="true" data-reveal>
+                    <Ascii icon={s.key} variant="icon" cols={88} rows={44} />
                   </span>
                 </span>
                 <span class="lane__go" aria-hidden="true">&rarr;</span>
@@ -441,11 +441,12 @@ const position = [
     color: var(--fg-muted);
   }
 
-  /* The 64-column canvas at 5.5px fills the 14rem track. */
+  /* The 88-column canvas at 4.2px fills the 14rem track: the same grid and
+     detail the Services rows carry. */
   .lane__art {
     grid-area: art;
     align-self: center;
-    --ascii-cell: 5.5px;
+    --ascii-cell: 4.2px;
   }
 
   .lane__go {
@@ -481,32 +482,9 @@ const position = [
     font-size: var(--t-small);
   }
 
-  /* --- The reveal ---------------------------------------------------------
-     Each lane's icon waits invisible at the end of the lane. On hover or
-     keyboard focus it comes in from the right — the soft hero-wash gradient
-     and the ink icon together, dissolving into the paper with no edge —
-     while the decode animation (site.js) flickers the icon into place.
-     Slower than --dur on purpose: a wash materializes, a control reacts.
-     With less motion asked for, it fades in where it stands, decoded. */
-  .lane :global(.icon-wash) {
-    opacity: 0;
-    transform: translateX(var(--wash-wait, 2rem));
-    transition:
-      opacity 320ms var(--ease),
-      transform 320ms var(--ease);
-  }
-
-  .lane:hover :global(.icon-wash),
-  .lane:focus-visible :global(.icon-wash) {
-    opacity: 1;
-    transform: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .lane :global(.icon-wash) {
-      transform: none;
-    }
-  }
+  /* The icons sit in the lanes at rest, like the Services rows: they drift
+     in from the left as their lane first scrolls into view (the shared
+     [data-reveal] behaviour, site.js), and the decode still plays on hover. */
 
   /* Narrower, the art track shrinks; below 48rem it goes. There is no room
      for it beside copy set at 30px, so the lane stacks — index and arrow on
@@ -519,15 +497,10 @@ const position = [
     }
 
     .lane__art {
-      --ascii-cell: 3.5px;
-    }
-
-    /* The waiting position scales with the track: at 2rem the parked icon
-       box reaches the arrow column here. Invisible, but boxes should not
-       overlap even at rest. A variable, so the reduced-motion transform:
-       none above still wins. */
-    .lane__art {
-      --wash-wait: 1rem;
+      --ascii-cell: 2.7px;
+      /* The gap to the lane name is only --s3 here; the full 2rem waiting
+         offset would park the (invisible) icon box over the heading. */
+      --reveal-wait: -0.75rem;
     }
   }
 

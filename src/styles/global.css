@@ -498,7 +498,9 @@ a:hover { text-decoration-thickness: 2px; }
    less motion asked for, nothing here applies and the icon is simply there. */
 .reveal-wait {
   opacity: 0;
-  transform: translateX(-2rem);
+  /* A variable: where a track runs tight against type, the waiting box must
+     not reach into it even invisibly. */
+  transform: translateX(var(--reveal-wait, -2rem));
   transition:
     opacity 480ms var(--ease),
     transform 480ms var(--ease);
