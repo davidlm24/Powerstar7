@@ -423,16 +423,18 @@
 
   /* ---------- ASCII icon decode ------------------------------------------ */
 
-  /* On hover or keyboard focus, a service lane's icon decodes into place:
-     every character flickers through the ramp and settles, sweeping left to
-     right with a little scatter, over about half a second. It always ends on
-     the icon it was built as. Skipped for anyone who asked for less motion. */
+  /* On hover or keyboard focus, an icon decodes into place: every
+     character flickers through the ramp and settles, sweeping left to right
+     with a little scatter, over about half a second. It always ends on the
+     icon it was built as. Skipped for anyone who asked for less motion.
+     A zone is whatever hoverable block holds the icon: a home lane, a
+     Services row, the contact aside. */
   var decodeGlyphs = '.:-=+*#%@';
-  document.querySelectorAll('.lane').forEach(function (lane) {
-    var pre = lane.querySelector('pre[data-decode]');
+  document.querySelectorAll('[data-decode-zone]').forEach(function (zone) {
+    var pre = zone.querySelector('pre[data-decode]');
     if (!pre) return;
     var base = pre.textContent;
-    var width = Number(pre.getAttribute('data-cols')) || 46;
+    var width = Number(pre.getAttribute('data-cols')) || 36;
     var frame = 0;
     function decode() {
       if (asciiCalm.matches || document.hidden) return;
@@ -466,9 +468,9 @@
       cancelAnimationFrame(frame);
       pre.textContent = base;
     }
-    lane.addEventListener('mouseenter', decode);
-    lane.addEventListener('focus', decode);
-    lane.addEventListener('mouseleave', settle);
-    lane.addEventListener('blur', settle);
+    zone.addEventListener('mouseenter', decode);
+    zone.addEventListener('focus', decode);
+    zone.addEventListener('mouseleave', settle);
+    zone.addEventListener('blur', settle);
   });
 })();

@@ -15,7 +15,7 @@
    Decoration, by contract: aria-hidden, and data-nosnippet so search engines
    never quote a row of dots as the page's summary. The text is plain ASCII, so
    the page's own monospace font draws it and nothing is downloaded. */
-import { renderFigure, renderIcon, type FigureName, type IconName } from '../lib/ascii';
+import { renderFigure, renderIcon, ICON_COLS, ICON_ROWS, type FigureName, type IconName } from '../lib/ascii';
 import { renderFlow } from '../lib/flow';
 
 interface Props {
@@ -31,7 +31,7 @@ const { figure, icon, variant, class: className } = Astro.props;
 const size = {
   field: [84, 38],
   aside: [54, 30],
-  icon: [46, 19],
+  icon: [ICON_COLS, ICON_ROWS], // hand-set art, one shared canvas
   flow: [130, 66],
 }[variant];
 const cols = Astro.props.cols ?? size[0];
@@ -39,7 +39,7 @@ const rows = Astro.props.rows ?? size[1];
 
 let text: string;
 if (variant === 'flow') text = renderFlow(cols, rows, 0);
-else if (variant === 'icon' && icon) text = renderIcon(icon, cols, rows);
+else if (variant === 'icon' && icon) text = renderIcon(icon);
 else if (figure) text = renderFigure(figure, cols, rows, { dither: variant === 'field' ? 0.35 : 0.3 });
 else throw new Error(`Ascii (${variant}) needs a figure or an icon`);
 ---

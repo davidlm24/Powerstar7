@@ -450,6 +450,23 @@ a:hover { text-decoration-thickness: 2px; }
   }
 }
 
+/* The icon panel: the one place the ASCII sits on its own ground rather than
+   on the paper. A square-cornered purple-to-blue block — purple's second
+   fenced use, David's ask (see tokens.css) — with the hand-set icon in light
+   paper type on top. The two hues are near neighbours, so the gradient stays
+   slight. Decoration by contract: every panel carries aria-hidden, and the
+   light-on-gradient pairing is never asked to pass as text. */
+.icon-panel {
+  display: grid;
+  place-items: center;
+  padding: var(--s3);
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+}
+
+.icon-panel .ascii pre {
+  color: rgb(252 250 246 / 0.95);
+}
+
 /* A callout: "^ start here". Small text carrying meaning, so --accent-fn. */
 .callout {
   margin: 0;

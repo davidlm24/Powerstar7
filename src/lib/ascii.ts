@@ -94,26 +94,25 @@ const FIGURES = {
     return max(v, glow(x, y, 0.5, 0.5, 0.12));
   },
 
-  /** Work: this very page as a wireframe, down to the blue full stop. */
+  /** Work: this very page in a browser, down to the blue full stop. Redrawn
+      bolder after David found the first wireframe unrecognizable: a real
+      browser bar with its dots, a solid headline, nothing fainter than 0.6. */
   work: (x, y) => {
-    const win = rbox(x, y, 0.5, 0.5, 0.36, 0.42, 0.02);
-    let v = edge(win, 0.009);
-    v = max(v, edge(Math.abs(y - 0.15), 0.005) * (win < 0 ? 0.8 : 0));               // nav rule
-    v = max(v, fill(box(x, y, 0.22, 0.12, 0.05, 0.012), 0.008) * 0.85);               // wordmark
-    for (const nx of [0.56, 0.63, 0.7, 0.77]) v = max(v, fill(box(x, y, nx, 0.12, 0.022, 0.006), 0.006) * 0.55);
-    v = max(v, fill(box(x, y, 0.36, 0.24, 0.19, 0.022), 0.01) * 0.95);               // headline
-    v = max(v, fill(box(x, y, 0.33, 0.3, 0.16, 0.022), 0.01) * 0.95);
-    v = max(v, fill(Math.hypot(x - 0.52, y - 0.305) - 0.012, 0.008));                // the full stop
-    for (const ly of [0.37, 0.4, 0.43]) v = max(v, edge(seg(x, y, 0.17, ly, 0.6, ly), 0.005) * 0.45);
-    v = max(v, fill(box(x, y, 0.23, 0.5, 0.06, 0.022), 0.008) * 0.9);                // buttons
-    v = max(v, edge(box(x, y, 0.37, 0.5, 0.06, 0.022), 0.005) * 0.65);
-    for (const cx of [0.27, 0.5, 0.73]) {                                             // three cards
-      const card = box(x, y, cx, 0.7, 0.095, 0.12);
-      v = max(v, edge(card, 0.006) * 0.7, card < 0 && y < 0.66 ? 0.25 : 0);
-      v = max(v, edge(seg(x, y, cx - 0.07, 0.75, cx + 0.05, 0.75), 0.005) * 0.4);
-    }
-    v = max(v, fill(box(x, y, 0.84, 0.32, 0.006, 0.08), 0.006) * 0.5);              // scroll bar
-    return max(v, glow(x, y, 0.5, 0.5, 0.1));
+    const win = box(x, y, 0.5, 0.52, 0.38, 0.42);
+    let v = edge(win, 0.011);
+    const bar = box(x, y, 0.5, 0.16, 0.38, 0.06);                                     // browser bar
+    v = max(v, bar < 0 ? 0.22 : 0, edge(bar, 0.008));
+    for (const dx of [0.17, 0.22, 0.27]) v = max(v, fill(Math.hypot(x - dx, y - 0.16) - 0.021, 0.012));
+    v = max(v, fill(box(x, y, 0.57, 0.16, 0.22, 0.028), 0.014) * 0.9);                // address field
+    v = max(v, fill(box(x, y, 0.38, 0.35, 0.21, 0.032), 0.012));                      // headline
+    v = max(v, fill(box(x, y, 0.33, 0.44, 0.16, 0.032), 0.012));
+    v = max(v, fill(Math.hypot(x - 0.525, y - 0.45) - 0.02, 0.012));                  // the full stop
+    for (const ly of [0.56, 0.6]) v = max(v, edge(seg(x, y, 0.17, ly, 0.58, ly), 0.007) * 0.65); // lead
+    v = max(v, fill(box(x, y, 0.26, 0.72, 0.1, 0.04), 0.012));                        // solid button
+    v = max(v, edge(box(x, y, 0.52, 0.72, 0.1, 0.04), 0.008) * 0.9);                  // quiet button
+    v = max(v, edge(box(x, y, 0.77, 0.66, 0.08, 0.14), 0.008) * 0.8);                 // a card aside
+    v = max(v, fill(box(x, y, 0.77, 0.61, 0.055, 0.022), 0.012) * 0.95);
+    return v;
   },
 
   /** About: a magnifier over a field of dots, close enough to see the detail. */
@@ -141,8 +140,7 @@ const FIGURES = {
     const big = rbox(x, y, 0.44, 0.38, 0.32, 0.2, 0.06);
     let v = edge(big, 0.01);
     v = max(v, edge(seg(x, y, 0.26, 0.58, 0.2, 0.7), 0.01), edge(seg(x, y, 0.2, 0.7, 0.36, 0.58), 0.01));
-    [0.3, 0.37, 0.44].forEach((ly, k) => v = max(v, edge(seg(x, y, 0.2, ly, [0.66, 0.6, 0.42][k], ly), 0.007) * 0.65));
-    v = max(v, big < 0 ? 0.12 : 0);
+    [0.3, 0.37, 0.44].forEach((ly, k) => v = max(v, edge(seg(x, y, 0.2, ly, [0.66, 0.6, 0.42][k], ly), 0.008) * 0.85));
     const small = rbox(x, y, 0.66, 0.74, 0.17, 0.09, 0.06);                          // the reply
     v = max(v, edge(small, 0.009) * 0.85, edge(seg(x, y, 0.78, 0.82, 0.84, 0.9), 0.009) * 0.85);
     for (const dx of [0.58, 0.66, 0.74]) v = max(v, fill(Math.hypot(x - dx, y - 0.74) - 0.02, 0.012));
@@ -230,73 +228,111 @@ const FIGURES = {
     return max(v, glow(x, y, 0.5, 0.5, 0.12));
   },
 
-  /* --- Service icons: smaller, but drawn the same way ------------------- */
-
-  /** Web design and development: a browser with a page being built in it. */
-  'icon-web': (x, y) => {
-    const win = rbox(x, y, 0.5, 0.5, 0.42, 0.34, 0.03);
-    let v = edge(win, 0.02);
-    v = max(v, edge(Math.abs(y - 0.29), 0.012) * (win < 0 ? 0.8 : 0));
-    for (const cx of [0.15, 0.2, 0.25]) v = max(v, fill(Math.hypot(x - cx, y - 0.235) - 0.014, 0.012));
-    v = max(v, fill(box(x, y, 0.36, 0.44, 0.22, 0.06), 0.02) * 0.85);
-    v = max(v, edge(seg(x, y, 0.15, 0.58, 0.55, 0.58), 0.012) * 0.55, edge(seg(x, y, 0.15, 0.66, 0.45, 0.66), 0.012) * 0.55);
-    v = max(v, fill(box(x, y, 0.74, 0.62, 0.11, 0.1), 0.02) * 0.4);
-    v = max(v, win < 0 ? 0.08 : 0);
-    return v;
-  },
-  /** Branding: a lit bulb, an idea taking shape. */
-  'icon-brand': (x, y) => {
-    const r = Math.hypot(x - 0.5, y - 0.4);
-    let v = edge(r - 0.2, 0.02);
-    v = max(v, r < 0.2 ? 0.15 + 0.35 * clamp(1 - r / 0.2) : 0);                      // glow inside
-    v = max(v, edge(seg(x, y, 0.44, 0.48, 0.47, 0.36), 0.01) * 0.9, edge(seg(x, y, 0.47, 0.36, 0.5, 0.44), 0.01) * 0.9, edge(seg(x, y, 0.5, 0.44, 0.53, 0.36), 0.01) * 0.9, edge(seg(x, y, 0.53, 0.36, 0.56, 0.48), 0.01) * 0.9);
-    v = max(v, edge(box(x, y, 0.5, 0.68, 0.08, 0.06), 0.012));
-    for (const ly of [0.66, 0.7]) v = max(v, edge(seg(x, y, 0.43, ly, 0.57, ly), 0.008) * 0.8);
-    for (let k = 0; k < 8; k++) {                                                     // rays
-      const a = -Math.PI / 2 + (k - 3.5) * 0.42;
-      if (Math.sin(a) > 0.2) continue;
-      v = max(v, edge(seg(x, y, 0.5 + Math.cos(a) * 0.27, 0.4 + Math.sin(a) * 0.27, 0.5 + Math.cos(a) * 0.36, 0.4 + Math.sin(a) * 0.36), 0.012) * 0.8);
-    }
-    return v;
-  },
-  /** SEO: a magnifier finding the right page. */
-  'icon-seo': (x, y) => {
-    const r = Math.hypot(x - 0.44, y - 0.42);
-    let v = edge(r - 0.22, 0.022);
-    v = max(v, r < 0.2 ? 0.1 : 0, r < 0.2 && r > 0.12 && x < 0.4 && y < 0.4 ? 0.5 : 0);
-    v = max(v, edge(seg(x, y, 0.33, 0.4, 0.55, 0.4), 0.01) * 0.6, edge(seg(x, y, 0.33, 0.47, 0.5, 0.47), 0.01) * 0.6);
-    v = max(v, edge(seg(x, y, 0.6, 0.58, 0.82, 0.8), 0.04));
-    return v;
-  },
-  /** Email and automation: an envelope with a letter coming out. */
-  'icon-email': (x, y) => {
-    const env = box(x, y, 0.5, 0.6, 0.38, 0.24);
-    const letter = box(x, y, 0.5, 0.42, 0.28, 0.2);
-    let v = 0;
-    if (letter < 0 && y < 0.5) v = max(v, 0.12);
-    v = max(v, edge(letter, 0.012) * (y < 0.5 ? 0.85 : 0));
-    v = max(v, edge(seg(x, y, 0.3, 0.32, 0.66, 0.32), 0.009) * 0.6, edge(seg(x, y, 0.3, 0.39, 0.58, 0.39), 0.009) * 0.6);
-    v = max(v, edge(env, 0.016));
-    v = max(v, edge(seg(x, y, 0.12, 0.36, 0.5, 0.62), 0.014) * 0.9, edge(seg(x, y, 0.88, 0.36, 0.5, 0.62), 0.014) * 0.9);
-    v = max(v, env < 0 && y > 0.5 ? 0.14 : 0);
-    return v;
-  },
-  /** Website care: a plug, connected and kept running. */
-  'icon-hosting': (x, y) => {
-    const body = rbox(x, y, 0.42, 0.4, 0.14, 0.16, 0.04);
-    let v = edge(body, 0.016);
-    v = max(v, body < 0 ? 0.2 + 0.3 * clamp((0.5 - x) / 0.3) : 0);
-    v = max(v, edge(seg(x, y, 0.37, 0.24, 0.37, 0.1), 0.02), edge(seg(x, y, 0.47, 0.24, 0.47, 0.1), 0.02));
-    const cable = Math.abs(y - (0.56 + 0.18 * (x - 0.42) + 0.05 * Math.sin((x - 0.42) * 14)));
-    if (x > 0.42 && x < 0.92) v = max(v, edge(cable, 0.018));
-    v = max(v, edge(seg(x, y, 0.42, 0.56, 0.42, 0.6), 0.02));
-    for (const sx of [0.66, 0.74, 0.82]) v = max(v, edge(Math.hypot(x - sx, y - 0.3) - 0.03, 0.008) * 0.6); // spark of power
-    return v;
-  },
 } satisfies Record<string, Figure>;
 
 export type FigureName = keyof typeof FIGURES;
 export type IconName = 'web' | 'brand' | 'seo' | 'email' | 'hosting';
+
+/* --- Service icons: hand-set, not generated -------------------------------
+   The first icons were the old drawings pushed through the brightness field,
+   and at icon size that lost every silhouette — David's example was the
+   plug, "unrecognizable" (2026-10-12). These are set by hand, character by
+   character, so each one reads at a glance. They sit in light type on the
+   purple-to-blue panels (.icon-panel in global.css), and the decode
+   animation in site.js plays over them unchanged. Printable ASCII only,
+   like everything else in this file. */
+
+const ICON_ART: Record<IconName, string> = {
+  /** Web design & development: a browser, the page taking shape in it. */
+  web: `
+.________________________________.
+| o o o  .____________________.  |
+|________|____________________|__|
+|                                |
+|   @@@@@@@@@@@@@@@@@@@@@        |
+|   @@@@@@@@@@@@@@.              |
+|                                |
+|   ---------------------------  |
+|   -----------------------      |
+|                                |
+|   .________.   .________.      |
+|   |@@@@@@@@|   |        |      |
+|   '--------'   '--------'      |
+|________________________________|`,
+
+  /** Branding: a lit bulb — the idea, then the mark. */
+  brand: `
+       .        |        .
+        .       |       .
+         \\      |      /
+          \\     |     /
+       _.--"""""""""--._
+  -- .'                 '. --
+    /                     \\
+   |      \\         /      |
+---|       \\       /       |---
+   |        \\     /        |
+    \\        \\/\\/         /
+     '.       ||         .'
+       '-.____||_____.-'
+          |________|
+          |________|
+           '.____.'
+              --`,
+
+  /** SEO: a magnifier over the text, the right line found and enlarged. */
+  seo: `
+ ==============================
+ ===================
+           .--------.
+ ======   /          \\   =====
+         |    @@@@    |
+ ====    |    @@@@@@  |    ===
+         |            |
+ ======   \\          /   =====
+           '--------'\\
+                \\     \\
+ ==========      \\     \\
+                  \\_____\\
+ ===================
+ ==============================`,
+
+  /** Email & automation: an envelope, on its way. */
+  email: `
+     .__________________________.
+     |\\                        /|
+     | \\                      / |
+  -- |  \\                    /  |
+     |   \\                  /   |
+---- |    \\.______________./    |
+     |    /                \\    |
+  -- |   /                  \\   |
+     |  /                    \\  |
+     | /                      \\ |
+     |/________________________\\|`,
+
+  /** Website care: a shield with a check — looked after, handled. */
+  hosting: `
+   ._______________________.
+   |                       |
+   |                 @@@   |
+   |                @@@    |
+   '.     @@       @@@    .'
+     \\     @@     @@@     /
+      \\     @@   @@@     /
+       \\     @@ @@@     /
+        '.    @@@@    .'
+          \\    @@    /
+           '.       .'
+             \\     /
+              '.  .'
+                \\/`,
+};
+
+/* Every icon is centred on ONE canvas, so every panel on the site is the
+   same size whatever the art inside it. */
+export const ICON_COLS = 36;
+export const ICON_ROWS = 17;
 
 export interface RenderOptions {
   /** How strongly the ordered dither textures the shading, 0..1. */
@@ -328,8 +364,21 @@ export function renderFigure(name: FigureName, cols: number, rows: number, opts:
   return lines.join('\n');
 }
 
-export const renderIcon = (name: IconName, cols = 46, rows = 19) =>
-  renderFigure(`icon-${name}` as FigureName, cols, rows, { dither: 0.5 });
+/** An icon, centred on the shared ICON_COLS x ICON_ROWS canvas. */
+export function renderIcon(name: IconName): string {
+  const lines = ICON_ART[name].replace(/^\n/, '').split('\n').map((l) => l.replace(/\s+$/, ''));
+  const w = Math.max(...lines.map((l) => l.length));
+  const padX = Math.max(0, Math.floor((ICON_COLS - w) / 2));
+  const padY = Math.max(0, Math.floor((ICON_ROWS - lines.length) / 2));
+  const out: string[] = [];
+  for (let j = 0; j < ICON_ROWS; j++) {
+    const src = lines[j - padY] ?? '';
+    // Empty rows keep one space: a trailing run of truly empty lines collapses
+    // in <pre>, and the panels would then differ in height icon by icon.
+    out.push((' '.repeat(padX) + src).replace(/\s+$/, '') || ' ');
+  }
+  return out.join('\n');
+}
 
 /** A dotted divider row, long enough for the widest layout; CSS clips it. */
 export const DIVIDER = '.  :  '.repeat(64).trimEnd();

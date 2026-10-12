@@ -106,14 +106,16 @@ const position = [
         {
           services.map((s) => (
             <li>
-              <a class="lane" href={`${route('services', lang)}#${s.key}`}>
+              <a class="lane" data-decode-zone href={`${route('services', lang)}#${s.key}`}>
                 <span class="lane__n">{s.n}</span>
                 <div class="lane__text">
                   <h3 class="lane__name">{s.name}</h3>
                   <p class="lane__b">{s.b}</p>
                 </div>
                 <span class="lane__art">
-                  <Ascii icon={s.key} variant="icon" />
+                  <span class="icon-panel" aria-hidden="true">
+                    <Ascii icon={s.key} variant="icon" />
+                  </span>
                 </span>
                 <span class="lane__go" aria-hidden="true">&rarr;</span>
               </a>
@@ -439,7 +441,8 @@ const position = [
     color: var(--fg-muted);
   }
 
-  /* 46 columns at 7.5px fill the 14rem track. */
+  /* The 36-column canvas at 7.5px, plus the panel's padding, fills the
+     14rem track. */
   .lane__art {
     grid-area: art;
     align-self: center;
@@ -480,28 +483,29 @@ const position = [
   }
 
   /* --- The reveal ---------------------------------------------------------
-     Each lane's ASCII icon rests faint at the end of the lane. On hover or
-     keyboard focus it decodes into place: every character flickers through
-     the ramp and settles, left to right, as the icon turns blue (site.js).
-     With less motion asked for, it simply turns blue. */
-  .lane :global(.ascii--icon) {
-    opacity: 0.55;
-    transition: opacity var(--dur) var(--ease);
+     Each lane's icon panel waits invisible at the end of the lane. On hover
+     or keyboard focus it slides in from the right — the purple-to-blue block
+     with the hand-set icon in light type — while the decode animation
+     (site.js) flickers the icon into place character by character. With less
+     motion asked for, it fades in where it stands and the decode is skipped. */
+  .lane :global(.icon-panel) {
+    opacity: 0;
+    transform: translateX(1.25rem);
+    transition:
+      opacity var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
   }
 
-  .lane :global(.ascii--icon pre) {
-    color: var(--fg-muted);
-    transition: color var(--dur) var(--ease);
-  }
-
-  .lane:hover :global(.ascii--icon),
-  .lane:focus-visible :global(.ascii--icon) {
+  .lane:hover :global(.icon-panel),
+  .lane:focus-visible :global(.icon-panel) {
     opacity: 1;
+    transform: none;
   }
 
-  .lane:hover :global(.ascii--icon pre),
-  .lane:focus-visible :global(.ascii--icon pre) {
-    color: var(--accent-fn);
+  @media (prefers-reduced-motion: reduce) {
+    .lane :global(.icon-panel) {
+      transform: none;
+    }
   }
 
   /* Narrower, the art track shrinks; below 48rem it goes. There is no room
@@ -515,7 +519,7 @@ const position = [
     }
 
     .lane__art {
-      --ascii-cell: 5.2px;
+      --ascii-cell: 4px;
     }
   }
 

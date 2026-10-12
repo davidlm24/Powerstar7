@@ -101,7 +101,7 @@ const topics = [
         </div>
       </form>
 
-      <aside class="direct">
+      <aside class="direct" data-decode-zone>
         {/* This is the lightest page on the site — 91 words against 296 on the
             next — and a form is controls, not reading. One large object at the
             head of the direct panel is the weight it was missing: the ASCII
@@ -109,7 +109,9 @@ const topics = [
             panel does.
             Decorative by contract: aria-hidden, beside a real heading. */}
         <div class="direct__illo">
-          <Ascii icon="email" variant="icon" />
+          <div class="icon-panel" aria-hidden="true">
+            <Ascii icon="email" variant="icon" />
+          </div>
         </div>
 
         <h2 class="direct__h">{t('contact.direct.h')}</h2>
@@ -161,10 +163,12 @@ const topics = [
     padding-inline-start: var(--col-pad);
   }
 
-  /* Larger than the cards' 7.5rem default: alone on the page rather than one
-     of five. No drift — that belongs to the cards, which are links. */
+  /* Alone on the page rather than one of five, so it gets a little more
+     room. Capped so the gradient panel never runs full-bleed when the aside
+     spans the whole container on a phone. */
   .direct__illo {
     --ascii-cell: 6.5px;
+    max-width: 20rem;
     margin-block-end: var(--s4);
   }
 
