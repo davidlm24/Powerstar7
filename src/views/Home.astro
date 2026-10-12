@@ -77,8 +77,12 @@ const position = [
         <p class="lead measure">{t('home.lead')}</p>
         <div class="hero__actions">
           <a class="btn" href={route('contact', lang)}>{t('home.cta')}</a>
-          <a class="btn btn--quiet" href={`${route('services', lang)}#pricing`}>{t('home.cta.secondary')}</a>
-          <AsciiCallout text={t('home.callout')} align="end" />
+          {/* The callout belongs to this button, not to the row: when the
+              buttons stack on a narrow phone, it has to stay under "See prices". */}
+          <span class="hero__prices">
+            <a class="btn btn--quiet" href={`${route('services', lang)}#pricing`}>{t('home.cta.secondary')}</a>
+            <AsciiCallout text={t('home.callout')} align="end" />
+          </span>
         </div>
       </div>
     </div>
@@ -292,6 +296,8 @@ const position = [
   }
 
   .hero__foot {
+    /* The query container for the "See prices" callout, below. */
+    container-type: inline-size;
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
@@ -303,7 +309,39 @@ const position = [
   .hero__actions {
     display: flex;
     flex-wrap: wrap;
+    align-items: flex-start;
     gap: var(--s2);
+  }
+
+  /* The callout belongs to the "See prices" button.
+
+     Stacked (a narrow phone): it wraps under the button, as wide as it, so
+     the caret ends at the button's right edge. contain: inline-size keeps its
+     text from widening the button.
+
+     Side by side (the hero's foot row is at least 21rem wide, which both
+     languages' buttons fit in side by side): it runs on one line, out of the flow, right-
+     aligned to the button and extending left under the first one. The row is
+     always wider than the line there, so it never leaves the column. */
+  .hero__prices {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--s2);
+  }
+
+  .hero__prices :global(.callout--end) {
+    flex: none;
+  }
+
+  @container (min-width: 21rem) {
+    .hero__prices :global(.callout--end) {
+      position: absolute;
+      inset-block-start: calc(100% + var(--s2));
+      inset-inline-end: 0;
+      contain: none;
+      white-space: nowrap;
+    }
   }
 
   /* --- Services ---------------------------------------------------------- */
