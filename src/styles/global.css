@@ -454,9 +454,10 @@ a:hover { text-decoration-thickness: 2px; }
    a box (David, 2026-10-12: "no box, just transitioning to the background").
    Two soft radials — purple and blue at the hero wash's 26% — bleed past the
    icon on every side and dissolve into the paper, so no edge exists
-   anywhere. The icon sits on it in ink, the dark-on-pale-gradient pairing
-   webhero runs: full contrast where the old light-on-gradient went muddy.
-   On a dark band --fg flips to light and the wash reads as a glow. Purple's
+   anywhere, and quieter than the hero's 26% — at 15% it is a tint, not a
+   backdrop (David: less opacity). The icon sits on it in the functional
+   blue, the darker of the accent pair, so blue art keeps real contrast on
+   the pale wash; on a dark band the role flips to the on-ink blue. Purple's
    second fenced use (tokens.css). Decoration by contract: aria-hidden. */
 .icon-wash {
   position: relative;
@@ -471,12 +472,12 @@ a:hover { text-decoration-thickness: 2px; }
   background:
     radial-gradient(
       42% 46% at 64% 30%,
-      color-mix(in srgb, var(--purple) 26%, transparent),
+      color-mix(in srgb, var(--purple) 15%, transparent),
       transparent 70%
     ),
     radial-gradient(
       46% 50% at 36% 68%,
-      color-mix(in srgb, var(--blue) 26%, transparent),
+      color-mix(in srgb, var(--blue) 15%, transparent),
       transparent 72%
     );
   pointer-events: none;
@@ -497,7 +498,7 @@ a:hover { text-decoration-thickness: 2px; }
 }
 
 .icon-wash .ascii pre {
-  color: var(--fg);
+  color: var(--accent-fn);
 }
 
 /* A callout: "^ start here". Small text carrying meaning, so --accent-fn. */
