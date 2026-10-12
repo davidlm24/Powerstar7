@@ -23,11 +23,11 @@ const t = useTranslations(lang);
    t(`svc.${key}.body`) needs an `as any` cast and that quietly removes the
    type protection from every key it touches. */
 const services = [
-  { n: '01', key: 'web', icon: 'browser', name: t('svc.web.name'), b: t('svc.web.body') },
-  { n: '02', key: 'brand', icon: 'bulb', name: t('svc.brand.name'), b: t('svc.brand.body') },
-  { n: '03', key: 'seo', icon: 'magnifier', name: t('svc.seo.name'), b: t('svc.seo.body') },
-  { n: '04', key: 'email', icon: 'envelope', name: t('svc.email.name'), b: t('svc.email.body') },
-  { n: '05', key: 'hosting', icon: 'plug', name: t('svc.hosting.name'), b: t('svc.hosting.body') },
+  { n: '01', key: 'web', name: t('svc.web.name'), b: t('svc.web.body') },
+  { n: '02', key: 'brand', name: t('svc.brand.name'), b: t('svc.brand.body') },
+  { n: '03', key: 'seo', name: t('svc.seo.name'), b: t('svc.seo.body') },
+  { n: '04', key: 'email', name: t('svc.email.name'), b: t('svc.email.body') },
+  { n: '05', key: 'hosting', name: t('svc.hosting.name'), b: t('svc.hosting.body') },
 ] as const;
 
 /* Each step restates a commitment the site already makes elsewhere: a
@@ -66,7 +66,7 @@ const position = [
         wash's percentages — and the measured contrast ceiling on them — hold
         without being re-derived. */}
     <div class="hero__fx" aria-hidden="true"></div>
-    <Ascii figure="home" variant="field" cols={66} rows={25} />
+    <Ascii variant="flow" />
 
     <div class="container">
       <h1 class="hero__h1">
@@ -113,7 +113,7 @@ const position = [
                   <p class="lane__b">{s.b}</p>
                 </div>
                 <span class="lane__art">
-                  <Ascii icon={s.icon} variant="icon" />
+                  <Ascii icon={s.key} variant="icon" />
                 </span>
                 <span class="lane__go" aria-hidden="true">&rarr;</span>
               </a>
@@ -134,7 +134,7 @@ const position = [
 
   {/* --- Position --------------------------------------------------------- */}
   <section class="position rails">
-    <Ascii figure="fit" variant="aside" cols={36} rows={20} />
+    <Ascii figure="fit" variant="aside" />
 
     <div class="container">
       <div class="position__head">
@@ -185,6 +185,34 @@ const position = [
 
   <Closing lang={lang} />
 </Base>
+
+<script>
+  /* The hero field keeps moving: every ~80ms, the same function that drew the
+     first frame at build time draws the next one. Only while it is on screen
+     and the tab is visible, and never for anyone who asked for less motion:
+     they keep the first frame. */
+  import { renderFlow } from '../lib/flow';
+
+  const pre = document.querySelector<HTMLElement>('pre[data-flow]');
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (pre && 'IntersectionObserver' in window) {
+    const cols = Number(pre.dataset.cols);
+    const rows = Number(pre.dataset.rows);
+    let onScreen = true;
+    let last = 0;
+    const start = performance.now();
+    new IntersectionObserver(([entry]) => {
+      onScreen = entry.isIntersecting;
+    }).observe(pre);
+    const tick = (now: number) => {
+      requestAnimationFrame(tick);
+      if (!onScreen || document.hidden || calm.matches || now - last < 80) return;
+      last = now;
+      pre.textContent = renderFlow(cols, rows, (now - start) / 1000);
+    };
+    requestAnimationFrame(tick);
+  }
+</script>
 
 <style>
   /* --- Hero -------------------------------------------------------------- */
@@ -271,18 +299,6 @@ const position = [
     to { transform: translate3d(3%, 2%, 0) scale(1.09); }
   }
 
-  /* The browser figure hangs from the top right of the hero, so it ends
-     above the buttons rather than running behind them. */
-  @media (min-width: 48rem) {
-    .hero :global(.ascii--field) {
-      inset-block-start: var(--s6);
-      transform: none;
-      /* The headline here runs nearly the full width, so the figure sits
-         further back than on the inner pages. */
-      opacity: 0.35;
-    }
-  }
-
   .hero__h1 span {
     display: block;
   }
@@ -334,6 +350,13 @@ const position = [
     flex: none;
   }
 
+  /* The outlined button gets the paper behind it, so the hero's moving field
+     never shows through its label. On plain paper it looks exactly as
+     before. */
+  .hero :global(.btn--quiet) {
+    --btn-bg: var(--bg);
+  }
+
   @container (min-width: 21rem) {
     .hero__prices :global(.callout--end) {
       position: absolute;
@@ -378,7 +401,7 @@ const position = [
      only the art centres on the lane. */
   .lane {
     display: grid;
-    grid-template-columns: 3.5rem minmax(0, 1fr) 10rem 2rem;
+    grid-template-columns: 3.5rem minmax(0, 1fr) 14rem 2rem;
     grid-template-areas: 'n text art go';
     align-items: baseline;
     column-gap: var(--s4);
@@ -416,10 +439,11 @@ const position = [
     color: var(--fg-muted);
   }
 
+  /* 46 columns at 7.5px fill the 14rem track. */
   .lane__art {
     grid-area: art;
     align-self: center;
-    --ascii-cell: 13px;
+    --ascii-cell: 7.5px;
   }
 
   .lane__go {
@@ -456,36 +480,28 @@ const position = [
   }
 
   /* --- The reveal ---------------------------------------------------------
-     Each lane's ASCII icon sits muted at the end of the lane. Where a pointer
-     can hover, it waits hidden and is typed in on hover or keyboard focus: a
-     left-to-right wipe in character-sized steps, so it arrives the way text
-     does on a terminal. Touch screens, and anyone who asked for less motion,
-     simply see it. */
+     Each lane's ASCII icon rests faint at the end of the lane. On hover or
+     keyboard focus it decodes into place: every character flickers through
+     the ramp and settles, left to right, as the icon turns blue (site.js).
+     With less motion asked for, it simply turns blue. */
+  .lane :global(.ascii--icon) {
+    opacity: 0.55;
+    transition: opacity var(--dur) var(--ease);
+  }
+
   .lane :global(.ascii--icon pre) {
     color: var(--fg-muted);
     transition: color var(--dur) var(--ease);
   }
 
+  .lane:hover :global(.ascii--icon),
+  .lane:focus-visible :global(.ascii--icon) {
+    opacity: 1;
+  }
+
   .lane:hover :global(.ascii--icon pre),
   .lane:focus-visible :global(.ascii--icon pre) {
     color: var(--accent-fn);
-  }
-
-  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-    .lane :global(.ascii--icon pre) {
-      clip-path: inset(0 100% 0 0);
-      transition:
-        clip-path 160ms steps(8),
-        color var(--dur) var(--ease);
-    }
-
-    .lane:hover :global(.ascii--icon pre),
-    .lane:focus-visible :global(.ascii--icon pre) {
-      clip-path: inset(0 0 0 0);
-      transition:
-        clip-path 420ms steps(16),
-        color var(--dur) var(--ease);
-    }
   }
 
   /* Narrower, the art track shrinks; below 48rem it goes. There is no room
@@ -494,8 +510,12 @@ const position = [
      than squeezed. It is decorative; the lane says everything without it. */
   @media (max-width: 60rem) {
     .lane {
-      grid-template-columns: 2.5rem minmax(0, 1fr) 7rem 1.5rem;
+      grid-template-columns: 2.5rem minmax(0, 1fr) 9rem 1.5rem;
       column-gap: var(--s3);
+    }
+
+    .lane__art {
+      --ascii-cell: 5.2px;
     }
   }
 

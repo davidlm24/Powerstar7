@@ -420,4 +420,55 @@
       });
     }, 160);
   }
+
+  /* ---------- ASCII icon decode ------------------------------------------ */
+
+  /* On hover or keyboard focus, a service lane's icon decodes into place:
+     every character flickers through the ramp and settles, sweeping left to
+     right with a little scatter, over about half a second. It always ends on
+     the icon it was built as. Skipped for anyone who asked for less motion. */
+  var decodeGlyphs = '.:-=+*#%@';
+  document.querySelectorAll('.lane').forEach(function (lane) {
+    var pre = lane.querySelector('pre[data-decode]');
+    if (!pre) return;
+    var base = pre.textContent;
+    var width = Number(pre.getAttribute('data-cols')) || 46;
+    var frame = 0;
+    function decode() {
+      if (asciiCalm.matches || document.hidden) return;
+      cancelAnimationFrame(frame);
+      var duration = 520;
+      var settle = [];
+      var col = 0;
+      for (var k = 0; k < base.length; k++) {
+        var ch = base.charAt(k);
+        if (ch === '\n') { col = 0; settle.push(-1); continue; }
+        settle.push(ch === ' ' ? -1 : ((col / width) * 0.6 + Math.random() * 0.4) * duration);
+        col++;
+      }
+      var start = performance.now();
+      (function step(now) {
+        var elapsed = now - start;
+        var out = '';
+        for (var k = 0; k < base.length; k++) {
+          out += settle[k] < 0 || elapsed >= settle[k]
+            ? base.charAt(k)
+            : decodeGlyphs.charAt(Math.floor(Math.random() * decodeGlyphs.length));
+        }
+        pre.textContent = out;
+        if (elapsed < duration) frame = requestAnimationFrame(step);
+        else pre.textContent = base;
+      })(start);
+    }
+    /* Leaving always settles it, so a decode cut short (the tab hidden
+       mid-animation pauses the frames) can never leave the icon scrambled. */
+    function settle() {
+      cancelAnimationFrame(frame);
+      pre.textContent = base;
+    }
+    lane.addEventListener('mouseenter', decode);
+    lane.addEventListener('focus', decode);
+    lane.addEventListener('mouseleave', settle);
+    lane.addEventListener('blur', settle);
+  });
 })();

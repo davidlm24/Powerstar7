@@ -362,7 +362,7 @@ a:hover { text-decoration-thickness: 2px; }
   inset-block-start: 50%;
   inset-inline-end: calc(var(--rail-x) + var(--s3));
   transform: translateY(-50%);
-  --ascii-cell: clamp(7px, 0.95vw, 12px);
+  --ascii-cell: clamp(5px, 0.72vw, 9px);
   opacity: 0.55;
   -webkit-mask-image:
     radial-gradient(closest-side, #000 50%, transparent 100%),
@@ -374,6 +374,13 @@ a:hover { text-decoration-thickness: 2px; }
   mask-composite: intersect;
 }
 
+/* On a tablet the intro runs wide under the figure, so it steps back. */
+@media (min-width: 48rem) and (max-width: 60rem) {
+  .ascii--field {
+    opacity: 0.22;
+  }
+}
+
 /* On a phone there is no free side, so the figure climbs to the top corner
    and fades much further back. */
 @media (max-width: 47.99rem) {
@@ -381,26 +388,62 @@ a:hover { text-decoration-thickness: 2px; }
     inset-block-start: var(--s3);
     inset-inline-end: 0;
     transform: none;
-    --ascii-cell: 7px;
+    --ascii-cell: 4.5px;
+    opacity: 0.2;
+  }
+}
+
+/* The home hero's moving field (flow.ts): abstract, and the largest piece of
+   the kit. It covers the right of the hero from top to bottom, fading out
+   towards the headline (left) and towards the buttons (bottom), so the copy
+   and the buttons stay on clear paper. */
+.ascii--flow {
+  position: absolute;
+  z-index: -1;
+  inset-block-start: 0;
+  inset-inline-end: var(--rail-x);
+  --ascii-cell: clamp(5px, 0.62vw, 8.5px);
+  opacity: 0.4;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 5%, #000 65%),
+    linear-gradient(to bottom, #000 38%, transparent 70%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent 5%, #000 65%),
+    linear-gradient(to bottom, #000 38%, transparent 70%);
+  mask-composite: intersect;
+}
+
+/* Between phone and wide desktop the headline reaches further into the
+   field, so it steps further back. */
+@media (min-width: 48rem) and (max-width: 74.99rem) {
+  .ascii--flow {
+    opacity: 0.28;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .ascii--flow {
+    --ascii-cell: 4px;
     opacity: 0.2;
   }
 }
 
 /* The second, smaller figure on the longer pages: top right of its section,
-   beside the heading. Below 961px the section's copy runs full width and
-   there is no free corner for it. */
+   beside the heading. Below 1280px the headings (the Portuguese ones
+   especially) run into that corner, so it waits for a wide screen. */
 .ascii--aside {
   display: none;
 }
 
-@media (min-width: 60.0625rem) {
+@media (min-width: 80rem) {
   .ascii--aside {
     display: block;
     position: absolute;
     z-index: -1;
     inset-block-start: var(--s6);
     inset-inline-end: calc(var(--rail-x) + var(--s4));
-    --ascii-cell: clamp(8px, 0.85vw, 11px);
+    --ascii-cell: clamp(5px, 0.55vw, 7.5px);
     opacity: 0.5;
     -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent 100%);
     mask-image: radial-gradient(closest-side, #000 60%, transparent 100%);
