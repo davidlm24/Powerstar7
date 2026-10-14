@@ -92,10 +92,10 @@ const position = [
   {/* --- What we do -------------------------------------------------------
       Layout B from the illustration options, which David picked: copy-led
       lanes, one service to a row, instead of five cards. Each service keeps
-      its own illustration at the end of the lane, which drifts in as the
-      lane scrolls into view and resolves from coarse to fine when the lane
-      is pointed at or focused, so the section reads as type first and art
-      second. With no hover (touch), the icons simply sit there. */}
+      its own sticker at the end of the lane: at rest only the soft wash
+      shows, and the sticker appears on it when the lane is pointed at or
+      focused, so the section reads as type first and art second. With no
+      hover (touch), the stickers simply sit there. */}
   <section class="services rails">
     <div class="container">
       <div class="services__head">
@@ -107,14 +107,14 @@ const position = [
         {
           services.map((s) => (
             <li>
-              <a class="lane" data-decode-zone href={`${route('services', lang)}#${s.key}`}>
+              <a class="lane" data-illo-zone href={`${route('services', lang)}#${s.key}`}>
                 <span class="lane__n">{s.n}</span>
                 <div class="lane__text">
                   <h3 class="lane__name">{s.name} <span class="lane__go" aria-hidden="true">&rarr;</span></h3>
                   <p class="lane__b">{s.b}</p>
                 </div>
                 <span class="lane__art">
-                  <span class="icon-wash" aria-hidden="true" data-reveal>
+                  <span class="icon-wash" aria-hidden="true">
                     <Illo name={s.key} variant="icon" />
                   </span>
                 </span>
@@ -446,13 +446,12 @@ const position = [
     color: var(--fg-muted);
   }
 
-  /* The sticker fills most of the 15rem track; whole, tilted, never cut.
-     It still drifts in from the right. */
+  /* The sticker at its own 1x width, 224px, in the 15rem track: one image
+     pixel to one screen pixel keeps the dither crisp. */
   .lane__art {
     grid-area: art;
     align-self: center;
-    --illo-w: 12.5rem;
-    --reveal-wait: 1rem;
+    --illo-w: 224px;
   }
 
   /* Inline after the name now: the end of the lane belongs to the art,
@@ -488,11 +487,6 @@ const position = [
     margin-block-start: var(--s5);
     font-size: var(--t-small);
   }
-
-  /* The icons sit in the lanes at rest, like the Services rows: they drift
-     in from the left as their lane first scrolls into view (the shared
-     [data-reveal] behaviour, site.js), and resolve from coarse to fine on
-     hover. */
 
   /* Narrower, the art track shrinks; below 48rem it goes. There is no room
      for it beside copy set at 30px, so the lane stacks — index and arrow on

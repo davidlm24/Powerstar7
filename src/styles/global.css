@@ -393,52 +393,42 @@ a:hover { text-decoration-thickness: 2px; }
 }
 
 /* --- The illustrations ---------------------------------------------------
-   "Adesivo D2" everywhere (David, 2026-10-12): every illustration is a
-   1-bit Floyd–Steinberg render of its softly shaded 3D scene, shipped as
-   a PNG mask the page colours, cut out like a sticker — a hard pale halo
-   around the silhouette (the drop-shadows see the masked alpha), a
-   hand-placed tilt, a slow float. Icons answer their zone's hover with
-   the pixel resolve (site.js); the page figures are background, faded
-   towards the copy by their wrappers' masks. */
+   "D1 + adesivo" (David, 2026-10-14): every illustration is a finished
+   sticker image — the 3D scene softly shaded, Bayer-dithered to 1 bit,
+   blue dots on pale sticker paper with a halo, the tilt baked in
+   (scripts/illustrations.mjs). Plain images: no masks, no filters, and
+   the same file on light and dark grounds. No idle animation at all. */
 
 .illo {
   pointer-events: none;
   user-select: none;
 }
 
-.illo__img {
+.illo img {
   display: block;
-  width: var(--illo-w, 13rem);
-  aspect-ratio: var(--ar);
-  background-color: var(--illo-ink, var(--accent-fn));
-  -webkit-mask: -webkit-image-set(var(--l1) 1x, var(--l2) 2x) center / 100% 100% no-repeat;
-  mask: image-set(var(--l1) 1x, var(--l2) 2x) center / 100% 100% no-repeat;
-  image-rendering: pixelated;
-  transform: rotate(var(--illo-tilt, -3.5deg));
-  filter:
-    drop-shadow(3px 0 0 var(--illo-halo, var(--paper-hi)))
-    drop-shadow(-3px 0 0 var(--illo-halo, var(--paper-hi)))
-    drop-shadow(0 3px 0 var(--illo-halo, var(--paper-hi)))
-    drop-shadow(0 -3px 0 var(--illo-halo, var(--paper-hi)));
+  width: var(--illo-w, 14rem);
+  max-width: 100%;
+  height: auto;
 }
 
-/* On a dark band the art turns to the on-ink blue and the halo to paper. */
-.invert .illo__img {
-  --illo-ink: var(--on-ink-blue);
-  --illo-halo: var(--paper);
+/* Icons: at rest only their zone's soft wash shows; on hover or keyboard
+   focus of the zone the sticker appears on top of it — the one animation
+   (David). Where there is no hover at all (touch), the icons simply show. */
+.illo--icon img {
+  opacity: 0;
+  transition: opacity 260ms var(--ease);
 }
 
-/* The loop: a slow float, each sticker from its own moment (--sd), only
-   for those who have not asked for less motion. */
-@media (prefers-reduced-motion: no-preference) {
-  .illo__img {
-    animation: illo-float 7s ease-in-out var(--sd, 0s) infinite;
+[data-illo-zone]:hover .illo--icon img,
+[data-illo-zone]:focus-visible .illo--icon img,
+[data-illo-zone]:focus-within .illo--icon img {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .illo--icon img {
+    opacity: 1;
   }
-}
-
-@keyframes illo-float {
-  0%, 100% { transform: rotate(var(--illo-tilt, -3.5deg)) translateY(0); }
-  50% { transform: rotate(var(--illo-tilt, -3.5deg)) translateY(-4px); }
 }
 
 /* The page figure. Right of the heading, behind it, fading to nothing
@@ -452,9 +442,7 @@ a:hover { text-decoration-thickness: 2px; }
   inset-block-start: 50%;
   inset-inline-end: calc(var(--rail-x) + var(--s3));
   transform: translateY(-50%);
-  padding: 8px;
   --illo-w: clamp(253px, 36.5vw, 456px);
-  --illo-tilt: -2deg;
   opacity: 0.55;
   -webkit-mask-image:
     radial-gradient(closest-side, #000 50%, transparent 100%),
@@ -499,9 +487,7 @@ a:hover { text-decoration-thickness: 2px; }
     z-index: -1;
     inset-block-start: var(--s6);
     inset-inline-end: calc(var(--rail-x) + var(--s4));
-    padding: 8px;
     --illo-w: min(17.9vw, 244px);
-    --illo-tilt: -2deg;
     opacity: 0.5;
     -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent 100%);
     mask-image: radial-gradient(closest-side, #000 60%, transparent 100%);
@@ -553,25 +539,6 @@ a:hover { text-decoration-thickness: 2px; }
   .icon-wash::before {
     inset: -16% 0;
   }
-}
-
-/* The scroll reveal: a marked icon waits left of its place and drifts in,
-   wash and all, when its row first scrolls into view (site.js). The waiting
-   class is only ever ADDED by that script, so without JavaScript, or with
-   less motion asked for, nothing here applies and the icon is simply there. */
-.reveal-wait {
-  opacity: 0;
-  /* A variable: where a track runs tight against type, the waiting box must
-     not reach into it even invisibly. */
-  transform: translateX(var(--reveal-wait, -2rem));
-  transition:
-    opacity 480ms var(--ease),
-    transform 480ms var(--ease);
-}
-
-.reveal-wait.reveal-in {
-  opacity: 1;
-  transform: none;
 }
 
 /* Above its own wash. */

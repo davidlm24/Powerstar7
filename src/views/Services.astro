@@ -184,16 +184,16 @@ const faqs = [
 
       {
         services.map((s, i) => (
-          <section class:list={['svc', 'row', i === 1 && 'invert']} id={s.id} data-decode-zone>
+          <section class:list={['svc', 'row', i === 1 && 'invert']} id={s.id} data-illo-zone>
             <div class="svc__index row__title">
               <span class="svc__n">{s.n}</span>
               {/* The service's icon on its soft wash, filling the column that
                   used to run empty beside the copy (David, 2026-10-12).
-                  Visible at rest; it resolves on hover (site.js). It
+                  Only the wash at rest; the sticker appears on hover. It
                   lives inside the sticky block, so it travels with the
                   number. Decorative: the heading opposite says everything. */}
-              <div class="icon-wash svc__art" aria-hidden="true" data-reveal>
-                <Illo name={s.id} variant="icon" onDark={i === 1} />
+              <div class="icon-wash svc__art" aria-hidden="true">
+                <Illo name={s.id} variant="icon" />
               </div>
             </div>
 
@@ -517,12 +517,10 @@ const faqs = [
      fills the column (David: bigger, with good details of the object).
      Below 60rem the column collapses into the flow, so the icon goes the
      way the home lanes' art does. */
-  /* The sticker sits in the title column, whole; the reveal still comes
-     in from the right. */
+  /* The sticker sits in the title column at up to its own 1x width. */
   .svc__art {
     margin-block-start: var(--s4);
-    --illo-w: clamp(9rem, 13vw, 13rem);
-    --reveal-wait: 1rem;
+    --illo-w: 224px;
   }
 
   @media (max-width: 60rem) {

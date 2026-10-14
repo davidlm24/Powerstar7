@@ -1,19 +1,20 @@
 ---
-/* One illustration: "adesivo D2" (David, 2026-10-12) — the 3D scene softly
-   shaded, dithered to 1 bit by Floyd–Steinberg, shipped as a PNG mask at
-   1x and 2x. The page colours it, and CSS cuts a sticker halo around the
-   silhouette and tilts it a touch (global.css).
+/* One illustration: a finished sticker image (scripts/illustrations.mjs) —
+   "D1 + adesivo" (David, 2026-10-14): the 3D scene softly shaded, Bayer-
+   dithered to 1 bit, blue dots on pale sticker paper with a halo, tilt
+   baked in. Plain <img>: no colouring, no filters, the same file on light
+   and dark grounds; 1x and 2x through srcset.
 
    variant:
-   - icon:  a service icon. Blue on paper; inside a dark band (.invert) the
-            on-ink-blue render with a paper halo. Hover resolves it from
-            coarse pixels (site.js, through the inlined frames); it floats
-            gently, and drifts in on reveal when the parent asks.
+   - icon:  a service icon. Hidden at rest so only its zone's soft wash
+            shows; it appears on the zone's hover or keyboard focus — the
+            one animation (global.css). Always visible where there is no
+            hover (touch).
    - field: the page-heading figure, behind the text, faded towards the
-            copy by its wrapper's masks. Light ground only.
+            copy by its wrapper's masks.
    - aside: the smaller second figure, wide screens only.
 
-   Decoration by contract: aria-hidden, and data-nosnippet. */
+   Decoration by contract: aria-hidden, empty alt, data-nosnippet. */
 import manifest from '../data/illo.json';
 
 export type IlloName = keyof typeof manifest;
@@ -21,26 +22,23 @@ export type IlloName = keyof typeof manifest;
 interface Props {
   name: IlloName;
   variant: 'icon' | 'field' | 'aside';
-  /** Inside a dark band: the light-on-dark render and its frames. */
-  onDark?: boolean;
   class?: string;
 }
 
-const { name, variant, onDark, class: className } = Astro.props;
-const entry = manifest[name] as { kind: string; w: number; h: number; frames?: Record<string, string[]> };
-const file = (tone: string, scale: string) => `url(/assets/illo/${name}${tone}${scale}.png)`;
-const tone = onDark && variant === 'icon' ? '-dark' : '';
-const frames = variant === 'icon' ? entry.frames?.[onDark ? 'dark' : 'light'] : undefined;
-/* Each sticker floats from its own moment, so a row never moves in step. */
-const offset = ((Object.keys(manifest).indexOf(name) * 1.7) % 7).toFixed(1);
-const style = [
-  `--ar:${entry.w}/${entry.h}`,
-  `--l1:${file(tone, '')}`,
-  `--l2:${file(tone, '@2x')}`,
-  `--sd:-${offset}s`,
-].join(';');
+const { name, variant, class: className } = Astro.props;
+const { w, h } = manifest[name];
+const src = `/assets/illo/${name}.png`;
+const src2 = `/assets/illo/${name}@2x.png`;
 ---
 
 <div class:list={['illo', `illo--${variant}`, className]} aria-hidden="true" data-nosnippet>
-  <span class="illo__img" style={style} data-frames={frames ? JSON.stringify(frames) : undefined}></span>
+  <img
+    src={src}
+    srcset={`${src} 1x, ${src2} 2x`}
+    width={w}
+    height={h}
+    alt=""
+    loading={variant === 'field' ? 'eager' : 'lazy'}
+    decoding="async"
+  />
 </div>
