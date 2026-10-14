@@ -26,38 +26,38 @@
  },
  "services": {
   "kind": "field",
-  "w": 456,
-  "h": 344
+  "w": 320,
+  "h": 241
  },
  "work": {
   "kind": "field",
-  "w": 456,
-  "h": 344
+  "w": 320,
+  "h": 241
  },
  "about": {
   "kind": "field",
-  "w": 456,
-  "h": 344
+  "w": 320,
+  "h": 241
  },
  "contact": {
   "kind": "field",
-  "w": 456,
-  "h": 344
+  "w": 320,
+  "h": 241
  },
  "legal": {
   "kind": "field",
-  "w": 456,
-  "h": 344
+  "w": 320,
+  "h": 241
  },
  "privacy": {
   "kind": "field",
-  "w": 456,
-  "h": 344
+  "w": 320,
+  "h": 241
  },
  "nf": {
   "kind": "field",
-  "w": 456,
-  "h": 344
+  "w": 320,
+  "h": 241
  },
  "fit": {
   "kind": "aside",

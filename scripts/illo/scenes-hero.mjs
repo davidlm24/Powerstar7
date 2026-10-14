@@ -2,7 +2,11 @@
    showing a site in a browser window, a phone in front of it, a potted plant
    beside it, general enough for any kind of client. The check seal is its
    own sticker, stamped on top after the picture lands (Home.astro). Same
-   shapes and lighting as every other scene. */
+   shapes and lighting as every other scene.
+
+   The desk is LAYERED (scripts/illustrations.mjs): laptop, then plant, then
+   phone, each with its own paper cut, so the three objects read apart
+   instead of blending where they touch (David, 2026-10-14). */
 import { St, rbox, seg, poly } from './shapes.mjs';
 
 /** A round seal with a scalloped edge and a bold raised check. */
@@ -15,9 +19,12 @@ function seal(s, x, y, cx, cy, r, z) {
   s.tube(ck, r * 0.13, z + 0.05, 0.97);
 }
 
-/** The desk: laptop, phone, plant. */
-export function desk(x, y) {
-  x -= 0.04; y -= 0.04;                                     // centre the group in its box
+/* All three desk layers share one offset, which centres the group in its box. */
+const OX = 0.04, OY = 0.04;
+
+/** The laptop: lid, a site in a browser window, the base. */
+function laptop(x, y) {
+  x -= OX; y -= OY;
   const s = new St();
   const cx = 0.5;
   const lid = rbox(x, y, cx, 0.4, 0.4, 0.28, 0.04);
@@ -45,7 +52,13 @@ export function desk(x, y) {
   const base = poly(x, y, [[cx - 0.44, 0.68], [cx + 0.44, 0.68], [cx + 0.53, 0.775], [cx - 0.53, 0.775]]);
   s.slab(base, 0, 0.06, 0.04, 0.9);
   s.carve(rbox(x, y, cx, 0.74, 0.1, 0.018, 0.01), 0.015, 0.006, 0.75);
-  // the phone, in front on the right
+  return s;
+}
+
+/** The phone, in front on the right, showing the same site. */
+function phone(x, y) {
+  x -= OX; y -= OY;
+  const s = new St();
   const px = 1.0, ph = rbox(x, y, px, 0.6, 0.105, 0.21, 0.035);
   s.slab(ph, 0.04, 0.08, 0.04, 0.95);
   const ps = rbox(x, y, px, 0.615, 0.085, 0.17, 0.015);
@@ -56,11 +69,17 @@ export function desk(x, y) {
     for (const ly of [0.64, 0.663]) s.ink(rbox(x, y, px - 0.02, ly, 0.05, 0.006, 0.006), 0.6);
     s.slab(rbox(x, y, px, 0.725, 0.065, 0.02, 0.02), 0.1, 0.025, 0.02, 0.35);
   }
-  // a potted plant on the left
+  return s;
+}
+
+/** A potted plant on the left: pointed leaves fanning out of the pot. */
+function plant(x, y) {
+  x -= OX; y -= OY;
+  const s = new St();
   const pot = poly(x, y, [[-0.1, 0.64], [0.04, 0.64], [0.02, 0.79], [-0.08, 0.79]]);
   s.slab(pot, 0.04, 0.06, 0.03, 0.55);
   s.slab(rbox(x, y, -0.03, 0.645, 0.08, 0.02, 0.01), 0.04, 0.075, 0.02, 0.6);
-  // leaves: pointed ovals fanning up out of the pot, a midrib printed on each
+  // leaves: pointed ovals, a midrib printed on each
   for (const [tx, ty, w] of [[-0.17, 0.44, 0.032], [-0.1, 0.36, 0.034], [-0.02, 0.33, 0.034], [0.06, 0.38, 0.032], [0.11, 0.49, 0.028]]) {
     const ax = -0.03, ay = 0.64, L = Math.hypot(tx - ax, ty - ay), ux = (tx - ax) / L, uy = (ty - ay) / L;
     const t = ((x - ax) * ux + (y - ay) * uy) / L, n = Math.abs((x - ax) * -uy + (y - ay) * ux);
@@ -69,6 +88,9 @@ export function desk(x, y) {
   }
   return s;
 }
+
+/** The desk, back to front. */
+export const desk = [laptop, plant, phone];
 
 /** The seal alone, centred, for its own sticker. */
 export function check(x, y) {

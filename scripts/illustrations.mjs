@@ -20,6 +20,11 @@
    Each image comes at 1x and 2x, each dithered at its own size (a shrunk
    ordered dither goes solid).
 
+   A scene may be an array of LAYERS, back to front. Each layer is lit and
+   dithered on its own, and its paper backing and halo are painted over the
+   layers below before its dots go on — a sticker on a sticker — so separate
+   objects stay separate where they overlap (David, 2026-10-14).
+
    Written:
      public/assets/illo/<name>[@2x].png
      src/data/illo.json   ({ name: { kind, w, h } }) */
@@ -37,7 +42,9 @@ const CLEAR = [0, 0, 0, 0];
 /* Display box at 1x, scene zoom (room for the halo), and tilt, per kind. */
 const KINDS = {
   icon: { box: [224, 172], zoom: 1.14, tilt: -3.5 },
-  field: { box: [456, 344], zoom: 1.08, tilt: -2 },
+  /* 320px: the page-head column (PageHead.astro), at full strength since
+     2026-10-14. It was 456px when the figures sat faded behind the text. */
+  field: { box: [320, 241], zoom: 1.08, tilt: -2 },
   aside: { box: [244, 226], zoom: 1.08, tilt: -2 },
   /* The home hero: the desk picture, and the check seal stamped on it. */
   hero: { box: [500, 340], zoom: 0.98, tilt: -3 },
@@ -66,12 +73,16 @@ function dilate(mask, W, H, r) {
   return out;
 }
 
-/** One sticker at one size: paper under silhouette+halo, blue dots on top. */
-function sticker(ink, obj, W, H, halo) {
-  const back = dilate(obj, W, H, halo);
-  const dots = ditherBayer(ink, W, H);
+/** One sticker at one size, from its layers ({ ink, obj }, back to front):
+    each layer's paper (silhouette + halo) covers what is under it, then its
+    blue dots go on top. */
+function sticker(layers, W, H, halo) {
   const idx = new Uint8Array(W * H);
-  for (let k = 0; k < W * H; k++) idx[k] = dots[k] && obj[k] ? 2 : back[k] ? 1 : 0;
+  for (const { ink, obj } of layers) {
+    const back = dilate(obj, W, H, halo);
+    const dots = ditherBayer(ink, W, H);
+    for (let k = 0; k < W * H; k++) if (back[k]) idx[k] = dots[k] && obj[k] ? 2 : 1;
+  }
   return pngIndexed(idx, W, H, [CLEAR, PAPER, BLUE]);
 }
 
@@ -85,25 +96,30 @@ let bytes = 0;
 for (const { name, kind, scene } of LIST) {
   const { box: [W, H], zoom, tilt } = KINDS[kind];
   const a = (tilt * Math.PI) / 180, ca = Math.cos(a), sa = Math.sin(a);
-  // tilt and zoom the scene itself, so the dither stays square to the pixels
-  const sc = (x, y) => {
-    const dx = (x - 0.5) * zoom, dy = (y - 0.5) * zoom;
-    return scene(0.5 + dx * ca + dy * sa, 0.5 - dx * sa + dy * ca);
-  };
-  const f = computeField(sc, W * 2, H * 2, W / H);
-  const ink2 = inkFor(f, 'soft', 'light');
-  const obj2 = f.obj;
+  const layers2 = [], layers1 = [];
+  for (const layer of Array.isArray(scene) ? scene : [scene]) {
+    // tilt and zoom the scene itself, so the dither stays square to the pixels
+    const sc = (x, y) => {
+      const dx = (x - 0.5) * zoom, dy = (y - 0.5) * zoom;
+      return layer(0.5 + dx * ca + dy * sa, 0.5 - dx * sa + dy * ca);
+    };
+    const f = computeField(sc, W * 2, H * 2, W / H);
+    const ink2 = inkFor(f, 'soft', 'light');
+    const obj2 = f.obj;
 
-  // 1x: average the 2x ink, and a pixel is object if any of its four is
-  const at2 = sampler(ink2, W * 2, H * 2);
-  const ink1 = new Float32Array(W * H), obj1 = new Uint8Array(W * H);
-  for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
-    ink1[j * W + i] = at2(i * 2, j * 2, i * 2 + 2, j * 2 + 2);
-    const k = j * 2 * W * 2 + i * 2;
-    obj1[j * W + i] = obj2[k] | obj2[k + 1] | obj2[k + W * 2] | obj2[k + W * 2 + 1];
+    // 1x: average the 2x ink, and a pixel is object if any of its four is
+    const at2 = sampler(ink2, W * 2, H * 2);
+    const ink1 = new Float32Array(W * H), obj1 = new Uint8Array(W * H);
+    for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
+      ink1[j * W + i] = at2(i * 2, j * 2, i * 2 + 2, j * 2 + 2);
+      const k = j * 2 * W * 2 + i * 2;
+      obj1[j * W + i] = obj2[k] | obj2[k + 1] | obj2[k + W * 2] | obj2[k + W * 2 + 1];
+    }
+    layers2.push({ ink: ink2, obj: obj2 });
+    layers1.push({ ink: ink1, obj: obj1 });
   }
-  const x2 = sticker(ink2, obj2, W * 2, H * 2, 7);
-  const x1 = sticker(ink1, obj1, W, H, 4);
+  const x2 = sticker(layers2, W * 2, H * 2, 7);
+  const x1 = sticker(layers1, W, H, 4);
   writeFileSync(`${OUT}/${name}.png`, x1);
   writeFileSync(`${OUT}/${name}@2x.png`, x2);
   bytes += x1.length + x2.length;

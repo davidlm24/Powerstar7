@@ -1,8 +1,13 @@
 /* The page figures: one per page heading, plus the two second figures on
-   Home (fit) and Services (question). Same shapes and lighting as the icons. */
+   Home (fit) and Services (question). Same shapes and lighting as the icons.
+
+   A figure made of separate objects is exported as LAYERS, back to front
+   ([back, front]): scripts/illustrations.mjs gives each layer its own paper
+   cut, so overlapping objects read apart instead of blending into one shape
+   (David, 2026-10-14, of the old "fit": "the two screens blend together"). */
 import { St, box, rbox, seg, clamp, poly } from './shapes.mjs';
 
-/** A small browser window, reused by Work and Fit. */
+/** A small browser window, used by Work. */
 function browser(s, x, y, cx, cy, hw, hh, z, rich) {
   const top = cy - hh;
   const win = rbox(x, y, cx, cy, hw, hh, 0.05);
@@ -59,29 +64,40 @@ export function services(x, y) {
 }
 
 /** Work: this site in a browser, cards and all, with a pointer over it. */
-export function work(x, y) {
+function workPage(x, y) {
   const s = new St();
   browser(s, x, y, 0.47, 0.5, 0.5, 0.4, 0, true);
   s.dome(x, y, 0.54, 0.25, 0.026, 0.05, 0.035, 0.3);                       // the blue full stop
-  // a pointer, floating, so it throws a shadow on the page
-  const arrow = poly(x, y, [[0.78, 0.5], [0.78, 0.74], [0.83, 0.69], [0.87, 0.78], [0.9, 0.765], [0.86, 0.675], [0.93, 0.675]]);
-  s.slab(arrow - 0.006, 0.12, 0.03, 0.02, 0.35);
   return s;
 }
+function workPointer(x, y) {
+  const s = new St();
+  const arrow = poly(x, y, [[0.78, 0.5], [0.78, 0.74], [0.83, 0.69], [0.87, 0.78], [0.9, 0.765], [0.86, 0.675], [0.93, 0.675]]);
+  s.slab(arrow - 0.006, 0, 0.05, 0.02, 0.35);
+  return s;
+}
+export const work = [workPage, workPointer];
 
 /** About: a magnifier over a field of dots, the detail enlarged. */
-export function about(x, y) {
+const LENS = [0.44, 0.42], LENS_R = 0.23;
+function aboutDots(x, y) {
   const s = new St();
-  const lc = [0.44, 0.42], R = 0.23;
-  const r = Math.hypot(x - lc[0], y - lc[1]);
+  const r = Math.hypot(x - LENS[0], y - LENS[1]);
   const fade = clamp(1 - Math.hypot(x - 0.5, y - 0.5) / 0.62);
-  if (r > R && fade > 0) {                                                 // small dots on the paper
+  if (r > LENS_R && fade > 0) {                                            // small dots on the paper
     const g = 0.06, gx = Math.round(x / g) * g, gy = Math.round(y / g) * g;
     s.dome(x, y, gx, gy, 0.012 + 0.008 * fade, 0, 0.012, 0.6);
   }
+  return s;
+}
+function aboutLens(x, y) {
+  const s = new St();
+  const lc = LENS, R = LENS_R;
+  const r = Math.hypot(x - lc[0], y - lc[1]);
+  s.slab(r - R, 0, 0.012, 0.01, 0.97);                                     // the glass, so the cut runs round the whole lens
   if (r < R) {                                                             // the same dots, enlarged
     const g = 0.12, gx = lc[0] + Math.round((x - lc[0]) / g) * g, gy = lc[1] + Math.round((y - lc[1]) / g) * g;
-    s.dome(x, y, gx, gy, 0.035, 0, 0.03, 0.55);
+    s.dome(x, y, gx, gy, 0.035, 0.012, 0.03, 0.55);
     if (r > R - 0.07 && x < lc[0] - 0.03 && y < lc[1] - 0.03) s.g = 0.3;  // glare
   }
   s.tube(Math.abs(r - R), 0.04, 0.08, 0.6, 1.2);                            // the rim
@@ -96,21 +112,27 @@ export function about(x, y) {
   s.dome(x, y, 0.9, 0.88, 0.055, 0.08, 0.05, 0.45);
   return s;
 }
+export const about = [aboutDots, aboutLens];
 
 /** Contact: a message, and a reply being typed over it. */
-export function contact(x, y) {
+function contactMessage(x, y) {
   const s = new St();
   const big = Math.min(rbox(x, y, 0.42, 0.38, 0.36, 0.22, 0.08), poly(x, y, [[0.18, 0.55], [0.12, 0.72], [0.34, 0.58]]));
   s.slab(big, 0, 0.07, 0.07, 0.95);
   for (const [ly, len] of [[0.3, 0.52], [0.38, 0.44], [0.46, 0.28]]) s.ink(rbox(x, y, 0.14 + len / 2, ly, len / 2, 0.016, 0.016), 0.5);
-  const small = Math.min(rbox(x, y, 0.68, 0.72, 0.2, 0.11, 0.08), poly(x, y, [[0.78, 0.8], [0.9, 0.93], [0.86, 0.78]]));
-  s.slab(small, 0.07, 0.065, 0.06, 0.9);
-  for (const dx of [0.6, 0.68, 0.76]) s.dome(x, y, dx, 0.72, 0.034, 0.135, 0.04, 0.4);
   return s;
 }
+function contactReply(x, y) {
+  const s = new St();
+  const small = Math.min(rbox(x, y, 0.68, 0.72, 0.2, 0.11, 0.08), poly(x, y, [[0.78, 0.8], [0.9, 0.93], [0.86, 0.78]]));
+  s.slab(small, 0, 0.065, 0.06, 0.72);
+  for (const dx of [0.6, 0.68, 0.76]) s.dome(x, y, dx, 0.72, 0.034, 0.065, 0.04, 0.3);
+  return s;
+}
+export const contact = [contactMessage, contactReply];
 
 /** Legal notice: a document with a folded corner and a wax seal. */
-export function legal(x, y) {
+function legalPage(x, y) {
   const s = new St();
   const page = poly(x, y, [[0.18, 0.08], [0.6, 0.08], [0.74, 0.22], [0.74, 0.92], [0.18, 0.92]]);
   s.slab(page - 0.005, 0, 0.045, 0.04, 0.97);
@@ -123,6 +145,10 @@ export function legal(x, y) {
     const sig = Math.abs(y - (0.7 + 0.02 * Math.sin(x * 55)));               // signature
     if (x > 0.24 && x < 0.44) s.ink(sig - 0.006, 0.4);
   }
+  return s;
+}
+function legalSeal(x, y) {
+  const s = new St();
   // ribbons under the seal
   s.slab(poly(x, y, [[0.58, 0.8], [0.53, 0.96], [0.57, 0.93], [0.6, 0.97], [0.63, 0.8]]), 0.035, 0.02, 0.01, 0.6);
   s.slab(poly(x, y, [[0.66, 0.8], [0.69, 0.97], [0.72, 0.93], [0.76, 0.96], [0.71, 0.8]]), 0.035, 0.02, 0.01, 0.6);
@@ -132,6 +158,7 @@ export function legal(x, y) {
   if (sr < 0.055) s.h -= 0.018 * (1 - sr / 0.055);
   return s;
 }
+export const legal = [legalPage, legalSeal];
 
 /** Privacy: a padlock — a cushioned body, a tube shackle, a deep keyhole. */
 export function privacy(x, y) {
@@ -180,13 +207,43 @@ export function nf(x, y) {
   return s;
 }
 
-/** Home, "fits your business": a plain site beside a tailored one. */
-export function fit(x, y) {
-  const s = new St();
-  browser(s, x, y, 0.2, 0.6, 0.17, 0.24, 0, false);
-  browser(s, x, y, 0.66, 0.48, 0.32, 0.38, 0, true);
+/** A browser window for "fit". bar and body set the tone: a lower albedo
+    prints denser dots, so the two windows read as two different objects. */
+function site(s, x, y, cx, cy, hw, hh, { bar = 0.9, body = 0.96, rich = false } = {}) {
+  const top = cy - hh;
+  const w = rbox(x, y, cx, cy, hw, hh, 0.045);
+  s.slab(w, 0, 0.065, 0.055, body);
+  s.slab(Math.max(w, y - (top + 0.075)), 0, 0.085, 0.035, bar);
+  for (let k = 0; k < 3; k++) s.dome(x, y, cx - hw + 0.05 + k * 0.045, top + 0.038, 0.016, 0.085, 0.02, bar > 0.7 ? 0.5 : 0.95);
+  const scr = rbox(x, y, cx, cy + 0.04, hw - 0.03, hh - 0.07, 0.025);
+  s.carve(scr, 0.025, 0.01);
+  if (scr >= 0) return s;
+  const ix = cx - hw + 0.05;
+  s.slab(rbox(x, y, ix + hw * 0.35, top + 0.14, hw * 0.35, 0.022, 0.02), 0.025, 0.025, 0.012, 0.45);
+  for (const [k, len] of [[0, 0.7], [1, 0.55]]) s.ink(rbox(x, y, ix + hw * len / 2, top + 0.205 + k * 0.035, hw * len / 2, 0.007, 0.007), 0.6);
+  if (rich) {
+    const n = 3, gap = 0.02, cw = (hw * 2 - 0.1 - gap * (n - 1)) / n;
+    for (let k = 0; k < n; k++) {
+      const ccx = ix + cw / 2 + k * (cw + gap);
+      const card = rbox(x, y, ccx, cy + hh * 0.42, cw / 2, hh * 0.3, 0.02);
+      s.slab(card, 0.025, 0.035, 0.03, 0.94);
+      if (card < -0.015) {
+        if (y < cy + hh * 0.36) s.ink(-1, 0.62);
+        s.ink(rbox(x, y, ccx, cy + hh * 0.56, cw * 0.32, 0.006, 0.006), 0.55);
+      }
+    }
+  } else {
+    s.slab(rbox(x, y, ix + 0.07, cy + hh * 0.5, 0.07, 0.03, 0.03), 0.025, 0.035, 0.03, 0.35);   // one button
+  }
   return s;
 }
+
+/** Home, "fits your business": the tailored site behind, darker, and the
+    simple one in front, lighter, each with its own paper cut. */
+export const fit = [
+  (x, y) => site(new St(), x, y, 0.64, 0.46, 0.33, 0.35, { bar: 0.4, body: 0.84, rich: true }),
+  (x, y) => site(new St(), x, y, 0.25, 0.63, 0.2, 0.26, { bar: 0.9, body: 0.98 }),
+];
 
 /** Services FAQ: a question mark, as a bent tube with a ball. */
 export function question(x, y) {
