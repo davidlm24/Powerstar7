@@ -1,10 +1,8 @@
 ---
 import Illo, { type IlloName } from './Illo.astro';
-import AsciiDivider from './AsciiDivider.astro';
 import Accent from './Accent.astro';
 
 interface Props {
-  label: string;
   title: string;
   lead?: string;
   /** The page's illustration, drawn from what the page is about. */
@@ -13,42 +11,47 @@ interface Props {
   cursor?: boolean;
 }
 
-const { label, title, lead, figure, cursor } = Astro.props;
+const { title, lead, figure, cursor } = Astro.props;
 ---
 
-{/* The inner-page header. Deliberately NOT the dark hero slab the old site
-    repeated on all ten pages — it is the same paper ground as everything
-    else, and it earns its weight from the type alone. It also runs a step
-    below the home hero (96px against 140px), so the home page stays the
-    loudest thing on the site. */}
+{/* The inner-page header: the headline and lead on the left, the page's
+    sticker beside them at full strength. No label above the headline and no
+    dotted row under it any more (David, 2026-10-14). Paper ground like
+    everything else, and a step below the home hero (80px against 96px), so
+    the home page stays the loudest thing on the site. */}
 <section class="page-head rails">
-  {figure && <Illo name={figure} variant="field" />}
-  <div class="container">
-    <p class="label">{label}</p>
-    <h1 class="page-head__h1"><Accent text={title} /></h1>
-    {
-      /* Either the string prop or a `lead` slot. The slot exists because a
-         .pending placeholder is markup and cannot travel as a string. */
-      (lead || Astro.slots.has('lead')) && (
-        <p class="lead page-head__lead">
-          {lead ?? <slot name="lead" />}{cursor && <span class="cursor" aria-hidden="true">_</span>}
-        </p>
-      )
-    }
+  <div class="container page-head__grid">
+    <div>
+      <h1 class="page-head__h1"><Accent text={title} /></h1>
+      {
+        /* Either the string prop or a `lead` slot. The slot exists because a
+           .pending placeholder is markup and cannot travel as a string. */
+        (lead || Astro.slots.has('lead')) && (
+          <p class="lead page-head__lead">
+            {lead ?? <slot name="lead" />}{cursor && <span class="cursor" aria-hidden="true">_</span>}
+          </p>
+        )
+      }
+    </div>
+    {figure && <Illo name={figure} variant="field" />}
   </div>
 </section>
-<AsciiDivider />
 
 <style>
   .page-head {
-    padding-block: var(--s6) var(--s7);
+    padding-block: var(--s6) var(--s5);
+  }
+
+  /* The sticker's column is its 1x width, 320px, so the dither stays crisp
+     where there is room; it narrows with the page below that. */
+  .page-head__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 320px);
+    align-items: center;
+    gap: var(--s5);
   }
 
   .page-head__h1 {
-    margin-block-start: var(--s4);
-    /* --t-title. This was a hand-rolled clamp topping at 96px — 8px under
-       the home hero, which is not a step down the ladder, it is noise. The
-       token makes it 80px and the scale 104 / 80 / 56 / 28. */
     font-size: var(--t-title);
     font-weight: var(--weight-heading);
     max-width: 16ch;
@@ -57,5 +60,11 @@ const { label, title, lead, figure, cursor } = Astro.props;
   .page-head__lead {
     margin-block-start: var(--s4);
     max-width: 52ch;
+  }
+
+  @media (max-width: 47.99rem) {
+    .page-head__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 </style>

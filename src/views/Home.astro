@@ -2,7 +2,6 @@
 import Base from '../layouts/Base.astro';
 import Illo from '../components/Illo.astro';
 import AsciiCallout from '../components/AsciiCallout.astro';
-import AsciiDivider from '../components/AsciiDivider.astro';
 import Closing from '../components/Closing.astro';
 import Accent from '../components/Accent.astro';
 import { accentParts } from '../i18n/accent';
@@ -152,7 +151,6 @@ const position = [
   <section class="services rails">
     <div class="container">
       <div class="services__head">
-        <p class="label">{t('home.services.label')}</p>
         <h2><Accent text={t('home.services.h2')} /></h2>
       </div>
 
@@ -183,19 +181,15 @@ const position = [
     </div>
   </section>
 
-  {/* A breather between two light sections: a dotted ASCII row, where a
-      diagonal hatch used to be. */}
-  <AsciiDivider />
-
   {/* --- Position --------------------------------------------------------- */}
   <section class="position rails">
-    <Illo name="fit" variant="aside" />
-
     <div class="container">
       <div class="position__head">
-        <p class="label">{t('home.position.label')}</p>
-        <h2 class="position__h2"><Accent text={t('home.position.h2')} /></h2>
-        <p class="lead measure">{t('home.position.body')}</p>
+        <div class="position__intro">
+          <h2 class="position__h2"><Accent text={t('home.position.h2')} /></h2>
+          <p class="lead measure">{t('home.position.body')}</p>
+        </div>
+        <Illo name="fit" variant="aside" />
       </div>
 
       <div class="position__grid">
@@ -220,7 +214,6 @@ const position = [
   <section class="process rails">
     <div class="container">
       <div class="process__head">
-        <p class="label">{t('home.process.label')}</p>
         <h2><Accent text={t('home.process.h2')} /></h2>
       </div>
 
@@ -537,11 +530,6 @@ const position = [
     color: var(--fg);
   }
 
-  .hero__band-label::before {
-    content: '── ';
-    color: var(--accent);
-  }
-
   .hero__band-run {
     flex: 1 1 0;
     min-inline-size: 0;
@@ -638,14 +626,16 @@ const position = [
 
   /* --- Services ---------------------------------------------------------- */
 
-  .services {
-    padding-block: var(--section-y);
+  /* Every Home section below the hero takes --section-y on top only, so the
+     space between two of them is that one value, never two stacked. */
+  .services,
+  .position,
+  .process {
+    padding-block-start: var(--section-y);
   }
 
   .services__head {
-    display: grid;
-    gap: var(--s3);
-    margin-block-end: var(--s6);
+    margin-block-end: var(--s5);
   }
 
   /* --- What we do: lanes --------------------------------------------------
@@ -746,7 +736,7 @@ const position = [
   }
 
   .lanes__more {
-    margin-block-start: var(--s5);
+    margin-block-start: var(--s4);
     font-size: var(--t-small);
   }
 
@@ -781,14 +771,8 @@ const position = [
 
   /* --- Process ----------------------------------------------------------- */
 
-  .process {
-    padding-block: var(--section-y);
-  }
-
   .process__head {
-    display: grid;
-    gap: var(--s3);
-    margin-block-end: var(--s6);
+    margin-block-end: var(--s5);
   }
 
   /* ONE continuous rule across the whole row, not a rule per cell. That is the
@@ -840,10 +824,26 @@ const position = [
     color: var(--fg-muted);
   }
 
+  /* The heading and lead, with the "fits your business" sticker beside them
+     at its 1x width (244px). On a phone the sticker is hidden (global.css)
+     and the column collapses. */
   .position__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 244px);
+    align-items: center;
+    gap: var(--s5);
+  }
+
+  .position__intro {
     display: grid;
     gap: var(--s3);
     max-width: 52rem;
+  }
+
+  @media (max-width: 47.99rem) {
+    .position__head {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 
   .position__h2 {
@@ -858,7 +858,7 @@ const position = [
     grid-template-columns: repeat(3, minmax(0, 1fr));
     column-gap: 0;
     row-gap: var(--s5);
-    margin-block-start: var(--s7);
+    margin-block-start: var(--s5);
   }
 
   /* Left-aligned, and the SAME padding on both sides of every cell.

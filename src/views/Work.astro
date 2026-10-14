@@ -32,7 +32,7 @@ const evidence = [
 ---
 
 <Base lang={lang} page="work" title={t('work.title')} description={t('work.lead')}>
-  <PageHead label={t('nav.work')} title={t('work.h1')} lead={t('work.lead')} figure="work" />
+  <PageHead title={t('work.h1')} lead={t('work.lead')} figure="work" />
 
   {/* The site itself as the evidence, until client work can be shown. The
       old site put six tiles here labelled "Project 1" through "Project 6",
@@ -48,7 +48,6 @@ const evidence = [
       {/* --- This site --------------------------------------------------- */}
       <article class="exhibit row row--statement">
         <header class="exhibit__head row__title">
-          <p class="label">{t('work.this.label')}</p>
           <h2 class="exhibit__h">{t('work.this.h')}</h2>
           <AsciiCallout text={t('work.callout')} />
         </header>
@@ -102,13 +101,8 @@ const evidence = [
 </Base>
 
 <style>
-  .exhibits {
-    padding-block-end: var(--s6);
-  }
-
   .exhibit {
-    padding-block: var(--s6);
-    border-top: 1px solid var(--rule);
+    padding-block: var(--s5) var(--s6);
   }
 
   .exhibit__h {
@@ -199,8 +193,7 @@ const evidence = [
   }
 
   .next {
-    padding-block: var(--s6);
-    border-top: 1px solid var(--rule);
+    padding-block: var(--s5) 0;
   }
 
   .next__inner {

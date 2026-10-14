@@ -95,19 +95,10 @@ export const ui = {
     'home.proof.bannerValue': 'None',
     'home.proof.bannerNote': 'Nothing to consent to, so nothing to interrupt you with.',
 
-    'home.stats.label': 'The studio, so far',
-    'home.stats.note':
-      'Small numbers, honestly reported. We would rather show you what is true today than a figure we cannot stand behind.',
-    'home.stats.projects': 'projects delivered',
-    'home.stats.clients': 'clients',
-    'home.stats.countries': 'countries we work from and into',
-    'home.stats.languages': 'languages we build in',
 
-    'home.services.label': 'What we do',
     'home.services.h2': 'Five things, done *properly*.',
     'home.services.link': 'All services',
 
-    'home.position.label': 'Choosing the right setup',
     'home.position.h2': 'A website that *fits* your business.',
     'home.position.body':
       'Some businesses need a simple site they can update themselves. Others need a more tailored build. We’ll recommend an approach based on what your site must do, who will update it and what you want to spend.',
@@ -173,7 +164,6 @@ export const ui = {
     'work.lead':
       'Our first client sites are being built now and will appear here once they launch. Until then, the best evidence of how we work is this site itself.',
 
-    'work.this.label': 'Built by us',
     'work.this.h': 'This website',
     'work.this.b':
       'This site is our own example: quick to open, easy to read, and clear about what we offer and what it costs.',
@@ -315,7 +305,6 @@ export const ui = {
        DEPLOY.md. Prices are never typed here: they live in
        src/data/pricing.ts and come in as {price}, so an answer cannot
        disagree with the price card above it. */
-    'home.process.label': 'How we work',
     'home.process.h2': 'From first conversation to *launch*.',
     'home.process.s1.h': 'Scope and price',
     'home.process.s2.h': 'Review the design',
@@ -330,7 +319,6 @@ export const ui = {
     'home.process.s4.b':
       'You get the access and the written handover guide agreed in your proposal — plus Website care, if you want someone to keep it running.',
 
-    'services.pricing.label': 'What things cost',
     'services.pricing.h2': 'Know the scope and *price* before work starts.',
     'services.pricing.lead':
       'We put the agreed work, price and timeline in writing. If you request more work later, we’ll quote it before doing it.',
@@ -375,7 +363,6 @@ export const ui = {
 
     'services.detail.h2': 'What each part covers.',
 
-    'services.faq.label': 'Questions',
     'services.faq.h2': 'What people ask before they start.',
     'services.faq.q1': 'How long does a site take?',
     'services.faq.q2': 'What do you need from me to begin?',
@@ -443,19 +430,10 @@ export const ui = {
     'home.proof.bannerValue': 'Nenhum',
     'home.proof.bannerNote': 'Não há nada a consentir, então nada para interromper você.',
 
-    'home.stats.label': 'O estúdio, até aqui',
-    'home.stats.note':
-      'Números pequenos, relatados com honestidade. Preferimos mostrar o que é verdade hoje a exibir um número que não conseguimos sustentar.',
-    'home.stats.projects': 'projetos entregues',
-    'home.stats.clients': 'clientes',
-    'home.stats.countries': 'países de onde e para onde trabalhamos',
-    'home.stats.languages': 'idiomas em que construímos',
 
-    'home.services.label': 'O que fazemos',
     'home.services.h2': 'Cinco coisas, bem *feitas*.',
     'home.services.link': 'Todos os serviços',
 
-    'home.position.label': 'Escolhendo a melhor solução',
     'home.position.h2': 'Um site que faz sentido para o seu *negócio*.',
     'home.position.body':
       'Alguns negócios precisam de um site simples que possam atualizar sozinhos. Outros precisam de uma solução mais personalizada. Vamos recomendar o caminho de acordo com as funções do site, quem vai atualizá-lo e quanto você pretende investir.',
@@ -521,7 +499,6 @@ export const ui = {
     'work.lead':
       'Nossos primeiros sites de clientes estão em construção e vão aparecer aqui quando forem ao ar. Até lá, a melhor prova de como trabalhamos é este próprio site.',
 
-    'work.this.label': 'Feito por nós',
     'work.this.h': 'Este site',
     'work.this.b':
       'Este site é o nosso próprio exemplo: abre rápido, é fácil de ler e deixa claro o que oferecemos e quanto custa.',
@@ -657,7 +634,6 @@ export const ui = {
 
     /* Ver a nota em inglês. Os preços nunca são digitados aqui: ficam em
        src/data/pricing.ts e entram como {price}. */
-    'home.process.label': 'Como trabalhamos',
     'home.process.h2': 'Da primeira conversa ao *lançamento*.',
     'home.process.s1.h': 'Escopo e preço',
     'home.process.s2.h': 'Revise o design',
@@ -672,7 +648,6 @@ export const ui = {
     'home.process.s4.b':
       'Você recebe os acessos e o guia de transferência por escrito combinados na proposta — e a Manutenção do site, se você quiser alguém cuidando dele.',
 
-    'services.pricing.label': 'Quanto custa',
     'services.pricing.h2': 'Saiba o escopo e o *preço* antes de começarmos.',
     'services.pricing.lead':
       'Registramos por escrito o trabalho combinado, o preço e o prazo. Se você pedir algo a mais depois, vamos enviar um orçamento antes de executar.',
@@ -717,7 +692,6 @@ export const ui = {
 
     'services.detail.h2': 'O que cada parte cobre.',
 
-    'services.faq.label': 'Perguntas',
     'services.faq.h2': 'O que perguntam antes de começar.',
     'services.faq.q1': 'Quanto tempo demora um site?',
     'services.faq.q2': 'Do que vocês precisam de mim para começar?',

@@ -46,7 +46,7 @@ const topics = [
 ---
 
 <Base lang={lang} page="contact" title={t('contact.title')} description={t('contact.lead')}>
-  <PageHead label={t('nav.contact')} title={t('contact.h1')} lead={t('contact.lead')} figure="contact" cursor />
+  <PageHead title={t('contact.h1')} lead={t('contact.lead')} figure="contact" cursor />
 
   <section class="contact rails">
     <div class="container contact__inner">
@@ -136,8 +136,6 @@ const topics = [
     column-gap: 0;
     row-gap: var(--s6);
     align-items: start;
-    padding-block-start: var(--s5);
-    border-top: 1px solid var(--rule);
   }
 
   /* span, not `1 / 3`: a numbered end line breaks when the column count drops

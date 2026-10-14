@@ -100,7 +100,7 @@ const faqs = [
 ---
 
 <Base lang={lang} page="services" title={t('services.title')} description={t('services.lead')}>
-  <PageHead label={t('nav.services')} title={t('services.h1')} lead={t('services.lead')} figure="services" />
+  <PageHead title={t('services.h1')} lead={t('services.lead')} figure="services" />
 
   {/* --- What things cost -------------------------------------------------
       First on the page, because it is the question a referral arrives with.
@@ -112,7 +112,6 @@ const faqs = [
   <section class="pricing rails" id="pricing">
     <div class="container">
       <div class="pricing__head">
-        <p class="label">{t('services.pricing.label')}</p>
         <h2><Accent text={t('services.pricing.h2')} /></h2>
         <p class="lead measure">{t('services.pricing.lead')}</p>
       </div>
@@ -179,7 +178,6 @@ const faqs = [
   <div class="services rails">
     <div class="container">
       <div class="services__head">
-        <p class="label">{t('home.services.label')}</p>
         <h2>{t('services.detail.h2')}</h2>
       </div>
 
@@ -220,11 +218,10 @@ const faqs = [
       and arrives keyboard-accessible with its expanded state announced. The
       site ships one 12 KB script; an accordion is not worth adding to it. */}
   <section class="faq rails">
-    <Illo name="question" variant="aside" />
     <div class="container">
       <div class="faq__head">
-        <p class="label">{t('services.faq.label')}</p>
         <h2>{t('services.faq.h2')}</h2>
+        <Illo name="question" variant="aside" />
       </div>
 
       <div class="faqs">
@@ -248,15 +245,16 @@ const faqs = [
 <style>
   /* --- What things cost --------------------------------------------------- */
 
+  /* The first section after the page head: a shorter step down than the
+     rhythm between sections, and no rule above it any more. */
   .pricing {
-    padding-block: var(--s6) var(--section-y);
-    border-top: 1px solid var(--rule);
+    padding-block-start: var(--s5);
   }
 
   .pricing__head {
     display: grid;
     gap: var(--s3);
-    margin-block-end: var(--s6);
+    margin-block-end: var(--s5);
   }
 
   /* The project and the care that follows it, side by side, the project the
@@ -358,7 +356,7 @@ const faqs = [
   /* --- Extras ------------------------------------------------------------- */
 
   .addons {
-    margin-block-start: var(--s7);
+    margin-block-start: var(--s5);
     max-width: var(--width-text);
   }
 
@@ -398,26 +396,33 @@ const faqs = [
   /* --- What each part covers ---------------------------------------------- */
 
   .services {
-    padding-block-end: var(--s7);
+    padding-block-start: var(--section-y);
   }
 
   .services__head {
-    display: grid;
-    gap: var(--s3);
     margin-block-end: var(--s5);
   }
 
   /* --- FAQ ---------------------------------------------------------------- */
 
   .faq {
-    padding-block: var(--s6) var(--section-y);
-    border-top: 1px solid var(--rule);
+    padding-block-start: var(--section-y);
   }
 
+  /* The heading with the question-mark sticker beside it, at its 1x width.
+     On a phone the sticker is hidden (global.css). */
   .faq__head {
     display: grid;
-    gap: var(--s3);
-    margin-block-end: var(--s6);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 160px);
+    align-items: center;
+    gap: var(--s5);
+    margin-block-end: var(--s5);
+  }
+
+  @media (max-width: 47.99rem) {
+    .faq__head {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 
   .faqs {

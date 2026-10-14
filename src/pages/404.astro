@@ -17,12 +17,15 @@ const links = (['home', 'work', 'services', 'about', 'contact'] as const).map((k
 
 <Base lang="en" title={t('nf.title')}>
   <section class="nf rails">
-    <Illo name="nf" variant="field" />
     <div class="container">
-      <p class="label">404</p>
-      <h1 class="nf__h1">{t('nf.h1')}</h1>
-      <p class="lead measure">{t('nf.lead')}</p>
-      <p class="lead measure nf__pt" lang="pt">{pt('nf.lead')}</p>
+      <div class="nf__head">
+        <div>
+          <h1 class="nf__h1">{t('nf.h1')}</h1>
+          <p class="lead measure">{t('nf.lead')}</p>
+          <p class="lead measure nf__pt" lang="pt">{pt('nf.lead')}</p>
+        </div>
+        <Illo name="nf" variant="field" />
+      </div>
 
       <div class="nf__cols">
         <nav class="nf__nav" aria-label="English">
@@ -49,11 +52,25 @@ const links = (['home', 'work', 'services', 'about', 'contact'] as const).map((k
 
 <style>
   .nf {
-    padding-block: var(--s7) var(--section-y);
+    padding-block: var(--s6) var(--section-y);
+  }
+
+  /* The same head as every inner page: text, then the sticker at 320px. */
+  .nf__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 320px);
+    align-items: center;
+    gap: var(--s5);
+  }
+
+  @media (max-width: 47.99rem) {
+    .nf__head {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 
   .nf__h1 {
-    margin-block: var(--s4);
+    margin-block-end: var(--s4);
     font-size: var(--t-title);
     font-weight: var(--weight-heading);
   }
@@ -66,8 +83,8 @@ const links = (['home', 'work', 'services', 'about', 'contact'] as const).map((k
   .nf__cols {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--s7);
-    margin-block-start: var(--s6);
+    gap: var(--s5);
+    margin-block-start: var(--s5);
     padding-block-start: var(--s4);
     border-top: 1px solid var(--rule);
   }
@@ -90,6 +107,6 @@ const links = (['home', 'work', 'services', 'about', 'contact'] as const).map((k
   }
 
   .nf__back {
-    margin-block-start: var(--s6);
+    margin-block-start: var(--s5);
   }
 </style>

@@ -282,15 +282,12 @@
   --s6: 4rem;
   --s7: 6rem;
 
-  /* The section rhythm, and the one number that most decides whether the
-     page reads like the reference. It used to be --s8, a flat 8rem, on 9 of
-     11 sections — so the rhythm the comment above calls "expected to VARY"
-     was in practice a single fixed value anyway. Now it is fluid and more
-     generous where there is room: 96px on a phone, ~153px at 1280, 192px on
-     a wide screen, against a flat 128px before.
-
-     --s8 and --s9 are gone. Every one of their call sites was this. */
-  --section-y: clamp(6rem, 12vw, 12rem);
+  /* The section rhythm: the space between two sections, and only once —
+     sections take it as top padding, so two of them never stack it
+     (About's "where" and "how" used to sit 307px apart). 64px on a phone,
+     ~90px at 1280, 104px on a wide screen. It was clamp(6rem, 12vw, 12rem),
+     up to 192px, until David found the site empty (2026-10-14). */
+  --section-y: clamp(4rem, 7vw, 6.5rem);
 
   /* The floating header, measured once so nothing has to guess. The bar is
      --header-bar-h tall and floats inside --s2 of padding top and bottom, so
