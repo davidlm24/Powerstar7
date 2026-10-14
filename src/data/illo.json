@@ -69,29 +69,14 @@
   "w": 244,
   "h": 226
  },
- "hero-web": {
-  "kind": "sticker",
-  "w": 224,
-  "h": 172
+ "desk": {
+  "kind": "hero",
+  "w": 500,
+  "h": 340
  },
- "hero-brand": {
-  "kind": "sticker",
-  "w": 224,
-  "h": 172
- },
- "hero-seo": {
-  "kind": "sticker",
-  "w": 224,
-  "h": 172
- },
- "hero-email": {
-  "kind": "sticker",
-  "w": 224,
-  "h": 172
- },
- "hero-hosting": {
-  "kind": "sticker",
-  "w": 224,
-  "h": 172
+ "check": {
+  "kind": "seal",
+  "w": 150,
+  "h": 150
  }
 }
