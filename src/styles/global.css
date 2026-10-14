@@ -411,11 +411,12 @@ a:hover { text-decoration-thickness: 2px; }
   height: auto;
 }
 
-/* Icons: at rest only their zone's soft wash shows; on hover or keyboard
-   focus of the zone the sticker appears on top of it — the one animation
-   (David). Where there is no hover at all (touch), the icons simply show. */
+/* Icons: at rest a faint ghost (15%) on their zone's soft wash; on hover
+   or keyboard focus of the zone the sticker comes up to full on top of it
+   — the one animation (David). Where there is no hover at all (touch),
+   the icons simply show. */
 .illo--icon img {
-  opacity: 0;
+  opacity: 0.15;
   transition: opacity 260ms var(--ease);
 }
 
