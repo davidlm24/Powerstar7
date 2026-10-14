@@ -10,7 +10,8 @@
     "preview": "node .claude/serve.js",
     "check": "astro check",
     "measure": "node scripts/measure.mjs",
-    "illo": "node scripts/illustrations.mjs"
+    "illo": "node scripts/illustrations.mjs",
+    "share": "node scripts/share.mjs"
   },
   "dependencies": {
     "astro": "^7.3.3"
