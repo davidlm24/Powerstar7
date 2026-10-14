@@ -5,8 +5,11 @@
    Run it after changing a scene in scripts/illo/, and commit what it
    writes: the build only reads the files, so it stays fast.
 
-   The style is "D1 + adesivo" (David, 2026-10-14, from the "Adesivo com D1
-   e D2" mockups): each 3D scene is softly shaded and dithered to 1 bit by
+   THE HOUSE STYLE for every illustration on this site, now and future
+   (David, 2026-10-14). A new illustration is a new scene in scripts/illo/
+   rendered by this script; no other illustration style.
+
+   The style is "D1 + adesivo" (from the "Adesivo com D1 e D2" mockups): each 3D scene is softly shaded and dithered to 1 bit by
    an 8x8 Bayer matrix — the regular, printed grain — then laid on sticker
    paper: the whole silhouette backed in pale paper, plus a halo around it,
    with the blue dots on top. The tilt is applied to the scene itself before
