@@ -38,11 +38,18 @@ const KINDS = {
   icon: { box: [224, 172], zoom: 1.14, tilt: -3.5 },
   field: { box: [456, 344], zoom: 1.08, tilt: -2 },
   aside: { box: [244, 226], zoom: 1.08, tilt: -2 },
+  /* The home hero's pile: the five service icons again, each at its own
+     tilt so they read as stickers slapped down one by one. The tilt is
+     baked here like every other, never rotated in CSS, which would
+     resample the grain. */
+  sticker: { box: [224, 172], zoom: 1.14, tilt: -3.5 },
 };
+const HERO_TILT = { web: -7, brand: 5, seo: 3, email: -5, hosting: -2 };
 const LIST = [
   ...Object.keys(ICONS).map((name) => ({ name, kind: 'icon', scene: ICONS[name] })),
   ...['services', 'work', 'about', 'contact', 'legal', 'privacy', 'nf'].map((name) => ({ name, kind: 'field', scene: PAGES[name] })),
   ...['fit', 'question'].map((name) => ({ name, kind: 'aside', scene: PAGES[name] })),
+  ...Object.keys(HERO_TILT).map((name) => ({ name: `hero-${name}`, kind: 'sticker', scene: ICONS[name], tilt: HERO_TILT[name] })),
 ];
 
 /** Grow a 0/1 mask by r pixels (a disc). */
@@ -76,8 +83,9 @@ mkdirSync(OUT, { recursive: true });
 const manifest = {};
 const t0 = Date.now();
 let bytes = 0;
-for (const { name, kind, scene } of LIST) {
-  const { box: [W, H], zoom, tilt } = KINDS[kind];
+for (const { name, kind, scene, tilt: own } of LIST) {
+  const { box: [W, H], zoom } = KINDS[kind];
+  const tilt = own ?? KINDS[kind].tilt;
   const a = (tilt * Math.PI) / 180, ca = Math.cos(a), sa = Math.sin(a);
   // tilt and zoom the scene itself, so the dither stays square to the pixels
   const sc = (x, y) => {

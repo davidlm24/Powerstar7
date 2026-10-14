@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Ascii from '../components/Ascii.astro';
 import Illo from '../components/Illo.astro';
 import AsciiCallout from '../components/AsciiCallout.astro';
 import AsciiDivider from '../components/AsciiDivider.astro';
@@ -31,6 +30,24 @@ const services = [
   { n: '05', key: 'hosting', name: t('svc.hosting.name'), b: t('svc.hosting.body') },
 ] as const;
 
+/* The headline's highlighted word is its last one (home.h1.mark), split off
+   here so the copy stays one sentence in ui.ts. A mark that is not the end
+   of the headline is a copy error, so the build stops on it rather than
+   shipping a headline with nothing highlighted. */
+const h1 = t('home.h1').replace(/\.$/, '');
+const mark = t('home.h1.mark');
+if (!h1.endsWith(mark)) {
+  throw new Error(`home.h1.mark "${mark}" is not the last word of home.h1 (${lang})`);
+}
+const h1Lead = h1.slice(0, -mark.length).trimEnd();
+
+/* The band along the foot of the hero. The first copy is the one screen
+   readers get; the other three only keep the loop seamless, because half
+   the track has to be wider than the widest screen for translateX(-50%) to
+   come back round without a gap. */
+const band = t('home.band.items').split(',').map((s) => s.trim());
+const bandRun = [0, 1, 2, 3].flatMap((copy) => band.map((item) => ({ item, copy })));
+
 /* Each step restates a commitment the site already makes elsewhere: a
    written scope with the price attached (About), design reviewed on real
    devices (Services), code with no builder underneath and WCAG AA as the
@@ -53,12 +70,12 @@ const position = [
 
 <Base lang={lang} page="home" title={t('home.title')}>
   {/* --- Hero ------------------------------------------------------------
-      No photograph exists and none is coming, so type is the image: one
-      sentence at 104px, 5.8x body, against the old site's 1.94x. It says what
-      a small business gets, and the subtitle says what we do to get it there.
-      What is NOT here: a recoloured <em> in the middle of the sentence, the
-      hero device every AI image generator and every SaaS template produces.
-      The accent lands on the full stop instead, echoing the wordmark. */}
+      Direction E, David's pick (2026-10-14): "Your website, sorted." with
+      the last word highlighted, the five service stickers slapped down one
+      by one beside it while a checklist ticks, and a slow band of the kinds
+      of business we make sites for along the foot. On load the stickers
+      land, each ticking its line, and the highlight fills last, once
+      everything is checked. Then nothing moves but the band. */}
   <section class="hero rails">
     {/* Both decorative layers live on this one element rather than on the
         section's own pseudos. That began as a way to keep ::before free for
@@ -67,24 +84,62 @@ const position = [
         wash's percentages — and the measured contrast ceiling on them — hold
         without being re-derived. */}
     <div class="hero__fx" aria-hidden="true"></div>
-    <Ascii variant="flow" />
 
-    <div class="container">
-      <h1 class="hero__h1">
-        <span>{t('home.h1').replace(/\.$/, '')}<b aria-hidden="true">.</b></span>
-      </h1>
+    <div class="container hero__grid">
+      <div class="hero__copy">
+        <h1 class="hero__h1">
+          <span class="hero__l1">{h1Lead}</span>
+          <span class="hero__l2"><span class="hero__mark">{mark}</span><b aria-hidden="true">.</b></span>
+        </h1>
 
-      <div class="hero__foot">
-        <p class="lead measure">{t('home.lead')}</p>
-        <div class="hero__actions">
-          <a class="btn" href={route('contact', lang)}>{t('home.cta')}</a>
-          {/* The callout belongs to this button, not to the row: when the
-              buttons stack on a narrow phone, it has to stay under "See prices". */}
-          <span class="hero__prices">
-            <a class="btn btn--quiet" href={`${route('services', lang)}#pricing`}>{t('home.cta.secondary')}</a>
-            <AsciiCallout text={t('home.callout')} align="end" />
-          </span>
+        <div class="hero__foot">
+          <p class="lead measure">{t('home.lead')}</p>
+          <div class="hero__actions">
+            <a class="btn" href={route('contact', lang)}>{t('home.cta')}</a>
+            {/* The callout belongs to this button, not to the row: when the
+                buttons stack on a narrow phone, it has to stay under "See prices". */}
+            <span class="hero__prices">
+              <a class="btn btn--quiet" href={`${route('services', lang)}#pricing`}>{t('home.cta.secondary')}</a>
+              <AsciiCallout text={t('home.callout')} align="end" />
+            </span>
+          </div>
         </div>
+      </div>
+
+      <div class="hero__art">
+        <div class="hero__pile" aria-hidden="true">
+          {services.map((s) => <Illo name={`hero-${s.key}`} variant="sticker" />)}
+        </div>
+        <ul class="hero__list">
+          {
+            services.map((s) => (
+              <li>
+                <span class="hero__box" aria-hidden="true">[<span>x</span>]</span> {s.name}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="hero__band" data-band>
+      <div class="container hero__band-in">
+        <p class="hero__band-label">{t('home.band.label')}</p>
+        <div class="hero__band-run">
+          <ul class="hero__band-track">
+            {bandRun.map(({ item, copy }) => <li aria-hidden={copy > 0 ? 'true' : undefined}>{item}</li>)}
+          </ul>
+        </div>
+        {/* WCAG 2.2.2: anything that moves on its own for more than five
+            seconds next to other content needs a way to stop it. Shown by
+            the script, so it never appears where it would do nothing. */}
+        <button
+          type="button"
+          class="hero__band-pause"
+          data-pause={t('home.band.pause')}
+          data-play={t('home.band.play')}
+          hidden
+        >{t('home.band.pause')}</button>
       </div>
     </div>
   </section>
@@ -189,30 +244,17 @@ const position = [
 </Base>
 
 <script>
-  /* The hero field keeps moving: every ~80ms, the same function that drew the
-     first frame at build time draws the next one. Only while it is on screen
-     and the tab is visible, and never for anyone who asked for less motion:
-     they keep the first frame. */
-  import { renderFlow } from '../lib/flow';
-
-  const pre = document.querySelector<HTMLElement>('pre[data-flow]');
-  const calm = window.matchMedia('(prefers-reduced-motion: reduce)');
-  if (pre && 'IntersectionObserver' in window) {
-    const cols = Number(pre.dataset.cols);
-    const rows = Number(pre.dataset.rows);
-    let onScreen = true;
-    let last = 0;
-    const start = performance.now();
-    new IntersectionObserver(([entry]) => {
-      onScreen = entry.isIntersecting;
-    }).observe(pre);
-    const tick = (now: number) => {
-      requestAnimationFrame(tick);
-      if (!onScreen || document.hidden || calm.matches || now - last < 80) return;
-      last = now;
-      pre.textContent = renderFlow(cols, rows, (now - start) / 1000);
-    };
-    requestAnimationFrame(tick);
+  /* The band's pause button. Hover pauses it too (CSS); this is for
+     keyboard and touch. Nobody who asked for less motion sees the band move
+     at all, so the button stays hidden for them. */
+  const band = document.querySelector<HTMLElement>('[data-band]');
+  const pause = band?.querySelector<HTMLButtonElement>('.hero__band-pause');
+  if (band && pause && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    pause.hidden = false;
+    pause.addEventListener('click', () => {
+      const paused = band.toggleAttribute('data-paused');
+      pause.textContent = (paused ? pause.dataset.play : pause.dataset.pause) ?? '';
+    });
   }
 </script>
 
@@ -222,7 +264,8 @@ const position = [
   .hero {
     position: relative;
     isolation: isolate;
-    padding-block: var(--s7) var(--section-y);
+    /* No bottom padding: the band closes the hero. */
+    padding-block: var(--s6) 0;
     /* The wash is inset negatively so it bleeds past the section, and the
        drift pushes it further still — which put 244px of horizontal scroll
        on the page. `clip` on the x axis only, so the wash can still bleed
@@ -301,13 +344,54 @@ const position = [
     to { transform: translate3d(3%, 2%, 0) scale(1.09); }
   }
 
-  .hero__h1 span {
+  /* Copy on the left, the sticker pile on the right; one column below
+     60rem, the pile under the buttons. */
+  .hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s6) var(--s5);
+    /* Tighter than a section, so the band still lands in the first screen
+       of a 900px-tall laptop. */
+    padding-block-end: var(--s6);
+  }
+
+  /* Smaller than --t-hero, which was sized for a headline with the whole
+     width to itself. Two lines by construction: the lead-in, then the
+     highlighted word. */
+  .hero__h1 {
+    font-size: clamp(2.5rem, 6.4vw, 6rem);
+  }
+
+  .hero__l1,
+  .hero__l2 {
     display: block;
   }
 
-  /* The accent lands here — on the full stop — and nowhere else in the
-     headline, the same blue dot the wordmark ends on. Decorative and
-     aria-hidden, but set large enough to be plainly visible. */
+  /* The highlighted word, webhero's device and David's reference. The block
+     sits behind the type, starting a hair left of it so the word's first
+     letter still lines up with the line above. --paper on --blue-fn is
+     4.87:1, AA even at body size. */
+  .hero__mark {
+    position: relative;
+    z-index: 0;
+    display: inline-block;
+    color: var(--paper);
+    padding-inline: 0.08em;
+    margin-inline-start: -0.08em;
+  }
+
+  .hero__mark::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 0.06em 0 -0.04em;
+    background: var(--accent-fn);
+    transform-origin: left center;
+  }
+
+  /* The accent lands on the full stop too, the same blue dot the wordmark
+     ends on. Decorative and aria-hidden. */
   .hero__h1 b {
     color: var(--accent);
     font-weight: inherit;
@@ -316,12 +400,12 @@ const position = [
   .hero__foot {
     /* The query container for the "See prices" callout, below. */
     container-type: inline-size;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
+    display: grid;
+    justify-items: start;
     gap: var(--s5);
-    margin-block-start: var(--s6);
+    margin-block-start: var(--s5);
+    /* Room for the callout, which hangs out of the flow under its button. */
+    padding-block-end: var(--s4);
   }
 
   .hero__actions {
@@ -337,10 +421,9 @@ const position = [
      the caret ends at the button's right edge. contain: inline-size keeps its
      text from widening the button.
 
-     Side by side (the hero's foot row is at least 21rem wide, which both
-     languages' buttons fit in side by side): it runs on one line, out of the flow, right-
-     aligned to the button and extending left under the first one. The row is
-     always wider than the line there, so it never leaves the column. */
+     Side by side (the foot is at least 21rem wide, which both languages'
+     buttons fit in side by side): it runs on one line, out of the flow,
+     right-aligned to the button and extending left under the first one. */
   .hero__prices {
     position: relative;
     display: inline-flex;
@@ -352,18 +435,6 @@ const position = [
     flex: none;
   }
 
-  /* The outlined button and the prices callout get the paper behind them,
-     so the hero's moving piece never shows through their text. On plain
-     paper they look exactly as before. (The Portuguese one-line headline
-     lifts the whole foot into the art at wide widths.) */
-  .hero :global(.callout) {
-    background: var(--bg);
-  }
-
-  .hero :global(.btn--quiet) {
-    --btn-bg: var(--bg);
-  }
-
   @container (min-width: 21rem) {
     .hero__prices :global(.callout--end) {
       position: absolute;
@@ -371,6 +442,233 @@ const position = [
       inset-inline-end: 0;
       contain: none;
       white-space: nowrap;
+    }
+  }
+
+  /* --- The pile ----------------------------------------------------------
+     The five service stickers, each with its own tilt baked into the image
+     (scripts/illustrations.mjs, "hero-*"). At full size the pile is 487px,
+     so each sticker is 46% of it, 224px: its 1x width, one image pixel to
+     one screen pixel, which keeps the dither crisp. */
+  .hero__pile {
+    position: relative;
+    inline-size: min(100%, 487px);
+    aspect-ratio: 1 / 0.92;
+    margin-inline: auto;
+  }
+
+  .hero__pile :global(.illo) {
+    position: absolute;
+    inline-size: 46%;
+    --illo-w: 100%;
+  }
+
+  .hero__pile :global(.illo:nth-child(1)) { inset-inline-start: 0; inset-block-start: 2%; }
+  .hero__pile :global(.illo:nth-child(2)) { inset-inline-start: 50%; inset-block-start: 0; }
+  .hero__pile :global(.illo:nth-child(3)) { inset-inline-start: 4%; inset-block-start: 36%; }
+  .hero__pile :global(.illo:nth-child(4)) { inset-inline-start: 52%; inset-block-start: 32%; }
+  .hero__pile :global(.illo:nth-child(5)) { inset-inline-start: 28%; inset-block-start: 62%; }
+
+  .hero__list {
+    list-style: none;
+    padding: 0;
+    margin: var(--s3) auto 0;
+    inline-size: min(100%, 487px);
+    font-family: var(--font-mono);
+    font-size: var(--t-small);
+    line-height: 1.65;
+  }
+
+  /* --accent-fn: small text that carries meaning (the tick). */
+  .hero__box {
+    color: var(--accent-fn);
+    font-weight: var(--weight-medium);
+  }
+
+  /* --- The landing -------------------------------------------------------
+     Only for people who have not asked for less motion; everyone else, and
+     anyone without CSS animation, gets the finished state, which is the
+     state every element is written in. One sticker every 300ms, each
+     ticking its line as it lands, then the highlight fills. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__pile :global(.illo),
+    .hero__list li {
+      --i: 0;
+    }
+
+    .hero__pile :global(.illo:nth-child(2)),
+    .hero__list li:nth-child(2) { --i: 1; }
+    .hero__pile :global(.illo:nth-child(3)),
+    .hero__list li:nth-child(3) { --i: 2; }
+    .hero__pile :global(.illo:nth-child(4)),
+    .hero__list li:nth-child(4) { --i: 3; }
+    .hero__pile :global(.illo:nth-child(5)),
+    .hero__list li:nth-child(5) { --i: 4; }
+
+    .hero__pile :global(.illo) {
+      animation: hero-slap 420ms var(--ease) both;
+      animation-delay: calc(200ms + var(--i) * 300ms);
+    }
+
+    .hero__box span {
+      animation: hero-tick 150ms ease-out both;
+      animation-delay: calc(450ms + var(--i) * 300ms);
+    }
+
+    .hero__mark::before {
+      animation: hero-fill 450ms var(--ease) 1.9s both;
+    }
+
+    .hero__mark {
+      animation: hero-ink 120ms ease-out 2s both;
+    }
+  }
+
+  @keyframes hero-slap {
+    from { opacity: 0; transform: translateY(-10px) scale(1.35); }
+    70% { opacity: 1; transform: scale(0.96); }
+    to { transform: none; }
+  }
+
+  @keyframes hero-tick {
+    from { opacity: 0; }
+  }
+
+  @keyframes hero-fill {
+    from { transform: scaleX(0); }
+  }
+
+  @keyframes hero-ink {
+    from { color: var(--fg); }
+  }
+
+  /* --- The band ----------------------------------------------------------
+     The kinds of business we make sites for, moving slowly along the foot
+     of the hero: the one continuous motion, in the place webhero runs its
+     client logos. About 50px a second. Hover or the pause button stops it;
+     with less motion asked for it never starts. */
+  .hero__band {
+    border-block-start: 1px solid var(--rule);
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--tr-mono);
+    color: var(--fg-muted);
+  }
+
+  .hero__band-in {
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+  }
+
+  .hero__band-label {
+    flex: none;
+    margin: 0;
+    padding-block: var(--s3);
+    color: var(--fg);
+  }
+
+  .hero__band-label::before {
+    content: '── ';
+    color: var(--accent);
+  }
+
+  .hero__band-run {
+    flex: 1 1 0;
+    min-inline-size: 0;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+  }
+
+  .hero__band-track {
+    display: flex;
+    inline-size: max-content;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    animation: hero-band 96s linear infinite;
+  }
+
+  .hero__band-track li {
+    display: flex;
+    gap: 2.5rem;
+    padding-inline-end: 2.5rem;
+    white-space: nowrap;
+  }
+
+  .hero__band-track li::after {
+    content: '·';
+    color: var(--accent-fn);
+  }
+
+  .hero__band:hover .hero__band-track,
+  .hero__band[data-paused] .hero__band-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes hero-band {
+    to { transform: translateX(-50%); }
+  }
+
+  .hero__band-pause {
+    flex: none;
+    padding: var(--s2) 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    letter-spacing: inherit;
+    color: var(--fg);
+    cursor: pointer;
+  }
+
+  .hero__band-pause::before { content: '['; color: var(--accent-fn); }
+  .hero__band-pause::after { content: ']'; color: var(--accent-fn); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__band-track {
+      animation: none;
+    }
+  }
+
+  /* --- Narrower ----------------------------------------------------------
+     One column: the pile goes under the buttons, smaller, and the checklist
+     goes, since the lanes right below name the same five services. */
+  @media (max-width: 59.99rem) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hero__h1 {
+      font-size: clamp(2.5rem, 10vw, 5.5rem);
+    }
+
+    .hero__pile {
+      inline-size: min(100%, 26rem);
+    }
+  }
+
+  /* On a phone the label and the button would leave the run one word wide,
+     so the run takes a row of its own under them. */
+  @media (max-width: 47.99rem) {
+    .hero__list {
+      display: none;
+    }
+
+    .hero__band-in {
+      flex-wrap: wrap;
+      justify-content: space-between;
+      row-gap: 0;
+    }
+
+    .hero__band-label {
+      padding-block-end: 0;
+    }
+
+    .hero__band-run {
+      order: 3;
+      flex-basis: 100%;
+      padding-block: var(--s2) var(--s3);
     }
   }
 

@@ -1,6 +1,7 @@
 /* Renders the social cards, public/assets/img/og-card.png (EN) and
    og-card-pt.png (PT), at 1200x630 with headless Edge, using the site's own
-   fonts and colours. The headline and label mirror home.h1 and site.tagline
+   fonts and colours. The headline, its highlighted word and the label mirror home.h1,
+   home.h1.mark and site.tagline
    in src/i18n/ui.ts: change them here when those change, then run
 
      node scripts/og-card.mjs
@@ -20,8 +21,8 @@ for (const f of ['space-grotesk-latin', 'space-grotesk-latin-ext', 'source-sans-
   copyFileSync(join(repo, 'public/assets/fonts', f + '.woff2'), join(here, 'fonts', f + '.woff2'));
 
 const cards = {
-  en: { label: 'Web agency for small businesses', h1: 'Websites that bring in business' },
-  pt: { label: 'Agência web para pequenas empresas', h1: 'Sites que trazem clientes' },
+  en: { label: 'Web agency for small businesses', h1: 'Your website, ', mark: 'sorted' },
+  pt: { label: 'Agência web para pequenas empresas', h1: 'Seu site, ', mark: 'resolvido' },
 };
 
 const edge = process.env.BROWSER ?? 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';
@@ -43,13 +44,14 @@ html,body{width:1200px;height:630px;overflow:hidden;background:#F5F2EB}
 .label{margin-top:96px;font:500 22px/1 SG;letter-spacing:.12em;text-transform:uppercase;color:#55504A}
 h1{margin-top:auto;font:400 116px/0.98 SG;letter-spacing:-.035em;color:#1C1B17;text-wrap:balance;max-width:1008px}
 h1 b{color:#0e6fff;font-weight:inherit}
+h1 span{display:inline-block;background:#0c62e0;color:#F5F2EB;padding:0 .08em;margin-left:-.02em}
 .foot{margin-top:64px;margin-bottom:64px;padding-top:28px;border-top:1px solid rgb(28 27 23 / .10);display:flex;align-items:baseline;gap:32px}
 .mark{font:500 30px/1 SG;letter-spacing:-.02em;color:#1C1B17}.mark b{color:#0e6fff;font-weight:inherit}
 .url{font:400 26px/1 SS;color:#55504A}
 </style></head><body><div class="card">
 <span class="rail l"></span><span class="rail r"></span>
 <p class="label">${c.label}</p>
-<h1>${c.h1}<b>.</b></h1>
+<h1>${c.h1}<span>${c.mark}</span><b>.</b></h1>
 <div class="foot"><span class="mark">DesignActiv<b>.</b></span><span class="url">designactiv.com</span></div>
 </div></body></html>`;
   const page = join(here, `card-${lang}.html`);

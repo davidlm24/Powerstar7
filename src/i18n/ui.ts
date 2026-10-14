@@ -65,12 +65,21 @@ export const ui = {
 
     /* --- Home ---------------------------------------------------------- */
     'home.title': 'DesignActiv — web agency for small businesses',
-    'home.h1': 'Websites that bring in business.',
+    /* The headline's last word is the highlighted one; home.h1.mark must
+       be exactly that word, and Home.astro fails the build if it is not. */
+    'home.h1': 'Your website, sorted.',
+    'home.h1.mark': 'sorted',
     'home.lead':
-      'DesignActiv is a web agency for small businesses. We design and build your website, then help people find it, with branding, SEO, email and ongoing care when you need them.',
+      'Design, domain, email, getting found, updates: DesignActiv takes care of all of it for small businesses, so you can get back to running yours.',
     'home.cta': 'Start a project',
     'home.cta.secondary': 'See prices',
     'home.callout': 'yes, our prices are public',
+    /* The band along the foot of the hero. The items are one string, split
+       on commas in Home.astro. */
+    'home.band.label': 'made for',
+    'home.band.items': 'salons, bakeries, cafés, garages, clinics, photographers, studios, restaurants, shops, tradespeople',
+    'home.band.pause': 'pause',
+    'home.band.play': 'play',
     'closing.lead':
       'Tell us about it in a few lines — you’ll hear back, usually within a working day, and if it’s a fit you get a written scope with the price attached.',
 
@@ -409,12 +418,17 @@ export const ui = {
 
     /* --- Home ---------------------------------------------------------- */
     'home.title': 'DesignActiv — agência web para pequenas empresas',
-    'home.h1': 'Sites que trazem clientes.',
+    'home.h1': 'Seu site, resolvido.',
+    'home.h1.mark': 'resolvido',
     'home.lead':
-      'A DesignActiv é uma agência web para pequenas empresas. Criamos e construímos seu site e ajudamos as pessoas a encontrá-lo, com identidade visual, SEO, e-mail e manutenção quando você precisar.',
+      'Design, domínio, e-mail, ser encontrado, atualizações: a DesignActiv cuida de tudo isso para pequenas empresas, e você volta a cuidar do seu negócio.',
     'home.cta': 'Começar um projeto',
     'home.cta.secondary': 'Ver preços',
     'home.callout': 'sim, nossos preços são públicos',
+    'home.band.label': 'feito para',
+    'home.band.items': 'salões, padarias, cafés, oficinas, clínicas, fotógrafos, estúdios, restaurantes, lojas, prestadores de serviço',
+    'home.band.pause': 'pausar',
+    'home.band.play': 'continuar',
     'closing.lead':
       'Conte em poucas linhas — você recebe uma resposta, normalmente em um dia útil, e, se fizer sentido, um escopo por escrito com o preço junto.',
 

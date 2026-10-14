@@ -13,6 +13,8 @@
    - field: the page-heading figure, behind the text, faded towards the
             copy by its wrapper's masks.
    - aside: the smaller second figure, wide screens only.
+   - sticker: one of the home hero's pile, always visible and loaded
+            eagerly, since it is in the first screen.
 
    Decoration by contract: aria-hidden, empty alt, data-nosnippet. */
 import manifest from '../data/illo.json';
@@ -21,7 +23,7 @@ export type IlloName = keyof typeof manifest;
 
 interface Props {
   name: IlloName;
-  variant: 'icon' | 'field' | 'aside';
+  variant: 'icon' | 'field' | 'aside' | 'sticker';
   class?: string;
 }
 
@@ -38,7 +40,7 @@ const src2 = `/assets/illo/${name}@2x.png`;
     width={w}
     height={h}
     alt=""
-    loading={variant === 'field' ? 'eager' : 'lazy'}
+    loading={variant === 'field' || variant === 'sticker' ? 'eager' : 'lazy'}
     decoding="async"
   />
 </div>

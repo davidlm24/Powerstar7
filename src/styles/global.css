@@ -328,69 +328,14 @@ a:hover { text-decoration-thickness: 2px; }
 }
 
 /* --- The ASCII kit --------------------------------------------------------
-   Plain keyboard characters where the site talks in type: the home hero's
-   moving field (flow.ts), rule labels, callouts and dotted dividers. Chosen
+   Plain keyboard characters where the site talks in type: rule labels,
+   callouts, dotted dividers and the home hero's checklist and band. Chosen
    by David as direction C ("both"). The system monospace draws it, so
    nothing is downloaded. The pictures are no longer ASCII: see "The
    illustrations" below.
 
-   All of it is decoration, aria-hidden, and kept off the text. */
-
-.ascii {
-  pointer-events: none;
-  user-select: none;
-}
-
-.ascii pre {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: var(--ascii-cell, 12px);
-  line-height: 1;
-  letter-spacing: 0;
-  font-variant-ligatures: none;
-  white-space: pre;
-  color: var(--accent);
-}
-
-/* The home hero's moving piece (flow.ts): the "tecido de sinal" David
-   picked — a full field of tones flowing in slow waves, a scanline
-   sweeping through. It owns the right side of the hero, fading out towards
-   the headline and the buttons, so the copy stays on clear paper. */
-.ascii--flow {
-  position: absolute;
-  z-index: -1;
-  inset-block-start: var(--s5);
-  inset-inline-end: var(--rail-x);
-  --ascii-cell: clamp(4px, 0.5vw, 7px);
-  /* The weave covers its whole box, where the old field was sparse lines,
-     so the same perceived weight needs a lower alpha: 0.3 here reads like
-     the 0.4 the sparse field was accepted at behind the Portuguese
-     headline. */
-  opacity: 0.3;
-  -webkit-mask-image:
-    linear-gradient(to right, transparent 8%, #000 56%),
-    linear-gradient(to bottom, #000 55%, transparent 94%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(to right, transparent 8%, #000 56%),
-    linear-gradient(to bottom, #000 55%, transparent 94%);
-  mask-composite: intersect;
-}
-
-/* Between phone and wide desktop the headline reaches further into it, so
-   it steps further back. */
-@media (min-width: 48rem) and (max-width: 74.99rem) {
-  .ascii--flow {
-    opacity: 0.22;
-  }
-}
-
-@media (max-width: 47.99rem) {
-  .ascii--flow {
-    --ascii-cell: 2.6px;
-    opacity: 0.16;
-  }
-}
+   The labels, callouts and dividers are decoration, aria-hidden, and kept
+   off the text; the hero's checklist and band are real content. */
 
 /* --- The illustrations ---------------------------------------------------
    "D1 + adesivo" (David, 2026-10-14): every illustration is a finished

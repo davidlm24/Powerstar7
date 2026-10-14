@@ -68,5 +68,30 @@
   "kind": "aside",
   "w": 244,
   "h": 226
+ },
+ "hero-web": {
+  "kind": "sticker",
+  "w": 224,
+  "h": 172
+ },
+ "hero-brand": {
+  "kind": "sticker",
+  "w": 224,
+  "h": 172
+ },
+ "hero-seo": {
+  "kind": "sticker",
+  "w": 224,
+  "h": 172
+ },
+ "hero-email": {
+  "kind": "sticker",
+  "w": 224,
+  "h": 172
+ },
+ "hero-hosting": {
+  "kind": "sticker",
+  "w": 224,
+  "h": 172
  }
 }
