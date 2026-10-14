@@ -1,8 +1,8 @@
 /* Renders the social cards, public/assets/img/og-card.png (EN) and
    og-card-pt.png (PT), at 1200x630 with headless Edge, using the site's own
-   fonts and colours. The headline, its highlighted word and the label mirror home.h1,
-   home.h1.mark and site.tagline
-   in src/i18n/ui.ts: change them here when those change, then run
+   fonts and colours. The headline, its highlighted (accent) word and the
+   label mirror home.h1 (the *word* in it) and site.tagline in
+   src/i18n/ui.ts: change them here when those change, then run
 
      node scripts/og-card.mjs
 
@@ -17,7 +17,7 @@ import { pathToFileURL } from 'node:url';
 const here = join(tmpdir(), 'designactiv-og');
 const repo = process.cwd();
 mkdirSync(join(here, 'fonts'), { recursive: true });
-for (const f of ['space-grotesk-latin', 'space-grotesk-latin-ext', 'source-sans-3-latin'])
+for (const f of ['geist-latin', 'geist-latin-ext', 'source-serif-4-italic-latin'])
   copyFileSync(join(repo, 'public/assets/fonts', f + '.woff2'), join(here, 'fonts', f + '.woff2'));
 
 const cards = {
@@ -29,9 +29,9 @@ const edge = process.env.BROWSER ?? 'C:/Program Files (x86)/Microsoft/Edge/Appli
 
 for (const [lang, c] of Object.entries(cards)) {
   const html = `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><style>
-@font-face{font-family:SG;font-weight:300 700;src:url(fonts/space-grotesk-latin.woff2) format('woff2');unicode-range:U+0000-00FF}
-@font-face{font-family:SG;font-weight:300 700;src:url(fonts/space-grotesk-latin-ext.woff2) format('woff2');unicode-range:U+0100-02FF}
-@font-face{font-family:SS;font-weight:300 700;src:url(fonts/source-sans-3-latin.woff2) format('woff2')}
+@font-face{font-family:G;font-weight:100 900;src:url(fonts/geist-latin.woff2) format('woff2');unicode-range:U+0000-00FF}
+@font-face{font-family:G;font-weight:100 900;src:url(fonts/geist-latin-ext.woff2) format('woff2');unicode-range:U+0100-02FF}
+@font-face{font-family:SRF;font-style:italic;font-weight:200 900;src:url(fonts/source-serif-4-italic-latin.woff2) format('woff2')}
 *{margin:0;box-sizing:border-box}
 html,body{width:1200px;height:630px;overflow:hidden;background:#F5F2EB}
 .card{position:relative;width:1200px;height:630px;padding:0 96px;display:flex;flex-direction:column;overflow:hidden}
@@ -41,13 +41,13 @@ html,body{width:1200px;height:630px;overflow:hidden;background:#F5F2EB}
 .rail{position:absolute;top:0;bottom:0;width:1px;background:rgb(28 27 23 / .10);z-index:1}
 .rail.l{left:48px}.rail.r{right:48px}
 .card>*:not(.rail){position:relative;z-index:2}
-.label{margin-top:96px;font:500 22px/1 SG;letter-spacing:.12em;text-transform:uppercase;color:#55504A}
-h1{margin-top:auto;font:400 116px/0.98 SG;letter-spacing:-.035em;color:#1C1B17;text-wrap:balance;max-width:1008px}
+.label{margin-top:96px;font:600 20px/1 G;letter-spacing:.1em;text-transform:uppercase;color:#55504A}
+h1{margin-top:auto;font:500 116px/0.98 G;letter-spacing:-.045em;color:#1C1B17;text-wrap:balance;max-width:1008px}
 h1 b{color:#0e6fff;font-weight:inherit}
-h1 span{display:inline-block;background:#0c62e0;color:#F5F2EB;padding:0 .08em;margin-left:-.02em}
+h1 span{display:inline-block;background:#0c62e0;color:#F5F2EB;padding:0 .1em 0 .08em;margin-left:-.02em;font-family:SRF;font-style:italic;font-weight:400;font-size:1.06em;letter-spacing:-.01em}
 .foot{margin-top:64px;margin-bottom:64px;padding-top:28px;border-top:1px solid rgb(28 27 23 / .10);display:flex;align-items:baseline;gap:32px}
-.mark{font:500 30px/1 SG;letter-spacing:-.02em;color:#1C1B17}.mark b{color:#0e6fff;font-weight:inherit}
-.url{font:400 26px/1 SS;color:#55504A}
+.mark{font:600 30px/1 G;letter-spacing:-.03em;color:#1C1B17}.mark b{color:#0e6fff;font-weight:inherit}
+.url{font:400 26px/1 G;color:#55504A}
 </style></head><body><div class="card">
 <span class="rail l"></span><span class="rail r"></span>
 <p class="label">${c.label}</p>

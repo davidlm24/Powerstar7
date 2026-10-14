@@ -51,18 +51,19 @@ const ogImage = new URL(lang === 'pt' ? '/assets/img/og-card-pt.png' : '/assets/
     <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#f5f2eb" />
 
-    {/* The two subsets every page actually uses. Everything else is fetched
-        only if a character needs it. */}
+    {/* The two subsets every page actually uses: Geist for all the text, and
+        the serif italic for the accent word in each page's headline, which is
+        above the fold. Everything else is fetched only if a character needs it. */}
     <link
       rel="preload"
-      href="/assets/fonts/space-grotesk-latin.woff2"
+      href="/assets/fonts/geist-latin.woff2"
       as="font"
       type="font/woff2"
       crossorigin
     />
     <link
       rel="preload"
-      href="/assets/fonts/source-sans-3-latin.woff2"
+      href="/assets/fonts/source-serif-4-italic-latin.woff2"
       as="font"
       type="font/woff2"
       crossorigin

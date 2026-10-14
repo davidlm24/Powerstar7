@@ -58,8 +58,7 @@ covering only 2 of 10 pages), and a warm espresso/amber palette that **was never
 | Brand blue | `#0e6fff` display / `#0d68f0` for white-on-blue (the bright one measures 4.44:1 and **fails WCAG AA**) |
 | Ink | near-black |
 | Accent hues | **blue.** One fenced exception exists by decision: `--purple`, in the hero only. It is defined with its fence in `tokens.css` and may not spread. (An `--amber` badge fill existed until the placeholder showcase was removed on 2026-09-24.) |
-| Display face | Space Grotesk (locked by the owner — see §5 for the tension) |
-| Body face | Source Sans 3 (humanist, chosen to pair with the geometric display) |
+| Type | Geist for headings and body, Source Serif 4 italic for one accent word per heading (David, 2026-10-14; replaced Space Grotesk + Source Sans 3) |
 
 **The rename, and the one thing it costs.** "Powerstar7" did not read as a design studio
 to the buyer this studio actually sells to — local small businesses who want reassurance
@@ -212,7 +211,7 @@ before the content arrives**, or the rebuild inherits the same gap.
 
 ## 7. Open decisions to make before designing
 
-1. **Typeface.** Keep Space Grotesk, or licence a display face? (§3 — highest leverage.)
+1. **Typeface.** ~~Keep Space Grotesk, or licence a display face?~~ Decided 2026-10-14: Geist with a Source Serif 4 italic accent, both free and self-hosted.
 2. **Languages at launch.** EN only, or + DE / FR / PT?
 3. **Build step.** Hand-written static again, or Astro/Eleventy to kill the duplicated
    header/footer and enable a client CMS later?

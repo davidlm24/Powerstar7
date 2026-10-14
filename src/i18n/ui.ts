@@ -37,6 +37,7 @@ export type PageKey = keyof typeof ROUTES;
 /** Facts that are true in every language. Measured, not claimed —
  *  `npm run measure` rewrites metrics from the real build output. */
 export { default as metrics } from '../data/metrics.json';
+import { accentCount } from './accent';
 
 export const CONTACT = {
   email: 'hello@designactiv.com',
@@ -65,10 +66,10 @@ export const ui = {
 
     /* --- Home ---------------------------------------------------------- */
     'home.title': 'DesignActiv — web agency for small businesses',
-    /* The headline's last word is the highlighted one; home.h1.mark must
-       be exactly that word, and Home.astro fails the build if it is not. */
-    'home.h1': 'Your website, sorted.',
-    'home.h1.mark': 'sorted',
+    /* Accent words: *word* is set in the serif italic (src/i18n/accent.ts).
+       In the hero it is also the highlighted word, and Home.astro fails the
+       build unless it is the headline's last word. */
+    'home.h1': 'Your website, *sorted*.',
     'home.lead':
       'Design, domain, email, getting found, updates: DesignActiv takes care of all of it for small businesses, so you can get back to running yours.',
     'home.cta': 'Start a project',
@@ -103,11 +104,11 @@ export const ui = {
     'home.stats.languages': 'languages we build in',
 
     'home.services.label': 'What we do',
-    'home.services.h2': 'Five things, done properly.',
+    'home.services.h2': 'Five things, done *properly*.',
     'home.services.link': 'All services',
 
     'home.position.label': 'Choosing the right setup',
-    'home.position.h2': 'A website that fits your business.',
+    'home.position.h2': 'A website that *fits* your business.',
     'home.position.body':
       'Some businesses need a simple site they can update themselves. Others need a more tailored build. We’ll recommend an approach based on what your site must do, who will update it and what you want to spend.',
 
@@ -124,7 +125,7 @@ export const ui = {
 
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Services — DesignActiv',
-    'services.h1': 'What it costs, and what you get.',
+    'services.h1': 'What it costs, and what you *get*.',
     'services.callout': 'start here',
     'services.lead':
       'One price to build your site, one to keep it looked after — and a person who answers when something needs to change.',
@@ -167,7 +168,7 @@ export const ui = {
 
     /* --- Work ----------------------------------------------------------- */
     'work.title': 'Work — DesignActiv',
-    'work.h1': 'Proof, before the portfolio.',
+    'work.h1': 'Proof, before the *portfolio*.',
     'work.callout': 'you’re looking at it',
     'work.lead':
       'Our first client sites are being built now and will appear here once they launch. Until then, the best evidence of how we work is this site itself.',
@@ -188,7 +189,7 @@ export const ui = {
 
     /* --- About ---------------------------------------------------------- */
     'about.title': 'About — DesignActiv',
-    'about.h1': 'Small enough to know your project.',
+    'about.h1': 'Small enough to *know* your project.',
     'about.lead':
       'DesignActiv is a small web agency working with clients wherever they are. The person you brief is the person who builds it.',
     'about.story.h': 'What custom-\u2060built gets you',
@@ -214,7 +215,7 @@ export const ui = {
 
     /* --- Contact -------------------------------------------------------- */
     'contact.title': 'Contact — DesignActiv',
-    'contact.h1': 'Tell us about your project.',
+    'contact.h1': 'Tell us about your *project*.',
     'contact.callout': 'short is fine',
     'contact.lead':
       'A few lines are enough to start. We reply to everything, usually within a working day.',
@@ -315,7 +316,7 @@ export const ui = {
        src/data/pricing.ts and come in as {price}, so an answer cannot
        disagree with the price card above it. */
     'home.process.label': 'How we work',
-    'home.process.h2': 'From first conversation to launch.',
+    'home.process.h2': 'From first conversation to *launch*.',
     'home.process.s1.h': 'Scope and price',
     'home.process.s2.h': 'Review the design',
     'home.process.s3.h': 'Build and test',
@@ -330,7 +331,7 @@ export const ui = {
       'You get the access and the written handover guide agreed in your proposal — plus Website care, if you want someone to keep it running.',
 
     'services.pricing.label': 'What things cost',
-    'services.pricing.h2': 'Know the scope and price before work starts.',
+    'services.pricing.h2': 'Know the scope and *price* before work starts.',
     'services.pricing.lead':
       'We put the agreed work, price and timeline in writing. If you request more work later, we’ll quote it before doing it.',
     'services.pricing.from': 'From',
@@ -418,8 +419,7 @@ export const ui = {
 
     /* --- Home ---------------------------------------------------------- */
     'home.title': 'DesignActiv — agência web para pequenas empresas',
-    'home.h1': 'Seu site, resolvido.',
-    'home.h1.mark': 'resolvido',
+    'home.h1': 'Seu site, *resolvido*.',
     'home.lead':
       'Design, domínio, e-mail, ser encontrado, atualizações: a DesignActiv cuida de tudo isso para pequenas empresas, e você volta a cuidar do seu negócio.',
     'home.cta': 'Começar um projeto',
@@ -452,11 +452,11 @@ export const ui = {
     'home.stats.languages': 'idiomas em que construímos',
 
     'home.services.label': 'O que fazemos',
-    'home.services.h2': 'Cinco coisas, bem feitas.',
+    'home.services.h2': 'Cinco coisas, bem *feitas*.',
     'home.services.link': 'Todos os serviços',
 
     'home.position.label': 'Escolhendo a melhor solução',
-    'home.position.h2': 'Um site que faz sentido para o seu negócio.',
+    'home.position.h2': 'Um site que faz sentido para o seu *negócio*.',
     'home.position.body':
       'Alguns negócios precisam de um site simples que possam atualizar sozinhos. Outros precisam de uma solução mais personalizada. Vamos recomendar o caminho de acordo com as funções do site, quem vai atualizá-lo e quanto você pretende investir.',
 
@@ -473,7 +473,7 @@ export const ui = {
 
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Serviços — DesignActiv',
-    'services.h1': 'Quanto custa, e o que você recebe.',
+    'services.h1': 'Quanto custa, e o que você *recebe*.',
     'services.callout': 'comece por aqui',
     'services.lead':
       'Um preço para construir o seu site, outro para cuidar dele depois — e uma pessoa que responde quando algo precisa mudar.',
@@ -516,7 +516,7 @@ export const ui = {
 
     /* --- Work ----------------------------------------------------------- */
     'work.title': 'Trabalhos — DesignActiv',
-    'work.h1': 'Provas, antes do portfólio.',
+    'work.h1': 'Provas, antes do *portfólio*.',
     'work.callout': 'é este que você está vendo',
     'work.lead':
       'Nossos primeiros sites de clientes estão em construção e vão aparecer aqui quando forem ao ar. Até lá, a melhor prova de como trabalhamos é este próprio site.',
@@ -537,7 +537,7 @@ export const ui = {
 
     /* --- About ---------------------------------------------------------- */
     'about.title': 'Sobre nós — DesignActiv',
-    'about.h1': 'Pequena o bastante para conhecer seu projeto.',
+    'about.h1': 'Pequena o bastante para *conhecer* seu projeto.',
     'about.lead':
       'A DesignActiv é uma pequena agência web que trabalha com clientes onde quer que estejam. Quem recebe o briefing é quem constrói.',
     'about.story.h': 'O que você ganha com um site sob medida',
@@ -563,7 +563,7 @@ export const ui = {
 
     /* --- Contact -------------------------------------------------------- */
     'contact.title': 'Contato — DesignActiv',
-    'contact.h1': 'Conte sobre o seu projeto.',
+    'contact.h1': 'Conte sobre o seu *projeto*.',
     'contact.callout': 'curto já está ótimo',
     'contact.lead':
       'Poucas linhas já bastam para começar. Respondemos tudo, normalmente em um dia útil.',
@@ -658,7 +658,7 @@ export const ui = {
     /* Ver a nota em inglês. Os preços nunca são digitados aqui: ficam em
        src/data/pricing.ts e entram como {price}. */
     'home.process.label': 'Como trabalhamos',
-    'home.process.h2': 'Da primeira conversa ao lançamento.',
+    'home.process.h2': 'Da primeira conversa ao *lançamento*.',
     'home.process.s1.h': 'Escopo e preço',
     'home.process.s2.h': 'Revise o design',
     'home.process.s3.h': 'Criação e testes',
@@ -673,7 +673,7 @@ export const ui = {
       'Você recebe os acessos e o guia de transferência por escrito combinados na proposta — e a Manutenção do site, se você quiser alguém cuidando dele.',
 
     'services.pricing.label': 'Quanto custa',
-    'services.pricing.h2': 'Saiba o escopo e o preço antes de começarmos.',
+    'services.pricing.h2': 'Saiba o escopo e o *preço* antes de começarmos.',
     'services.pricing.lead':
       'Registramos por escrito o trabalho combinado, o preço e o prazo. Se você pedir algo a mais depois, vamos enviar um orçamento antes de executar.',
     'services.pricing.from': 'A partir de',
@@ -786,6 +786,16 @@ void _enCoversPt;
   const pt = Object.keys(ui.pt);
   const missingInPt = en.filter((k) => !(k in ui.pt));
   const missingInEn = pt.filter((k) => !(k in ui.en));
+
+  /* Accent marks (src/i18n/accent.ts) are part of the sentence's design, so
+     a key whose two languages carry a different number of them is a copy
+     error: one language would lose its serif word, or gain a stray one. */
+  const accentMismatch = en.filter(
+    (k) => k in ui.pt && accentCount(ui.en[k as UIKey]) !== accentCount((ui.pt as Record<string, string>)[k]),
+  );
+  if (accentMismatch.length) {
+    throw new Error(`i18n accent marks differ between en and pt: ${accentMismatch.join(', ')}`);
+  }
 
   if (missingInPt.length || missingInEn.length) {
     const lines = [

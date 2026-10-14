@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
+import Accent from '../components/Accent.astro';
 import Illo from '../components/Illo.astro';
 import AsciiCallout from '../components/AsciiCallout.astro';
 import Closing from '../components/Closing.astro';
@@ -112,7 +113,7 @@ const faqs = [
     <div class="container">
       <div class="pricing__head">
         <p class="label">{t('services.pricing.label')}</p>
-        <h2>{t('services.pricing.h2')}</h2>
+        <h2><Accent text={t('services.pricing.h2')} /></h2>
         <p class="lead measure">{t('services.pricing.lead')}</p>
       </div>
 

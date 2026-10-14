@@ -174,11 +174,10 @@
      the 1px rail by a pixel. Every heading on the site started ON the line.
 
      --line-gap comes off the RAILS rather than being added to .container, and
-     that is not a preference. At 320px the Portuguese hero line measures
-     261.44px against 265px of available width: 3.56px of headroom. Any inward
-     move of the content edge wraps it, and text-wrap: balance will not save
-     it. The gutter is empty space, so taking the gap from there costs nothing
-     and no content moves at any width.
+     that is not a preference: the headlines are sized to fill a 320px phone's
+     content width, so any inward move of the content edge wraps them, and
+     text-wrap: balance will not save that. The gutter is empty space, so taking
+     the gap from there costs nothing and no content moves at any width.
 
      The clamp floor keeps this positive. A negative inset-inline-end on
      .rails::after would push past the section box and scroll the document
@@ -210,23 +209,19 @@
      headings ran at 1.94x body. Nine of ten references run 4x–11.6x.
      --t-hero tops out at 6.5rem = 104px = 5.8x the 18px body — down from
      140px, still comfortably inside the 4x-11.6x band the references run. */
-  /* Space Grotesk stays, for now, as a deliberate decision rather than an
-     oversight. REBUILD-BRIEF.md §3 is worth re-reading before changing it:
-     nine of the ten reference sites licence a foundry display face, only one
-     uses a Google font, and Space Grotesk is on every "overused" list. The
-     replacement, when it happens, is a free Fontshare face — swapping it is
-     two @font-face rules in fonts.css and these two lines. No other rule in
-     the system names a typeface. */
-  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-text: 'Source Sans 3', ui-sans-serif, system-ui, sans-serif;
+  /* Geist for headings and text, Source Serif 4 italic for the one accent
+     word a heading may carry (David, 2026-10-14, replacing Space Grotesk and
+     Source Sans 3). --font-display and --font-text name the same face now but
+     stay two tokens: they are roles, so the call sites never had to change,
+     and a future split is a one-line edit. No other rule names a typeface. */
+  --font-display: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-text: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-accent: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
 
-  /* The floor is set by the longest hero line in the WIDEST language, not
-     by taste: "Sem rastreadores." measures 8.17em, so at a 320px viewport
-     (265px of content once a scrollbar is present) the type cannot exceed
-     ~32px without wrapping. 10.3vw left 0.3px of margin and wrapped as soon
-     as a classic scrollbar appeared; 9.9vw leaves ~6px. The vw term reaches
-     the 104px cap at 1051px — 5.8x body, against the old site's 1.94x. */
+  /* The default h1 size. The home hero sets its own (Home.astro), because
+     it shares its row with a picture; this one serves an h1 with the whole
+     width to itself. The vw term reaches the 104px cap at 1051px. */
   --t-hero: clamp(2rem, 9.9vw, 6.5rem);        /*  32 → 104px              */
   /* NEW. The inner-page h1. PageHead and 404 both hard-coded their own
      clamp topping at 96px — 8px under the home hero, which is not a step
@@ -239,25 +234,25 @@
                                                    is set larger than the
                                                    pitch, on purpose       */
   --t-lead: clamp(1.25rem, 1.8vw, 1.5rem);     /*  20 →  24px              */
-  --t-body: 1.125rem;                          /*  18px                    */
+  /* 17px, down from 18: Geist's x-height is larger than Source Sans 3's, so
+     17px Geist reads at the size 18px Source Sans did. */
+  --t-body: 1.0625rem;                         /*  17px                    */
   --t-small: 0.9375rem;                        /*  15px                    */
   --t-micro: 0.8125rem;                        /*  13px — tracked labels   */
 
-  /* 0.95, UP from 0.92. Counter-intuitive until you account for the weight
-     change: at 700 the bold stem mass hid the gap between three stacked hero
-     lines, and at 400 the ascenders and descenders of adjacent lines collide
-     at 0.92. Lighter type needs more leading, not less. */
-  --lh-display: 0.95;
+  /* 0.98: Geist's ascenders and descenders are taller than Space Grotesk's,
+     and the hero's second line carries a serif italic with long descenders
+     inside the highlight block. */
+  --lh-display: 0.98;
   --lh-heading: 1.1;         /* trace.so's measured heading leading         */
   --lh-body: 1.6;
 
-  /* −0.03em, not trace.so's −0.05em, and this was TESTED rather than copied:
-     the real hero string rendered in the real face at five weight/tracking
-     pairs. Space Grotesk is wider and flatter than Geist, the face Trace
-     actually uses, so its letters collide sooner — at −0.05em the counters
-     close against the thinned stems and it reads cramped rather than tight. */
-  --tr-display: -0.03em;
-  --tr-heading: -0.025em;
+  /* Geist is drawn to be set tight at display sizes (trace.so runs it at
+     −0.05em). −0.045em on the poster sizes, −0.03em on headings, which also
+     covers h3 at 22–28px without closing the counters. Checked in the
+     2026-10-14 mockup, in both languages. */
+  --tr-display: -0.045em;
+  --tr-heading: -0.03em;
   --tr-micro: 0.09em;        /* UPPERCASE micro labels only                 */
   /* Lowercase mono: eyebrows and index numerals. Trace measures 0.13px on
      13px = 0.01em. It cannot share --tr-micro, because uppercase at 0.01em
@@ -266,19 +261,14 @@
 
   --weight-text: 400;
   --weight-medium: 500;
-  /* 600, for the two middle display steps. The poster scale below stays at 400
-     — that lightness is the whole effect — but at 56-80px the same 400 reads
-     under-set rather than quiet, so title and h2 take mass back while the hero
-     and the stat figures do not. Inside Space Grotesk's 300-700 variable
-     range, so it costs no bytes. */
+  /* 600 for the title and h2 steps: at 32–80px they need the mass to stand
+     clearly above the lead. Geist is one variable file, so every weight is
+     free. */
   --weight-heading: 600;
-  /* 400, down from 700. The references do NOT set display type bold —
-     trace.so runs 48px headings at regular weight, and the quietness of that
-     is most of the effect. Note this can no longer serve every heading: at
-     20–28px, 400 in the display face sits at the same apparent weight as
-     18px body copy and the hierarchy collapses, so h3/h4, the wordmark and
-     the tabular figures take --weight-medium instead. See global.css. */
-  --weight-display: 400;
+  /* 500 for the poster sizes (the hero): Geist at 400 thins out at 96px and
+     reads faint next to the serif accent, 600 shouts. h3/h4, the wordmark and
+     the tabular figures take --weight-medium. See global.css. */
+  --weight-display: 500;
 
   /* --- Space ----------------------------------------------------------
      The old site padded every section to 128px, which is why ten pages

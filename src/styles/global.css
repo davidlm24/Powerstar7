@@ -32,9 +32,9 @@ body {
   line-height: var(--lh-body);
   min-height: 100svh;
   /* No -webkit-font-smoothing: antialiased. On macOS and iOS it renders text
-     THINNER than the default subpixel rendering. That was a defensible choice
-     at display weight 700; at 400 it is the difference between "light" and
-     "anaemic", on exactly the machines a design client looks at the site on. */
+     THINNER than the default subpixel rendering, which at body weight 400 is
+     the difference between "light" and "anaemic", on exactly the machines a
+     design client looks at the site on. */
   text-rendering: optimizeLegibility;
 }
 
@@ -82,18 +82,13 @@ h1, h2, h3, h4 {
   text-wrap: balance;
 }
 
-/* The display weight is 400 now, and it cannot serve every heading. At poster
-   scale that lightness IS the effect. At 20–28px the same 400 in the display
-   face sits at the same apparent weight as 18px body copy, and the hierarchy
-   collapses — a sub-head stops reading as a sub-head. 500 is the minimum that
-   keeps the distinction, and it needs no new token. */
-/* Three weights, not two, and h1 cannot be keyed off the element any more:
-   the home hero runs --t-hero at 400 while the inner-page h1s run --t-title at
-   600. So the bare h1 carries the hero weight and the two --t-title overrides
-   set their own alongside their size. */
+/* The bare h1 carries the poster weight (the home hero, 500); the inner-page
+   titles set --weight-heading alongside their --t-title size. Every other
+   heading is 600: with headings and body in one face (Geist), weight and size
+   are all that separate a sub-head from the copy under it, and David asked
+   for clearer hierarchy (2026-10-14). */
 h1 { font-weight: var(--weight-display); }
-h2 { font-weight: var(--weight-heading); }
-h3, h4 { font-weight: var(--weight-medium); }
+h2, h3, h4 { font-weight: var(--weight-heading); }
 
 h1 {
   font-size: var(--t-hero);
@@ -103,6 +98,19 @@ h1 {
 
 h2 { font-size: var(--t-h2); }
 h3 { font-size: var(--t-h3); }
+
+/* The accent word a heading may carry (src/components/Accent.astro): Source
+   Serif 4 italic, regular weight whatever the heading's weight, 6% larger
+   because its x-height is smaller than Geist's. No synthesis: if the italic
+   is missing, the fallback serif shows rather than a slanted sans. */
+.accent {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.06em;
+  letter-spacing: -0.01em;
+  font-synthesis: none;
+}
 
 p { text-wrap: pretty; }
 
