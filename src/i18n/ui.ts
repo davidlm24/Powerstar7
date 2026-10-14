@@ -117,7 +117,6 @@ export const ui = {
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Services — DesignActiv',
     'services.h1': 'What it costs, and what you *get*.',
-    'services.callout': 'start here',
     'services.lead':
       'One price to build your site, one to keep it looked after — and a person who answers when something needs to change.',
     'services.deliverables': 'What you get',
@@ -350,6 +349,7 @@ export const ui = {
     'services.care.i4': 'Backups',
     'services.care.i5': 'One small content change a month',
     'services.care.i6': 'Email support',
+    'services.care.cta': 'Ask about Website care',
     'services.care.small':
       'A small change is a new photo, updated prices or opening hours, or a paragraph of text. Anything bigger — a new page or section — is quoted before we start it.',
 
@@ -452,7 +452,6 @@ export const ui = {
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Serviços — DesignActiv',
     'services.h1': 'Quanto custa, e o que você *recebe*.',
-    'services.callout': 'comece por aqui',
     'services.lead':
       'Um preço para construir o seu site, outro para cuidar dele depois — e uma pessoa que responde quando algo precisa mudar.',
     'services.deliverables': 'O que você recebe',
@@ -679,6 +678,7 @@ export const ui = {
     'services.care.i4': 'Backups',
     'services.care.i5': 'Uma pequena alteração de conteúdo por mês',
     'services.care.i6': 'Suporte por e-mail',
+    'services.care.cta': 'Perguntar sobre a manutenção',
     'services.care.small':
       'Uma pequena alteração é uma foto nova, preços ou horários atualizados, ou um parágrafo de texto. Qualquer coisa maior — uma página ou seção nova — é orçada antes de começarmos.',
 
