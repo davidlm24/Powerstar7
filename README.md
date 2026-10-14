@@ -10,9 +10,10 @@ runtime JavaScript beyond one 4 KB file, and — the hard constraint —
 the site needs no consent banner. That is a legal position in Germany, not an
 aesthetic one, and nothing may be added that breaks it.
 
-The home page is **63 KB over the wire in 7 requests**. Those figures come from
-`scripts/measure.mjs` reading the real build output, and they are printed on
-the **Work** page — the home page leads with the studio's own numbers instead.
+The home page is **about 110 KB over the wire in 15 requests** (2026-10-14).
+Those figures come from `scripts/measure.mjs` reading the real build output
+(`src/data/metrics.json` holds the exact numbers), and they are printed on the
+**Work** page.
 
 ## Run it
 
