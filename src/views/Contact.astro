@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
-import Illo from '../components/Illo.astro';
 import AsciiCallout from '../components/AsciiCallout.astro';
 import { useTranslations, CONTACT, type Lang } from '../i18n/ui';
 
@@ -101,19 +100,9 @@ const topics = [
         </div>
       </form>
 
-      <aside class="direct" data-illo-zone>
-        {/* This is the lightest page on the site — 91 words against 296 on the
-            next — and a form is controls, not reading. One large object at the
-            head of the direct panel is the weight it was missing: the
-            envelope, because it is the one object here that means what the
-            panel does.
-            Decorative by contract: aria-hidden, beside a real heading. */}
-        <div class="direct__illo">
-          <div class="icon-wash" aria-hidden="true">
-            <Illo name="email" variant="icon" />
-          </div>
-        </div>
-
+      {/* One picture per page: the speech bubbles in the page head. The
+          envelope that sat here was a second one (David, 2026-10-16). */}
+      <aside class="direct">
         <h2 class="direct__h">{t('contact.direct.h')}</h2>
         <p class="direct__b">{t('contact.direct.b')}</p>
         <a class="direct__email" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
@@ -158,14 +147,6 @@ const topics = [
   .direct {
     grid-column: span 2;
     padding-inline-start: var(--col-pad);
-  }
-
-  /* Alone on the page rather than one of five, so it gets a little more
-     room. Capped so the gradient panel never runs full-bleed when the aside
-     spans the whole container on a phone. */
-  .direct__illo {
-    --illo-w: 224px;
-    margin-block-end: var(--s4);
   }
 
   /* --- Form -------------------------------------------------------------- */
