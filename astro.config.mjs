@@ -4,7 +4,9 @@ import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 
 /**
- * Static output, no adapter, no integrations.
+ * Static pages built through the Cloudflare adapter (David, 2026-10-16):
+ * every route is prerendered into dist/client, the worker sits in
+ * dist/server. No integrations.
  *
  * The zero-third-party-request property is a hard constraint (see
  * REBUILD-BRIEF.md §5): it is what keeps the site out of the German Google
