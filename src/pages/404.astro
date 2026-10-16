@@ -63,7 +63,7 @@ const links = (['home', 'work', 'services', 'about', 'contact'] as const).map((k
     gap: var(--s5);
   }
 
-  @media (max-width: 47.99rem) {
+  @media (max-width: 59.99rem) {
     .nf__head {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -85,16 +85,13 @@ const links = (['home', 'work', 'services', 'about', 'contact'] as const).map((k
     flex-wrap: wrap;
     gap: var(--s5);
     margin-block-start: var(--s5);
-    padding-block-start: var(--s4);
-    border-top: 1px solid var(--rule);
   }
 
   .nf__nav-h {
-    font-family: var(--font-text);
-    font-size: var(--t-micro);
-    font-weight: var(--weight-medium);
-    letter-spacing: var(--tr-micro);
-    text-transform: uppercase;
+    font-size: var(--t-small);
+    font-weight: var(--weight-heading);
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--fg-muted);
   }
 

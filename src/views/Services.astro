@@ -57,27 +57,27 @@ const addons = [
    typo in one would have rendered nothing rather than failing. */
 const services = [
   {
-    id: 'web', n: '01',
+    id: 'web',
     name: t('svc.web.name'), body: t('svc.web.body'),
     d: [t('svc.web.d1'), t('svc.web.d2'), t('svc.web.d3')],
   },
   {
-    id: 'brand', n: '02',
+    id: 'brand',
     name: t('svc.brand.name'), body: t('svc.brand.body'),
     d: [t('svc.brand.d1'), t('svc.brand.d2'), t('svc.brand.d3')],
   },
   {
-    id: 'seo', n: '03',
+    id: 'seo',
     name: t('svc.seo.name'), body: t('svc.seo.body'),
     d: [t('svc.seo.d1'), t('svc.seo.d2'), t('svc.seo.d3')],
   },
   {
-    id: 'email', n: '04',
+    id: 'email',
     name: t('svc.email.name'), body: t('svc.email.body'),
     d: [t('svc.email.d1'), t('svc.email.d2'), t('svc.email.d3')],
   },
   {
-    id: 'hosting', n: '05',
+    id: 'hosting',
     name: t('svc.hosting.name'), body: t('svc.hosting.body'),
     d: [t('svc.hosting.d1'), t('svc.hosting.d2'), t('svc.hosting.d3')],
   },
@@ -187,7 +187,6 @@ const faqs = [
         services.map((s, i) => (
           <section class:list={['svc', 'row', i === 1 && 'invert']} id={s.id} data-illo-zone>
             <div class="svc__index row__title">
-              <span class="svc__n">{s.n}</span>
               {/* The service's icon on its soft wash, filling the column that
                   used to run empty beside the copy (David, 2026-10-12).
                   Only the wash at rest; the sticker appears on hover. It
@@ -284,10 +283,10 @@ const faqs = [
   }
 
   .plan__kind {
-    font-size: var(--t-micro);
+    font-size: var(--t-small);
     font-weight: var(--weight-heading);
-    letter-spacing: var(--tr-micro);
-    text-transform: uppercase;
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--fg-muted);
   }
 
@@ -314,10 +313,6 @@ const faqs = [
     font-variant-numeric: tabular-nums;
   }
 
-  .plan--care .plan__amount {
-    font-size: clamp(1.75rem, 3.5vw, 2.75rem);
-  }
-
   .plan__unit {
     font-size: var(--t-small);
     color: var(--fg-muted);
@@ -325,21 +320,17 @@ const faqs = [
 
   .plan__note {
     max-width: 52ch;
-    font-size: var(--t-small);
+    font-size: var(--t-body);
     color: var(--fg-muted);
   }
 
-  /* The hairline above "What's included" splits the card into its offer and
-     its contents. --rail, not --rule: on the dark card --rule all but
-     vanishes. */
+  /* Space, not a hairline, splits the card into its offer and its contents. */
   .plan__includes {
-    margin-block-start: var(--s1);
-    padding-block-start: var(--s3);
-    border-block-start: 1px solid var(--rail);
-    font-size: var(--t-micro);
+    margin-block-start: var(--s3);
+    font-size: var(--t-small);
     font-weight: var(--weight-heading);
-    letter-spacing: var(--tr-micro);
-    text-transform: uppercase;
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--fg-muted);
   }
 
@@ -398,7 +389,7 @@ const faqs = [
 
   .addons__lead {
     margin-block-start: var(--s2);
-    font-size: var(--t-small);
+    font-size: var(--t-body);
     color: var(--fg-muted);
   }
 
@@ -407,8 +398,8 @@ const faqs = [
     display: grid;
   }
 
-  /* One row per extra, the name left and the price right, with rules BETWEEN
-     rows only. */
+  /* One row per extra, the name left and the price right, separated by
+     space alone. */
   .addon {
     display: flex;
     flex-wrap: wrap;
@@ -424,10 +415,6 @@ const faqs = [
 
   .addon:last-child {
     padding-block-end: 0;
-  }
-
-  .addon + .addon {
-    border-top: 1px solid var(--rail);
   }
 
   .addon dt {
@@ -467,7 +454,7 @@ const faqs = [
     margin-block-end: var(--s5);
   }
 
-  @media (max-width: 47.99rem) {
+  @media (max-width: 59.99rem) {
     .faq__head {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -475,10 +462,6 @@ const faqs = [
 
   .faqs {
     max-width: var(--width-text);
-  }
-
-  .faq-item {
-    border-top: 1px solid var(--rule);
   }
 
   /* list-style and the webkit marker both have to go, or the browser draws its
@@ -524,7 +507,6 @@ const faqs = [
 
   .svc {
     padding-block: var(--s6);
-    border-top: 1px solid var(--rule);
   }
 
   /* One row per list runs dark, which is the CREATIVE. reference's device for
@@ -546,7 +528,6 @@ const faqs = [
        and the document scrolls sideways. */
     margin-inline: calc(min(var(--s4), var(--gutter)) * -1);
     padding-inline: min(var(--s4), var(--gutter));
-    border-top-color: transparent;
   }
 
   /* The index stays with the heading as the section scrolls past, so a long
@@ -557,23 +538,12 @@ const faqs = [
     align-self: start;
   }
 
-  .svc__n {
-    font-family: var(--font-mono);
-    font-size: var(--t-micro);
-    letter-spacing: var(--tr-mono);
-    /* --accent-fn, not --accent. This is 13px text, and the bright display
-       blue measures 3.97:1 on the ground — it fails AA below 24px. That is
-       the entire reason the accent ships as a pair. */
-    color: var(--accent-fn);
-  }
-
   /* Sized to the title track: the cell follows the viewport so the art
      fills the column (David: bigger, with good details of the object).
      Below 60rem the column collapses into the flow, so the icon goes the
      way the home lanes' art does. */
   /* The sticker sits in the title column at up to its own 1x width. */
   .svc__art {
-    margin-block-start: var(--s4);
     --illo-w: 224px;
   }
 
@@ -606,11 +576,10 @@ const faqs = [
 
   .svc__deliverables-h {
     margin-block-start: var(--s5);
-    font-family: var(--font-text);
-    font-size: var(--t-micro);
-    font-weight: var(--weight-medium);
-    letter-spacing: var(--tr-micro);
-    text-transform: uppercase;
+    font-size: var(--t-small);
+    font-weight: var(--weight-heading);
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--fg-muted);
   }
 
@@ -627,7 +596,7 @@ const faqs = [
   .plan__list li {
     position: relative;
     padding-inline-start: 1.5rem;
-    font-size: var(--t-small);
+    font-size: var(--t-body);
   }
 
   /* A square in the accent for the deliverables: one device rather than

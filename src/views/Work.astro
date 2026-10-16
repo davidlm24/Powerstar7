@@ -126,21 +126,11 @@ const evidence = [
     display: grid;
     gap: 0;
     max-width: var(--measure);
-    /* One line above the list, dividing it from the paragraph before it. */
-    border-top: 1px solid var(--rule);
   }
 
   .evidence li {
-    padding-block: 0.75rem;
-    font-size: var(--t-small);
-  }
-
-  /* BETWEEN items, not under every one. A border-bottom on each li drew a
-     closing line beneath the last item, so four items were bounded by five
-     lines and the set read as a boxed table. Three lines between four rows is
-     the separator; the fourth was a frame. */
-  .evidence li + li {
-    border-top: 1px solid var(--rule);
+    padding-block: 0.5rem;
+    font-size: var(--t-body);
   }
 
   /* The same figures as the home page, at body scale — here they are
@@ -153,9 +143,10 @@ const evidence = [
   }
 
   .figures dt {
-    font-size: var(--t-micro);
-    letter-spacing: var(--tr-micro);
-    text-transform: uppercase;
+    font-size: var(--t-small);
+    font-weight: var(--weight-heading);
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--fg-muted);
   }
 
@@ -164,21 +155,21 @@ const evidence = [
     gap: var(--s3);
     max-width: var(--measure);
     padding-block-start: var(--s4);
-    border-top: 1px solid var(--rule);
   }
 
   .details__h {
     margin: 0;
-    font-size: var(--t-micro);
-    letter-spacing: var(--tr-micro);
-    text-transform: uppercase;
+    font-size: var(--t-small);
+    font-weight: var(--weight-heading);
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--fg-muted);
   }
 
   .figures dd {
     margin: 0.35rem 0 0;
     font-family: var(--font-display);
-    font-size: 1.5rem;
+    font-size: var(--t-h3);
     /* --weight-medium: the display weight is 400 now, and tabular figures at
        400 read as a placeholder rather than as a measured result. */
     font-weight: var(--weight-medium);

@@ -211,10 +211,11 @@ a:hover { text-decoration-thickness: 2px; }
    agreed only above 1422px and sat 20.8px apart at 960. Content either side
    of a divider has to be the same distance from it, or the divider stops
    reading as one line. */
+/* No divider line between the columns any more (2026-10-16 audit: lines
+   only where a form needs them); the --col-pad gap does the separating. */
 .row__body {
   grid-column: 2 / -1;
   padding-inline-start: var(--col-pad);
-  border-inline-start: 1px solid var(--rule);
 }
 
 /* THE RULE: a one-column .row__title carries type up to --t-h3 and no further.
@@ -345,7 +346,9 @@ a:hover { text-decoration-thickness: 2px; }
   --illo-w: 100%;
 }
 
-@media (max-width: 47.99rem) {
+/* Below 60rem the headline needs the whole width (a 320px sticker column
+   pushed "What it costs, and what you get." to three lines at 768px). */
+@media (max-width: 59.99rem) {
   .illo--field,
   .illo--aside {
     display: none;

@@ -73,8 +73,7 @@ const updated = '2026-10-09';
 
   .summary {
     max-width: var(--width-text);
-    padding-block-end: var(--s5);
-    border-bottom: 1px solid var(--rule);
+    padding-block-end: var(--s4);
   }
 
   .summary__h {
@@ -94,7 +93,7 @@ const updated = '2026-10-09';
   }
 
   .prose h2 {
-    font-size: 1.375rem;
+    font-size: var(--t-h3);
     margin-block-end: var(--s2);
   }
 
@@ -104,16 +103,11 @@ const updated = '2026-10-09';
 
   .updated {
     margin-block-start: var(--s6);
-    padding-block-start: var(--s3);
-    border-top: 1px solid var(--rule);
     max-width: var(--width-text);
-    font-size: var(--t-micro);
-    letter-spacing: var(--tr-micro);
-    text-transform: uppercase;
+    font-size: var(--t-small);
+    font-weight: var(--weight-heading);
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--fg-muted);
-  }
-
-  .updated time {
-    font-family: var(--font-mono);
   }
 </style>

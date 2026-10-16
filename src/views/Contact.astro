@@ -62,7 +62,7 @@ const topics = [
 
         <div class="field">
           <label for="email">{t('contact.form.email')}</label>
-          <input id="email" name="email" type="email" autocomplete="email" required />
+          <input id="email" name="email" type="email" autocomplete="email" spellcheck="false" required />
         </div>
 
         <div class="field">
@@ -157,7 +157,6 @@ const topics = [
      divider be the separation, exactly on the line. */
   .direct {
     grid-column: span 2;
-    border-inline-start: 1px solid var(--rule);
     padding-inline-start: var(--col-pad);
   }
 
@@ -307,7 +306,6 @@ const topics = [
     .direct {
       border-inline-start: 0;
       padding-inline-start: 0;
-      border-top: 1px solid var(--rule);
       padding-block-start: var(--s5);
     }
   }
