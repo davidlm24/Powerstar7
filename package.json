@@ -7,18 +7,22 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "node .claude/serve.js",
+    "preview": "npm run build && wrangler dev",
     "check": "astro check",
     "measure": "node scripts/measure.mjs",
     "illo": "node scripts/illustrations.mjs",
-    "share": "node scripts/share.mjs"
+    "share": "node scripts/share.mjs",
+    "generate-types": "wrangler types",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^14.4.0",
     "astro": "^7.3.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@types/node": "^24.13.6",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.151.0"
   }
 }

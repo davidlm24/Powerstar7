@@ -1,6 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
+import cloudflare from '@astrojs/cloudflare';
+
 /**
  * Static output, no adapter, no integrations.
  *
@@ -17,6 +19,7 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   site: 'https://www.designactiv.com',
   trailingSlash: 'never',
+
   build: {
     /* 'directory', not 'file'. With 'file' the Portuguese home page builds
        to BOTH /pt.html and a /pt/ directory holding its child pages, and
@@ -25,6 +28,7 @@ export default defineConfig({
        Canonical URLs stay extensionless either way. */
     format: 'directory',
   },
+
   i18n: {
     locales: ['en', 'pt'],
     defaultLocale: 'en',
@@ -32,6 +36,7 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
+
   devToolbar: {
     enabled: false,
   },
@@ -49,4 +54,6 @@ export default defineConfig({
   server: {
     port: Number(process.env.PORT) || 3000,
   },
+
+  adapter: cloudflare(),
 });

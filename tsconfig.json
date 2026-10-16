@@ -23,7 +23,14 @@
     "jsx": "preserve",
     "strict": true
   },
-  "include": [".astro/types.d.ts", "**/*"],
+  "include": [
+    ".astro/types.d.ts",
+    "**/*",
+    "./worker-configuration.d.ts"
+  ],
   /* .claude/ holds tooling and any nested worktrees, never site source. */
-  "exclude": ["dist", ".claude"]
+  "exclude": [
+    "dist",
+    ".claude"
+  ]
 }
