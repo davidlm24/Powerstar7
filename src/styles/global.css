@@ -61,6 +61,35 @@ select {
   }
 }
 
+/* Section entrances (David, 2026-10-16, from the taste-skill audit): as a
+   section scrolls in, its parts rise 24px and fade in, one after another
+   (site.js sets --reveal-delay, 70ms apart). Armed only by the .reveal class
+   (Base.astro), which is never set for reduced motion or without
+   IntersectionObserver, and is withdrawn if site.js does not arrive, so the
+   resting state everyone else sees is simply the finished page. The hero is
+   left out: it has its own landing. The selector list matches site.js. */
+.reveal main > :not(.hero) :is(h1, h2, .lead, .illo--field, .illo--aside, .lane, .lanes__more, .point, .step, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated) {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.reveal main > :not(.hero) :is(h1, h2, .lead, .illo--field, .illo--aside, .lane, .lanes__more, .point, .step, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated).is-in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 600ms var(--ease),
+    transform 700ms var(--ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Paper shows every part, whether or not it has scrolled into view. */
+@media print {
+  .reveal main > :not(.hero) * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 
@@ -520,7 +549,7 @@ a:hover { text-decoration-thickness: 2px; }
 }
 
 .btn:not(:disabled):hover { transform: translateY(-1px); }
-.btn:not(:disabled):active { transform: translateY(0); }
+.btn:not(:disabled):active { transform: translateY(0) scale(0.98); }
 
 /* Only where there is a real pointer. On touch the sheen has nothing to
    follow, and the old version stuck on after a tap. */

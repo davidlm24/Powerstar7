@@ -80,9 +80,19 @@ const ogImage = new URL(lang === 'pt' ? '/assets/img/og-card-pt.png' : '/assets/
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    {/* Swap the no-js class before first paint so nothing flashes. */}
+    {/* Swap the no-js class before first paint so nothing flashes. The
+        .reveal class arms the section entrances (site.js) only where they can
+        run: motion allowed and IntersectionObserver present. If site.js has
+        not taken over within 2.5s (blocked, failed, very slow), the class is
+        dropped and every part shows, so content can never stay hidden. */}
     <script is:inline>
       document.documentElement.classList.remove('no-js');
+      if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('reveal');
+        setTimeout(function () {
+          if (!window.__revealReady) document.documentElement.classList.remove('reveal');
+        }, 2500);
+      }
     </script>
   </head>
 

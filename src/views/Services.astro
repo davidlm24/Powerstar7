@@ -481,6 +481,15 @@ const faqs = [
     letter-spacing: var(--tr-heading);
   }
 
+  .faq-item__q {
+    transition: color var(--dur) var(--ease);
+  }
+
+  .faq-item__q:hover,
+  .faq-item__q:focus-visible {
+    color: var(--accent-fn);
+  }
+
   .faq-item__q::-webkit-details-marker {
     display: none;
   }

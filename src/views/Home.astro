@@ -466,7 +466,9 @@ const position = [
      stamped on it, then the highlight fills. */
   @media (prefers-reduced-motion: no-preference) {
     .hero__pic :global(.hero__desk) {
-      animation: hero-slap 500ms var(--ease) 200ms both;
+      animation:
+        hero-slap 500ms var(--ease) 200ms both,
+        hero-float 7s ease-in-out 1.2s infinite alternate;
     }
 
     .hero__pic :global(.hero__check) {
@@ -486,6 +488,11 @@ const position = [
     from { opacity: 0; transform: translateY(-14px) scale(1.18); }
     70% { opacity: 1; transform: scale(0.98); }
     to { transform: none; }
+  }
+
+  @keyframes hero-float {
+    from { translate: 0 0; }
+    to { translate: 0 -8px; }
   }
 
   @keyframes hero-stamp {

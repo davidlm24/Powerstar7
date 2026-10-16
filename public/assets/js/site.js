@@ -2,11 +2,11 @@
    DesignActiv — site behaviour
    =========================================================================
 
-   Five things earn their place here: the mobile nav, the sticky header's
-   scrolled hairline, the contact form, the footer year, and the hero wash.
-   What stayed deleted from the previous site: scroll-reveal fades on every
-   element and a cursor-tracking hero glow. Both were motion spent on nothing,
-   on every page, forever.
+   Six things earn their place here: the mobile nav, the sticky header's
+   scrolled hairline, the contact form, the section entrances, the footer
+   year, and the hero wash. The entrances came back on 2026-10-16 at David's
+   call (the taste-skill audit's motion layer): each section's parts once, in
+   order, never for reduced motion, and never able to leave content hidden.
 
    The cursor-revealed mark field left with the dark bands it lived on — dark
    is the footer's alone now, and the footer has no field.
@@ -279,6 +279,60 @@
           if (submitBtn) submitBtn.disabled = false;
         });
     });
+  }
+
+  /* ---------- Section entrances ----------------------------------------- */
+
+  /* Armed by the .reveal class Base.astro sets before first paint (motion
+     allowed, IntersectionObserver present). Each section's parts enter in
+     order as they scroll in, 70ms apart within their section, once. The
+     selector list matches global.css exactly. */
+  var REVEAL = "h1, h2, .lead, .illo--field, .illo--aside, .lane, .lanes__more, .point, .step, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated";
+  if (document.documentElement.classList.contains('reveal')) {
+    var pending = [];
+    Array.prototype.forEach.call(document.querySelectorAll('main > :not(.hero)'), function (section) {
+      Array.prototype.forEach.call(section.querySelectorAll(REVEAL), function (el, i) {
+        el.style.setProperty('--reveal-delay', Math.min(i, 6) * 70 + 'ms');
+        pending.push(el);
+      });
+    });
+
+    var enter = function (el) {
+      el.classList.add('is-in');
+      pending.splice(pending.indexOf(el), 1);
+    };
+
+    /* Whatever is on screen right now enters at once, with no observer in
+       the way: a renderer that never scrolls or never ticks an observer
+       (link previews, screenshots, a throttled tab) still shows the first
+       screen. */
+    var inView = function (el) {
+      var r = el.getBoundingClientRect();
+      return r.top < (window.innerHeight || document.documentElement.clientHeight) && r.bottom > 0;
+    };
+    pending.slice().forEach(function (el) { if (inView(el)) enter(el); });
+    window.__revealReady = true;
+
+    var seen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting || entry.target.classList.contains('is-in')) return;
+        enter(entry.target);
+        seen.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    pending.forEach(function (el) { seen.observe(el); });
+
+    /* A second path for the same thing, in case the observer is starved:
+       on scroll, anything that has reached the screen enters. */
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking || !pending.length) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        ticking = false;
+        pending.slice().forEach(function (el) { if (inView(el)) enter(el); });
+      });
+    }, { passive: true });
   }
 
   /* ---------- Footer year ------------------------------------------------ */
