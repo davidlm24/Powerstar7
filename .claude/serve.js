@@ -26,7 +26,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(HERE, '..', 'dist');
+/* The Cloudflare adapter (David, 2026-10-16) builds the static pages into
+   dist/client, next to the worker in dist/server; a plain static build puts
+   them in dist. Serve whichever exists. */
+const DIST = path.resolve(HERE, '..', 'dist');
+const ROOT = fs.existsSync(path.join(DIST, 'client', 'index.html')) ? path.join(DIST, 'client') : DIST;
 const PORT = Number(process.argv[2] || process.env.PORT || 8080);
 
 /* This serves the BUILD, not the source tree. Without dist/ every route would

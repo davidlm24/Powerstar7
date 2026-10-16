@@ -25,12 +25,18 @@
 'use strict';
 
 import { readFile, writeFile, stat, readdir } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const DIST = path.join(ROOT, 'dist');
+/* The static pages: dist/client with the Cloudflare adapter (David,
+   2026-10-16), dist for a plain static build. Only the pages are audited;
+   the worker in dist/server never reaches a browser. */
+const DIST = existsSync(path.join(ROOT, 'dist', 'client', 'index.html'))
+  ? path.join(ROOT, 'dist', 'client')
+  : path.join(ROOT, 'dist');
 const OUT = path.join(ROOT, 'src', 'data', 'metrics.json');
 const ENTRY = path.join(DIST, 'index.html');
 
