@@ -15,64 +15,28 @@ import Base from '../../layouts/Base.astro';
 import AsciiCallout from '../../components/AsciiCallout.astro';
 import { useTranslations, route } from '../../i18n/ui';
 import { accentParts } from '../../i18n/accent';
+import { levelsCss, rampCss, stepsKeyframes } from '../../lib/bayer';
 
 const t = useTranslations('en');
 const [h1Lead, h1Mark] = accentParts(t('home.h1'));
 
-/* --- Bayer masks ---------------------------------------------------------
-   4x4 Bayer: 17 levels, 0 (nothing) to 16 (solid). Each level is a 4x4
-   tile; the ramp is one image: solid, then 16 columns stepping down
-   through the levels, then clear, so sliding it across an element wipes a
-   dithered edge over it. Both are in cells; mask-size scales a cell to
-   --dot, and crispEdges keeps the cells square at any device ratio. */
-const B4 = [
-  [0, 8, 2, 10],
-  [12, 4, 14, 6],
-  [3, 11, 1, 9],
-  [15, 7, 13, 5],
-];
-const svg = (w: number, h: number, d: string) =>
-  `url("data:image/svg+xml,${encodeURIComponent(
-    `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}' viewBox='0 0 ${w} ${h}' shape-rendering='crispEdges'><path d='${d}'/></svg>`
-  )}")`;
-const cell = (x: number, y: number) => `M${x} ${y}h1v1h-1z`;
-
-const levels = Array.from({ length: 17 }, (_, n) => {
-  let d = '';
-  for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) if (B4[y][x] < n) d += cell(x, y);
-  return svg(4, 4, d || 'M0 0');
-});
-
-const SOLID = 600, RAMP = 16, CLEAR = 600;
-let ramp = `M0 0h${SOLID}v4h-${SOLID}z`;
-for (let c = 0; c < RAMP; c++) {
-  const v = 1 - (c + 0.5) / RAMP;
-  for (let y = 0; y < 4; y++) if ((B4[y][c % 4] + 0.5) / 16 < v) ramp += cell(SOLID + c, y);
-}
-const RAMP_W = SOLID + RAMP + CLEAR;
-
-/** Keyframes stepping a mask through Bayer levels a..b. */
-const steps = (name: string, a: number, b: number) => {
-  const n = Math.abs(b - a), dir = Math.sign(b - a);
-  let k = `@keyframes ${name}{`;
-  for (let i = 0; i <= n; i++) k += `${((i / n) * 100).toFixed(2)}%{mask-image:var(--dz-${a + i * dir})}`;
-  return k + '}';
-};
-
+/* --- Bayer masks (src/lib/bayer.ts) ------------------------------------
+   Every level as --dz-0 … --dz-16, the ramp, and the stepped keyframes.
+   All in cells; mask-size scales a cell to --dot. */
 const css = [
-  `:root{${levels.map((l, i) => `--dz-${i}:${l};`).join('')}--dz-ramp:${svg(RAMP_W, 4, ramp)};--dz-ramp-w:${RAMP_W};--dz-ramp-off:${RAMP + CLEAR}}`,
-  steps('dz-in', 0, 16),
-  steps('dz-out', 16, 0),
-  steps('dz-line-in', 3, 16),
-  steps('dz-line-out', 16, 3),
+  `:root{${levelsCss()}${rampCss()}}`,
+  stepsKeyframes('dz-in', 0, 16),
+  stepsKeyframes('dz-out', 16, 0),
+  stepsKeyframes('dz-line-in', 3, 16),
+  stepsKeyframes('dz-line-out', 16, 3),
 ].join('\n');
 
 const icons = [
-  { name: 'web', kind: 'densify', title: 'Densify', body: 'The print rests sparse (30% ink) and fills in to full on hover. This replaces the 15% opacity fade: the icon is always "printed", just lighter.' },
-  { name: 'brand', kind: 'sweep', title: 'Light sweep', body: 'Densify, then a band of light passes over once and lifts dots out of the print. Like the button sheen, but made of dots.' },
-  { name: 'seo', kind: 'lens', title: 'Lens', body: 'A circle of coarse dither follows the pointer, like a loupe over a halftone. The one that fits SEO best.' },
-  { name: 'email', kind: 'ripple', title: 'Ripple', body: 'Rings spread through the ink from the pointer, and settle when it leaves.' },
-  { name: 'hosting', kind: 'crawl', title: 'Crawl', body: 'The Bayer grid marches at 12 fps, so the grain shimmers in place: "alive" without moving the picture.' },
+  { name: 'web', kind: 'line', title: 'Line screen (the site)', body: 'The dot screen becomes a diagonal line screen spreading from the cursor, like a second printing plate. What the service icons do.' },
+  { name: 'brand', kind: 'lit', title: 'Lit by the pointer', body: 'Relit from the cursor: light toward it, dense away from it. What the hero picture and the page figures do.' },
+  { name: 'seo', kind: 'neg', title: 'Negative lens', body: 'Inside a circle round the cursor the print inverts.' },
+  { name: 'email', kind: 'organic', title: 'Organic grain', body: 'The ordered print dissolves into film grain (error diffusion).' },
+  { name: 'hosting', kind: 'ripple', title: 'Ripple', body: 'Rings spread through the ink from the pointer, and settle when it leaves.' },
 ] as const;
 
 import illo from '../../data/illo.json';

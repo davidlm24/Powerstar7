@@ -1,42 +1,51 @@
-/* Renders every illustration on the site as a finished sticker image.
+/* Renders every illustration on the site as a finished 1-bit image.
 
      npm run illo            (or: node scripts/illustrations.mjs web desk ...)
 
    Run it after changing a scene in scripts/illo/scenes.mjs, and commit what
    it writes: the build only reads the files, so it stays fast.
 
-   THE HOUSE STYLE (David, 2026-10-19, replacing the 3D "D1 + adesivo" set
-   of 2026-10-14): every illustration is drawn from zero for the job it does
-   on its page, in tone made for the dither: gradients, glows, soft shadows
-   and light, with thin ink outlines (scripts/illo/paint.mjs). Dithered to
-   1 bit by an 8x8 Bayer matrix, then laid on sticker paper: the silhouette
-   backed in pale paper plus a halo, the blue dots on top. The tilt is
+   THE HOUSE STYLE (David, 2026-10-19): every illustration is drawn from
+   zero for the job it does on its page, in tone made for the dither:
+   gradients, glows, soft shadows and light, with thin ink outlines
+   (scripts/illo/paint.mjs). Dithered to 1 bit by an 8x8 Bayer matrix: blue
+   dots, and nothing else. No sticker paper, no halo (David: "remove the
+   white border"): the page ground shows between the dots. The tilt is
    applied to the scene before dithering, so the grain stays square to the
-   pixels. Everything is baked into the PNG (clear, paper, blue: a 2-bit
-   palette), the same file on light and dark grounds.
+   pixels.
 
    Each image comes at 1x and 2x, each dithered at its own size (a shrunk
    ordered dither goes solid). A scene may have LAYERS (p.layer()): each one
-   gets its own paper over the layers below, a sticker on a sticker, so
-   separate objects stay separate where they overlap.
+   KNOCKS OUT the ink of the layers below inside its silhouette plus a thin
+   margin, so separate objects still read apart where they overlap, while
+   nothing is visible on bare ground.
 
-   It FAILS if any sticker's paper comes within EDGE px of its image edge,
-   so a picture can never be written cut off.
+   It FAILS if any dot comes within EDGE px of its image edge, so a picture
+   can never be written cut off.
 
    Written:
-     public/assets/illo/<name>[@2x].png     the stickers
-     src/data/illo.json                     { name: { kind, w, h } }
-     public/assets/dither/<name>[@2x].png   the continuous ink, for the
-                                            dither lab (src/pages/lab/)
-       R, B  ink as 16 bits, high byte in R (8 bits flips values that sit
-             right on a Bayer threshold)
-       G     128 where the paper is, plus the top layer there (1..n); else 0 */
+     public/assets/illo/<name>[@2x].png        the dots, in --blue-fn
+     public/assets/illo/<icon>-rest[@2x].png   a service icon's resting print,
+                                               30% ink (a subset of the dots)
+     public/assets/illo/<icon>-dark[-rest]…    the same in --on-ink-blue, for
+                                               an icon on a dark band
+     public/assets/dither/<name>[@2x].png      the continuous ink, for the
+                                               live dither (dither.js): one
+                                               8-bit grey image of W x 2H; the
+                                               top half is the ink, the bottom
+                                               half which layer owns each
+                                               pixel (85 x layer, 0 = none)
+     public/assets/dither/corner[-hi][@2x].png the card-corner gradient, as a
+                                               1-bit mask (black)
+     src/data/illo.json                        { name: { kind, w, h } }
+
+   The static dots and the live canvas agree pixel for pixel because both
+   threshold the SAME 8-bit ink against the same matrix. */
 import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
-import { deflateSync } from 'node:zlib';
 import { paint, clamp } from './illo/paint.mjs';
 import { SCENES } from './illo/scenes.mjs';
-import { pngIndexed } from './illo/png.mjs';
-import { sampler, ditherBayer } from './illo/dither.mjs';
+import { png1, pngGrey } from './illo/png.mjs';
+import { sampler, bayer8 } from './illo/dither.mjs';
 
 /* Display box at 1x and tilt, per kind. */
 const KINDS = {
@@ -54,10 +63,10 @@ const KIND_OF = {
   fit: 'aside', question: 'aside', desk: 'hero', check: 'seal',
 };
 const EDGE = 2;
+const REST = 0.3;                                       // an icon's resting ink
 
-const PAPER = [252, 250, 246, 255];            // --paper-hi
-const BLUE = [12, 98, 224, 255];               // --blue-fn
-const CLEAR = [0, 0, 0, 0];
+const BLUE = [12, 98, 224];                             // --blue-fn
+const ON_INK_BLUE = [92, 157, 255];                     // --on-ink-blue
 
 /** Grow a 0/1 mask by r pixels (a disc). */
 function dilate(mask, W, H, r) {
@@ -73,35 +82,63 @@ function dilate(mask, W, H, r) {
   return out;
 }
 
-/* An RGB PNG, for the lab's fields. */
-const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
-const crc32 = (buf) => { let c = 0xffffffff; for (const b of buf) c = CRC[(c ^ b) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
-const chunk = (type, data) => { const len = Buffer.alloc(4); len.writeUInt32BE(data.length); const td = Buffer.concat([Buffer.from(type, 'ascii'), data]); const crc = Buffer.alloc(4); crc.writeUInt32BE(crc32(td)); return Buffer.concat([len, td, crc]); };
-function pngRGB(rgb, W, H) {
-  const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(W, 0); ihdr.writeUInt32BE(H, 4); ihdr[8] = 8; ihdr[9] = 2;
-  const raw = Buffer.alloc((W * 3 + 1) * H);
-  for (let j = 0; j < H; j++) rgb.copy(raw, j * (W * 3 + 1) + 1, j * W * 3, (j + 1) * W * 3);
-  return Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), chunk('IHDR', ihdr), chunk('IDAT', deflateSync(raw, { level: 9 })), chunk('IEND', Buffer.alloc(0))]);
-}
-
-/** One sticker at one size, from its layers ({ ink, obj }, back to front):
-    each layer's paper (silhouette + halo) covers what is under it, then its
-    blue dots go on top. Returns the sticker, its lab field, and how many
-    paper pixels sit within EDGE of each side. */
-function sticker(layers, W, H, halo) {
-  const rgb = Buffer.alloc(W * H * 3), idx = new Uint8Array(W * H), cut = { top: 0, right: 0, bottom: 0, left: 0 };
-  layers.forEach(({ ink, obj }, n) => {
-    const back = dilate(obj, W, H, halo), dots = ditherBayer(ink, W, H);
-    for (let k = 0; k < W * H; k++) {
-      if (!back[k]) continue;
-      const v = Math.round(clamp(ink[k]) * 65535);
-      rgb[k * 3] = v >> 8; rgb[k * 3 + 1] = 128 + n + 1; rgb[k * 3 + 2] = v & 255;
-      idx[k] = dots[k] ? 2 : 1;
-      const i = k % W, j = (k / W) | 0;
-      if (j < EDGE) cut.top++; if (j >= H - EDGE) cut.bottom++; if (i < EDGE) cut.left++; if (i >= W - EDGE) cut.right++;
+/**
+ * Composite the layers ({ ink, obj }, back to front) into one 8-bit ink
+ * and an owner map. Inside a layer's silhouette plus `margin` it replaces
+ * whatever is below (the knockout); in its soft reach beyond that (the
+ * shadows and glows, `halo` out) it adds to what is below by max, which
+ * dithers to the union of both layers' dots.
+ */
+function composite(layers, W, H, halo, margin) {
+  const N = W * H, ink = new Float32Array(N), owner = new Uint8Array(N);
+  layers.forEach(({ ink: li, obj }, n) => {
+    const reach = dilate(obj, W, H, halo), knock = dilate(obj, W, H, margin);
+    for (let k = 0; k < N; k++) {
+      if (knock[k]) { ink[k] = li[k]; owner[k] = n + 1; }
+      else if (reach[k] && li[k] > ink[k]) { ink[k] = li[k]; owner[k] = n + 1; }
     }
   });
-  return { png: pngIndexed(idx, W, H, [CLEAR, PAPER, BLUE]), field: pngRGB(rgb, W, H), cut };
+  const ink8 = new Uint8Array(N);
+  for (let k = 0; k < N; k++) ink8[k] = owner[k] ? Math.round(clamp(ink[k]) * 255) : 0;
+  return { ink8, owner };
+}
+
+/** The dots of an 8-bit ink at a gain, by the Bayer matrix. */
+function dots(ink8, owner, W, H, gain = 1) {
+  const bits = new Uint8Array(W * H);
+  for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
+    const k = j * W + i;
+    bits[k] = owner[k] && (ink8[k] / 255) * gain > bayer8(i, j) ? 1 : 0;
+  }
+  return bits;
+}
+
+/** How many dots sit within EDGE of each side. */
+function cutSides(bits, W, H) {
+  const cut = { top: 0, right: 0, bottom: 0, left: 0 };
+  for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
+    if (!bits[j * W + i]) continue;
+    if (j < EDGE) cut.top++; if (j >= H - EDGE) cut.bottom++; if (i < EDGE) cut.left++; if (i >= W - EDGE) cut.right++;
+  }
+  return Object.entries(cut).filter(([, n]) => n).map(([s, n]) => `${s} (${n}px)`);
+}
+
+/** The lab field: ink on top, owner map below. */
+function field(ink8, owner, W, H) {
+  const g = new Uint8Array(W * H * 2);
+  g.set(ink8, 0);
+  for (let k = 0; k < W * H; k++) g[W * H + k] = owner[k] * 85;
+  return pngGrey(g, W, H * 2);
+}
+
+/** The card corner: blue dots falling off from the top-right corner. */
+function corner(W, H, amp) {
+  const sigma = 0.29 * W, bits = new Uint8Array(W * H);
+  for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
+    const dx = W - i, dy = j;
+    bits[j * W + i] = amp * Math.exp(-(dx * dx + dy * dy) / (2 * sigma * sigma)) > bayer8(i, j) ? 1 : 0;
+  }
+  return png1(bits, W, H);
 }
 
 const ALL = Object.keys(SCENES);
@@ -115,7 +152,7 @@ const failures = [];
 const t0 = Date.now();
 let bytes = 0;
 for (const name of names) {
-  const { box: [W, H], tilt } = KINDS[KIND_OF[name]];
+  const kind = KIND_OF[name], { box: [W, H], tilt } = KINDS[kind];
   const l2 = paint(SCENES[name], W * 2, H * 2, tilt);
   // 1x: average the 2x ink; a pixel is object if any of its four is
   const l1 = l2.map(({ ink, obj }) => {
@@ -127,21 +164,33 @@ for (const name of names) {
     }
     return { ink: ink1, obj: obj1 };
   });
-  const x2 = sticker(l2, W * 2, H * 2, 7), x1 = sticker(l1, W, H, 4);
-  const sides = Object.entries(x2.cut).filter(([, n]) => n).map(([s, n]) => `${s} (${n}px)`);
-  if (sides.length) failures.push(`${name}: paper touches the ${sides.join(', ')}`);
-  writeFileSync(`${OUT}/${name}.png`, x1.png);
-  writeFileSync(`${OUT}/${name}@2x.png`, x2.png);
-  writeFileSync(`${FIELDS}/${name}.png`, x1.field);
-  writeFileSync(`${FIELDS}/${name}@2x.png`, x2.field);
-  bytes += x1.png.length + x2.png.length;
-  console.log(`${name}: ${(x1.png.length / 1024).toFixed(1)} KB, @2x ${(x2.png.length / 1024).toFixed(1)} KB`);
+  for (const [suffix, layers, w, h, halo, margin] of [['', l1, W, H, 4, 2], ['@2x', l2, W * 2, H * 2, 7, 4]]) {
+    const { ink8, owner } = composite(layers, w, h, halo, margin);
+    const full = dots(ink8, owner, w, h);
+    const sides = cutSides(full, w, h);
+    if (sides.length && suffix) failures.push(`${name}: dots touch the ${sides.join(', ')}`);
+    const png = png1(full, w, h, BLUE);
+    writeFileSync(`${OUT}/${name}${suffix}.png`, png);
+    writeFileSync(`${FIELDS}/${name}${suffix}.png`, field(ink8, owner, w, h));
+    bytes += png.length;
+    if (kind === 'icon') {
+      const rest = dots(ink8, owner, w, h, REST);
+      writeFileSync(`${OUT}/${name}-rest${suffix}.png`, png1(rest, w, h, BLUE));
+      writeFileSync(`${OUT}/${name}-dark${suffix}.png`, png1(full, w, h, ON_INK_BLUE));
+      writeFileSync(`${OUT}/${name}-dark-rest${suffix}.png`, png1(rest, w, h, ON_INK_BLUE));
+    }
+    if (!suffix) console.log(`${name}: ${(png.length / 1024).toFixed(1)} KB`);
+  }
 }
 if (names === ALL) {
+  for (const [suffix, w, h] of [['', 240, 200], ['@2x', 480, 400]]) {
+    writeFileSync(`${FIELDS}/corner${suffix}.png`, corner(w, h, 0.4));
+    writeFileSync(`${FIELDS}/corner-hi${suffix}.png`, corner(w, h, 0.5));
+  }
   const manifest = Object.fromEntries(ALL.map((n) => { const { box: [w, h] } = KINDS[KIND_OF[n]]; return [n, { kind: KIND_OF[n], w, h }]; }));
   writeFileSync('src/data/illo.json', JSON.stringify(manifest, null, 1) + '\n');
 }
-console.log(`${names.length} stickers, ${(bytes / 1024).toFixed(0)} KB of PNG, in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+console.log(`${names.length} illustrations, ${(bytes / 1024).toFixed(0)} KB of 1x PNG, in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
 if (failures.length) {
   console.error('\nCut off at the edge:\n  ' + failures.join('\n  '));
   process.exit(1);

@@ -1,14 +1,15 @@
-/* Dither lab engine (src/pages/lab/dither.astro). Exploration only: nothing
-   on the real pages loads this.
+/* The dither engine. Loaded by the pages that animate their print (Home and
+   Services, through dither-site.js) and by the lab (src/pages/lab/dither.astro).
 
    Two things live here:
 
    Sticker  re-dithers an illustration live. It loads the continuous ink of a
             sticker (scripts/illustrations.mjs) and thresholds it against the
             same 8x8 Bayer matrix the build uses, so with every effect at rest
-            it draws exactly the pixels of the static PNG. Effects bend the
-            ink or the threshold before the comparison, which is why they
-            read as the PRINT changing rather than as a filter on top of it.
+            it draws exactly the pixels of the static PNG: blue dots, nothing
+            else. Effects bend the ink or the threshold before the comparison,
+            which is why they read as the PRINT changing rather than as a
+            filter on top of it.
 
    Wash     the hero's blue and purple wash, drawn as fine dithered dots
             (WebGL) instead of soft gradients, kept clear of all text.
@@ -38,8 +39,8 @@
 
   /* Little-endian RGBA as one word: the sticker palette. */
   var rgba = function (r, g, b) { return ((255 << 24) | (b << 16) | (g << 8) | r) >>> 0; };
-  var PAPER = rgba(252, 250, 246);   // --paper-hi
   var BLUE = rgba(12, 98, 224);      // --blue-fn
+  var ON_INK_BLUE = rgba(92, 157, 255);   // --on-ink-blue, for a print on a dark band
   /* The wash dots are see-through, so a dot is a tint and not a solid
      pixel: 55% of --blue / --purple. Solid dots read as noise. */
   var rgbaA = function (r, g, b, a) { return ((Math.round(a * 255) << 24) | (b << 16) | (g << 8) | r) >>> 0; };
@@ -59,17 +60,19 @@
       var img = new Image();
       img.src = '/assets/dither/' + key + '.png';
       img.decode().then(function () {
-        var W = img.naturalWidth, H = img.naturalHeight, N = W * H;
+        // one grey image of W x 2H: the ink on top, which layer owns each
+        // pixel below (85 x layer, 0 = none)
+        var W = img.naturalWidth, H = img.naturalHeight / 2, N = W * H;
         var c = document.createElement('canvas');
-        c.width = W; c.height = H;
+        c.width = W; c.height = H * 2;
         var x = c.getContext('2d', { willReadFrequently: true });
         x.drawImage(img, 0, 0);
-        var d = x.getImageData(0, 0, W, H).data;
+        var d = x.getImageData(0, 0, W, H * 2).data;
         var ink = new Float32Array(N), back = new Uint8Array(N), layer = new Uint8Array(N), layers = 0;
         for (var k = 0; k < N; k++) {
-          ink[k] = (d[k * 4] * 256 + d[k * 4 + 2]) / 65535;
-          back[k] = d[k * 4 + 1] >= 128 ? 1 : 0;
-          layer[k] = back[k] ? d[k * 4 + 1] - 128 : 0;
+          ink[k] = d[k * 4] / 255;
+          layer[k] = Math.round(d[(N + k) * 4] / 85);
+          back[k] = layer[k] ? 1 : 0;
           if (layer[k] > layers) layers = layer[k];
         }
         resolve({ W: W, H: H, ink: ink, back: back, layer: layer, layers: layers });
@@ -82,8 +85,7 @@
 
   /**
    * state (all optional; the defaults draw the static sticker):
-   *   reveal  0..1, or an array per layer: paper dissolves in first, then
-   *           the dots develop in Bayer order
+   *   reveal  0..1, or an array per layer: the dots develop in Bayer order
    *   wipe    { p, ax, ay, band }: reveal travels along (ax, ay)
    *   gain    ink multiplier (density): 0.3 = a sparse, resting print
    *   block   coarse dither: one threshold per block x block CSS px
@@ -91,11 +93,17 @@
    *   sweep   { pos, w, amt }: a band of light across the print
    *   ripple  { x, y, t, amt }: rings from a point, in CSS px
    *   lens    { x, y, r, block }: coarse dither inside a circle
+   *   lit     { x, y, p }: relit from a point: light near it, dense far
+   *   line    { x, y, r }: a diagonal line screen inside a circle
+   *   neg     { x, y, r }: the print inverted inside a circle
+   *   organic { p }: ordered dither dissolving into error diffusion
+   * opts.ink is the dot colour, 'blue' (default) or 'on-ink'.
    */
-  function Sticker(canvas, name) {
+  function Sticker(canvas, name, opts) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.s = (window.devicePixelRatio || 1) >= 1.5 ? 2 : 1;
+    this.ink = opts && opts.ink === 'on-ink' ? ON_INK_BLUE : BLUE;
     this.state = {};
     this.anim = 0;
     var self = this;
@@ -113,6 +121,27 @@
   Sticker.prototype.set = function (state) {
     this.state = state || {};
     this.draw();
+  };
+
+  /** The same ink by Floyd–Steinberg error diffusion (serpentine), once. */
+  Sticker.prototype.organic = function () {
+    if (this.fs) return this.fs;
+    var f = this.f, W = f.W, H = f.H, buf = Float32Array.from(f.ink), out = new Uint8Array(W * H);
+    for (var j = 0; j < H; j++) {
+      var rev = j & 1;
+      for (var n = 0; n < W; n++) {
+        var i = rev ? W - 1 - n : n, k = j * W + i, d = rev ? -1 : 1;
+        var val = buf[k], o = val > 0.5 ? 1 : 0, err = val - o;
+        out[k] = o;
+        if (i + d >= 0 && i + d < W) buf[k + d] += err * 7 / 16;
+        if (j + 1 < H) {
+          if (i - d >= 0 && i - d < W) buf[k + W - d] += err * 3 / 16;
+          buf[k + W] += err * 5 / 16;
+          if (i + d >= 0 && i + d < W) buf[k + W + d] += err * 1 / 16;
+        }
+      }
+    }
+    return (this.fs = out);
   };
 
   /* Per-pixel Bayer thresholds for one size, shared by every sticker of it. */
@@ -136,7 +165,7 @@
     var gain = S.gain == null ? 1 : S.gain;
     var rev = S.reveal == null ? 1 : S.reveal, revA = typeof rev === 'object' ? rev : null;
     var wipe = S.wipe, wn = wipe ? wipe.ax + wipe.ay : 1;
-    var block = Math.max(1, Math.round((S.block || 1) * sc));
+    var block = S.block ? Math.max(1, Math.round(S.block * sc)) : 1;   // 1 = one dot per device px
     var ox = S.ox | 0, oy = S.oy | 0;
     var sw = S.sweep, rip = S.ripple, lens = S.lens;
     var r, v, k, i, j;
@@ -154,26 +183,41 @@
       rx = rip.x * sc; ry = rip.y * sc; R2 = (n / 2) * (n / 2) - 1;
     }
 
+    /* The pointer effects, in device px. */
+    var lit = S.lit, line = S.line, neg = S.neg, org = S.organic;
+    var fs = org ? this.organic() : null, inkC = this.ink;
+    var cx = 0, cy = 0, litR = 0.38 * Math.max(W, H), lineR2 = 0, negR2 = 0, lineP = 5 * sc, ex, ey, d2c;
+    if (lit) { cx = lit.x * sc; cy = lit.y * sc; }
+    if (line) { cx = line.x * sc; cy = line.y * sc; lineR2 = line.r * line.r * sc * sc; }
+    if (neg) { cx = neg.x * sc; cy = neg.y * sc; negR2 = neg.r * neg.r * sc * sc; }
+    var pointer = lit || line || neg;
+
     /* Fast path: the threshold is the plain per-pixel one. Covers rest,
-       densify, develop, layers and ripple: almost every frame. */
+       densify, develop, layers, ripple and the pointer effects: almost
+       every frame. */
     if (block === 1 && !lens && !wipe && !sw && !ox && !oy) {
       for (j = 0; j < H; j++) {
         var row = j * W, ddy = j - ry, dy2 = ddy * ddy, rowRip = prof && dy2 < R2;
+        ey = j - cy;
         for (i = 0; i < W; i++) {
           k = row + i;
           if (!back[k]) { px[k] = 0; continue; }
           r = revA ? revA[lay[k] - 1] : rev;
+          if (r <= 0) { px[k] = 0; continue; }
           v = ink[k];
-          if (r < 1) {
-            if (r * 1.6 <= T[k]) { px[k] = 0; continue; }
-            v *= r * 1.6 - 0.6 > 0 ? r * 1.6 - 0.6 : 0;
-          }
+          var t = T[k];
+          if (pointer) { ex = i - cx; d2c = ex * ex + ey * ey; }
+          if (neg && d2c < negR2) v = 1 - v;
+          if (r < 1) v *= r;
           v *= gain;
+          if (lit) v *= 1 - lit.p + lit.p * (0.35 + Math.min(1, Math.sqrt(d2c) / litR));
+          if (line && d2c < lineR2) t = (((i + j) % lineP) + 0.5) / lineP;
           if (rowRip && v > 0) {
             var ddx = i - rx, d2 = ddx * ddx + dy2;
             if (d2 < R2) v += prof[(Math.sqrt(d2) * 2) | 0];
           }
-          px[k] = v > T[k] ? BLUE : PAPER;
+          if (fs) { px[k] = (T[k] < org.p ? fs[k] && gain > 0.6 : v > t) ? inkC : 0; continue; }
+          px[k] = v > t ? inkC : 0;
         }
       }
       this.ctx.putImageData(this.img, 0, 0);
@@ -205,11 +249,9 @@
           var sp = ((ii / W) * wipe.ax + (jj / H) * wipe.ay) / wn;
           r = Math.min(r, clamp((wipe.p * (1 + wipe.band) - sp) / wipe.band));
         }
+        if (r <= 0) { px[k] = 0; continue; }
         v = ink[kk];
-        if (r < 1) {
-          if (r * 1.6 <= t) { px[k] = 0; continue; }   // paper first...
-          v *= clamp(r * 1.6 - 0.6);                    // ...then the dots
-        }
+        if (r < 1) v *= r;
         v *= gain;
         if (sw && v > 0) {
           var qq = (ii / W + (jj / H) * 0.4 - sw.pos) / sw.w;
@@ -219,7 +261,7 @@
           var ex = ii - rx, ey = jj - ry, e2 = ex * ex + ey * ey;
           if (e2 < R2) v += prof[(Math.sqrt(e2) * 2) | 0];
         }
-        px[k] = v > t ? BLUE : PAPER;
+        px[k] = v > t ? inkC : 0;
       }
     }
     this.ctx.putImageData(this.img, 0, 0);
@@ -299,27 +341,50 @@
    * Hover on a zone drives a sticker. kind and rest may be functions, read on
    * every enter, so the lab can switch them live. Every kind first brings the
    * ink up to full (from a sparse resting print, when rest.gain < 1), then
-   * runs its effect; leaving fades back to rest.
+   * runs its effect; leaving fades back to rest. The pointer kinds follow
+   * the pointer; outside the picture it is clamped to just past its edge,
+   * so hovering the text beside an icon still reaches the print.
    *   densify  only that
    *   sweep    a band of light passes over the print once
    *   crawl    the Bayer grid marches, so the grain shimmers (12 fps)
    *   ripple   rings spread from the pointer
    *   lens     a circle of coarse dither follows the pointer
+   *   lit      relit from the pointer: light near it, dense away from it
+   *   line     a diagonal line screen spreads from the pointer
+   *   neg      the print inverts inside a circle round the pointer
+   *   organic  the ordered print dissolves into film grain
    */
   function hover(zone, st, kind, rest) {
     var K = typeof kind === 'function' ? kind : function () { return kind; };
     var R = typeof rest === 'function' ? rest : function () { return rest || {}; };
     var on = false, pt = null, k = null, g = null;
     var restGain = function () { var r = R(); return r.gain == null ? 1 : r.gain; };
+    var box = function () { return st.f ? { w: st.f.W / st.s, h: st.f.H / st.s } : { w: 224, h: 172 }; };
+    var P = function () {
+      var b = box();
+      if (!pt) return { x: b.w / 2, y: b.h / 2 };
+      return { x: Math.max(-30, Math.min(b.w + 30, pt.x)), y: Math.max(-30, Math.min(b.h + 30, pt.y)) };
+    };
+    var reach = function () { var b = box(); return Math.max(b.w, b.h); };
     var effect = function () {
+      var Rr = reach();
       if (k === 'sweep') {
         st.tween(700, function (p) { return { gain: 1, sweep: { pos: -0.3 + 1.8 * p, w: 0.1, amt: 0.75 } }; });
       } else if (k === 'crawl') {
         st.loop(function (t) { var n = Math.floor(t * 12); return { ox: n, oy: n >> 1 }; }, 12);
       } else if (k === 'ripple') {
-        st.loop(function (t) { return { ripple: { x: pt ? pt.x : 0, y: pt ? pt.y : 0, t: t * 7, amt: 0.32 } }; }, 60);
+        st.loop(function (t) { var q = P(); return { ripple: { x: q.x, y: q.y, t: t * 7, amt: 0.32 } }; }, 60);
       } else if (k === 'lens') {
-        st.set({ lens: { x: pt ? pt.x : -999, y: pt ? pt.y : -999, r: 46, block: 3 } });
+        var q0 = P();
+        st.set({ lens: { x: q0.x, y: q0.y, r: 46, block: 3 } });
+      } else if (k === 'line') {
+        st.tween(380, function (p) { var q = P(); return { gain: 1, line: { x: q.x, y: q.y, r: 0.5 * Rr * ease(p) } }; });
+      } else if (k === 'neg') {
+        st.tween(300, function (p) { var q = P(); return { gain: 1, neg: { x: q.x, y: q.y, r: 0.14 * Rr * ease(p) } }; });
+      } else if (k === 'lit') {
+        st.tween(320, function (p) { var q = P(); return { gain: 1, lit: { x: q.x, y: q.y, p: ease(p) } }; });
+      } else if (k === 'organic') {
+        st.tween(420, function (p) { return { gain: 1, organic: { p: p } }; });
       }
     };
     var enter = function (e) {
@@ -340,8 +405,12 @@
       var from = g;
       st.tween(k === 'ripple' ? 520 : 380, function (p) {
         g = from + (to - from) * ease(p);
-        var s = { gain: g };
-        if (last.ripple) s.ripple = { x: last.ripple.x, y: last.ripple.y, t: last.ripple.t + p * 3.5, amt: last.ripple.amt * (1 - p) };
+        var q = 1 - ease(p), s = { gain: g };
+        if (last.ripple) s.ripple = { x: last.ripple.x, y: last.ripple.y, t: last.ripple.t + p * 3.5, amt: last.ripple.amt * q };
+        if (last.line) s.line = { x: last.line.x, y: last.line.y, r: last.line.r * q };
+        if (last.neg) s.neg = { x: last.neg.x, y: last.neg.y, r: last.neg.r * q };
+        if (last.lit) s.lit = { x: last.lit.x, y: last.lit.y, p: last.lit.p * q };
+        if (last.organic) s.organic = { p: last.organic.p * q };
         return s;
       });
     };
@@ -352,7 +421,12 @@
     zone.addEventListener('pointermove', function (e) {
       if (!st.f) return;
       pt = st.point(e);
-      if (k === 'lens' && on && !st.anim && !reduce) st.set({ lens: { x: pt.x, y: pt.y, r: 46, block: 3 } });
+      if (!on || st.anim || reduce) return;
+      var q = P(), c = st.state;
+      if (k === 'lens') st.set({ lens: { x: q.x, y: q.y, r: 46, block: 3 } });
+      else if (k === 'line' && c.line) st.set({ gain: 1, line: { x: q.x, y: q.y, r: c.line.r } });
+      else if (k === 'neg' && c.neg) st.set({ gain: 1, neg: { x: q.x, y: q.y, r: c.neg.r } });
+      else if (k === 'lit' && c.lit) st.set({ gain: 1, lit: { x: q.x, y: q.y, p: c.lit.p } });
     });
     return { reset: function () { on = false; g = null; st.stop(); st.set(R()); } };
   }
@@ -384,7 +458,7 @@
       out.push([r.left - hr.left - pad, r.top - hr.top - pad, r.right - hr.left + pad, r.bottom - hr.top + pad]);
     };
     els.forEach(function (el) {
-      if (el.matches('.btn, button')) { add(el.getBoundingClientRect()); return; }
+      if (el.matches('.btn, button, [data-wash-clear]')) { add(el.getBoundingClientRect()); return; }
       var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n, range = document.createRange();
       while ((n = w.nextNode())) {
         if (!n.nodeValue.trim()) continue;
@@ -399,7 +473,7 @@
   var FRAG = [
     'precision highp float;',
     'uniform vec2 u_res;uniform vec2 u_size;uniform float u_dpr;uniform float u_cell;uniform float u_t;uniform float u_max;',
-    'uniform vec3 u_ptr;uniform float u_mode;uniform float u_feather;',
+    'uniform vec3 u_ptr;uniform float u_mode;uniform float u_feather;uniform vec2 u_par;',
     'uniform vec4 u_rects[' + MAX_RECTS + '];uniform float u_n;',
     // 8x8 Bayer by bit interleaving; +0.5/64 so zero ink is never a dot
     'float b2(vec2 a){a=floor(a);return fract(a.x*.5+a.y*a.y*.75);}',
@@ -410,8 +484,8 @@
     '  vec2 css=(c+.5)*u_cell/u_dpr;',
     '  float x=css.x/u_size.x,y=css.y/u_size.y,asp=u_size.x/u_size.y,t=u_t;',
     '  float n=.5+.5*sin(x*7.*asp*.35+t*.35+sin(y*5.-t*.22)*1.6);',
-    '  vec2 bc=vec2(.26+.05*sin(t*.11),.16+.05*cos(t*.09));',
-    '  vec2 pc=vec2(.78+.05*cos(t*.13),.28+.06*sin(t*.1));',
+    '  vec2 bc=vec2(.26+.05*sin(t*.11),.16+.05*cos(t*.09))-u_par*vec2(.05,.04);',
+    '  vec2 pc=vec2(.78+.05*cos(t*.13),.28+.06*sin(t*.1))+u_par*vec2(.07,.06);',
     '  vec2 db=vec2((x-bc.x)*asp*.55,y-bc.y),dp=vec2((x-pc.x)*asp*.55,y-pc.y);',
     '  float ib=u_max*exp(-dot(db,db)*5.5)*(.55+.45*n);',
     '  float ip=u_max*exp(-dot(dp,dp)*6.)*(.55+.45*(1.-n));',
@@ -483,7 +557,7 @@
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
     this.u = {};
     var self = this;
-    ['u_res', 'u_size', 'u_dpr', 'u_cell', 'u_t', 'u_max', 'u_ptr', 'u_mode', 'u_feather', 'u_rects', 'u_n'].forEach(function (n) {
+    ['u_res', 'u_size', 'u_dpr', 'u_cell', 'u_t', 'u_max', 'u_ptr', 'u_mode', 'u_feather', 'u_rects', 'u_n', 'u_par'].forEach(function (n) {
       self.u[n] = gl.getUniformLocation(pr, n);
     });
     return gl;
@@ -535,6 +609,9 @@
       gl.uniform3f(u.u_ptr, pt ? pt.x : 0, pt ? pt.y : 0, pt && this.mode !== 'flow' ? 1 : 0);
       gl.uniform1f(u.u_mode, this.mode === 'glow' ? 1 : 2);
       gl.uniform1f(u.u_feather, this.feather);
+      // the same parallax site.js gives the CSS wash, read from the host
+      var hs = this.host.style;
+      gl.uniform2f(u.u_par, parseFloat(hs.getPropertyValue('--hx')) || 0, parseFloat(hs.getPropertyValue('--hy')) || 0);
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLES, 0, 3);

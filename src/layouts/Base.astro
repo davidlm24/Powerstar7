@@ -11,9 +11,11 @@ interface Props {
   page?: PageKey;
   title: string;
   description?: string;
+  /** Load the dither engine: the print moves (Home, Services). */
+  dither?: boolean;
 }
 
-const { lang, page, title, description } = Astro.props;
+const { lang, page, title, description, dither = false } = Astro.props;
 const t = useTranslations(lang);
 
 const site = Astro.site ?? new URL('https://www.designactiv.com');
@@ -94,6 +96,21 @@ const ogImage = new URL(lang === 'pt' ? '/assets/img/og-card-pt.png' : '/assets/
         }, 2500);
       }
     </script>
+    {/* The same arm-and-withdraw for the live dither (dither-site.js): only
+        with motion allowed and a canvas to draw on, and dropped after 2.5s
+        if the scripts never report ready, so no picture stays blank. */}
+    {
+      dither && (
+        <script is:inline>
+          if (window.HTMLCanvasElement && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.documentElement.classList.add('dither');
+            setTimeout(function () {
+              if (!window.__ditherReady) document.documentElement.classList.remove('dither');
+            }, 2500);
+          }
+        </script>
+      )
+    }
   </head>
 
   <body>
@@ -104,6 +121,9 @@ const ogImage = new URL(lang === 'pt' ? '/assets/img/og-card-pt.png' : '/assets/
     </main>
     <Footer lang={lang} page={page} />
     <script src="/assets/js/site.js" defer is:inline></script>
+    {/* Deferred scripts run in document order, so these follow site.js. */}
+    {dither && <script src="/assets/js/dither.js" defer is:inline></script>}
+    {dither && <script src="/assets/js/dither-site.js" defer is:inline></script>}
   </body>
 </html>
 

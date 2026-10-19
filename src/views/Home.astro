@@ -6,6 +6,7 @@ import Closing from '../components/Closing.astro';
 import Accent from '../components/Accent.astro';
 import { accentParts } from '../i18n/accent';
 import { useTranslations, route, type Lang } from '../i18n/ui';
+import { rampCss } from '../lib/bayer';
 
 interface Props {
   lang: Lang;
@@ -73,7 +74,11 @@ const position = [
 ];
 ---
 
-<Base lang={lang} page="home" title={t('home.title')}>
+<Base lang={lang} page="home" title={t('home.title')} dither>
+  {/* The Bayer ramp the highlight wipes in behind (src/lib/bayer.ts). A
+      data URI in a custom property: not a request. Astro's scoped style
+      cannot take a frontmatter value, hence set:html. */}
+  <Fragment set:html={`<style>:root{${rampCss()}}</style>`} />
   {/* --- Hero ------------------------------------------------------------
       David's picks (2026-10-14): "Your website, sorted." with the last word
       highlighted; beside it one general picture, a laptop and a phone
@@ -91,6 +96,11 @@ const position = [
         wash's percentages — and the measured contrast ceiling on them — hold
         without being re-derived. */}
     <div class="hero__fx" aria-hidden="true"></div>
+    {/* The wash as dots: 1px Bayer dither drifting slowly, drawn in WebGL
+        by dither-site.js and kept clear of every line of text. Shown only
+        once it draws (.has-dots); the CSS wash above is what everyone
+        else sees. */}
+    <canvas class="hero__dots" aria-hidden="true"></canvas>
 
     <div class="container hero__grid">
       <div class="hero__copy">
@@ -113,13 +123,13 @@ const position = [
         </div>
       </div>
 
-      <div class="hero__pic" aria-hidden="true">
+      <div class="hero__pic" aria-hidden="true" data-wash-clear>
         <Illo name="desk" variant="sticker" class="hero__desk" />
         <Illo name="check" variant="sticker" class="hero__check" />
       </div>
     </div>
 
-    <div class="hero__band" data-band>
+    <div class="hero__band" data-band data-wash-clear>
       <div class="container hero__band-in">
         <p class="hero__band-label">{t('home.band.label')}</p>
         <div class="hero__band-run">
@@ -327,6 +337,19 @@ const position = [
     opacity: 0.16;
   }
 
+  /* The dots. Under the rails like the CSS wash; inset 0, so nothing of
+     it ever leaves the hero's clipped box. */
+  .hero__dots {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    display: none;
+    pointer-events: none;
+  }
+
+  .hero.has-dots .hero__dots { display: block; }
+  .hero.has-dots .hero__fx { display: none; }
+
   /* Transform only, so the drift runs on the compositor and never touches
      layout. prefers-reduced-motion is handled globally: the blanket rule
      collapses the duration, which parks the wash at its start position. */
@@ -509,6 +532,47 @@ const position = [
 
   @keyframes hero-ink {
     from { color: var(--fg); }
+  }
+
+  /* --- The landing, in dots (html.dither: dither-site.js is running) ------
+     The picture's image is hidden from first paint, and the canvas develops
+     it layer by layer from nothing; the seal is stamped (the same CSS
+     stamp) while it develops; then the highlight wipes in behind a dithered
+     edge (the Bayer ramp mask) instead of scaling. Everything is keyed on
+     .is-run, which the script adds once the fields are ready, so the CSS
+     clock can never run ahead of the picture. If html.dither is withdrawn
+     (the 2.5s fallback) the rules above take over with their delays long
+     gone: everything sits in its finished state. */
+  html.dither .hero__pic .illo img { visibility: hidden; }
+
+  html.dither .hero__pic :global(.hero__desk),
+  html.dither .hero__pic :global(.hero__check),
+  html.dither .hero__mark,
+  html.dither .hero__mark::before { animation: none; }
+
+  html.dither .hero__mark { color: var(--fg); }
+  html.dither .hero__mark::before {
+    visibility: hidden;
+    mask-image: var(--dz-ramp);
+    mask-repeat: repeat-y;
+    mask-size: calc(var(--dz-ramp-w) * 1px) 4px;
+    mask-position: right calc(var(--dz-ramp-off) * -1px) top 0;
+  }
+
+  html.dither .hero.is-run .hero__pic :global(.hero__desk) {
+    animation: hero-float 7s ease-in-out 1.4s infinite alternate;
+  }
+  html.dither .hero.is-run .hero__pic :global(.hero__check) {
+    animation: hero-stamp 450ms var(--ease) 900ms both;
+  }
+  html.dither .hero.is-run .hero__mark { animation: hero-ink 1ms linear 1.6s both; }
+  html.dither .hero.is-run .hero__mark::before {
+    visibility: visible;
+    animation: hero-wipe 560ms linear 1.35s both;
+  }
+
+  @keyframes hero-wipe {
+    from { mask-position: left calc(var(--dz-ramp-off) * -1px) top 0; }
   }
 
   /* --- The band ----------------------------------------------------------

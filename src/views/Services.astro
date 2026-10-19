@@ -98,7 +98,7 @@ const faqs = [
 ];
 ---
 
-<Base lang={lang} page="services" title={t('services.title')} description={t('services.lead')}>
+<Base lang={lang} page="services" title={t('services.title')} description={t('services.lead')} dither>
   <PageHead title={t('services.h1')} lead={t('services.lead')} figure="services" />
 
   {/* --- What things cost -------------------------------------------------
@@ -193,7 +193,7 @@ const faqs = [
                   lives inside the sticky block, so it travels with the
                   number. Decorative: the heading opposite says everything. */}
               <div class="icon-wash svc__art" aria-hidden="true">
-                <Illo name={s.id} variant="icon" />
+                <Illo name={s.id} variant="icon" ink={i === 1 ? 'on-ink' : 'blue'} />
               </div>
             </div>
 
@@ -280,6 +280,71 @@ const faqs = [
   .plan--care {
     background: var(--paper-hi);
     border: 1px solid var(--rail);
+  }
+
+  /* --- The corner ----------------------------------------------------------
+     A blue gradient in dots, falling off from one corner of each boxed
+     card (David, 2026-10-19): the same 8x8 Bayer print as the
+     illustrations, as a 1-bit mask (public/assets/dither/corner.png) over
+     the accent, so on the dark card it takes --on-ink-blue by itself. On
+     hover it steps one level denser and leans 2px into the corner. Never
+     under text: the plans' top-right is empty by layout; the add-ons' first
+     price sits top-right, so its corner is bottom-left, and both go where
+     the cards stack and text reaches the corner. The @supports guard
+     matters: without a mask the pseudo would be a solid block. */
+  @supports (mask-image: url('')) or (-webkit-mask-image: url('')) {
+    .plan,
+    .addons {
+      position: relative;
+    }
+
+    .plan::after,
+    .addons::after {
+      content: '';
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline-end: 0;
+      inline-size: 240px;
+      block-size: 200px;
+      pointer-events: none;
+      background: var(--accent-fn);
+      mask-image: image-set(url('/assets/dither/corner.png') 1x, url('/assets/dither/corner@2x.png') 2x);
+      -webkit-mask-image: image-set(url('/assets/dither/corner.png') 1x, url('/assets/dither/corner@2x.png') 2x);
+      mask-size: 240px 200px;
+      -webkit-mask-size: 240px 200px;
+      mask-repeat: no-repeat;
+      -webkit-mask-repeat: no-repeat;
+      transition: translate var(--dur) var(--ease);
+    }
+
+    .plan:hover::after,
+    .plan:focus-within::after,
+    .addons:hover::after {
+      translate: 2px -2px;
+      mask-image: image-set(url('/assets/dither/corner-hi.png') 1x, url('/assets/dither/corner-hi@2x.png') 2x);
+      -webkit-mask-image: image-set(url('/assets/dither/corner-hi.png') 1x, url('/assets/dither/corner-hi@2x.png') 2x);
+    }
+
+    /* Bottom-left, by turning the box: its top-right becomes the corner.
+       Shorter, so the dots stop below the lead copy. */
+    .addons::after {
+      inset-block: auto 0;
+      inset-inline: 0 auto;
+      block-size: 150px;
+      mask-position: top right;
+      -webkit-mask-position: top right;
+      rotate: 180deg;
+    }
+
+    .addons:hover::after { translate: -2px 2px; }
+
+    @media (max-width: 60rem) {
+      .addons::after { display: none; }
+    }
+
+    @media (max-width: 40rem) {
+      .plan::after { display: none; }
+    }
   }
 
   .plan__kind {

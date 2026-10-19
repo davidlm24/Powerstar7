@@ -325,14 +325,16 @@ a:hover { text-decoration-thickness: 2px; }
    The callouts are decoration, aria-hidden; the hero's band is content. */
 
 /* --- The illustrations ---------------------------------------------------
-   Every illustration is a finished sticker image, drawn from zero for its
+   Every illustration is a finished 1-bit image, drawn from zero for its
    page (David, 2026-10-19) in tone made for the dither: gradients, glows,
-   soft shadows, Bayer-dithered to 1 bit, blue dots on pale sticker paper
-   with a halo, the tilt baked in (scripts/illustrations.mjs). Plain
-   images: no masks, no filters, and the same file on light and dark
-   grounds. No idle animation at all. */
+   soft shadows, Bayer-dithered to blue dots and nothing else, the tilt
+   baked in (scripts/illustrations.mjs). Plain images, no masks, no
+   filters; the page ground shows between the dots. Where the page opts in
+   (dither-site.js), a canvas drawn from the same ink sits over the image
+   (.is-live) and the print itself moves. */
 
 .illo {
+  position: relative;
   pointer-events: none;
   user-select: none;
 }
@@ -344,25 +346,42 @@ a:hover { text-decoration-thickness: 2px; }
   height: auto;
 }
 
-/* Icons: at rest a faint ghost (15%) on their zone's soft wash; on hover
-   or keyboard focus of the zone the sticker comes up to full on top of it
-   — the one animation (David). Where there is no hover at all (touch),
-   the icons simply show. */
-.illo--icon img {
-  opacity: 0.15;
-  transition: opacity 260ms var(--ease);
+.illo canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
-[data-illo-zone]:hover .illo--icon img,
-[data-illo-zone]:focus-visible .illo--icon img,
-[data-illo-zone]:focus-within .illo--icon img {
-  opacity: 1;
+.illo.is-live img {
+  visibility: hidden;
+}
+
+/* Icons: two prints of the same drawing. At rest the sparse one (30% ink)
+   on the zone's soft wash; on the zone's hover or keyboard focus the full
+   one. The live canvas (dither-site.js) takes over both where it runs, and
+   draws the change as the print itself. Where there is no hover at all
+   (touch), the full print simply shows. */
+.illo--icon .illo__full {
+  display: none;
+}
+
+[data-illo-zone]:hover .illo--icon:not(.is-live) .illo__full,
+[data-illo-zone]:focus-visible .illo--icon:not(.is-live) .illo__full,
+[data-illo-zone]:focus-within .illo--icon:not(.is-live) .illo__full {
+  display: block;
+}
+
+[data-illo-zone]:hover .illo--icon:not(.is-live) .illo__rest,
+[data-illo-zone]:focus-visible .illo--icon:not(.is-live) .illo__rest,
+[data-illo-zone]:focus-within .illo--icon:not(.is-live) .illo__rest {
+  display: none;
 }
 
 @media (hover: none) {
-  .illo--icon img {
-    opacity: 1;
-  }
+  .illo--icon .illo__full { display: block; }
+  .illo--icon .illo__rest { display: none; }
 }
 
 /* The page figure and the section asides: full-strength stickers in their

@@ -149,7 +149,45 @@ const topics = [
      --s5 here against --s6 there: 16px apart below 1280, and the sign FLIPS
      above 1440, where .form's own max-width caps it short of its track and
      leaves this padding dead code while the aside keeps its 64px. */
+  /* The corner, as on the pricing cards (Services.astro): blue dots falling
+     off from the form's top-right corner, denser and nearer on hover. The
+     first field's own paper fill sits over most of it; the rest shows in
+     the gaps between fields, where there is no text. */
+  @supports (mask-image: url('')) or (-webkit-mask-image: url('')) {
+    .form::after {
+      content: '';
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline-end: 0;
+      z-index: -1;
+      inline-size: 240px;
+      block-size: 200px;
+      pointer-events: none;
+      background: var(--accent-fn);
+      mask-image: image-set(url('/assets/dither/corner.png') 1x, url('/assets/dither/corner@2x.png') 2x);
+      -webkit-mask-image: image-set(url('/assets/dither/corner.png') 1x, url('/assets/dither/corner@2x.png') 2x);
+      mask-size: 240px 200px;
+      -webkit-mask-size: 240px 200px;
+      mask-repeat: no-repeat;
+      -webkit-mask-repeat: no-repeat;
+      transition: translate var(--dur) var(--ease);
+    }
+
+    .form:hover::after,
+    .form:focus-within::after {
+      translate: 2px -2px;
+      mask-image: image-set(url('/assets/dither/corner-hi.png') 1x, url('/assets/dither/corner-hi@2x.png') 2x);
+      -webkit-mask-image: image-set(url('/assets/dither/corner-hi.png') 1x, url('/assets/dither/corner-hi@2x.png') 2x);
+    }
+
+    @media (max-width: 40rem) {
+      .form::after { display: none; }
+    }
+  }
+
   .form {
+    position: relative;
+    isolation: isolate;
     grid-column: span 2;
     padding-inline-end: var(--col-pad);
   }

@@ -1,15 +1,19 @@
 ---
-/* One illustration: a finished sticker image (scripts/illustrations.mjs).
+/* One illustration: a finished 1-bit image (scripts/illustrations.mjs).
    Drawn from zero for its page (David, 2026-10-19), in tone made for the
-   dither, Bayer-dithered to 1 bit, blue dots on pale sticker paper with a
-   halo, tilt baked in. Plain <img>: no colouring, no filters, the same file
-   on light and dark grounds; 1x and 2x through srcset.
+   dither, Bayer-dithered to blue dots and nothing else, tilt baked in.
+   Plain <img>, 1x and 2x through srcset, as the initial and no-JS render;
+   on the pages that opt in, dither-site.js lays a live canvas over it,
+   drawn from the same ink (public/assets/dither), so the print itself can
+   move: the hero develops, the icons answer the pointer.
+
+   ink: 'blue' (the default) or 'on-ink', the dots for a dark band.
 
    variant:
-   - icon:  a service icon. Hidden at rest so only its zone's soft wash
-            shows; it appears on the zone's hover or keyboard focus — the
-            one animation (global.css). Always visible where there is no
-            hover (touch).
+   - icon:  a service icon. At rest a sparse print (30% ink, the -rest
+            file); on its zone's hover or keyboard focus the full print
+            (global.css swaps the two images where no canvas has taken
+            over). Where there is no hover (touch) the full print shows.
    - field: the page-heading figure, behind the text, faded towards the
             copy by its wrapper's masks.
    - aside: the smaller second figure, wide screens only.
@@ -24,23 +28,30 @@ export type IlloName = keyof typeof manifest;
 interface Props {
   name: IlloName;
   variant: 'icon' | 'field' | 'aside' | 'sticker';
+  ink?: 'blue' | 'on-ink';
   class?: string;
 }
 
-const { name, variant, class: className } = Astro.props;
+const { name, variant, ink = 'blue', class: className } = Astro.props;
 const { w, h } = manifest[name];
-const src = `/assets/illo/${name}.png`;
-const src2 = `/assets/illo/${name}@2x.png`;
+const base = `/assets/illo/${name}${ink === 'on-ink' ? '-dark' : ''}`;
+const full = { src: `${base}.png`, srcset: `${base}.png 1x, ${base}@2x.png 2x` };
+const rest = { src: `${base}-rest.png`, srcset: `${base}-rest.png 1x, ${base}-rest@2x.png 2x` };
+const eager = variant === 'field' || variant === 'sticker';
 ---
 
-<div class:list={['illo', `illo--${variant}`, className]} aria-hidden="true" data-nosnippet>
+<div class:list={['illo', `illo--${variant}`, className]} aria-hidden="true" data-nosnippet data-illo={name} data-ink={ink}>
+  {variant === 'icon' && (
+    <img class="illo__rest" src={rest.src} srcset={rest.srcset} width={w} height={h} alt="" loading="lazy" decoding="async" />
+  )}
   <img
-    src={src}
-    srcset={`${src} 1x, ${src2} 2x`}
+    class={variant === 'icon' ? 'illo__full' : undefined}
+    src={full.src}
+    srcset={full.srcset}
     width={w}
     height={h}
     alt=""
-    loading={variant === 'field' || variant === 'sticker' ? 'eager' : 'lazy'}
+    loading={eager ? 'eager' : 'lazy'}
     decoding="async"
   />
 </div>

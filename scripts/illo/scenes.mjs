@@ -249,33 +249,40 @@ export function about(p, R) {
 const clampN = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
 /** Contact, "a few lines are enough to start; we reply to everything": a
-    paper plane on its way, and the reply already coming back. */
+    paper plane climbing out of the picture, its flight behind it, and the
+    reply already on its way back. */
 export function contact(p, R) {
-  // the flight: a dotted loop from the bottom left
+  // the flight: one loop, dotted, fading in toward the plane
   const bez = (a, b, c, d) => { const out = []; for (let t = 0; t <= 1.0001; t += 0.02) { const u = 1 - t; out.push([u * u * u * a[0] + 3 * u * u * t * b[0] + 3 * u * t * t * c[0] + t * t * t * d[0], u * u * u * a[1] + 3 * u * u * t * b[1] + 3 * u * t * t * c[1] + t * t * t * d[1]]); } return out; };
   const pts = [
-    ...bez([0.1, 0.84], [0.42, 0.92], [0.62, 0.62], [0.46, 0.5]),
-    ...bez([0.46, 0.5], [0.3, 0.39], [0.38, 0.2], [0.56, 0.27]).slice(1),
-    ...bez([0.56, 0.27], [0.64, 0.3], [0.7, 0.34], [0.74, 0.35]).slice(1),
+    ...bez([0.08, 0.86], [0.4, 0.95], [0.66, 0.68], [0.5, 0.54]),
+    ...bez([0.5, 0.54], [0.34, 0.42], [0.4, 0.24], [0.58, 0.3]).slice(1),
+    ...bez([0.58, 0.3], [0.66, 0.33], [0.7, 0.36], [0.73, 0.38]).slice(1),
   ];
   let acc = 0;
   const lens = pts.map((q, i) => (i ? (acc += Math.hypot(q[0] - pts[i - 1][0], q[1] - pts[i - 1][1])) : 0));
-  const trail = S.path(pts, OW * 1.1);
+  const trail = S.path(pts, OW * 1.2);
   const along = (x, y) => { let best = 0, bd = Infinity; for (let i = 0; i < pts.length; i++) { const d = (x - pts[i][0]) ** 2 + (y - pts[i][1]) ** 2; if (d < bd) { bd = d; best = lens[i]; } } return best; };
-  p.fill(trail, (x, y) => { const s = along(x, y); return (s / 0.035) % 1 < 0.55 ? 0.25 + 0.7 * (s / acc) : null; });
-  // the plane
-  const nx = 1.1, ny = 0.15, tx = 0.74, ty = 0.36;          // nose, tail
-  const wing = S.poly([[tx, ty], [nx, ny], [0.86, 0.52]]);
-  const body = S.poly([[tx, ty], [nx, ny], [0.88, 0.37]]);
-  const keel = S.poly([[0.86, 0.52], [nx, ny], [0.9, 0.44]]);
-  p.shadow(S.union(wing, body), { dy: 0.05, blur: 0.035, amt: 0.3 });
-  p.fill(wing, G.lin(0.78, 0.25, 0.98, 0.5, PAPER, 0.22));
-  p.fill(body, G.lin(tx, ty, nx, ny, 0.65, 0.4)).fill(keel, 0.88);
-  p.stroke(S.union(wing, body, keel), OW);
-  p.fill(S.path([[tx, ty], [nx, ny]], OW * 0.9), 1).fill(S.path([[0.86, 0.52], [nx, ny]], OW * 0.9), 1);
-  // the reply bubble
-  const bx = 1.0, by = 0.74;
-  const bub = S.union(S.rbox(bx, by, 0.15, 0.085, 0.085), S.poly([[bx + 0.05, by + 0.06], [bx + 0.13, by + 0.15], [bx + 0.1, by + 0.05]]));
+  p.fill(trail, (x, y) => { const s = along(x, y); return (s / 0.035) % 1 < 0.55 ? 0.3 + 0.65 * (s / acc) : null; });
+
+  // the dart: nose top right, tail bottom left; the fold runs down the
+  // middle, the far wing lies flatter and darker, the near wing catches
+  // the light, and the keel hangs under the fold
+  const nose = [1.14, 0.17], tail = [0.76, 0.43];
+  const farTip = [0.9, 0.2], nearTip = [0.84, 0.56], keelTip = [0.9, 0.5];
+  const far = S.poly([tail, nose, farTip]);
+  const near = S.poly([tail, nose, nearTip]);
+  const keel = S.poly([[0.8, 0.45], nose, keelTip]);
+  p.shadow(S.union(far, near), { dx: 0.02, dy: 0.06, blur: 0.04, amt: 0.3 });
+  p.fill(keel, 0.9);
+  p.fill(far, G.lin(tail[0], tail[1], farTip[0], farTip[1], 0.45, 0.72));
+  p.fill(near, G.lin(nearTip[0], nearTip[1], tail[0], tail[1], PAPER, 0.3));
+  p.stroke(S.union(far, near, keel), OW);
+  p.fill(S.path([tail, nose], OW * 1.1), 1);                     // the fold
+  p.fill(S.path([[0.8, 0.45], nose], OW * 0.8), 1);
+  // the reply: a bubble coming the other way, its own short trail
+  const bx = 1.02, by = 0.78;
+  const bub = S.union(S.rbox(bx, by, 0.15, 0.085, 0.085), S.poly([[bx + 0.06, by + 0.06], [bx + 0.14, by + 0.15], [bx + 0.11, by + 0.05]]));
   p.shape(bub, G.lin(bx - 0.15, by - 0.08, bx + 0.15, by + 0.1, 0.45, 0.85));
   for (let k = -1; k <= 1; k++) p.erase(S.circle(bx + k * 0.06, by, 0.019));
 }
