@@ -337,6 +337,27 @@ const faqs = [
 
   /* The way to act, pinned to the card's foot so both line up; the card's
      gap keeps it clear of the list when the card is at its natural height. */
+  .plan__list li {
+    position: relative;
+    padding-inline-start: 1.5rem;
+    font-size: var(--t-body);
+  }
+
+  /* A check for what a plan includes: it answers "is this in the price?".
+     --accent-fn, so it clears 3:1 on both cards (--blue-fn on paper, the
+     on-ink blue on the dark card). */
+  .plan__list li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0.15rem;
+    inset-block-start: 0.3em;
+    inline-size: 0.38rem;
+    block-size: 0.7rem;
+    border: solid var(--accent-fn);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
   .plan__cta {
     align-self: flex-start;
     margin-block-start: auto;

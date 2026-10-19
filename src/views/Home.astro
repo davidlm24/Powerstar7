@@ -17,21 +17,19 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-/* The lane bodies reuse svc.*.body — the same descriptions the Services page
-   carries. Not a shortcut: they are already written, already translated, and
-   already reviewed, and a home page carrying five placeholder strings would be
-   worse than one carrying five real sentences. Swap in shorter dedicated keys
-   if these read long in a lane.
+/* The cards carry svc.*.short: the first sentence of each service, which the
+   Services page now opens its own, longer explanation with. Written out
+   rather than built with a template literal.
 
    Written out rather than built with a template literal, because
    t(`svc.${key}.body`) needs an `as any` cast and that quietly removes the
    type protection from every key it touches. */
 const services = [
-  { key: 'web', name: t('svc.web.name'), b: t('svc.web.body') },
-  { key: 'brand', name: t('svc.brand.name'), b: t('svc.brand.body') },
-  { key: 'seo', name: t('svc.seo.name'), b: t('svc.seo.body') },
-  { key: 'email', name: t('svc.email.name'), b: t('svc.email.body') },
-  { key: 'hosting', name: t('svc.hosting.name'), b: t('svc.hosting.body') },
+  { key: 'web', name: t('svc.web.name'), b: t('svc.web.short') },
+  { key: 'brand', name: t('svc.brand.name'), b: t('svc.brand.short') },
+  { key: 'seo', name: t('svc.seo.name'), b: t('svc.seo.short') },
+  { key: 'email', name: t('svc.email.name'), b: t('svc.email.short') },
+  { key: 'hosting', name: t('svc.hosting.name'), b: t('svc.hosting.short') },
 ] as const;
 
 /* The headline's accent word (*word* in ui.ts) is also its highlighted word,
@@ -164,52 +162,51 @@ const position = [
   </section>
 
   {/* --- What we do -------------------------------------------------------
-      Layout B from the illustration options, which David picked: copy-led
-      lanes, one service to a row, instead of five cards. Each service keeps
-      its own sticker at the end of the lane, on its soft wash, at full
-      strength (option C, 2026-10-19). */}
+      Five cards and a sixth that leads to all of them (David, 2026-10-20,
+      option B, from three compact layouts): each service as a rounded card
+      with its print at 160px, its name and its one-sentence summary, the
+      dither inside the card and answering the pointer. Every card goes to
+      its own explanation on the Services page. */}
   <section class="services rails">
     <div class="container">
       <div class="services__head">
         <h2><Accent text={t('home.services.h2')} /></h2>
       </div>
 
-      <ul class="lanes">
+      <ul class="svc-cards">
         {
           services.map((s) => (
             <li>
-              <a class="lane" data-illo-zone href={`${route('services', lang)}#${s.key}`}>
-                <div class="lane__text">
-                  <h3 class="lane__name">{s.name} <span class="lane__go" aria-hidden="true">&rarr;</span></h3>
-                  <p class="lane__b">{s.b}</p>
-                </div>
-                <span class="lane__art">
-                  <span class="icon-wash" aria-hidden="true">
-                    {/* The -lg print, inline rather than through Illo: the
-                        manifest only knows the 224px icon box. Same classes,
-                        so the engine upgrades and relights it the same way. */}
-                    <span class="illo illo--icon" data-illo={`${s.key}-lg`} data-nosnippet>
-                      <img
-                        src={`/assets/illo/${s.key}-lg.png`}
-                        srcset={`/assets/illo/${s.key}-lg.png 1x, /assets/illo/${s.key}-lg@2x.png 2x`}
-                        width="288"
-                        height="221"
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </span>
+              <a class="svc-card dcard" data-illo-zone data-corner="tr" data-corner-from="40" href={`${route('services', lang)}#${s.key}`}>
+                <span class="svc-card__art" aria-hidden="true">
+                  {/* The -sm print, inline rather than through Illo: the
+                      manifest only knows the 224px icon box. Same classes,
+                      so the engine upgrades and relights it the same way. */}
+                  <span class="illo illo--icon" data-illo={`${s.key}-sm`} data-nosnippet>
+                    <img
+                      src={`/assets/illo/${s.key}-sm.png`}
+                      srcset={`/assets/illo/${s.key}-sm.png 1x, /assets/illo/${s.key}-sm@2x.png 2x`}
+                      width="160"
+                      height="123"
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </span>
                 </span>
+                <h3 class="svc-card__name">{s.name} <span class="svc-card__go" aria-hidden="true">&rarr;</span></h3>
+                <p class="svc-card__b">{s.b}</p>
               </a>
             </li>
           ))
         }
+        <li>
+          <a class="svc-card svc-card--more invert dcard" data-corner="tr" data-corner-from="40" href={route('services', lang)}>
+            <h3 class="svc-card__name">{t('home.services.link')} <span class="svc-card__go" aria-hidden="true">&rarr;</span></h3>
+            <p class="svc-card__b">{t('home.services.more')}</p>
+          </a>
+        </li>
       </ul>
-
-      <p class="lanes__more">
-        <a href={route('services', lang)}>{t('home.services.link')} &rarr;</a>
-      </p>
     </div>
   </section>
 
@@ -834,119 +831,91 @@ const position = [
     margin-block-end: var(--s5);
   }
 
-  /* --- What we do: lanes --------------------------------------------------
-     Layout B from the illustration options, David's pick: copy-led lanes,
-     one service to a row. The name is set at the Services page's own
-     .svc__name size, so a service is one size wherever it is named, and the
-     section is a second type moment rather than a grid of boxes. Rules
-     BETWEEN lanes only, never around the set — a frame is the shape this
-     system retired. */
-  .lanes {
+  /* --- What we do: cards ---------------------------------------------------
+     Five cards and a dark sixth, three across (David, 2026-10-20). Each is a
+     .dcard (global.css): slightly rounded, a corner of dots at rest, a glow
+     of dots round the pointer. The print is the card's own 160px render, one
+     image pixel to one screen pixel, and relights under the pointer through
+     the engine like the rest. On a phone the art goes and the cards stack
+     as short text cards. */
+  .svc-cards {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s3);
   }
 
-  /* Two tracks: the copy and the art. No index number and no rule between
-     lanes any more (2026-10-16 audit); the lane's own padding separates. */
-  .lane {
+  .svc-card {
+    --dc-w: 200px;
+    --dc-h: 124px;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 19rem;
-    grid-template-areas: 'text art';
-    align-items: baseline;
-    column-gap: var(--s4);
-    padding-block: var(--s4);
+    align-content: start;
+    gap: var(--s1);
+    block-size: 100%;
+    padding: var(--s3);
+    background: var(--paper-hi);
+    border: 1px solid var(--rail);
     color: var(--fg);
     text-decoration: none;
   }
 
-  .lane__text {
-    grid-area: text;
-    display: grid;
-    gap: var(--s2);
-    transition: transform var(--dur) var(--ease);
+  .svc-card__art {
+    display: block;
+    --illo-w: 160px;
+    margin-block-end: var(--s1);
   }
 
-  .lane__name {
-    font-size: clamp(1.875rem, 4vw, 3rem);
-    font-weight: var(--weight-heading);
-    line-height: 1.04;
+  .svc-card__name {
+    font-size: 1.25rem;
+    line-height: 1.2;
+    letter-spacing: var(--tr-heading);
     transition: color var(--dur) var(--ease);
   }
 
-  .lane__b {
-    max-width: 52ch;
-    font-size: var(--t-body);
+  .svc-card__go {
+    color: var(--accent-fn);
+  }
+
+  .svc-card__b {
+    font-size: var(--t-small);
+    line-height: 1.5;
     color: var(--fg-muted);
   }
 
-  /* The icon a size up (David, 2026-10-19), at its own 1x width in the
-     19rem track: the -lg render, one image pixel to one screen pixel,
-     never a scaled dither. */
-  .lane__art {
-    grid-area: art;
-    align-self: center;
-    --illo-w: 288px;
-  }
-
-  /* Inline after the name now: the end of the lane belongs to the art,
-     which is cut by the rail there. */
-  .lane__go {
-    display: inline-block;
-    font-size: var(--t-h3);
-    line-height: 1;
-    /* --accent-fn, not --accent: a graphic carrying meaning at small size,
-       and the display blue is 3.97:1. */
-    color: var(--accent-fn);
-    transition: transform var(--dur) var(--ease);
-  }
-
-  /* The copy steps in as the art arrives — the whole column, name and body
-     together, so the two never shear apart mid-move. */
-  .lane:hover .lane__text,
-  .lane:focus-visible .lane__text {
-    transform: translateX(0.5rem);
-  }
-
-  .lane:hover .lane__name,
-  .lane:focus-visible .lane__name {
+  .svc-card:hover .svc-card__name,
+  .svc-card:focus-visible .svc-card__name {
     color: var(--accent-fn);
   }
 
-  .lane:hover .lane__go,
-  .lane:focus-visible .lane__go {
-    transform: translateX(0.35rem);
+  /* The sixth card is dark and sits at the foot of its cell, so its corner
+     of dots stays clear of the words. */
+  .svc-card--more {
+    align-content: end;
+    min-block-size: 11rem;
+    background: var(--bg);
+    border-color: var(--bg);
+    color: var(--fg);
   }
 
-  .lanes__more {
-    margin-block-start: var(--s4);
-    font-size: var(--t-small);
-  }
-
-  /* Narrower, the art track shrinks; below 48rem it goes. There is no room
-     for it beside copy set at 30px, so the lane stacks — index and arrow on
-     one line, the copy full width beneath — and the art is dropped rather
-     than squeezed. It is decorative; the lane says everything without it. */
   @media (max-width: 60rem) {
-    .lane {
-      grid-template-columns: minmax(0, 1fr) 9rem;
-      column-gap: var(--s3);
-    }
-
-    .lane__art {
-      --illo-w: 8rem;
+    .svc-cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
-  @media (max-width: 47.99rem) {
-    .lane {
+  @media (max-width: 40rem) {
+    .svc-cards {
       grid-template-columns: minmax(0, 1fr);
-      grid-template-areas: 'text';
-      row-gap: var(--s2);
     }
 
-    .lane__art {
+    .svc-card__art {
       display: none;
+    }
+
+    .svc-card--more {
+      min-block-size: 0;
     }
   }
 

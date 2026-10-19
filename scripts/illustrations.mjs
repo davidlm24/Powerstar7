@@ -27,10 +27,10 @@
 
    Written:
      public/assets/illo/<name>[@2x].png        the dots, in the three inks
-     public/assets/illo/<icon>-lg[@2x].png     a service icon a size up
-                                               (288px) for the home lanes,
-                                               rendered at its own box so
-                                               the dither is never scaled
+     public/assets/illo/<icon>-sm[@2x].png     a service icon at 160px for
+                                               the home cards, rendered at
+                                               its own box so the dither is
+                                               never scaled
      public/assets/illo/<icon>-dark[@2x].png   a service icon in --on-ink-blue,
                                                for an icon on a dark band
      public/assets/dither/<name>[@2x].png      the continuous ink, for the
@@ -202,8 +202,9 @@ function render(name, outName, W, H, tilt, dark) {
 for (const name of names) {
   const kind = KIND_OF[name], { box: [W, H], tilt } = KINDS[kind];
   render(name, name, W, H, tilt, kind === 'icon');
-  /* The home lanes carry the icons a size up (David: bigger). */
-  if (kind === 'icon') render(name, name + '-lg', 288, 221, KINDS.icon.tilt, false);
+  /* The home cards carry the icon at 160px (David, 2026-10-20, option B):
+     rendered at its own box so the dither is never scaled. */
+  if (kind === 'icon') render(name, name + '-sm', 160, 123, KINDS.icon.tilt, false);
 }
 if (names === ALL) {
   for (const [suffix, w, h] of [['', 240, 200], ['@2x', 480, 400]]) {

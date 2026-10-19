@@ -98,6 +98,7 @@ export const ui = {
 
     'home.services.h2': 'Five things, done *properly*.',
     'home.services.link': 'All services',
+    'home.services.more': 'Each one explained: what it is, how we work, what you get, what we need from you.',
     'home.work.h2': 'Recent *work*.',
     'home.work.link': 'All work',
 
@@ -118,7 +119,7 @@ export const ui = {
 
     /* --- Services ------------------------------------------------------- */
     /* Services is for the services (2026-10-20); what it costs is the
-       Pricing page. DRAFT headline and lead, pending David's review. */
+       Pricing page. Headline, lead and the expanded copy approved by David. */
     'services.title': 'Services — DesignActiv',
     'services.h1': 'What we do, and what it *involves*.',
     'services.lead':
@@ -130,41 +131,95 @@ export const ui = {
       'A starting price to build your site, a monthly one to keep it looked after — and a person who answers when something needs to change.',
     'pricing.faq.h2': 'What people ask about *price*.',
     'services.deliverables': 'What you get',
+    'services.what.h': 'What it is',
+    'services.how.h': 'How we work',
+    'services.need.h': 'What we need from you',
+    'services.price.link': 'What it costs',
 
     'svc.web.name': 'Web design & development',
-    'svc.web.body':
-      'We design and build your site as one job, not two: made for your business, with a simple editor where you need to change things yourself. Built to be accessible from the start, not added as an upgrade.',
-    'svc.web.d1': 'Review it on your own phone and computer before launch',
-    'svc.web.d2': 'Pages and features agreed in your proposal',
-    'svc.web.d3': 'Keyboard and screen-reader checks on the agreed pages',
+    'svc.web.short':
+      'We design and build your site as one job, not two: made for your business, with a simple editor where you need to change things yourself.',
+    'svc.web.what1':
+      'Your website, designed and built as one job. We start from what your business does and who needs to find you, so the pages, the words on them and the way they look all follow from that.',
+    'svc.web.what2':
+      'It works on a phone and on a computer, and where you want to change text, prices or photos yourself, it has a simple editor for exactly that.',
+    'svc.web.how':
+      'You tell us what you need, and we write it up as a scope with the price and a timeline attached, before any work starts. Then we design straight into a working page, so you review the real site on your own phone and computer, not a picture of it. We build, test, and launch it with your domain and the first year of hosting.',
+    'svc.web.need':
+      'A short description of the business and what the site must do, then your text, photos and logo, and access to your domain if you already have one. If any of it does not exist yet, say so: it goes into the scope.',
+    'svc.web.g1': 'Pages and features agreed in your proposal',
+    'svc.web.g2': 'A design made for your business, for phone and desktop',
+    'svc.web.g3': 'A contact form that reaches you',
+    'svc.web.g4': 'A simple editor, if you will update it yourself',
+    'svc.web.g5': 'Keyboard and screen-reader checks on the agreed pages',
+    'svc.web.g6': 'Launch, and a written handover guide',
 
     'svc.brand.name': 'Branding',
-    'svc.brand.body':
-      'We create your logo, colours and typefaces, plus the rules that keep them consistent once other people start using them. You get working files and a written guide, not a PDF of moodboards.',
-    'svc.brand.d1': 'Your logo, with simple rules for using it',
-    'svc.brand.d2': 'Colours and typefaces that are easy to read',
-    'svc.brand.d3': 'Asset pack and a written guide',
+    'svc.brand.short':
+      'We create your logo, colours and typefaces, plus the rules that keep them consistent once other people start using them.',
+    'svc.brand.what1':
+      'A logo, colours and typefaces that look like one business, plus the rules that keep them looking that way when other people start using them: a printer, someone who posts for you, the next person who works on your site.',
+    'svc.brand.what2':
+      'You can have a brand created from scratch, or have the one you already have refined and put in order.',
+    'svc.brand.how':
+      'We start from who the business is for and what you want to be known for, show you a direction, and refine it with you. Once you have approved it, we pack it up so you can use it without us.',
+    'svc.brand.need':
+      'If you have a logo, send it as it is. A few brands you like help more than adjectives do. Whether we create or refine is agreed in the scope.',
+    'svc.brand.g1': 'Your logo, with simple rules for using it',
+    'svc.brand.g2': 'Colours and typefaces that are easy to read',
+    'svc.brand.g3': 'Working files for web and print',
+    'svc.brand.g4': 'A written guide, not a PDF of moodboards',
 
     'svc.seo.name': 'SEO',
-    'svc.seo.body':
-      'We help search engines understand your site and help customers find the right pages. That can include page titles, site structure, speed checks and redirects when replacing an existing site. Basic SEO setup is included in the Website design price, and your proposal says exactly what it covers.',
-    'svc.seo.d1': 'Review of your existing site, if you have one',
-    'svc.seo.d2': 'Page titles and information that help search engines',
-    'svc.seo.d3': 'Speed checks after launch',
+    'svc.seo.short':
+      'We help search engines understand your site and help customers find the right pages.',
+    'svc.seo.what1':
+      'Making it easy for search engines to understand what each page is about, and for customers to land on the right page for what they are looking for. It is plain groundwork: clear page titles, a sensible structure, a fast site, and redirects so nothing you already have goes missing.',
+    'svc.seo.what2':
+      'Basic SEO setup is part of the Website design price. Ongoing work beyond it is quoted.',
+    'svc.seo.how':
+      'If you have a site already, we review it first and write down what is worth keeping. While we build, we set up titles and descriptions page by page. After launch we check speed and fix what the checks show. We cannot promise a position in search results, and we will not.',
+    'svc.seo.need':
+      'The services you want to be found for, and the area you work in.',
+    'svc.seo.g1': 'A review of your existing site, if you have one',
+    'svc.seo.g2': 'Page titles and descriptions that help search engines',
+    'svc.seo.g3': 'A structure of headings and links that makes sense',
+    'svc.seo.g4': 'Redirects when we replace an existing site',
+    'svc.seo.g5': 'Speed checks after launch',
 
     'svc.email.name': 'Email & automation',
-    'svc.email.body':
-      'We set up business email properly on your own domain, plus the small automations that save you time: booking confirmations, form replies, and enquiries landing where you’ll see them. Bigger workflows are quoted as process automation.',
-    'svc.email.d1': 'Email on your own domain, set up and tested',
-    'svc.email.d2': 'Automatic replies and confirmations',
-    'svc.email.d3': 'Forms and enquiries routed to where you work',
+    'svc.email.short':
+      'We set up business email properly on your own domain, plus the small automations that save you time.',
+    'svc.email.what1':
+      'Business email on your own domain, set up properly and working from day one, and the small automations that stop you doing the same task twice: a confirmation when someone books, a reply when a form is sent, an enquiry that lands where you will actually see it.',
+    'svc.email.what2':
+      'Bigger workflows are agreed separately, as process automation, with their own scope.',
+    'svc.email.how':
+      'We set up the mailboxes, test sending and receiving on a phone and a computer, and connect the forms on your site to the inbox you actually use. We write down short instructions for whoever on your team needs them.',
+    'svc.email.need':
+      'Who needs a mailbox, where you want enquiries to go, and access to your domain if you already have one.',
+    'svc.email.g1': 'Email on your own domain, set up and tested',
+    'svc.email.g2': 'Automatic replies and confirmations',
+    'svc.email.g3': 'Forms and enquiries routed to where you work',
+    'svc.email.g4': 'Short written instructions for your team',
 
     'svc.hosting.name': 'Website care',
-    'svc.hosting.body':
-      'We host your site and look after it: updates, backups, uptime monitoring and a person who answers. A retainer, not a lock-in: your handover guide explains how to move the site if you leave.',
-    'svc.hosting.d1': 'Hosting account details explained at handover',
-    'svc.hosting.d2': 'Monitoring, backups and updates',
-    'svc.hosting.d3': 'A real person who answers email',
+    'svc.hosting.short':
+      'We host your site and look after it: updates, backups, uptime monitoring and a person who answers.',
+    'svc.hosting.what1':
+      'A site needs looking after the way a shop window does: kept up to date, kept secure, backed up and watched. We host it and do all of that, and a person answers when something needs to change.',
+    'svc.hosting.what2':
+      'It is optional, and it is not a lock-in.',
+    'svc.hosting.how':
+      'The first year of hosting is part of your project. From the second year, Website care is a monthly plan: uptime monitoring, platform and security updates, backups, email support and one small content change a month. It runs month to month, you can end it with 30 days’ notice by email, and your handover guide explains how to move the site to your own hosting.',
+    'svc.hosting.need':
+      'Nothing to start. When you want a change, email us what and where.',
+    'svc.hosting.g1': 'Hosting, from the second year',
+    'svc.hosting.g2': 'Uptime monitoring',
+    'svc.hosting.g3': 'Security and platform updates',
+    'svc.hosting.g4': 'Backups',
+    'svc.hosting.g5': 'One small content change a month',
+    'svc.hosting.g6': 'Email support',
 
     /* --- Work ----------------------------------------------------------- */
     'work.title': 'Work — DesignActiv',
@@ -388,8 +443,6 @@ export const ui = {
     'services.addons.email': 'Email setup and basic automation',
     'services.addons.automation': 'Process automation',
 
-    'services.detail.h2': 'What each part covers.',
-
     'services.faq.h2': 'What people ask before they start.',
     'services.faq.q1': 'How long does a site take?',
     'services.faq.q2': 'What do you need from me to begin?',
@@ -453,6 +506,7 @@ export const ui = {
 
     'home.services.h2': 'Cinco coisas, bem *feitas*.',
     'home.services.link': 'Todos os serviços',
+    'home.services.more': 'Cada um explicado: o que é, como trabalhamos, o que você recebe e o que precisamos de você.',
     'home.work.h2': 'Trabalhos *recentes*.',
     'home.work.link': 'Todos os trabalhos',
 
@@ -473,7 +527,7 @@ export const ui = {
 
     /* --- Services ------------------------------------------------------- */
     /* Serviços é para os serviços (2026-10-20); quanto custa é a página
-       Preços. RASCUNHO de título e abertura, a aprovar pelo David. */
+       Preços. Título, abertura e o texto ampliado aprovados pelo David. */
     'services.title': 'Serviços — DesignActiv',
     'services.h1': 'O que fazemos, e o que isso *envolve*.',
     'services.lead':
@@ -485,41 +539,95 @@ export const ui = {
       'Um preço de partida para construir o seu site, outro mensal para cuidar dele depois — e uma pessoa que responde quando algo precisa mudar.',
     'pricing.faq.h2': 'O que perguntam sobre *preço*.',
     'services.deliverables': 'O que você recebe',
+    'services.what.h': 'O que é',
+    'services.how.h': 'Como trabalhamos',
+    'services.need.h': 'O que precisamos de você',
+    'services.price.link': 'Quanto custa',
 
     'svc.web.name': 'Design e desenvolvimento web',
-    'svc.web.body':
-      'Desenhamos e construímos seu site como um trabalho só, não dois: feito para o seu negócio, com um editor simples onde você precisar mudar algo sozinho. Pensado para ser acessível desde o início, e não acrescentado depois, como extra.',
-    'svc.web.d1': 'Revise no seu celular e no computador antes do lançamento',
-    'svc.web.d2': 'Páginas e funções definidas na proposta',
-    'svc.web.d3': 'Verificações com teclado e leitor de tela nas páginas combinadas',
+    'svc.web.short':
+      'Desenhamos e construímos seu site como um trabalho só, não dois: feito para o seu negócio, com um editor simples onde você precisar mudar algo sozinho.',
+    'svc.web.what1':
+      'Seu site, desenhado e construído como um trabalho só. Partimos do que o seu negócio faz e de quem precisa encontrar você, e as páginas, os textos e o visual vêm daí.',
+    'svc.web.what2':
+      'Funciona no celular e no computador e, onde você quiser mudar textos, preços ou fotos sozinho, tem um editor simples para isso.',
+    'svc.web.how':
+      'Você nos conta o que precisa, e escrevemos tudo como um escopo, com preço e prazo, antes de qualquer trabalho começar. Depois desenhamos direto numa página funcionando, para você revisar o site de verdade no seu celular e no computador, não uma imagem dele. Construímos, testamos e lançamos com o seu domínio e o primeiro ano de hospedagem.',
+    'svc.web.need':
+      'Uma descrição curta do negócio e do que o site precisa fazer; depois, seus textos, fotos e logotipo, e o acesso ao seu domínio, se você já tiver um. Se algo disso ainda não existe, diga: entra no escopo.',
+    'svc.web.g1': 'Páginas e funções definidas na proposta',
+    'svc.web.g2': 'Um design feito para o seu negócio, para celular e computador',
+    'svc.web.g3': 'Um formulário de contato que chega até você',
+    'svc.web.g4': 'Um editor simples, se você for atualizar sozinho',
+    'svc.web.g5': 'Verificações com teclado e leitor de tela nas páginas combinadas',
+    'svc.web.g6': 'Lançamento e um guia de entrega por escrito',
 
     'svc.brand.name': 'Branding',
-    'svc.brand.body':
-      'Criamos seu logotipo, suas cores e suas fontes, com as regras que mantêm tudo coerente depois que outras pessoas começam a usar. Você recebe arquivos de trabalho e um guia por escrito, não um PDF de moodboards.',
-    'svc.brand.d1': 'Seu logotipo, com regras simples de uso',
-    'svc.brand.d2': 'Cores e fontes fáceis de ler',
-    'svc.brand.d3': 'Pacote de arquivos e um guia escrito',
+    'svc.brand.short':
+      'Criamos seu logotipo, suas cores e suas fontes, com as regras que mantêm tudo coerente depois que outras pessoas começam a usar.',
+    'svc.brand.what1':
+      'Um logotipo, cores e fontes que parecem de um negócio só, mais as regras que mantêm tudo assim quando outras pessoas começam a usar: uma gráfica, alguém que posta por você, a próxima pessoa que mexer no seu site.',
+    'svc.brand.what2':
+      'Você pode ter uma marca criada do zero ou ter a que já existe refinada e colocada em ordem.',
+    'svc.brand.how':
+      'Começamos por quem o negócio atende e pelo que você quer que saibam sobre ele, mostramos uma direção e refinamos junto com você. Depois que você aprova, deixamos tudo pronto para você usar sem a gente.',
+    'svc.brand.need':
+      'Se você já tem um logotipo, mande como está. Algumas marcas de que você gosta ajudam mais do que adjetivos. Se criamos ou refinamos, isso fica combinado no escopo.',
+    'svc.brand.g1': 'Seu logotipo, com regras simples de uso',
+    'svc.brand.g2': 'Cores e fontes fáceis de ler',
+    'svc.brand.g3': 'Arquivos de trabalho para web e impressão',
+    'svc.brand.g4': 'Um guia por escrito, não um PDF de moodboards',
 
     'svc.seo.name': 'SEO',
-    'svc.seo.body':
-      'Ajudamos os buscadores a entender seu site e os clientes a encontrar as páginas certas. Isso pode incluir títulos das páginas, organização do site, testes de velocidade e redirecionamentos ao substituir um site existente. A configuração básica de SEO está incluída no preço do site, e a proposta diz exatamente o que ela cobre.',
-    'svc.seo.d1': 'Análise do seu site atual, se você tiver um',
-    'svc.seo.d2': 'Títulos e informações que ajudam os buscadores',
-    'svc.seo.d3': 'Testes de velocidade depois do lançamento',
+    'svc.seo.short':
+      'Ajudamos os buscadores a entender seu site e os clientes a encontrar as páginas certas.',
+    'svc.seo.what1':
+      'Facilitar para os buscadores entenderem sobre o que é cada página, e para os clientes chegarem à página certa para o que procuram. É trabalho de base, simples: títulos claros, uma estrutura que faz sentido, um site rápido e redirecionamentos para que nada do que você já tem se perca.',
+    'svc.seo.what2':
+      'A configuração básica de SEO faz parte do preço da Criação de site. O que vier além disso é orçado.',
+    'svc.seo.how':
+      'Se você já tem um site, analisamos primeiro e anotamos o que vale manter. Enquanto construímos, configuramos títulos e descrições página por página. Depois do lançamento, testamos a velocidade e corrigimos o que os testes mostrarem. Não prometemos posição nos resultados de busca, e não vamos prometer.',
+    'svc.seo.need':
+      'Os serviços pelos quais você quer ser encontrado e a região onde você atua.',
+    'svc.seo.g1': 'Análise do seu site atual, se você tiver um',
+    'svc.seo.g2': 'Títulos e descrições de página que ajudam os buscadores',
+    'svc.seo.g3': 'Uma estrutura de títulos e links que faz sentido',
+    'svc.seo.g4': 'Redirecionamentos quando substituímos um site existente',
+    'svc.seo.g5': 'Testes de velocidade depois do lançamento',
 
     'svc.email.name': 'E-mail e automação',
-    'svc.email.body':
-      'Configuramos direito o e-mail profissional no seu próprio domínio, mais as pequenas automações que poupam seu tempo: confirmações de agendamento, respostas de formulário e contatos chegando onde você vai ver. Fluxos maiores são orçados como automação de processos.',
-    'svc.email.d1': 'E-mail no seu próprio domínio, configurado e testado',
-    'svc.email.d2': 'Respostas e confirmações automáticas',
-    'svc.email.d3': 'Formulários e contatos encaminhados para onde você trabalha',
+    'svc.email.short':
+      'Configuramos direito o e-mail profissional no seu próprio domínio, mais as pequenas automações que poupam seu tempo.',
+    'svc.email.what1':
+      'E-mail profissional no seu próprio domínio, configurado direito e funcionando desde o primeiro dia, e as pequenas automações que evitam você fazer a mesma tarefa duas vezes: uma confirmação quando alguém agenda, uma resposta quando um formulário é enviado, um contato que chega onde você realmente vai ver.',
+    'svc.email.what2':
+      'Fluxos maiores são combinados à parte, como automação de processos, com escopo próprio.',
+    'svc.email.how':
+      'Configuramos as caixas de e-mail, testamos o envio e o recebimento no celular e no computador e ligamos os formulários do seu site à caixa que você realmente usa. Deixamos por escrito instruções curtas para quem na sua equipe precisar delas.',
+    'svc.email.need':
+      'Quem precisa de caixa de e-mail, para onde você quer que os contatos vão e o acesso ao seu domínio, se você já tiver um.',
+    'svc.email.g1': 'E-mail no seu próprio domínio, configurado e testado',
+    'svc.email.g2': 'Respostas e confirmações automáticas',
+    'svc.email.g3': 'Formulários e contatos encaminhados para onde você trabalha',
+    'svc.email.g4': 'Instruções curtas por escrito para a sua equipe',
 
     'svc.hosting.name': 'Manutenção do site',
-    'svc.hosting.body':
-      'Hospedamos seu site e cuidamos dele: atualizações, backups, monitoramento e uma pessoa que responde. Uma mensalidade, sem fidelidade: o guia de entrega explica como levar o site se você sair.',
-    'svc.hosting.d1': 'Dados da conta de hospedagem explicados na entrega',
-    'svc.hosting.d2': 'Monitoramento, backups e atualizações',
-    'svc.hosting.d3': 'Uma pessoa de verdade que responde e-mail',
+    'svc.hosting.short':
+      'Hospedamos seu site e cuidamos dele: atualizações, backups, monitoramento e uma pessoa que responde.',
+    'svc.hosting.what1':
+      'Um site precisa de cuidado como uma vitrine: em dia, seguro, com backup e de olho. Hospedamos e fazemos tudo isso, e uma pessoa responde quando algo precisa mudar.',
+    'svc.hosting.what2':
+      'É opcional e não prende você.',
+    'svc.hosting.how':
+      'O primeiro ano de hospedagem faz parte do seu projeto. A partir do segundo ano, a Manutenção do site é um plano mensal: monitoramento de disponibilidade, atualizações de plataforma e de segurança, backups, suporte por e-mail e uma pequena alteração de conteúdo por mês. É mês a mês, você pode encerrar com 30 dias de aviso por e-mail, e o guia de entrega explica como levar o site para a sua própria hospedagem.',
+    'svc.hosting.need':
+      'Nada para começar. Quando quiser uma mudança, escreva para nós dizendo o que e onde.',
+    'svc.hosting.g1': 'Hospedagem, a partir do segundo ano',
+    'svc.hosting.g2': 'Monitoramento de disponibilidade',
+    'svc.hosting.g3': 'Atualizações de segurança e de plataforma',
+    'svc.hosting.g4': 'Backups',
+    'svc.hosting.g5': 'Uma pequena alteração de conteúdo por mês',
+    'svc.hosting.g6': 'Suporte por e-mail',
 
     /* --- Work ----------------------------------------------------------- */
     'work.title': 'Trabalhos — DesignActiv',
@@ -734,8 +842,6 @@ export const ui = {
     'services.addons.brand': 'Refinamento de marca (você já tem um logotipo)',
     'services.addons.email': 'Configuração de e-mail e automação básica',
     'services.addons.automation': 'Automação de processos',
-
-    'services.detail.h2': 'O que cada parte cobre.',
 
     'services.faq.h2': 'O que as pessoas costumam perguntar antes de começar.',
     'services.faq.q1': 'Quanto tempo demora um site?',

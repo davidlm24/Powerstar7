@@ -308,7 +308,7 @@
      allowed, IntersectionObserver present). Each section's parts enter in
      order as they scroll in, 70ms apart within their section, once. The
      selector list matches global.css exactly. */
-  var REVEAL = "h1, h2, .lead, .illo--field, .illo--aside, .lane, .lanes__more, .point, .step, .project, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated";
+  var REVEAL = "h1, h2, .lead, .illo--field, .illo--aside, .svc-card, .point, .step, .project, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated";
   if (document.documentElement.classList.contains('reveal')) {
     var pending = [];
     Array.prototype.forEach.call(document.querySelectorAll('main > :not(.hero)'), function (section) {

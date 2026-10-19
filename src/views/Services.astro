@@ -12,34 +12,50 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-/* Written out rather than built with t(`svc.${key}.name` as any). The cast
-   was quietly removing static key-checking from all 25 svc.* strings — a
-   typo in one would have rendered nothing rather than failing. */
+/* Written out rather than built with t(`svc.${key}.name` as any), so every
+   key keeps its static check. Each service is explained the same four ways
+   (2026-10-20, David): what it is, how we work, what you get, what we need
+   from you. The home cards carry only svc.*.short, the first sentence. */
 const services = [
   {
     id: 'web',
-    name: t('svc.web.name'), body: t('svc.web.body'),
-    d: [t('svc.web.d1'), t('svc.web.d2'), t('svc.web.d3')],
+    name: t('svc.web.name'),
+    what: [t('svc.web.what1'), t('svc.web.what2')],
+    how: t('svc.web.how'),
+    need: t('svc.web.need'),
+    get: [t('svc.web.g1'), t('svc.web.g2'), t('svc.web.g3'), t('svc.web.g4'), t('svc.web.g5'), t('svc.web.g6')],
   },
   {
     id: 'brand',
-    name: t('svc.brand.name'), body: t('svc.brand.body'),
-    d: [t('svc.brand.d1'), t('svc.brand.d2'), t('svc.brand.d3')],
+    name: t('svc.brand.name'),
+    what: [t('svc.brand.what1'), t('svc.brand.what2')],
+    how: t('svc.brand.how'),
+    need: t('svc.brand.need'),
+    get: [t('svc.brand.g1'), t('svc.brand.g2'), t('svc.brand.g3'), t('svc.brand.g4')],
   },
   {
     id: 'seo',
-    name: t('svc.seo.name'), body: t('svc.seo.body'),
-    d: [t('svc.seo.d1'), t('svc.seo.d2'), t('svc.seo.d3')],
+    name: t('svc.seo.name'),
+    what: [t('svc.seo.what1'), t('svc.seo.what2')],
+    how: t('svc.seo.how'),
+    need: t('svc.seo.need'),
+    get: [t('svc.seo.g1'), t('svc.seo.g2'), t('svc.seo.g3'), t('svc.seo.g4'), t('svc.seo.g5')],
   },
   {
     id: 'email',
-    name: t('svc.email.name'), body: t('svc.email.body'),
-    d: [t('svc.email.d1'), t('svc.email.d2'), t('svc.email.d3')],
+    name: t('svc.email.name'),
+    what: [t('svc.email.what1'), t('svc.email.what2')],
+    how: t('svc.email.how'),
+    need: t('svc.email.need'),
+    get: [t('svc.email.g1'), t('svc.email.g2'), t('svc.email.g3'), t('svc.email.g4')],
   },
   {
     id: 'hosting',
-    name: t('svc.hosting.name'), body: t('svc.hosting.body'),
-    d: [t('svc.hosting.d1'), t('svc.hosting.d2'), t('svc.hosting.d3')],
+    name: t('svc.hosting.name'),
+    what: [t('svc.hosting.what1'), t('svc.hosting.what2')],
+    how: t('svc.hosting.how'),
+    need: t('svc.hosting.need'),
+    get: [t('svc.hosting.g1'), t('svc.hosting.g2'), t('svc.hosting.g3'), t('svc.hosting.g4'), t('svc.hosting.g5'), t('svc.hosting.g6')],
   },
 ] as const;
 
@@ -57,17 +73,14 @@ const faqs = [
 <Base lang={lang} page="services" title={t('services.title')} description={t('services.lead')} dither>
   <PageHead title={t('services.h1')} lead={t('services.lead')} />
 
-  {/* --- What each part covers --------------------------------------------
-      The five disciplines behind the prices above, each with its own heading
-      at near-display scale — not five identical cards in a grid with a stroke
-      icon at the top. The old site had six of those and they were the reason
-      every page read the same. The number column doubles as the section's
-      own index, and each id is what a home-page lane links to. */}
+  {/* --- The five services, explained -------------------------------------
+      Each with its own heading at near-display scale — not five identical
+      cards in a grid with a stroke icon at the top. The old site had six of
+      those and they were the reason every page read the same. The icon
+      column doubles as the section's index, and each id is what a home-page
+      card links to. */}
   <div class="services rails">
     <div class="container">
-      <div class="services__head">
-        <h2>{t('services.detail.h2')}</h2>
-      </div>
 
       {
         services.map((s, i) => (
@@ -85,14 +98,28 @@ const faqs = [
 
             <div class="svc__body row__body">
               <h3 class="svc__name">{s.name}</h3>
-              <p class="svc__lede">{s.body}</p>
+              <h4 class="visually-hidden">{t('services.what.h')}</h4>
+              <p class="svc__lede">{s.what[0]}</p>
+              <p class="svc__p">{s.what[1]}</p>
 
-              <h4 class="svc__deliverables-h">{t('services.deliverables')}</h4>
-              <ul class="svc__deliverables">
-                {s.d.map((item) => (
-                  <li>{item}</li>
-                ))}
-              </ul>
+              <div class="svc__cols">
+                <div>
+                  <h4 class="svc__h">{t('services.how.h')}</h4>
+                  <p class="svc__p">{s.how}</p>
+                  <h4 class="svc__h svc__h--next">{t('services.need.h')}</h4>
+                  <p class="svc__p">{s.need}</p>
+                </div>
+                <div>
+                  <h4 class="svc__h">{t('services.deliverables')}</h4>
+                  <ul class="svc__get">
+                    {s.get.map((item) => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <a class="svc__price" href={route('pricing', lang)}>{t('services.price.link')} <span aria-hidden="true">&rarr;</span></a>
             </div>
           </section>
         ))
@@ -109,11 +136,7 @@ const faqs = [
   /* --- What each part covers ---------------------------------------------- */
 
   .services {
-    padding-block-start: var(--section-y);
-  }
-
-  .services__head {
-    margin-block-end: var(--s5);
+    padding-block-start: var(--s4);
   }
 
   .svc {
@@ -186,8 +209,25 @@ const faqs = [
     color: var(--fg-muted);
   }
 
-  .svc__deliverables-h {
+  /* The second paragraph and the body of each block, a step quieter than
+     the lede. */
+  .svc__p {
+    margin-block-start: var(--s2);
+    max-width: var(--measure);
+    font-size: var(--t-body);
+    color: var(--fg-muted);
+  }
+
+  /* How we work and what we need beside what you get, two columns where
+     there is room. */
+  .svc__cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s4) var(--s5);
     margin-block-start: var(--s5);
+  }
+
+  .svc__h {
     font-size: var(--t-small);
     font-weight: var(--weight-heading);
     letter-spacing: 0;
@@ -195,25 +235,38 @@ const faqs = [
     color: var(--fg-muted);
   }
 
-  .svc__deliverables {
-    list-style: none;
-    padding: 0;
-    margin-block-start: var(--s3);
-    display: grid;
-    gap: 0.6rem;
-    max-width: var(--measure);
+  .svc__h--next {
+    margin-block-start: var(--s4);
   }
 
-  .svc__deliverables li,
-  .plan__list li {
+  .svc__cols .svc__p {
+    margin-block-start: var(--s1);
+  }
+
+  .svc__get {
+    list-style: none;
+    padding: 0;
+    margin-block-start: var(--s2);
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .svc__get li {
     position: relative;
     padding-inline-start: 1.5rem;
     font-size: var(--t-body);
   }
 
-  /* A square in the accent for the deliverables: one device rather than
+  .svc__price {
+    display: inline-block;
+    margin-block-start: var(--s4);
+    font-size: var(--t-small);
+    font-weight: var(--weight-medium);
+  }
+
+  /* A square in the accent for what you get: one device rather than
      bespoke stroke icons. */
-  .svc__deliverables li::before {
+  .svc__get li::before {
     content: '';
     position: absolute;
     inset-inline-start: 0;
@@ -221,21 +274,6 @@ const faqs = [
     inline-size: 0.4rem;
     block-size: 0.4rem;
     background: var(--accent);
-  }
-
-  /* A check for what a plan includes: it answers "is this in the price?".
-     --accent-fn, so it clears 3:1 on both cards (--blue-fn on paper, the
-     on-ink blue on the dark card). */
-  .plan__list li::before {
-    content: '';
-    position: absolute;
-    inset-inline-start: 0.15rem;
-    inset-block-start: 0.3em;
-    inline-size: 0.38rem;
-    block-size: 0.7rem;
-    border: solid var(--accent-fn);
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
   }
 
   /* Matches the width the row primitive collapses at, so the index stops
@@ -247,6 +285,12 @@ const faqs = [
 
     .svc__index {
       position: static;
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .svc__cols {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>
