@@ -19,21 +19,16 @@ const items: { key: PageKey; label: string }[] = [
 ];
 ---
 
-{/* No bar. The wordmark and the nav sit on the page, and the only thing that
-    happens on scroll is one hairline — which is what trace.so does.
+{/* No bar at the top: the wordmark and the nav sit straight on the page,
+    and a hero's background runs up behind them. Once the page moves, the
+    header becomes frosted glass: a paper tint over a blur, with the rail
+    hairline under it (David, 2026-10-19, replacing the opaque header).
 
-    This is the third attempt at this element and the first that has nothing
-    to hide. A translucent inset panel draws its rectangle twice over, once
-    with the tint and once with the backdrop-filter's clip edge; feathering
-    that away read as a blurred border instead. An opaque header has no edge
-    to remove, so the whole mechanism goes: the surface, both filters, the
-    four-side mask, the @supports bleed gate, and the no-JS and
-    reduced-transparency fences — every one of which existed only to stop a
-    translucent plate failing contrast over a dark band.
-
-    Being opaque is also what lets the rails work: the header occludes the
-    band scrolling under it, so its rail segment and the band's never
-    composite into a darker 92px stripe. */}
+    The glass is full width and has no inset edge, so there is no second
+    rectangle for the blur's clip to draw. The tint is 78% paper, which keeps
+    the nav above AA even over the dark footer: ink on 78% paper over
+    --ink-deep measures about 9.7:1. Where blur is unsupported, or less
+    transparency is asked for, the tint goes opaque. */}
 <header class="site-header rails">
   <div class="container site-header__row">
     <a class="wordmark" href={route('home', lang)} aria-label="DesignActiv — home">
@@ -94,7 +89,10 @@ const items: { key: PageKey; label: string }[] = [
     position: sticky;
     inset-block-start: 0;
     z-index: 50;
-    background: var(--bg);
+    background: transparent;
+    /* Out of the flow: main gives the height back (global.css), and a hero
+       pulls itself up under the header so its background shows through. */
+    margin-block-end: calc(-1 * var(--header-h));
     /* 24 + 44 + 23 + 1px of border = 92px = --header-h, which is exactly what
        the old bar computed to, so every sticky offset and scroll-padding that
        reads that token stays where it was. */
@@ -105,7 +103,10 @@ const items: { key: PageKey; label: string }[] = [
        being a different kind of object. Always 1px, so nothing reflows when
        it colours in. */
     border-block-end: 1px solid transparent;
-    transition: border-color var(--dur) var(--ease);
+    transition:
+      border-color var(--dur) var(--ease),
+      background-color var(--dur) var(--ease),
+      backdrop-filter var(--dur) var(--ease);
   }
 
   /* The same line the page edges draw, 1.22:1. There is no tint to fail
@@ -115,6 +116,17 @@ const items: { key: PageKey; label: string }[] = [
      content, which is what the three deleted fences were all working around. */
   .site-header.is-stuck {
     border-block-end-color: var(--rail);
+    background-color: color-mix(in srgb, var(--paper) 78%, transparent);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    backdrop-filter: blur(16px) saturate(1.3);
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .site-header.is-stuck { background-color: var(--paper); }
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .site-header.is-stuck { background-color: var(--paper); }
   }
 
   .site-header__row {

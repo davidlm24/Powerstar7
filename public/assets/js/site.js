@@ -13,6 +13,7 @@
 
    The header frost and the button sheen came back deliberately, each as one
    rAF-throttled listener rather than the unthrottled handlers they replaced.
+   The sheen is drawn in dots now, the same Bayer print as the illustrations.
 
    No dependencies, no external requests. With JavaScript off the navigation
    stays open and the form falls back to the browser's own validation.
@@ -392,45 +393,160 @@
     );
   }
 
-  /* ---------- Button sheen ------------------------------------------------ */
+  /* ---------- Button sheen: dots ------------------------------------------ */
 
-  /* One delegated listener for every button on the page, rAF-throttled so the
-     work happens once per frame instead of once per pointer event. The old
-     site shipped two unthrottled handlers — one for this, one for a hero glow
-     — in a file that correctly rAF-throttled its scroll handler.
+  /* The sheen that follows the pointer across a button, drawn as ordered
+     dither instead of a soft gradient (David, 2026-10-19: "buttons can use
+     the dot sheen"), the same Bayer print the illustrations are made of.
 
-     Skipped entirely on touch and when the visitor asks for reduced motion
-     (see pointerEffects above), so nothing is registered that cannot be seen.
+     A canvas is added to a button the first time it is hovered or focused,
+     under the label (z-index -1 inside the button's own stacking context),
+     and the CSS gradient sheen is switched off on it (.has-dots). With no
+     JavaScript the CSS sheen still works.
 
-     `queued` lives OUTSIDE `pending` on purpose: `pending` is replaced with a
-     fresh object on every move, so a flag stored on it would read undefined
-     every time and schedule a frame per event — the exact cost this throttle
-     exists to avoid. */
+     Contrast is the cap. On the solid button the dots are --blue over the
+     --blue-hover fill, and white on solid --blue is 4.43:1, which fails AA.
+     So the dots never pass CAP_SOLID: at 60% the label's backdrop averages
+     out at 5.4:1. The quiet button's dots are ink at no more than 22%, about the
+     strength the old 7% ink gradient had at its centre, drawn tighter so it
+     still reads as a glow and not a screen: 22% ink keeps the label at 12:1.
+
+     One delegated, rAF-throttled pointer listener, as before; skipped on
+     touch and for reduced motion (pointerEffects). Keyboard focus shows
+     the dots at the centre, still, for everyone. */
+  var CAP_SOLID = 0.6, CAP_QUIET = 0.22;
+  var SPREAD_SOLID = 3600, SPREAD_QUIET = 1400;           // px²: the glow's reach
+
+  /* 8x8 Bayer, the illustrations' matrix: 64 steps, so the glow fades
+     smoothly even at the quiet button's low density. */
+  var B8 = (function () {
+    var m = [[0]];
+    for (var n = 1; n < 8; n *= 2) {
+      var b = [];
+      for (var j = 0; j < n * 2; j++) b.push([]);
+      for (j = 0; j < n; j++) for (var i = 0; i < n; i++) {
+        var v = m[j][i] * 4;
+        b[j][i] = v; b[j][i + n] = v + 2; b[j + n][i] = v + 3; b[j + n][i + n] = v + 1;
+      }
+      m = b;
+    }
+    var out = [];
+    for (j = 0; j < 8; j++) for (i = 0; i < 8; i++) out.push((m[j][i] + 0.5) / 64);
+    return out;
+  })();
+
+  var dotsFor = function (btn) {
+    if (btn.__dots) return btn.__dots;
+    var c = document.createElement('canvas');
+    c.className = 'btn__dots';
+    c.setAttribute('aria-hidden', 'true');
+    btn.insertBefore(c, btn.firstChild);
+    btn.classList.add('has-dots');
+    var quiet = btn.classList.contains('btn--quiet');
+    var onInk = quiet && btn.closest('.invert');
+    var d = {
+      c: c, x: c.getContext('2d'), on: 0, pt: null, raf: 0,
+      cap: quiet ? CAP_QUIET : CAP_SOLID,
+      spread: quiet ? SPREAD_QUIET : SPREAD_SOLID,
+      // little-endian RGBA words: --blue, --ink, --on-ink
+      colour: !quiet ? 0xffff6f0e : onInk ? 0xffebf2f5 : 0xff171b1c,
+    };
+    var r = btn.getBoundingClientRect();
+    c.width = Math.max(1, Math.round(r.width));
+    c.height = Math.max(1, Math.round(r.height));
+    d.img = d.x.createImageData(c.width, c.height);
+    d.px = new Uint32Array(d.img.data.buffer);
+    btn.__dots = d;
+    return d;
+  };
+
+  var drawDots = function (d) {
+    var W = d.c.width, H = d.c.height, px = d.px, pt = d.pt, amt = d.cap * d.on;
+    for (var j = 0; j < H; j++) for (var i = 0; i < W; i++) {
+      var v = 0;
+      if (pt && amt > 0) {
+        var dx = i - pt.x, dy = j - pt.y;
+        v = amt * Math.exp(-(dx * dx + dy * dy) / d.spread);
+      }
+      px[j * W + i] = v > B8[(j & 7) * 8 + (i & 7)] ? d.colour : 0;
+    }
+    d.x.putImageData(d.img, 0, 0);
+  };
+
+  /* Fade the dots in or out over 180ms: the density thins, Bayer order. */
+  var fadeDots = function (d, to) {
+    cancelAnimationFrame(d.raf);
+    if (!pointerEffects) { d.on = to; drawDots(d); return; }
+    var from = d.on, t0 = 0;
+    var step = function (now) {
+      if (!t0) t0 = now;
+      var p = Math.min(1, (now - t0) / 180);
+      d.on = from + (to - from) * p;
+      drawDots(d);
+      if (p < 1) d.raf = requestAnimationFrame(step);
+    };
+    d.raf = requestAnimationFrame(step);
+  };
+
+  var buttonOf = function (e) {
+    var btn = e.target.closest && e.target.closest('.btn');
+    return btn && !btn.disabled ? btn : null;
+  };
+
   if (pointerEffects) {
     var pending = null;
     var queued = false;
 
+    document.addEventListener('pointerover', function (e) {
+      var btn = buttonOf(e);
+      if (!btn || (e.relatedTarget && btn.contains(e.relatedTarget))) return;
+      var d = dotsFor(btn), r = btn.getBoundingClientRect();
+      d.pt = { x: e.clientX - r.left, y: e.clientY - r.top };
+      fadeDots(d, 1);
+    });
+
+    document.addEventListener('pointerout', function (e) {
+      var btn = buttonOf(e);
+      if (!btn || !btn.__dots || (e.relatedTarget && btn.contains(e.relatedTarget))) return;
+      if (btn.matches(':focus-visible')) return;
+      fadeDots(btn.__dots, 0);
+    });
+
+    /* `queued` lives OUTSIDE `pending` on purpose: `pending` is replaced on
+       every move, so a flag stored on it would read undefined each time and
+       schedule a frame per event, the cost this throttle exists to avoid. */
     document.addEventListener(
       'pointermove',
       function (e) {
-        var btn = e.target.closest && e.target.closest('.btn');
+        var btn = buttonOf(e);
         if (!btn) return;
-
         pending = { btn: btn, x: e.clientX, y: e.clientY };
         if (queued) return;
         queued = true;
-
         window.requestAnimationFrame(function () {
           queued = false;
           if (!pending) return;
-          var r = pending.btn.getBoundingClientRect();
-          pending.btn.style.setProperty('--mx', pending.x - r.left + 'px');
-          pending.btn.style.setProperty('--my', pending.y - r.top + 'px');
+          var d = dotsFor(pending.btn), r = pending.btn.getBoundingClientRect();
+          d.pt = { x: pending.x - r.left, y: pending.y - r.top };
+          if (d.on >= 1) drawDots(d);
           pending = null;
         });
       },
       { passive: true }
     );
   }
+
+  document.addEventListener('focusin', function (e) {
+    var btn = buttonOf(e);
+    if (!btn || !btn.matches(':focus-visible')) return;
+    var d = dotsFor(btn);
+    d.pt = { x: d.c.width / 2, y: d.c.height / 2 };
+    fadeDots(d, 1);
+  });
+
+  document.addEventListener('focusout', function (e) {
+    var btn = buttonOf(e);
+    if (btn && btn.__dots && !btn.matches(':hover')) fadeDots(btn.__dots, 0);
+  });
 
 })();

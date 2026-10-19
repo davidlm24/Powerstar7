@@ -253,8 +253,10 @@ const position = [
   .hero {
     position: relative;
     isolation: isolate;
-    /* No bottom padding: the band closes the hero. */
-    padding-block: var(--s6) 0;
+    /* No bottom padding: the band closes the hero. Pulled up under the
+       transparent header, so the wash runs behind it. */
+    margin-block-start: calc(-1 * var(--header-h));
+    padding-block: calc(var(--s6) + var(--header-h)) 0;
     /* The wash is inset negatively so it bleeds past the section, and the
        drift pushes it further still — which put 244px of horizontal scroll
        on the page. `clip` on the x axis only, so the wash can still bleed
@@ -436,7 +438,7 @@ const position = [
   }
 
   /* --- The picture -----------------------------------------------------
-     The desk (scripts/illo/scenes-hero.mjs) at its 1x width, 500px: one
+     The desk (desk() in scripts/illo/scenes.mjs) at its 1x width, 500px: one
      image pixel to one screen pixel keeps the dither crisp, and narrower
      columns scale it down. The check seal is a second sticker, 150px (30%),
      stamped over the laptop's top right corner. Both are Illo components,

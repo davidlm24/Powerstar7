@@ -325,11 +325,12 @@ a:hover { text-decoration-thickness: 2px; }
    The callouts are decoration, aria-hidden; the hero's band is content. */
 
 /* --- The illustrations ---------------------------------------------------
-   "D1 + adesivo" (David, 2026-10-14): every illustration is a finished
-   sticker image — the 3D scene softly shaded, Bayer-dithered to 1 bit,
-   blue dots on pale sticker paper with a halo, the tilt baked in
-   (scripts/illustrations.mjs). Plain images: no masks, no filters, and
-   the same file on light and dark grounds. No idle animation at all. */
+   Every illustration is a finished sticker image, drawn from zero for its
+   page (David, 2026-10-19) in tone made for the dither: gradients, glows,
+   soft shadows, Bayer-dithered to 1 bit, blue dots on pale sticker paper
+   with a halo, the tilt baked in (scripts/illustrations.mjs). Plain
+   images: no masks, no filters, and the same file on light and dark
+   grounds. No idle animation at all. */
 
 .illo {
   pointer-events: none;
@@ -551,6 +552,21 @@ a:hover { text-decoration-thickness: 2px; }
 .btn:not(:disabled):hover { transform: translateY(-1px); }
 .btn:not(:disabled):active { transform: translateY(0) scale(0.98); }
 
+/* The dot sheen (site.js): a canvas under the label, the same layer the
+   gradient sheen uses. Once a button has one, its gradient sheen is off;
+   without JavaScript the gradient is what shows. */
+.btn__dots {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  inline-size: 100%;
+  block-size: 100%;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.btn.has-dots::after { display: none; }
+
 /* Only where there is a real pointer. On touch the sheen has nothing to
    follow, and the old version stuck on after a tap. */
 @media (hover: hover) and (pointer: fine) {
@@ -648,3 +664,8 @@ a:hover { text-decoration-thickness: 2px; }
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/* The header is out of the flow (Header.astro), so main starts under it
+   and gives its height back here. A hero cancels this with a negative
+   margin to run its background up behind the header. */
+main { padding-block-start: var(--header-h); }

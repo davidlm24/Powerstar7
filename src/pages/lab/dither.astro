@@ -1,0 +1,727 @@
+---
+/* Dither lab: an exploration, not a page of the site. No route in ROUTES,
+   so it is not in the sitemap or the nav, and Base marks it noindex.
+
+   Everything here animates the dither itself, the 1-bit Bayer print the
+   stickers are already made of, instead of fading or sliding finished
+   images. Two techniques:
+
+   - Canvas (public/assets/js/dither.js): the stickers are re-dithered live
+     from their continuous ink (scripts/illustrations.mjs). At rest each one
+     draws exactly the pixels of its static PNG.
+   - CSS masks: Bayer patterns as crisp SVG data URIs. The buttons and the
+     headline highlight use only these, no JS. --dot sets the dot size. */
+import Base from '../../layouts/Base.astro';
+import AsciiCallout from '../../components/AsciiCallout.astro';
+import { useTranslations, route } from '../../i18n/ui';
+import { accentParts } from '../../i18n/accent';
+
+const t = useTranslations('en');
+const [h1Lead, h1Mark] = accentParts(t('home.h1'));
+
+/* --- Bayer masks ---------------------------------------------------------
+   4x4 Bayer: 17 levels, 0 (nothing) to 16 (solid). Each level is a 4x4
+   tile; the ramp is one image: solid, then 16 columns stepping down
+   through the levels, then clear, so sliding it across an element wipes a
+   dithered edge over it. Both are in cells; mask-size scales a cell to
+   --dot, and crispEdges keeps the cells square at any device ratio. */
+const B4 = [
+  [0, 8, 2, 10],
+  [12, 4, 14, 6],
+  [3, 11, 1, 9],
+  [15, 7, 13, 5],
+];
+const svg = (w: number, h: number, d: string) =>
+  `url("data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}' viewBox='0 0 ${w} ${h}' shape-rendering='crispEdges'><path d='${d}'/></svg>`
+  )}")`;
+const cell = (x: number, y: number) => `M${x} ${y}h1v1h-1z`;
+
+const levels = Array.from({ length: 17 }, (_, n) => {
+  let d = '';
+  for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) if (B4[y][x] < n) d += cell(x, y);
+  return svg(4, 4, d || 'M0 0');
+});
+
+const SOLID = 600, RAMP = 16, CLEAR = 600;
+let ramp = `M0 0h${SOLID}v4h-${SOLID}z`;
+for (let c = 0; c < RAMP; c++) {
+  const v = 1 - (c + 0.5) / RAMP;
+  for (let y = 0; y < 4; y++) if ((B4[y][c % 4] + 0.5) / 16 < v) ramp += cell(SOLID + c, y);
+}
+const RAMP_W = SOLID + RAMP + CLEAR;
+
+/** Keyframes stepping a mask through Bayer levels a..b. */
+const steps = (name: string, a: number, b: number) => {
+  const n = Math.abs(b - a), dir = Math.sign(b - a);
+  let k = `@keyframes ${name}{`;
+  for (let i = 0; i <= n; i++) k += `${((i / n) * 100).toFixed(2)}%{mask-image:var(--dz-${a + i * dir})}`;
+  return k + '}';
+};
+
+const css = [
+  `:root{${levels.map((l, i) => `--dz-${i}:${l};`).join('')}--dz-ramp:${svg(RAMP_W, 4, ramp)};--dz-ramp-w:${RAMP_W};--dz-ramp-off:${RAMP + CLEAR}}`,
+  steps('dz-in', 0, 16),
+  steps('dz-out', 16, 0),
+  steps('dz-line-in', 3, 16),
+  steps('dz-line-out', 16, 3),
+].join('\n');
+
+const icons = [
+  { name: 'web', kind: 'densify', title: 'Densify', body: 'The print rests sparse (30% ink) and fills in to full on hover. This replaces the 15% opacity fade: the icon is always "printed", just lighter.' },
+  { name: 'brand', kind: 'sweep', title: 'Light sweep', body: 'Densify, then a band of light passes over once and lifts dots out of the print. Like the button sheen, but made of dots.' },
+  { name: 'seo', kind: 'lens', title: 'Lens', body: 'A circle of coarse dither follows the pointer, like a loupe over a halftone. The one that fits SEO best.' },
+  { name: 'email', kind: 'ripple', title: 'Ripple', body: 'Rings spread through the ink from the pointer, and settle when it leaves.' },
+  { name: 'hosting', kind: 'crawl', title: 'Crawl', body: 'The Bayer grid marches at 12 fps, so the grain shimmers in place: "alive" without moving the picture.' },
+] as const;
+
+import illo from '../../data/illo.json';
+const gallery = Object.entries(illo).map(([name, { kind, w, h }]) => ({ name, kind, w, h }));
+
+const figures = [
+  { name: 'services', kind: 'develop', title: 'Develop', body: 'The sticker paper dissolves in, then the dots develop in Bayer order, like a print coming up in the tray.' },
+  { name: 'work', kind: 'scan', title: 'Scan', body: 'A dithered edge travels down the picture, like a scanner or a slow-loading GIF.' },
+  { name: 'about', kind: 'resup', title: 'Res-up', body: 'Coarse to fine: 16, 8, 4, 2, then 1px dots, while the ink comes up.' },
+  { name: 'contact', kind: 'sweep', title: 'Sweep in', body: 'A diagonal band of light crosses the paper and leaves the finished print behind it.' },
+] as const;
+---
+
+<Base lang="en" title="Dither lab · DesignActiv">
+  <Fragment set:html={`<style>${css}</style>`} />
+
+  <div class="dz" data-dot="1">
+    {/* --- Hero ------------------------------------------------------- */}
+    <section class="dz-hero rails" data-bg="dots" data-enter="layers" data-fill="wipe" data-hover="ripple">
+      <div class="dz-hero__wash" aria-hidden="true"></div>
+      <canvas class="dz-hero__dots" aria-hidden="true"></canvas>
+
+      <div class="container dz-hero__grid">
+        <div class="dz-hero__copy">
+          <h1 class="dz-hero__h1">
+            <span class="dz-hero__l">{h1Lead.text.trimEnd()}</span>
+            <span class="dz-hero__l"><span class="dz-hero__mark accent">{h1Mark.text}</span><b aria-hidden="true">.</b></span>
+          </h1>
+          <div class="dz-hero__foot">
+            <p class="lead measure">{t('home.lead')}</p>
+            <div class="dz-hero__actions">
+              <a class="btn dz-b-wipe" href={route('contact', 'en')}>{t('home.cta')}</a>
+              <span class="dz-hero__prices">
+                <a class="btn btn--quiet dz-b-dissolve" href={`${route('services', 'en')}#pricing`}>{t('home.cta.secondary')}</a>
+                <AsciiCallout text={t('home.callout')} align="end" />
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dz-hero__pic" aria-hidden="true">
+          <canvas class="dz-desk" data-dither="desk" width="500" height="340"></canvas>
+          <canvas class="dz-check" data-dither="check" width="150" height="150"></canvas>
+        </div>
+      </div>
+    </section>
+
+    {/* --- Controls --------------------------------------------------- */}
+    <section class="dz-bar" aria-label="Lab controls">
+      <div class="container dz-bar__in">
+        <fieldset data-for="bg">
+          <legend>Background</legend>
+          <label><input type="radio" name="bg" value="wash" /> CSS wash (now)</label>
+          <label><input type="radio" name="bg" value="dots" checked /> Dither drift</label>
+          <label><input type="radio" name="bg" value="glow" /> + pointer glow</label>
+          <label><input type="radio" name="bg" value="rings" /> + pointer rings</label>
+        </fieldset>
+        <fieldset data-for="enter">
+          <legend>Picture lands</legend>
+          <label><input type="radio" name="enter" value="slap" /> Slap (now)</label>
+          <label><input type="radio" name="enter" value="layers" checked /> Develop, layer by layer</label>
+          <label><input type="radio" name="enter" value="scan" /> Scan</label>
+          <label><input type="radio" name="enter" value="resup" /> Res-up</label>
+        </fieldset>
+        <fieldset data-for="fill">
+          <legend>Highlight fills</legend>
+          <label><input type="radio" name="fill" value="scale" /> Scale (now)</label>
+          <label><input type="radio" name="fill" value="wipe" checked /> Dithered wipe</label>
+          <label><input type="radio" name="fill" value="dissolve" /> Dissolve</label>
+        </fieldset>
+        <fieldset data-for="hover">
+          <legend>Picture on hover</legend>
+          <label><input type="radio" name="hover" value="none" /> Nothing (now)</label>
+          <label><input type="radio" name="hover" value="ripple" checked /> Ripple</label>
+          <label><input type="radio" name="hover" value="lens" /> Lens</label>
+          <label><input type="radio" name="hover" value="sweep" /> Sweep</label>
+        </fieldset>
+        <fieldset data-for="cell">
+          <legend>Wash dot</legend>
+          <label><input type="radio" name="cell" value="0.5" /> Hairline</label>
+          <label><input type="radio" name="cell" value="1" checked /> 1px</label>
+          <label><input type="radio" name="cell" value="2" /> 2px</label>
+          <label><input type="radio" name="cell" value="4" /> 4px (was)</label>
+        </fieldset>
+        <fieldset data-for="dot">
+          <legend>Button dot</legend>
+          <label><input type="radio" name="dot" value="1" checked /> 1px</label>
+          <label><input type="radio" name="dot" value="2" /> 2px</label>
+          <label><input type="radio" name="dot" value="3" /> 3px</label>
+        </fieldset>
+        <button type="button" class="btn btn--quiet dz-replay" data-replay="hero">Replay hero</button>
+      </div>
+    </section>
+
+    {/* --- Icons ------------------------------------------------------ */}
+    <section class="dz-sec rails" data-rest="sparse">
+      <div class="container">
+        <header class="dz-sec__head">
+          <p class="dz-kicker">01 · Service icons</p>
+          <h2>Hover each card</h2>
+          <p class="lead measure">Every icon is the real sticker, re-dithered live. When nothing is happening it draws exactly the pixels of the PNG on the site today.</p>
+          <fieldset class="dz-inline" data-for="rest">
+            <legend>Resting state</legend>
+            <label><input type="radio" name="rest" value="sparse" checked /> Sparse print, 30% ink</label>
+            <label><input type="radio" name="rest" value="fade" /> 15% opacity (now)</label>
+          </fieldset>
+        </header>
+        <div class="dz-icons">
+          {
+            icons.map((ic) => (
+              <article class="dz-card" tabindex="0" data-zone>
+                <span class="icon-wash">
+                  <canvas class="dz-icon" data-dither={ic.name} data-kind={ic.kind} width="224" height="172" aria-hidden="true" />
+                </span>
+                <h3>{ic.title}</h3>
+                <p>{ic.body}</p>
+                <code>{ic.name} · {ic.kind}</code>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    {/* --- Illustrations ---------------------------------------------- */}
+    <section class="dz-sec rails">
+      <div class="container">
+        <header class="dz-sec__head">
+          <p class="dz-kicker">02 · Page illustrations</p>
+          <h2>Entrances</h2>
+          <p class="lead measure">The page-heading figures, each landing a different way. They play when they scroll into view; replay any of them.</p>
+        </header>
+        <div class="dz-figs">
+          {
+            figures.map((fg) => (
+              <figure class="dz-fig">
+                <canvas class="dz-figc" data-dither={fg.name} data-enter={fg.kind} width="320" height="241" aria-hidden="true" />
+                <figcaption>
+                  <h3>{fg.title}</h3>
+                  <p>{fg.body}</p>
+                  <button type="button" class="dz-link" data-replay={fg.name}>Replay</button>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    {/* --- Every illustration ---------------------------------------- */}
+    <section class="dz-sec rails">
+      <div class="container">
+        <header class="dz-sec__head">
+          <p class="dz-kicker">03 · All sixteen illustrations</p>
+          <h2>Drawn for what each one says</h2>
+          <p class="lead measure">Every sticker on the site, drawn from zero for the job it does on its page, in tone the dots can render: gradients, glows, soft shadows, light.</p>
+        </header>
+        <div class="dz-gallery">
+          {
+            gallery.map((g) => (
+              <figure class={`dz-g dz-g--${g.kind}`}>
+                <canvas data-dither={g.name} width={g.w} height={g.h} style={`width:${g.w}px`} aria-hidden="true" />
+                <figcaption><code>{g.name} · {g.kind}</code></figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    {/* --- Buttons ---------------------------------------------------- */}
+    <section class="dz-sec rails">
+      <div class="container">
+        <header class="dz-sec__head">
+          <p class="dz-kicker">04 · Buttons and links</p>
+          <h2>Hover, focus, press</h2>
+          <p class="lead measure">The first four use CSS masks only, no JavaScript. The dot sheen uses a small canvas. The UI dot control above changes the dot size for all of them.</p>
+        </header>
+        <div class="dz-btns">
+          <div class="dz-bcell">
+            <a class="btn dz-b-wipe" href="#">Start a project</a>
+            <h3>Dithered wipe</h3>
+            <p>The darker hover fill wipes in from the left behind a 16-step Bayer edge, then wipes back out.</p>
+          </div>
+          <div class="dz-bcell">
+            <a class="btn btn--quiet dz-b-dissolve" href="#">See prices</a>
+            <h3>Dissolve fill</h3>
+            <p>The quiet button fills with blue through all 17 Bayer levels in 300ms. The label turns white halfway.</p>
+          </div>
+          <div class="dz-bcell">
+            <span class="dz-shadow"><a class="btn dz-b-plain" href="#">Start a project</a></span>
+            <h3>Sticker shadow</h3>
+            <p>A 50% dot shadow, like the stickers' print. The button lifts off it on hover and presses into it on click.</p>
+          </div>
+          <div class="dz-bcell">
+            <a class="dz-uline" href="#">Read how we work</a>
+            <h3>Dotted underline</h3>
+            <p>The underline rests at a 3/16 dot screen and fills solid on hover.</p>
+          </div>
+          <div class="dz-bcell">
+            <a class="btn dz-b-sheen" href="#"><canvas aria-hidden="true"></canvas><span>Start a project</span></a>
+            <h3>Dot sheen</h3>
+            <p>Today's pointer sheen, rebuilt as dithered dots of the brighter brand blue that follow the pointer.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script is:inline src="/assets/js/dither.js"></script>
+  <script is:inline src="/assets/js/dither-lab.js"></script>
+</Base>
+
+<style>
+  .dz {
+    --dot: 2px;
+  }
+  .dz[data-dot='1'] { --dot: 1px; }
+  .dz[data-dot='3'] { --dot: 3px; }
+
+  /* --- Hero (the essentials of Home.astro's) ----------------------------- */
+  .dz-hero {
+    position: relative;
+    isolation: isolate;
+    margin-block-start: calc(-1 * var(--header-h));
+    padding-block: calc(var(--s6) + var(--header-h)) var(--s6);
+    overflow: clip;
+  }
+
+  .dz-hero__wash {
+    position: absolute;
+    z-index: -2;
+    inset: -35% -12% -25%;
+    background:
+      radial-gradient(34% 38% at 78% 24%, color-mix(in srgb, var(--purple) 26%, transparent), transparent 68%),
+      radial-gradient(40% 44% at 26% 12%, color-mix(in srgb, var(--blue) 26%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+
+  .dz-hero__dots {
+    position: absolute;
+    z-index: -1;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    pointer-events: none;
+    display: none;
+  }
+
+  .dz-hero:not([data-bg='wash']) .dz-hero__wash { display: none; }
+  .dz-hero:not([data-bg='wash']) .dz-hero__dots { display: block; }
+
+  .dz-hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s6) var(--s5);
+  }
+
+  .dz-hero__h1 { font-size: clamp(2.5rem, 6.4vw, 6rem); }
+  .dz-hero__l { display: block; }
+
+  .dz-hero__mark {
+    position: relative;
+    z-index: 0;
+    display: inline-block;
+    color: var(--paper);
+    padding-inline: 0.08em 0.1em;
+    margin-inline-start: -0.08em;
+  }
+
+  .dz-hero__mark::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 0.08em 0 -0.02em;
+    background: var(--accent-fn);
+    transform-origin: left center;
+  }
+
+  .dz-hero__h1 b { color: var(--accent); font-weight: inherit; }
+
+  .dz-hero__foot {
+    container-type: inline-size;
+    display: grid;
+    justify-items: start;
+    gap: var(--s5);
+    margin-block-start: var(--s5);
+    padding-block-end: var(--s4);
+  }
+
+  .dz-hero__actions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--s2); }
+  .dz-hero__prices { position: relative; display: inline-flex; flex-direction: column; gap: var(--s2); }
+
+  @container (min-width: 21rem) {
+    .dz-hero__prices :global(.callout--end) {
+      position: absolute;
+      inset-block-start: calc(100% + var(--s2));
+      inset-inline-end: 0;
+      contain: none;
+      white-space: nowrap;
+    }
+  }
+
+  .dz-hero__pic {
+    position: relative;
+    justify-self: center;
+    inline-size: min(100%, 500px);
+  }
+
+  .dz-desk { display: block; inline-size: 100%; block-size: auto; }
+
+  .dz-check {
+    position: absolute;
+    inset-block-start: -8%;
+    inset-inline-end: 2%;
+    inline-size: 30%;
+    block-size: auto;
+  }
+
+  /* Hidden until the script draws them, so nothing flashes. */
+  .dz-hero:not(.is-ready) .dz-desk,
+  .dz-hero:not(.is-ready) .dz-check { visibility: hidden; }
+
+  /* The landing. Slap is today's; the dither entrances are drawn by the
+     script, which only needs the seal stamped and the desk floating. */
+  @media (prefers-reduced-motion: no-preference) {
+    .dz-hero.is-run[data-enter='slap'] .dz-desk {
+      animation: dz-slap 500ms var(--ease) 200ms both, dz-float 7s ease-in-out 1.2s infinite alternate;
+    }
+    .dz-hero.is-run:not([data-enter='slap']) .dz-desk {
+      animation: dz-float 7s ease-in-out 1.4s infinite alternate;
+    }
+    .dz-hero.is-run .dz-check { animation: dz-stamp 450ms var(--ease) 900ms both; }
+
+    .dz-hero.is-run .dz-hero__mark { animation: dz-ink 1ms linear 1.6s both; }
+    .dz-hero.is-run[data-fill='scale'] .dz-hero__mark::before { animation: dz-scale 450ms var(--ease) 1.35s both; }
+    .dz-hero.is-run[data-fill='wipe'] .dz-hero__mark::before { animation: dz-wipe-in 560ms linear 1.35s both; }
+    .dz-hero.is-run[data-fill='dissolve'] .dz-hero__mark::before {
+      animation: dz-in 420ms linear 1.35s both;
+    }
+    .dz-hero:not(.is-run) .dz-hero__mark::before { visibility: hidden; }
+    .dz-hero:not(.is-run) .dz-hero__mark { color: var(--fg); }
+  }
+
+  .dz-hero[data-fill='wipe'] .dz-hero__mark::before {
+    mask-image: var(--dz-ramp);
+    mask-repeat: repeat-y;
+    mask-size: calc(var(--dz-ramp-w) * var(--dot)) calc(4 * var(--dot));
+    mask-position: right calc(var(--dz-ramp-off) * var(--dot) * -1) top 0;
+  }
+
+  .dz-hero[data-fill='dissolve'] .dz-hero__mark::before {
+    mask-image: var(--dz-16);
+    mask-size: calc(4 * var(--dot)) calc(4 * var(--dot));
+  }
+
+  @keyframes dz-slap {
+    from { opacity: 0; transform: translateY(-14px) scale(1.18); }
+    70% { opacity: 1; transform: scale(0.98); }
+    to { transform: none; }
+  }
+  @keyframes dz-float { from { translate: 0 0; } to { translate: 0 -8px; } }
+  @keyframes dz-stamp {
+    from { opacity: 0; transform: scale(1.5) rotate(-25deg); }
+    60% { opacity: 1; }
+    to { transform: none; }
+  }
+  @keyframes dz-scale { from { transform: scaleX(0); } }
+  @keyframes dz-ink { from { color: var(--fg); } }
+  @keyframes dz-wipe-in {
+    from { mask-position: left calc(var(--dz-ramp-off) * var(--dot) * -1) top 0; }
+  }
+
+  /* --- Controls ---------------------------------------------------------- */
+  .dz-bar {
+    padding-block: var(--s2);
+    background: var(--paper-hi);
+    border-block: 1px solid var(--rail);
+  }
+
+  .dz-bar__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--s2) var(--s4);
+  }
+
+  .dz fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-inline-size: 0;
+  }
+
+  .dz legend {
+    padding: 0;
+    margin-block-end: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    color: var(--fg-muted);
+  }
+
+  .dz fieldset label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 36px;
+    padding: 0.35rem 0.6rem;
+    font-size: var(--t-small);
+    border: 1px solid var(--rail);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .dz fieldset input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  .dz fieldset label:has(input:checked) {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  .dz fieldset label:has(input:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .dz-replay { margin-inline-start: auto; }
+
+  /* --- Sections ---------------------------------------------------------- */
+  .dz-sec { padding-block: var(--s7) 0; }
+  .dz-sec:last-child { padding-block-end: var(--s7); }
+
+  .dz-sec__head { display: grid; gap: var(--s2); margin-block-end: var(--s5); }
+  .dz-sec__head h2 { margin: 0; }
+
+  .dz-kicker {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    color: var(--accent-fn);
+  }
+
+  .dz-inline { margin-block-start: var(--s2) !important; }
+
+  .dz h3 { margin: 0; font-size: var(--t-h3); }
+  .dz-card p,
+  .dz-fig p,
+  .dz-bcell p { margin: 0; color: var(--fg-muted); font-size: var(--t-small); }
+
+  .dz-icons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: var(--s3);
+  }
+
+  .dz-card {
+    display: grid;
+    align-content: start;
+    gap: var(--s1);
+    padding: var(--s3);
+    border: 1px solid var(--rail);
+    outline-offset: 2px;
+  }
+
+  .dz-card:hover,
+  .dz-card:focus-visible { border-color: var(--fg); }
+
+  .dz-card .icon-wash { margin-inline: auto; margin-block-end: var(--s2); }
+  .dz-icon { display: block; inline-size: min(100%, 224px); block-size: auto; position: relative; }
+  .dz-card code { font-family: var(--font-mono); font-size: var(--t-micro); color: var(--fg-muted); }
+
+  [data-rest='fade'] .dz-icon { opacity: 0.15; transition: opacity 260ms var(--ease); }
+  [data-rest='fade'] .dz-card:hover .dz-icon,
+  [data-rest='fade'] .dz-card:focus-within .dz-icon { opacity: 1; }
+
+  .dz-figs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+    gap: var(--s5) var(--s4);
+  }
+
+  .dz-fig { display: grid; gap: var(--s2); margin: 0; }
+  .dz-fig figcaption { display: grid; justify-items: start; gap: var(--s1); }
+  .dz-figc { display: block; inline-size: min(100%, 320px); block-size: auto; }
+
+  .dz-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--s4) var(--s3);
+  }
+
+  .dz-g { display: grid; justify-items: center; gap: var(--s1); margin: 0; max-inline-size: 100%; }
+  .dz-g canvas { display: block; max-inline-size: 100%; block-size: auto; }
+  .dz-g code { font-family: var(--font-mono); font-size: var(--t-micro); color: var(--fg-muted); }
+
+  /* --- Buttons ----------------------------------------------------------- */
+  .dz-btns {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: var(--s5) var(--s4);
+  }
+
+  .dz-bcell { display: grid; justify-items: start; align-content: start; gap: var(--s1); }
+  .dz-bcell > :first-child { margin-block-end: var(--s2); }
+
+  /* These replace today's smooth sheen, so it is switched off on them. */
+  .dz :global(.btn.dz-b-wipe::after),
+  .dz :global(.btn.dz-b-dissolve::after),
+  .dz :global(.btn.dz-b-plain::after),
+  .dz :global(.btn.dz-b-sheen::after) { display: none; }
+
+  /* The site's own dot sheen (site.js) stays off the demos: each shows one effect. */
+  .dz :global(.dz-btns .btn__dots),
+  .dz :global(.dz-hero .btn__dots) { display: none; }
+
+  /* Dithered wipe: the resting fill stays; the hover fill is a layer whose
+     mask is the ramp, slid from fully off to fully on. */
+  .dz :global(.btn.dz-b-wipe:not(:disabled):hover),
+  .dz :global(.btn.dz-b-wipe:focus-visible) { --btn-bg: var(--accent-fn); }
+
+  .dz :global(.btn.dz-b-wipe::before) {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--blue-hover);
+    mask-image: var(--dz-ramp);
+    mask-repeat: repeat-y;
+    mask-size: calc(var(--dz-ramp-w) * var(--dot)) calc(4 * var(--dot));
+    mask-position: left calc(var(--dz-ramp-off) * var(--dot) * -1) top 0;
+    transition: mask-position 380ms var(--ease);
+  }
+
+  .dz :global(.btn.dz-b-wipe:hover::before),
+  .dz :global(.btn.dz-b-wipe:focus-visible::before) {
+    mask-position: right calc(var(--dz-ramp-off) * var(--dot) * -1) top 0;
+  }
+
+  /* Dissolve fill: a blue layer stepping through the Bayer levels. The
+     reverse only arms after the first hover (the script adds .dz-armed), or
+     it would flash blue on load. */
+  .dz :global(.btn.dz-b-dissolve) { transition: color 0s, border-color 0s; }
+
+  .dz :global(.btn.dz-b-dissolve::before) {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--accent-fn);
+    mask-size: calc(4 * var(--dot)) calc(4 * var(--dot));
+    mask-image: var(--dz-0);
+  }
+
+  .dz :global(.btn.dz-b-dissolve.dz-armed::before) { animation: dz-out 260ms linear both; }
+
+  .dz :global(.btn.dz-b-dissolve:hover),
+  .dz :global(.btn.dz-b-dissolve:focus-visible) {
+    color: #fff;
+    border-color: var(--accent-fn);
+    transition: color 0s 150ms, border-color 0s 150ms;
+  }
+
+  .dz :global(.btn.dz-b-dissolve:hover::before),
+  .dz :global(.btn.dz-b-dissolve:focus-visible::before) { animation: dz-in 300ms linear both; }
+
+  /* Sticker shadow: a 50% dot screen of ink under the button. */
+  .dz-shadow {
+    position: relative;
+    display: inline-block;
+    isolation: isolate;
+  }
+
+  .dz-shadow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    translate: 5px 5px;
+    background: var(--ink);
+    mask-image: var(--dz-8);
+    mask-size: calc(4 * var(--dot)) calc(4 * var(--dot));
+    transition: translate var(--dur) var(--ease);
+  }
+
+  .dz-shadow:hover::before,
+  .dz-shadow:focus-within::before { translate: 7px 7px; }
+  .dz-shadow:active::before { translate: 2px 2px; }
+
+  .dz :global(.dz-shadow .btn:not(:disabled):hover) { transform: translate(-2px, -2px); }
+  .dz :global(.dz-shadow .btn:not(:disabled):active) { transform: translate(3px, 3px); }
+
+  /* Dotted underline. */
+  .dz-uline,
+  .dz-link {
+    position: relative;
+    display: inline-block;
+    padding-block: 0.4rem 0.5rem;
+    color: var(--accent-fn);
+    font: inherit;
+    font-weight: var(--weight-medium);
+    text-decoration: none;
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .dz-uline::after,
+  .dz-link::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: calc(2 * var(--dot));
+    background: currentColor;
+    mask-size: calc(4 * var(--dot)) calc(4 * var(--dot));
+    mask-image: var(--dz-3);
+  }
+
+  .dz-uline.dz-armed::after,
+  .dz-link.dz-armed::after { animation: dz-line-out 240ms linear both; }
+  .dz-uline:hover::after,
+  .dz-uline:focus-visible::after,
+  .dz-link:hover::after,
+  .dz-link:focus-visible::after { animation: dz-line-in 240ms linear both; }
+
+  /* Dot sheen: the canvas sits where the smooth sheen did. */
+  .dz :global(.btn.dz-b-sheen) canvas {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    inline-size: 100%;
+    block-size: 100%;
+    image-rendering: pixelated;
+    pointer-events: none;
+  }
+
+  @media (max-width: 60rem) {
+    .dz-hero__grid { grid-template-columns: minmax(0, 1fr); }
+    .dz-hero__pic { inline-size: min(100%, 420px); }
+    .dz-replay { margin-inline-start: 0; }
+  }
+</style>
