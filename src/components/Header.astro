@@ -31,7 +31,7 @@ const items: { key: PageKey; label: string }[] = [
     transparency is asked for, the tint goes opaque. */}
 <header class="site-header rails">
   <div class="container site-header__row">
-    <a class="wordmark" href={route('home', lang)} aria-label="DesignActiv — home">
+    <a class="wordmark" href={route('home', lang)} aria-label={t('nav.homeLabel')}>
       DesignActiv<span class="wordmark__dot" aria-hidden="true">.</span>
     </a>
 

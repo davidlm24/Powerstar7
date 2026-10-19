@@ -12,7 +12,7 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<Base lang={lang} page="legal" title={t('legal.title')}>
+<Base lang={lang} page="legal" title={t('legal.title')} description={t('legal.lead')}>
   <PageHead title={t('legal.h1')} lead={t('legal.lead')} figure="legal" />
 
   <section class="legal rails">

@@ -41,6 +41,12 @@ import { accentCount } from './accent';
 
 export const CONTACT = {
   email: 'hello@designactiv.com',
+  /* Optional channels. Leave empty until the number is real: Contact.astro
+     renders nothing for an empty value, so no placeholder ever reaches the
+     page. WhatsApp: digits only with country code (e.g. '352621000000').
+     Phone: international format for the tel: link (e.g. '+352 621 000 000'). */
+  whatsapp: '' as string,
+  phone: '' as string,
   /* Deliberately absent until they are real: phone and street address.
      The old site shipped "+49 (0) 000 000 0000" and "Street and number,
      10000 Berlin" on all ten pages. A fake number is worse than no number. */
@@ -48,9 +54,8 @@ export const CONTACT = {
 
 export const ui = {
   en: {
-    'site.name': 'DesignActiv',
     'site.description':
-      'DesignActiv is a web agency for small businesses: website design and development, branding, SEO, email and automation, and ongoing care. Built from scratch, yours to keep, in English and Portuguese.',
+      'DesignActiv is a web agency for small businesses: website design and development, branding, SEO, email and automation, and ongoing care. Built around your business, yours to keep, in English and Portuguese.',
 
     'nav.home': 'Home',
     'nav.work': 'Work',
@@ -61,7 +66,7 @@ export const ui = {
     'nav.open': 'Open menu',
     'nav.close': 'Close menu',
     'nav.skip': 'Skip to content',
-    'nav.lang': 'Language',
+    'nav.homeLabel': 'DesignActiv — home',
     'nav.langSwitch': 'Ver em português',
 
     /* --- Home ---------------------------------------------------------- */
@@ -84,16 +89,9 @@ export const ui = {
     'closing.lead':
       'Tell us about it in a few lines — you’ll hear back, usually within a working day, and if it’s a fit you get a written scope with the price attached.',
 
-    'home.proof.label': 'This page, measured',
-    'home.proof.note':
-      'Measured from this page’s own build output, not from a competitor’s marketing. Run it yourself: open DevTools and reload.',
     'home.proof.weight': 'total page weight',
     'home.proof.requests': 'network requests',
     'home.proof.thirdParty': 'third-party requests',
-    'home.proof.cookies': 'cookies set',
-    'home.proof.banner': 'cookie banners',
-    'home.proof.bannerValue': 'None',
-    'home.proof.bannerNote': 'Nothing to consent to, so nothing to interrupt you with.',
 
 
     'home.services.h2': 'Five things, done *properly*.',
@@ -118,12 +116,12 @@ export const ui = {
     'services.title': 'Services — DesignActiv',
     'services.h1': 'What it costs, and what you *get*.',
     'services.lead':
-      'One price to build your site, one to keep it looked after — and a person who answers when something needs to change.',
+      'A starting price to build your site, a monthly one to keep it looked after — and a person who answers when something needs to change.',
     'services.deliverables': 'What you get',
 
     'svc.web.name': 'Web design & development',
     'svc.web.body':
-      'We design and build your site as one job, not two: made for your business rather than adapted from a template, with a simple editor where you need to change things yourself. Built to be accessible from the start, not added as an upgrade.',
+      'We design and build your site as one job, not two: made for your business, with a simple editor where you need to change things yourself. Built to be accessible from the start, not added as an upgrade.',
     'svc.web.d1': 'Review it on your own phone and computer before launch',
     'svc.web.d2': 'Pages and features agreed in your proposal',
     'svc.web.d3': 'Keyboard and screen-reader checks on the agreed pages',
@@ -137,7 +135,7 @@ export const ui = {
 
     'svc.seo.name': 'SEO',
     'svc.seo.body':
-      'We help search engines understand your site and help customers find the right pages. That can include page titles, site structure, speed checks and redirects when replacing an existing site. We’ll specify what is included in your proposal.',
+      'We help search engines understand your site and help customers find the right pages. That can include page titles, site structure, speed checks and redirects when replacing an existing site. Basic SEO setup is included in the Website design price, and your proposal says exactly what it covers.',
     'svc.seo.d1': 'Review of your existing site, if you have one',
     'svc.seo.d2': 'Page titles and information that help search engines',
     'svc.seo.d3': 'Speed checks after launch',
@@ -154,7 +152,7 @@ export const ui = {
       'We host your site and look after it: updates, backups, uptime monitoring and a person who answers. A retainer, not a lock-in: your handover guide explains how to move the site if you leave.',
     'svc.hosting.d1': 'Hosting account details explained at handover',
     'svc.hosting.d2': 'Monitoring, backups and updates',
-    'svc.hosting.d3': 'A named person who answers email',
+    'svc.hosting.d3': 'A real person who answers email',
 
     /* --- Work ----------------------------------------------------------- */
     'work.title': 'Work — DesignActiv',
@@ -180,8 +178,8 @@ export const ui = {
     'about.title': 'About — DesignActiv',
     'about.h1': 'Small enough to *know* your project.',
     'about.lead':
-      'DesignActiv is a small web agency working with clients wherever they are. The person you brief is the person who builds it.',
-    'about.story.h': 'What custom-\u2060built gets you',
+      'DesignActiv is a small web agency working with clients wherever they are. The person you brief is the person you keep talking to.',
+    'about.story.h': 'What a site made for your business gets you',
     'about.story.b1':
       'A site that loads fast, even on a weak phone signal, so visitors don’t give up before it appears.',
     'about.story.b2':
@@ -221,6 +219,8 @@ export const ui = {
     'contact.form.messageHint':
       'What you need, roughly when you need it, and anything already decided.',
     'contact.form.submit': 'Send message',
+    'contact.form.privacy': 'We use what you send to reply to you, not for marketing.',
+    'contact.form.privacyLink': 'How we handle your data',
     'contact.form.sending': 'Sending…',
     'contact.form.trap': 'Leave this field empty',
 
@@ -237,18 +237,20 @@ export const ui = {
     'contact.unconfigured': 'This form is not connected yet — please email us at {email}.',
 
     'contact.direct.h': 'Or write to us directly',
+    'contact.direct.whatsapp': 'Message us on WhatsApp',
+    'contact.direct.phone': 'Call us',
     'contact.direct.b':
       'Email reaches us fastest. We work in English and Portuguese, and read German.',
 
     /* --- Footer --------------------------------------------------------- */
     'footer.blurb':
-      'A web agency for small businesses: custom-built websites, branding, SEO, email and care.',
+      'A web agency for small businesses: websites made for your business, branding, SEO, email and care.',
     'footer.nav': 'Pages',
     'footer.legalNav': 'Legal',
     'footer.legal': 'Legal notice',
     'footer.privacy': 'Privacy',
     'footer.rights': 'All rights reserved.',
-    'footer.built': 'Custom-built. No trackers, no cookies, no consent banner.',
+    'footer.built': 'Built around your business. No trackers, no cookies, no consent banner.',
 
     /* --- Legal ---------------------------------------------------------- */
     'legal.title': 'Legal notice — DesignActiv',
@@ -271,16 +273,16 @@ export const ui = {
       'How this website handles personal data, and the rights you have over it under the GDPR.',
     'privacy.summary.h': 'The short version',
     'privacy.summary.b':
-      'This website sets no cookies, runs no analytics, and loads nothing from another company’s server. Fonts, styles, scripts and images all come from this domain. If you do not use the contact form, we do not learn anything about you beyond what your browser tells our host in order to send you this page.',
+      'This website sets no cookies, runs no analytics, and loads nothing from other domains. Fonts, styles, scripts and images all come from this domain. If you do not use the contact form, we do not learn anything about you beyond what your browser tells our host in order to send you this page.',
     'privacy.hosting.h': 'Hosting and server logs',
     'privacy.hosting.b':
       'Our host records standard access logs — IP address, time, requested page, referrer and user agent — which are necessary to deliver the site and keep it secure. Legal basis: Art. 6(1)(f) GDPR, our legitimate interest in operating the site.',
     'privacy.form.h': 'The contact form',
     'privacy.form.b':
       'If you write to us, we process the name, email address, company or business name (if you give one), topic and message you send in order to reply. Legal basis: Art. 6(1)(b) and (f) GDPR. We keep the correspondence for as long as it takes to deal with your enquiry and any legal retention periods that apply, and we do not use it for marketing.',
-    'privacy.fonts.h': 'Fonts and third parties',
+    'privacy.fonts.h': 'Fonts and other companies',
     'privacy.fonts.b':
-      'There are no third parties. Typefaces are served from this domain rather than from Google Fonts, so your IP address is never passed to another provider in order to render text. There are no embedded maps, videos, chat widgets, pixels or social buttons.',
+      'Apart from our host, no other company receives your data through this site. Typefaces are served from this domain rather than from Google Fonts, so your IP address is never passed to another provider in order to render text. There are no embedded maps, videos, chat widgets, pixels or social buttons.',
     'privacy.rights.h': 'Your rights',
     'privacy.rights.b':
       'You have the right to access, rectification, erasure, restriction, data portability and objection under Art. 15–21 GDPR, and the right to complain to a supervisory authority. Write to us and we will deal with it.',
@@ -310,7 +312,7 @@ export const ui = {
     'home.process.s3.h': 'Build and test',
     'home.process.s4.h': 'Handover',
     'home.process.s1.b':
-      'You tell us what you need, and we write it up as a scope with the price attached — agreed before any work starts.',
+      'You tell us what you need, and we write it up as a scope with the price attached, including what we need from you, such as text and photos — agreed before any work starts.',
     'home.process.s2.b':
       'We design straight into a working page, so you review the real site on your own phone — not a picture of it.',
     'home.process.s3.b':
@@ -330,12 +332,12 @@ export const ui = {
     'services.design.name': 'Website design',
     'services.design.note':
       'The starting price for a straightforward small-business site. Booking systems, integrations, extra content work or a tight deadline raise the quote — and you have the number in writing first.',
-    'services.design.i1': 'Custom design, built for phone and desktop',
+    'services.design.i1': 'A design made for your business, built for phone and desktop',
     'services.design.i2': 'Up to five pages',
     'services.design.i3': 'Page structure and layout',
     'services.design.i4': 'Contact form',
     'services.design.i5': 'Basic SEO setup',
-    'services.design.i6': 'Domain and hosting set up',
+    'services.design.i6': 'Domain set up and the first year of hosting',
     'services.design.i7': 'Testing before launch',
     'services.design.i8': 'Launch and handover',
 
@@ -369,10 +371,10 @@ export const ui = {
     'services.faq.q3': 'Can I edit the site myself afterwards?',
     'services.faq.q4': 'What happens if I want to leave?',
     'services.faq.q5': 'Do you work in languages other than English?',
-    'services.faq.q6': 'What does "accessible" mean in practice?',
+    'services.faq.q6': 'What does “accessible” mean in practice?',
     'services.faq.q7': 'Do you keep working on it after launch?',
     'services.faq.a1':
-      'It depends on what the site has to do, so the timeline goes into the written scope next to the price — you have a date before anything starts. The biggest variable is usually content: text and photos arriving when agreed keep it on schedule.',
+      'A straightforward small-business site usually takes 2 to 4 weeks from the day we have your text and photos. The exact timeline goes into the written scope next to the price, so you have a date before anything starts. Text and photos arriving when agreed is what keeps it on schedule.',
     'services.faq.a2':
       'To start, just a short description of the business and what the site needs to do — the contact form asks for exactly that. Once the scope is agreed, we need your text, photos and logo, and access to your domain if you already have one. If any of that doesn’t exist yet, say so: it goes into the scope.',
     'services.faq.a3':
@@ -388,9 +390,8 @@ export const ui = {
   },
 
   pt: {
-    'site.name': 'DesignActiv',
     'site.description':
-      'A DesignActiv é uma agência web para pequenas empresas: design e desenvolvimento de sites, identidade visual, SEO, e-mail e automação, e manutenção contínua. Feitos do zero, seus de verdade, em português e inglês.',
+      'A DesignActiv é uma agência web para pequenas empresas: design e desenvolvimento de sites, identidade visual, SEO, e-mail e automação, e manutenção contínua. Feitos em torno do seu negócio e entregues a você, em português e inglês.',
 
     'nav.home': 'Início',
     'nav.work': 'Trabalhos',
@@ -401,7 +402,7 @@ export const ui = {
     'nav.open': 'Abrir menu',
     'nav.close': 'Fechar menu',
     'nav.skip': 'Ir para o conteúdo',
-    'nav.lang': 'Idioma',
+    'nav.homeLabel': 'DesignActiv — início',
     'nav.langSwitch': 'View in English',
 
     /* --- Home ---------------------------------------------------------- */
@@ -419,16 +420,9 @@ export const ui = {
     'closing.lead':
       'Conte em poucas linhas — você recebe uma resposta, normalmente em um dia útil, e, se fizer sentido, um escopo por escrito com o preço junto.',
 
-    'home.proof.label': 'Esta página, medida',
-    'home.proof.note':
-      'Medido a partir do build desta própria página, não do marketing de um concorrente. Confira você mesmo: abra o DevTools e recarregue.',
     'home.proof.weight': 'peso total da página',
     'home.proof.requests': 'requisições de rede',
     'home.proof.thirdParty': 'requisições a terceiros',
-    'home.proof.cookies': 'cookies gravados',
-    'home.proof.banner': 'banners de cookies',
-    'home.proof.bannerValue': 'Nenhum',
-    'home.proof.bannerNote': 'Não há nada a consentir, então nada para interromper você.',
 
 
     'home.services.h2': 'Cinco coisas, bem *feitas*.',
@@ -446,19 +440,19 @@ export const ui = {
       'O site não grava cookies e não faz requisições a terceiros. As fontes vêm deste domínio, então não há nada que dependa do seu consentimento.',
     'home.position.three.h': 'Você sabe o que é seu',
     'home.position.three.b':
-      'A proposta diz quais contas de domínio, código e hospedagem são suas, e você recebe um guia de transferência por escrito no lançamento, para poder administrar ou levar o site depois.',
+      'A proposta diz quais contas de domínio, código e hospedagem são suas, e você recebe um guia de entrega por escrito no lançamento, para poder administrar ou levar o site depois.',
 
 
     /* --- Services ------------------------------------------------------- */
     'services.title': 'Serviços — DesignActiv',
     'services.h1': 'Quanto custa, e o que você *recebe*.',
     'services.lead':
-      'Um preço para construir o seu site, outro para cuidar dele depois — e uma pessoa que responde quando algo precisa mudar.',
+      'Um preço de partida para construir o seu site, outro mensal para cuidar dele depois — e uma pessoa que responde quando algo precisa mudar.',
     'services.deliverables': 'O que você recebe',
 
     'svc.web.name': 'Design e desenvolvimento web',
     'svc.web.body':
-      'Desenhamos e construímos seu site como um trabalho só, não dois: feito para o seu negócio, e não adaptado de um template, com um editor simples onde você precisar mudar algo sozinho. Pensado para ser acessível desde o início, e não acrescentado como um upgrade.',
+      'Desenhamos e construímos seu site como um trabalho só, não dois: feito para o seu negócio, com um editor simples onde você precisar mudar algo sozinho. Pensado para ser acessível desde o início, e não acrescentado depois, como extra.',
     'svc.web.d1': 'Revise no seu celular e no computador antes do lançamento',
     'svc.web.d2': 'Páginas e funções definidas na proposta',
     'svc.web.d3': 'Verificações com teclado e leitor de tela nas páginas combinadas',
@@ -472,7 +466,7 @@ export const ui = {
 
     'svc.seo.name': 'SEO',
     'svc.seo.body':
-      'Ajudamos os buscadores a entender seu site e os clientes a encontrar as páginas certas. Isso pode incluir títulos das páginas, organização do site, testes de velocidade e redirecionamentos ao substituir um site existente. A proposta dirá o que está incluído.',
+      'Ajudamos os buscadores a entender seu site e os clientes a encontrar as páginas certas. Isso pode incluir títulos das páginas, organização do site, testes de velocidade e redirecionamentos ao substituir um site existente. A configuração básica de SEO está incluída no preço do site, e a proposta diz exatamente o que ela cobre.',
     'svc.seo.d1': 'Análise do seu site atual, se você tiver um',
     'svc.seo.d2': 'Títulos e informações que ajudam os buscadores',
     'svc.seo.d3': 'Testes de velocidade depois do lançamento',
@@ -486,14 +480,14 @@ export const ui = {
 
     'svc.hosting.name': 'Manutenção do site',
     'svc.hosting.body':
-      'Hospedamos seu site e cuidamos dele: atualizações, backups, monitoramento e uma pessoa que responde. Um contrato mensal, não uma armadilha: o guia de transferência explica como levar o site se você sair.',
+      'Hospedamos seu site e cuidamos dele: atualizações, backups, monitoramento e uma pessoa que responde. Uma mensalidade, sem fidelidade: o guia de entrega explica como levar o site se você sair.',
     'svc.hosting.d1': 'Dados da conta de hospedagem explicados na entrega',
     'svc.hosting.d2': 'Monitoramento, backups e atualizações',
-    'svc.hosting.d3': 'Uma pessoa com nome que responde e-mail',
+    'svc.hosting.d3': 'Uma pessoa de verdade que responde e-mail',
 
     /* --- Work ----------------------------------------------------------- */
     'work.title': 'Trabalhos — DesignActiv',
-    'work.h1': 'Provas, antes do *portfólio*.',
+    'work.h1': 'A prova vem antes do *portfólio*.',
     'work.callout': 'é este que você está vendo',
     'work.lead':
       'Nossos primeiros sites de clientes estão em construção e vão aparecer aqui quando forem ao ar. Até lá, a melhor prova de como trabalhamos é este próprio site.',
@@ -515,8 +509,8 @@ export const ui = {
     'about.title': 'Sobre nós — DesignActiv',
     'about.h1': 'Pequena o bastante para *conhecer* seu projeto.',
     'about.lead':
-      'A DesignActiv é uma pequena agência web que trabalha com clientes onde quer que estejam. Quem recebe o briefing é quem constrói.',
-    'about.story.h': 'O que você ganha com um site sob medida',
+      'A DesignActiv é uma pequena agência web que trabalha com clientes onde quer que estejam. Quem recebe o seu briefing é quem continua falando com você.',
+    'about.story.h': 'O que você ganha com um site feito para o seu negócio',
     'about.story.b1':
       'Um site que carrega rápido, mesmo com sinal fraco no celular, para que ninguém desista antes de ele aparecer.',
     'about.story.b2':
@@ -529,7 +523,7 @@ export const ui = {
     'about.how.h': 'Como trabalhamos',
     'about.how.1.h': 'É seu',
     'about.how.1.b':
-      'A proposta diz quais contas de domínio, código e hospedagem são suas, e você recebe um guia de transferência por escrito quando o site for ao ar.',
+      'A proposta diz quais contas de domínio, código e hospedagem são suas, e você recebe um guia de entrega por escrito quando o site for ao ar.',
     'about.how.2.h': 'Uma proposta clara',
     'about.how.2.b':
       'Combinamos o trabalho, o preço e o prazo antes de começar. Se o escopo mudar, orçamos o trabalho extra primeiro.',
@@ -556,6 +550,8 @@ export const ui = {
     'contact.form.messageHint':
       'O que você precisa, mais ou menos para quando, e o que já estiver decidido.',
     'contact.form.submit': 'Enviar mensagem',
+    'contact.form.privacy': 'Usamos o que você enviar para responder, não para marketing.',
+    'contact.form.privacyLink': 'Como tratamos seus dados',
     'contact.form.sending': 'Enviando…',
     'contact.form.trap': 'Deixe este campo vazio',
 
@@ -572,18 +568,20 @@ export const ui = {
     'contact.unconfigured': 'Este formulário ainda não está conectado — escreva para {email}.',
 
     'contact.direct.h': 'Ou escreva direto para nós',
+    'contact.direct.whatsapp': 'Fale com a gente no WhatsApp',
+    'contact.direct.phone': 'Ligue para nós',
     'contact.direct.b':
       'O e-mail chega mais rápido. Trabalhamos em português e inglês, e lemos alemão.',
 
     /* --- Footer --------------------------------------------------------- */
     'footer.blurb':
-      'Uma agência web para pequenas empresas: sites sob medida, identidade visual, SEO, e-mail e manutenção.',
+      'Uma agência web para pequenas empresas: sites feitos para o seu negócio, identidade visual, SEO, e-mail e manutenção.',
     'footer.nav': 'Páginas',
     'footer.legalNav': 'Jurídico',
     'footer.legal': 'Aviso legal',
     'footer.privacy': 'Privacidade',
     'footer.rights': 'Todos os direitos reservados.',
-    'footer.built': 'Feito sob medida. Sem rastreadores, sem cookies, sem banner de consentimento.',
+    'footer.built': 'Feito em torno do seu negócio. Sem rastreadores, sem cookies, sem banner de consentimento.',
 
     /* --- Legal ---------------------------------------------------------- */
     'legal.title': 'Aviso legal — DesignActiv',
@@ -606,16 +604,16 @@ export const ui = {
       'Como este site trata dados pessoais, e os direitos que você tem sobre eles pelo GDPR.',
     'privacy.summary.h': 'A versão curta',
     'privacy.summary.b':
-      'Este site não usa cookies, não roda analytics e não carrega nada do servidor de outra empresa. Fontes, estilos, scripts e imagens vêm todos deste domínio. Se você não usar o formulário de contato, não ficamos sabendo nada sobre você além do que seu navegador informa ao nosso servidor para poder entregar esta página.',
+      'Este site não usa cookies, não roda analytics e não carrega nada de outros domínios. Fontes, estilos, scripts e imagens vêm todos deste domínio. Se você não usar o formulário de contato, não ficamos sabendo nada sobre você além do que seu navegador informa ao nosso servidor para poder entregar esta página.',
     'privacy.hosting.h': 'Hospedagem e registros de servidor',
     'privacy.hosting.b':
       'Nosso provedor registra logs de acesso padrão — endereço IP, horário, página solicitada, referenciador e agente de usuário — necessários para entregar o site e mantê-lo seguro. Base legal: art. 6(1)(f) do GDPR, nosso interesse legítimo em operar o site.',
     'privacy.form.h': 'O formulário de contato',
     'privacy.form.b':
       'Se você nos escrever, tratamos o nome, o e-mail, a empresa ou nome do negócio (se você informar), o assunto e a mensagem enviados para poder responder. Base legal: art. 6(1)(b) e (f) do GDPR. Guardamos a correspondência pelo tempo necessário para resolver a solicitação e cumprir prazos legais de retenção, e não a usamos para marketing.',
-    'privacy.fonts.h': 'Fontes e terceiros',
+    'privacy.fonts.h': 'Fontes e outras empresas',
     'privacy.fonts.b':
-      'Não há terceiros. As fontes são servidas a partir deste domínio, e não do Google Fonts, então seu endereço IP nunca é repassado a outro provedor para exibir texto. Não há mapas incorporados, vídeos, chats, pixels ou botões de redes sociais.',
+      'Além da hospedagem, nenhuma outra empresa recebe seus dados por este site. As fontes são servidas a partir deste domínio, e não do Google Fonts, então seu endereço IP nunca é repassado a outro provedor para exibir texto. Não há mapas incorporados, vídeos, chats, pixels ou botões de redes sociais.',
     'privacy.rights.h': 'Seus direitos',
     'privacy.rights.b':
       'Você tem direito de acesso, retificação, exclusão, limitação, portabilidade e oposição conforme os arts. 15 a 21 do GDPR, e o direito de reclamar a uma autoridade de controle. Escreva para nós e resolvemos.',
@@ -639,13 +637,13 @@ export const ui = {
     'home.process.s3.h': 'Criação e testes',
     'home.process.s4.h': 'Entrega',
     'home.process.s1.b':
-      'Você conta do que precisa, e nós escrevemos um escopo com o preço junto — combinado antes de qualquer trabalho começar.',
+      'Você conta do que precisa, e nós escrevemos um escopo com o preço junto, incluindo o que precisamos de você, como textos e fotos — combinado antes de qualquer trabalho começar.',
     'home.process.s2.b':
       'Fazemos o design direto em uma página que já funciona, então você revisa o site de verdade no seu próprio celular — não uma imagem dele.',
     'home.process.s3.b':
       'Criamos e testamos o site combinado em celulares e computadores, conferindo se as pessoas encontram as informações e conseguem falar com você.',
     'home.process.s4.b':
-      'Você recebe os acessos e o guia de transferência por escrito combinados na proposta — e a Manutenção do site, se você quiser alguém cuidando dele.',
+      'Você recebe os acessos e o guia de entrega por escrito combinados na proposta — e a Manutenção do site, se você quiser alguém cuidando dele.',
 
     'services.pricing.h2': 'Saiba o escopo e o *preço* antes de começarmos.',
     'services.pricing.lead':
@@ -659,12 +657,12 @@ export const ui = {
     'services.design.name': 'Criação de site',
     'services.design.note':
       'O preço de partida para um site simples de pequeno negócio. Sistemas de agendamento, integrações, mais trabalho de conteúdo ou um prazo apertado aumentam o orçamento — e você recebe o valor por escrito antes de começarmos.',
-    'services.design.i1': 'Design sob medida, pensado para celular e computador',
+    'services.design.i1': 'Design feito para o seu negócio, pensado para celular e computador',
     'services.design.i2': 'Até cinco páginas',
     'services.design.i3': 'Estrutura e layout das páginas',
     'services.design.i4': 'Formulário de contato',
     'services.design.i5': 'SEO básico configurado',
-    'services.design.i6': 'Domínio e hospedagem configurados',
+    'services.design.i6': 'Domínio configurado e o primeiro ano de hospedagem',
     'services.design.i7': 'Testes antes do lançamento',
     'services.design.i8': 'Lançamento e entrega',
 
@@ -692,22 +690,22 @@ export const ui = {
 
     'services.detail.h2': 'O que cada parte cobre.',
 
-    'services.faq.h2': 'O que perguntam antes de começar.',
+    'services.faq.h2': 'O que as pessoas costumam perguntar antes de começar.',
     'services.faq.q1': 'Quanto tempo demora um site?',
     'services.faq.q2': 'Do que vocês precisam de mim para começar?',
     'services.faq.q3': 'Posso editar o site sozinho depois?',
     'services.faq.q4': 'E se eu quiser sair?',
     'services.faq.q5': 'Vocês trabalham em outros idiomas além do inglês?',
-    'services.faq.q6': 'O que significa "acessível" na prática?',
+    'services.faq.q6': 'O que significa “acessível” na prática?',
     'services.faq.q7': 'Vocês continuam cuidando do site depois do lançamento?',
     'services.faq.a1':
-      'Depende do que o site precisa fazer, então o prazo entra no escopo escrito, junto com o preço — você tem uma data antes de qualquer coisa começar. O que mais pesa costuma ser o conteúdo: textos e fotos chegando quando combinado mantêm o cronograma.',
+      'Um site simples de pequeno negócio costuma levar de 2 a 4 semanas, a partir do dia em que recebemos seus textos e fotos. O prazo exato entra no escopo escrito, junto com o preço, então você tem uma data antes de qualquer coisa começar. Textos e fotos chegando quando combinado é o que mantém o cronograma.',
     'services.faq.a2':
       'Para começar, só uma descrição curta do negócio e do que o site precisa fazer — é exatamente o que o formulário de contato pede. Depois de combinado o escopo, precisamos dos seus textos, fotos e logotipo, e do acesso ao seu domínio, se você já tiver um. Se alguma dessas coisas ainda não existir, é só dizer: isso entra no escopo.',
     'services.faq.a3':
       'Sim, se você quiser. Se for você quem vai atualizar o site, incluímos um editor simples para textos, preços e fotos, e ele entra no escopo e no preço. Mudanças na estrutura ficam com a gente, e a Manutenção do site inclui uma pequena alteração por mês, se você preferir não mexer em nada.',
     'services.faq.a4':
-      'Você não fica preso. A proposta e o guia de transferência dizem quais contas de domínio, código e hospedagem são suas e como levar o site, então sair é só encerrar a Manutenção do site, se você tiver, e não pedir o seu próprio site de volta.',
+      'Você não fica preso. A proposta e o guia de entrega dizem quais contas de domínio, código e hospedagem são suas e como levar o site, então sair é só encerrar a Manutenção do site, se você tiver, e não pedir o seu próprio site de volta.',
     'services.faq.a5':
       'Sim. Falamos com você em inglês ou português, e lemos alemão. O site em si pode ter vários idiomas ao mesmo tempo — francês e alemão são comuns no Luxemburgo — e cada idioma além do primeiro tem preço definido desde o início, a partir de {price}.',
     'services.faq.a6':
