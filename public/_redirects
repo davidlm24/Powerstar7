@@ -37,7 +37,7 @@ https://www.powerstar7.com/* https://www.designactiv.com/:splat   301!
 # The three-tier pricing ladder is gone — it advertised EUR 0 across all
 # three tiers and "Placeholder feature" bullets. Services is the honest
 # destination for anyone who arrives looking for it.
-/pricing                     /services    301
+# /pricing is a real page since 2026-10-20 (it used to forward to /services).
 
 # --- Strip .html so canonical extensionless URLs are the only public form ---
 /index.html       /                        301

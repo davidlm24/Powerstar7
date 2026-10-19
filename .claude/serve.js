@@ -71,7 +71,6 @@ function legacyTarget(pathname) {
     '/about-us': '/about',
     '/our-work': '/work',
     '/web-design-development': '/services',
-    '/pricing': '/services',
   };
   if (renamed[clean]) return renamed[clean];
 

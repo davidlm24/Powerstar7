@@ -577,6 +577,199 @@
     if (btn && btn.__dots && !btn.matches(':hover')) fadeDots(btn.__dots, 0);
   });
 
+  /* ---------- Card dither: the proximity glow -------------------------------
+
+     Cards (.dcard, global.css) carry a corner of Bayer dots at rest. On a
+     fine pointer, a canvas is added under the card's content the first time
+     it is hovered or focused, and draws a glow of dots around the POINTER
+     (David, 2026-10-20: "on hover some proximity cursor animation, not just
+     move outside"): the same ordered dither as everything else, coverage
+     highest at the cursor and falling off with distance, so it thickens
+     through blue to purple at its core, the tritone's two light inks.
+
+     Never behind readable text. The text's line boxes (and the buttons)
+     are measured when the card is entered, and the glow is multiplied by a
+     clearing map that fades to nothing within ~18px of any of them, the way
+     the hero wash keeps clear of the headline. Inside a dark card (.invert)
+     the dots are the single on-ink blue, since the tritone's dark would
+     vanish there.
+
+     Cost: only the window round the pointer (3 sigma) is drawn each frame,
+     from a lookup of the falloff, into one reused ImageData; the previous
+     window is cleared, nothing else is touched. One delegated, rAF-
+     throttled listener set, skipped on touch and for reduced motion
+     (pointerEffects), where the CSS corner is all there is. */
+  var CARD_SIGMA = 66;                    // css px: the glow's reach
+  var CARD_PEAK = 0.56;                   // coverage at the pointer
+  var CARD_CELL = 4, CARD_FEATHER = 26;   // the clearing map: cell and fade, css px
+  /* little-endian RGBA words: --blue-fn (as the tritone), violet, --on-ink-blue */
+  var CARD_BLUE = 0xfffd6f17, CARD_PURPLE = 0xffe43965, CARD_ON_INK = 0xffff9d5c;
+
+  var dcardOf = function (el) {
+    return el && el.closest ? el.closest('.dcard') : null;
+  };
+
+  /* The clearing map: 1 = free, falling to 0 beside text. */
+  var dcardMeasure = function (card, d) {
+    var r = card.getBoundingClientRect();
+    d.w = r.width; d.h = r.height;
+    d.cols = Math.max(1, Math.ceil(d.w / CARD_CELL));
+    d.rows = Math.max(1, Math.ceil(d.h / CARD_CELL));
+    d.c.width = Math.max(1, Math.round(d.w * d.dpr));
+    d.c.height = Math.max(1, Math.round(d.h * d.dpr));
+    var keep = d.keep && d.keep.length === d.cols * d.rows ? d.keep : new Float32Array(d.cols * d.rows);
+    keep.fill(1);
+    var boxes = [];
+    var add = function (b) {
+      if (b.width < 1 || b.height < 1) return;
+      boxes.push([b.left - r.left, b.top - r.top, b.right - r.left, b.bottom - r.top]);
+    };
+    var walker = document.createTreeWalker(card, NodeFilter.SHOW_TEXT), n, range = document.createRange();
+    while ((n = walker.nextNode())) {
+      if (!n.nodeValue.trim()) continue;
+      range.selectNodeContents(n);
+      Array.prototype.forEach.call(range.getClientRects(), add);
+    }
+    Array.prototype.forEach.call(card.querySelectorAll('.btn, input, select, textarea'), function (el) { add(el.getBoundingClientRect()); });
+    var reach = CARD_FEATHER * 2.2;
+    boxes.forEach(function (b) {
+      var c0 = Math.max(0, Math.floor((b[0] - reach) / CARD_CELL)), c1 = Math.min(d.cols - 1, Math.ceil((b[2] + reach) / CARD_CELL));
+      var r0 = Math.max(0, Math.floor((b[1] - reach) / CARD_CELL)), r1 = Math.min(d.rows - 1, Math.ceil((b[3] + reach) / CARD_CELL));
+      for (var j = r0; j <= r1; j++) {
+        var cy = (j + 0.5) * CARD_CELL, dy = Math.max(b[1] - cy, 0, cy - b[3]);
+        for (var i = c0; i <= c1; i++) {
+          var cx = (i + 0.5) * CARD_CELL, dx = Math.max(b[0] - cx, 0, cx - b[2]);
+          var q = Math.sqrt(dx * dx + dy * dy) / CARD_FEATHER;
+          var k = 1 - Math.exp(-q * q * 3);
+          if (k < keep[j * d.cols + i]) keep[j * d.cols + i] = k;
+        }
+      }
+    });
+    d.keep = keep;
+  };
+
+  var dcardInit = function (card) {
+    var c = document.createElement('canvas');
+    c.className = 'dcard__dots';
+    c.setAttribute('aria-hidden', 'true');
+    card.insertBefore(c, card.firstChild);
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    /* the falloff, by squared distance in device px, in bins of 4 */
+    var R = Math.ceil(CARD_SIGMA * 3 * dpr), nb = Math.ceil((R * R) / 4) + 2, lut = new Float32Array(nb);
+    var s2 = 1 / (2 * CARD_SIGMA * CARD_SIGMA * dpr * dpr);
+    for (var q = 0; q < nb; q++) lut[q] = Math.exp(-q * 4 * s2);
+    var d = {
+      c: c, x: c.getContext('2d'), dpr: dpr, R: R, lut: lut, on: 0, pt: null, raf: 0,
+      img: null, last: null, keep: null, dark: !!card.closest('.invert'), card: card,
+    };
+    card.__dc = d;
+    return d;
+  };
+
+  var dcardDraw = function (d) {
+    var cw = d.c.width, ch = d.c.height;
+    if (d.last) d.x.clearRect(d.last[0], d.last[1], d.last[2], d.last[3]);
+    d.last = null;
+    if (!d.pt || d.on <= 0.004) return;
+    var dpr = d.dpr, R = d.R, cx = d.pt.x * dpr, cy = d.pt.y * dpr;
+    var x0 = Math.max(0, Math.floor(cx - R)), y0 = Math.max(0, Math.floor(cy - R));
+    var x1 = Math.min(cw, Math.ceil(cx + R)), y1 = Math.min(ch, Math.ceil(cy + R));
+    var w = x1 - x0, h = y1 - y0;
+    if (w <= 0 || h <= 0) return;
+    if (!d.img || d.img.width !== w || d.img.height !== h) {
+      d.img = d.x.createImageData(w, h);
+      d.px = new Uint32Array(d.img.data.buffer);
+    } else {
+      d.px.fill(0);
+    }
+    var px = d.px, amp = CARD_PEAK * d.on, lut = d.lut, keep = d.keep, cols = d.cols, rows = d.rows;
+    var R2 = R * R, inv = 1 / (dpr * CARD_CELL);
+    for (var j = 0; j < h; j++) {
+      var gy = y0 + j, dy = gy - cy, row = Math.min(rows - 1, (gy * inv) | 0) * cols, brow = (gy & 7) * 8;
+      for (var i = 0; i < w; i++) {
+        var gx = x0 + i, dx = gx - cx, d2 = dx * dx + dy * dy;
+        if (d2 > R2) continue;
+        var v = amp * lut[(d2 * 0.25) | 0];
+        if (v < 0.02) continue;
+        v *= keep[row + Math.min(cols - 1, (gx * inv) | 0)];
+        if (v > B8[brow + (gx & 7)]) px[j * w + i] = d.dark ? CARD_ON_INK : v < 0.45 ? CARD_BLUE : CARD_PURPLE;
+      }
+    }
+    d.x.putImageData(d.img, x0, y0);
+    d.last = [x0, y0, w, h];
+  };
+
+  var dcardFade = function (d, to) {
+    cancelAnimationFrame(d.raf);
+    var from = d.on, t0 = 0, ms = to > from ? 160 : 260;
+    var step = function (now) {
+      if (!t0) t0 = now;
+      var p = Math.min(1, (now - t0) / ms);
+      d.on = from + (to - from) * p;
+      dcardDraw(d);
+      if (p < 1) d.raf = requestAnimationFrame(step);
+    };
+    d.raf = requestAnimationFrame(step);
+  };
+
+  var dcardPoint = function (d, x, y) {
+    var r = d.card.getBoundingClientRect();
+    d.pt = { x: x - r.left, y: y - r.top };
+  };
+
+  if (pointerEffects) {
+    var cardPending = null, cardQueued = false;
+
+    document.addEventListener('pointerover', function (e) {
+      var card = dcardOf(e.target);
+      if (!card || (e.relatedTarget && card.contains(e.relatedTarget))) return;
+      var d = card.__dc || dcardInit(card);
+      dcardMeasure(card, d);
+      dcardPoint(d, e.clientX, e.clientY);
+      dcardFade(d, 1);
+    });
+
+    document.addEventListener('pointerout', function (e) {
+      var card = dcardOf(e.target);
+      if (!card || !card.__dc || (e.relatedTarget && card.contains(e.relatedTarget))) return;
+      if (card.matches(':focus-within') && card.querySelector(':focus-visible')) return;
+      dcardFade(card.__dc, 0);
+    });
+
+    /* `cardQueued` lives outside `cardPending` for the same reason the
+       sheen's does: the object is replaced on every move. */
+    document.addEventListener('pointermove', function (e) {
+      var card = dcardOf(e.target);
+      if (!card || !card.__dc || card.__dc.on <= 0) return;
+      cardPending = { d: card.__dc, x: e.clientX, y: e.clientY };
+      if (cardQueued) return;
+      cardQueued = true;
+      requestAnimationFrame(function () {
+        cardQueued = false;
+        if (!cardPending) return;
+        dcardPoint(cardPending.d, cardPending.x, cardPending.y);
+        if (cardPending.d.on >= 1) dcardDraw(cardPending.d);
+        cardPending = null;
+      });
+    }, { passive: true });
+
+    /* Keyboard: the glow sits on the focused control, still. */
+    document.addEventListener('focusin', function (e) {
+      var card = dcardOf(e.target);
+      if (!card || !e.target.matches || !e.target.matches(':focus-visible')) return;
+      var d = card.__dc || dcardInit(card);
+      dcardMeasure(card, d);
+      var b = e.target.getBoundingClientRect();
+      dcardPoint(d, b.left + b.width / 2, b.top + b.height / 2);
+      dcardFade(d, 1);
+    });
+
+    document.addEventListener('focusout', function (e) {
+      var card = dcardOf(e.target);
+      if (card && card.__dc && !card.matches(':hover')) dcardFade(card.__dc, 0);
+    });
+  }
+
   /* ---------- Price currency --------------------------------------------
      Services only. Every price is drawn in euros with its reais in data-brl;
      this swaps the text and remembers the choice. Without JavaScript the

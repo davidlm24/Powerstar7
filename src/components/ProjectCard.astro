@@ -26,7 +26,7 @@ const copy = {
 }[p.key];
 ---
 
-<article class:list={['project', wide && 'project--wide']}>
+<article class:list={['project', 'dcard', wide && 'project--wide']} data-corner="none" data-dots="over">
   <div class="project__shot">
     {/* The bar is drawn, not captured: it frames the screenshot as a website
         and names the address, without any one browser's chrome. */}
@@ -42,34 +42,44 @@ const copy = {
     />
   </div>
   <div class="project__text">
-    <p class="project__tag">{copy.tag}</p>
-    <Heading class="project__name">{p.name}</Heading>
+    <div class="project__top">
+      <Heading class="project__name">{p.name}</Heading>
+      <p class="project__tag">{copy.tag}</p>
+    </div>
     <p class="project__line">{copy.line}</p>
     <a class="project__link" href={p.url}>{t('work.visit')}<span class="visually-hidden"> — {p.name}</span> <span aria-hidden="true">&rarr;</span></a>
   </div>
 </article>
 
 <style>
-  .project__shot {
+  /* A compact card (David, 2026-10-20): the screenshot cropped to the top of
+     the page at 2:1, and a short body under it, the name and what the
+     business is on one line. Its dots come with the pointer, drawn over the
+     screenshot and kept clear of the text (global.css .dcard). */
+  .project {
     background: var(--paper-hi);
     border: 1px solid var(--rail);
+  }
+
+  .project__shot {
+    border-bottom: 1px solid var(--rail);
   }
 
   .project__bar {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 8px 10px;
+    padding: 6px 10px;
     border-bottom: 1px solid var(--rail);
     font-size: var(--t-micro);
     color: var(--fg-muted);
   }
 
   /* The three dots: round accent marks, the one place a curve is allowed
-     besides the buttons. */
+     besides the buttons and the cards. */
   .project__bar i {
-    inline-size: 8px;
-    block-size: 8px;
+    inline-size: 7px;
+    block-size: 7px;
     border-radius: 50%;
     background: var(--rail);
   }
@@ -82,30 +92,45 @@ const copy = {
   .project__shot img {
     display: block;
     width: 100%;
-    height: auto;
+    aspect-ratio: 2 / 1;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .project__text {
+    padding: var(--s2) var(--s3) var(--s3);
+  }
+
+  .project__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--s2);
+  }
+
+  .project__name {
+    font-size: 1.125rem;
+    line-height: 1.25;
   }
 
   .project__tag {
-    margin-block-start: var(--s3);
-    font-size: var(--t-small);
+    font-size: var(--t-micro);
     font-weight: var(--weight-heading);
     color: var(--fg-muted);
   }
 
-  .project__name {
-    margin-block-start: var(--s1);
-    font-size: var(--t-h3);
-  }
-
   .project__line {
-    margin-block-start: var(--s1);
-    max-width: 44ch;
+    margin-block-start: 0.35rem;
+    max-width: 30ch;
+    font-size: var(--t-small);
+    line-height: 1.45;
     color: var(--fg-muted);
   }
 
   .project__link {
     display: inline-block;
-    margin-block-start: var(--s2);
+    margin-block-start: var(--s1);
+    font-size: var(--t-small);
     font-weight: var(--weight-medium);
   }
 
@@ -114,21 +139,42 @@ const copy = {
     display: grid;
     grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
     align-items: center;
-    gap: var(--s5);
   }
 
-  .project--wide .project__tag {
-    margin-block-start: 0;
+  .project--wide .project__shot {
+    border-bottom: 0;
+    border-inline-end: 1px solid var(--rail);
+  }
+
+  .project--wide .project__shot img {
+    aspect-ratio: 16 / 10;
+  }
+
+  .project--wide .project__text {
+    padding: var(--s4);
+  }
+
+  .project--wide .project__name {
+    font-size: var(--t-h3);
+  }
+
+  .project--wide .project__line {
+    max-width: 44ch;
+    font-size: var(--t-body);
   }
 
   @media (max-width: 59.99rem) {
     .project--wide {
       grid-template-columns: minmax(0, 1fr);
-      gap: 0;
     }
 
-    .project--wide .project__tag {
-      margin-block-start: var(--s3);
+    .project--wide .project__shot {
+      border-inline-end: 0;
+      border-bottom: 1px solid var(--rail);
+    }
+
+    .project--wide .project__text {
+      padding: var(--s2) var(--s3) var(--s3);
     }
   }
 </style>

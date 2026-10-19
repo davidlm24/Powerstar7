@@ -26,6 +26,7 @@ export const ROUTES = {
   home: { en: '/', pt: '/pt' },
   work: { en: '/work', pt: '/pt/trabalhos' },
   services: { en: '/services', pt: '/pt/servicos' },
+  pricing: { en: '/pricing', pt: '/pt/precos' },
   about: { en: '/about', pt: '/pt/sobre-nos' },
   contact: { en: '/contact', pt: '/pt/contato' },
   legal: { en: '/legal-notice', pt: '/pt/aviso-legal' },
@@ -60,6 +61,7 @@ export const ui = {
     'nav.home': 'Home',
     'nav.work': 'Work',
     'nav.services': 'Services',
+    'nav.pricing': 'Pricing',
     'nav.about': 'About',
     'nav.contact': 'Contact',
     'nav.menu': 'Menu',
@@ -115,10 +117,18 @@ export const ui = {
 
 
     /* --- Services ------------------------------------------------------- */
+    /* Services is for the services (2026-10-20); what it costs is the
+       Pricing page. DRAFT headline and lead, pending David's review. */
     'services.title': 'Services — DesignActiv',
-    'services.h1': 'What it costs, and what you *get*.',
+    'services.h1': 'What we do, and what it *involves*.',
     'services.lead':
+      'Five services, each explained in plain words: what it is, what you get, and what we need from you.',
+
+    'pricing.title': 'Pricing — DesignActiv',
+    'pricing.h1': 'What it costs, and what you *get*.',
+    'pricing.lead':
       'A starting price to build your site, a monthly one to keep it looked after — and a person who answers when something needs to change.',
+    'pricing.faq.h2': 'What people ask about *price*.',
     'services.deliverables': 'What you get',
 
     'svc.web.name': 'Web design & development',
@@ -411,6 +421,7 @@ export const ui = {
     'nav.home': 'Início',
     'nav.work': 'Trabalhos',
     'nav.services': 'Serviços',
+    'nav.pricing': 'Preços',
     'nav.about': 'Sobre nós',
     'nav.contact': 'Contato',
     'nav.menu': 'Menu',
@@ -461,10 +472,18 @@ export const ui = {
 
 
     /* --- Services ------------------------------------------------------- */
+    /* Serviços é para os serviços (2026-10-20); quanto custa é a página
+       Preços. RASCUNHO de título e abertura, a aprovar pelo David. */
     'services.title': 'Serviços — DesignActiv',
-    'services.h1': 'Quanto custa, e o que você *recebe*.',
+    'services.h1': 'O que fazemos, e o que isso *envolve*.',
     'services.lead':
+      'Cinco serviços, cada um explicado em palavras simples: o que é, o que você recebe e o que precisamos de você.',
+
+    'pricing.title': 'Preços — DesignActiv',
+    'pricing.h1': 'Quanto custa, e o que você *recebe*.',
+    'pricing.lead':
       'Um preço de partida para construir o seu site, outro mensal para cuidar dele depois — e uma pessoa que responde quando algo precisa mudar.',
+    'pricing.faq.h2': 'O que perguntam sobre *preço*.',
     'services.deliverables': 'O que você recebe',
 
     'svc.web.name': 'Design e desenvolvimento web',

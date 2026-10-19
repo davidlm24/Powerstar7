@@ -170,7 +170,6 @@ const topics = [
       -webkit-mask-size: 240px 200px;
       mask-repeat: no-repeat;
       -webkit-mask-repeat: no-repeat;
-      transition: translate var(--dur) var(--ease);
     }
 
     /* .is-sent (site.js, once the message went): the corner steps dense
@@ -179,7 +178,6 @@ const topics = [
     .form:hover::after,
     .form:focus-within::after,
     .form.is-sent::after {
-      translate: 2px -2px;
       mask-image: image-set(url('/assets/dither/corner-hi.png') 1x, url('/assets/dither/corner-hi@2x.png') 2x);
       -webkit-mask-image: image-set(url('/assets/dither/corner-hi.png') 1x, url('/assets/dither/corner-hi@2x.png') 2x);
     }
@@ -250,6 +248,7 @@ const topics = [
        See tokens.css for why the fix is a second token rather than a heavier
        --rule. */
     border: 1px solid var(--field-edge);
+    border-radius: var(--radius-sm);
   }
 
   .field textarea {

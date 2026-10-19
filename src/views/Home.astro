@@ -124,7 +124,7 @@ const position = [
             {/* The callout belongs to this button, not to the row: when the
                 buttons stack on a narrow phone, it has to stay under "See prices". */}
             <span class="hero__prices">
-              <a class="btn btn--quiet" href={`${route('services', lang)}#pricing`}>{t('home.cta.secondary')}</a>
+              <a class="btn btn--quiet" href={route('pricing', lang)}>{t('home.cta.secondary')}</a>
               <AsciiCallout text={t('home.callout')} align="end" />
             </span>
           </div>
@@ -137,7 +137,7 @@ const position = [
       </div>
     </div>
 
-    <div class="hero__band" data-band data-wash-clear>
+    <div class="hero__band invert" data-band>
       <div class="container hero__band-in">
         <p class="hero__band-label">{t('home.band.label')}</p>
         <div class="hero__band-run">
@@ -146,8 +146,12 @@ const position = [
           </ul>
         </div>
         {/* WCAG 2.2.2: anything that moves on its own for more than five
-            seconds next to other content needs a way to stop it. Shown by
-            the script, so it never appears where it would do nothing. */}
+            seconds next to other content needs a way to stop it. The visible
+            [pause] went (David, 2026-10-20); the mechanism stays: hover
+            pauses it, tapping or clicking the stripe toggles it, and this
+            button is the keyboard and screen-reader route, drawn only while
+            it has focus. Shown by the script, so it never appears where it
+            would do nothing. */}
         <button
           type="button"
           class="hero__band-pause"
@@ -278,16 +282,22 @@ const position = [
 </Base>
 
 <script>
-  /* The band's pause button. Hover pauses it too (CSS); this is for
-     keyboard and touch. Nobody who asked for less motion sees the band move
-     at all, so the button stays hidden for them. */
+  /* The band's pause. Hover pauses it too (CSS); this is for keyboard and
+     touch: the button (shown only on focus) and a tap on the stripe itself.
+     Nobody who asked for less motion sees the band move at all, so the
+     button stays hidden for them. */
   const band = document.querySelector<HTMLElement>('[data-band]');
   const pause = band?.querySelector<HTMLButtonElement>('.hero__band-pause');
   if (band && pause && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     pause.hidden = false;
-    pause.addEventListener('click', () => {
+    const toggle = () => {
       const paused = band.toggleAttribute('data-paused');
       pause.textContent = (paused ? pause.dataset.play : pause.dataset.pause) ?? '';
+      pause.setAttribute('aria-pressed', String(paused));
+    };
+    pause.addEventListener('click', toggle);
+    band.addEventListener('click', (e) => {
+      if (e.target !== pause) toggle();
     });
   }
 </script>
@@ -616,15 +626,27 @@ const position = [
   }
 
   /* --- The band ----------------------------------------------------------
-     The kinds of business we make sites for, moving slowly along the foot
-     of the hero: the one continuous motion, in the place webhero runs its
-     client logos. About 50px a second. Hover or the pause button stops it;
-     with less motion asked for it never starts. */
+     The kinds of business we make sites for, moving slowly along a black
+     stripe set a little off the horizontal (David, 2026-10-20): the one
+     continuous motion, in the place webhero runs its client logos. About
+     50px a second. The stripe is .invert, so every role flips by itself
+     (on-ink 15.6:1 on the stripe). It runs past both page edges and leans
+     1.3 degrees; the hero keeps a margin under it so its lower corner is
+     never clipped. Hover pauses it, tapping it toggles it; with less motion
+     asked for it never starts. */
   .hero__band {
+    position: relative;
+    z-index: 1;
+    inline-size: 112%;
+    margin-inline: -6%;
+    margin-block: var(--s2) 1.75rem;
+    background: var(--bg);
+    transform: rotate(-1.3deg);
     font-family: var(--font-mono);
     font-size: var(--t-micro);
     letter-spacing: var(--tr-mono);
     color: var(--fg-muted);
+    cursor: pointer;
   }
 
   .hero__band-in {
@@ -669,7 +691,12 @@ const position = [
     color: var(--accent-fn);
   }
 
-  .hero__band:hover .hero__band-track,
+  @media (hover: hover) and (pointer: fine) {
+    .hero__band:hover .hero__band-track {
+      animation-play-state: paused;
+    }
+  }
+
   .hero__band[data-paused] .hero__band-track {
     animation-play-state: paused;
   }
@@ -678,15 +705,32 @@ const position = [
     to { transform: translateX(-50%); }
   }
 
+  /* Drawn only while it has focus, so it never costs the stripe a visible
+     control (David) and still answers WCAG 2.2.2 for keyboard users. */
   .hero__band-pause {
-    flex: none;
-    padding: var(--s2) 0;
+    position: absolute;
+    inset-inline-end: calc(var(--gutter) + 6%);
+    inset-block-start: 50%;
+    translate: 0 -50%;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    padding: 0;
     border: 0;
-    background: none;
+    background: var(--bg);
     font: inherit;
     letter-spacing: inherit;
     color: var(--fg);
     cursor: pointer;
+  }
+
+  .hero__band-pause:focus-visible {
+    inline-size: auto;
+    block-size: auto;
+    overflow: visible;
+    clip-path: none;
+    padding: 0.35rem 0.7rem;
   }
 
   .hero__band-pause::before { content: '['; color: var(--accent-fn); }
@@ -695,6 +739,10 @@ const position = [
   @media (prefers-reduced-motion: reduce) {
     .hero__band-track {
       animation: none;
+    }
+
+    .hero__band {
+      cursor: auto;
     }
   }
 
@@ -731,6 +779,11 @@ const position = [
       order: 3;
       flex-basis: 100%;
       padding-block: var(--s2) var(--s3);
+    }
+
+    .hero__band {
+      transform: rotate(-1deg);
+      margin-block-end: 1.25rem;
     }
   }
 

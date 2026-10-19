@@ -13,6 +13,7 @@ const PRIORITY: Record<PageKey, string> = {
   home: '1.0',
   work: '0.8',
   services: '0.8',
+  pricing: '0.8',
   about: '0.7',
   contact: '0.7',
   legal: '0.3',

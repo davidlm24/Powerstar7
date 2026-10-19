@@ -210,8 +210,8 @@ a:hover { text-decoration-thickness: 2px; }
   outline: 2px solid var(--blue);
   outline-offset: 3px;
   /* No border-radius here on purpose: an outline follows the element's own
-     radius, so the ring squares on the square controls and stays rounded on
-     inputs and cards without a single per-element override. */
+     radius, so the ring matches whatever it rings without a single
+     per-element override. */
 }
 
 .invert :focus-visible { outline-color: var(--on-ink-blue); }
@@ -729,3 +729,91 @@ a:hover { text-decoration-thickness: 2px; }
    and gives its height back here. A hero cancels this with a negative
    margin to run its background up behind the header. */
 main { padding-block-start: var(--header-h); }
+
+/* --- Cards with dots in them -----------------------------------------------
+   A card carries its dither INSIDE it (David, 2026-10-20: "dither inside
+   cards, on hover some proximity cursor animation, not just move outside").
+
+   At rest: a fixed corner of Bayer dots in the empty corner of the card
+   (public/assets/dither/corner.png as a mask over the accent), so it never
+   sits under text, and the card's own rounded corner clips it. With no
+   JavaScript, or on touch, that is all.
+
+   On hover (site.js, fine pointers only): a canvas under the content draws
+   a glow of dots around the POINTER, blue thickening to purple at its core,
+   fading out around every line of text, so the dots answer the cursor
+   without ever sitting behind readable words. Nothing moves.
+
+   data-corner: tr (default), bl or br. data-corner-from: the viewport width
+   in rem below which the rest corner is hidden (the layout has no empty
+   corner there). --dc-w / --dc-h size the corner window. */
+.dcard {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--radius);
+  overflow: clip;
+}
+
+.dcard__dots {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  inline-size: 100%;
+  block-size: 100%;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+@supports (mask-image: url('')) or (-webkit-mask-image: url('')) {
+  .dcard::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    z-index: -1;
+    inline-size: var(--dc-w, 240px);
+    block-size: var(--dc-h, 200px);
+    pointer-events: none;
+    background: var(--accent-fn);
+    mask-image: image-set(url('/assets/dither/corner.png') 1x, url('/assets/dither/corner@2x.png') 2x);
+    -webkit-mask-image: image-set(url('/assets/dither/corner.png') 1x, url('/assets/dither/corner@2x.png') 2x);
+    mask-size: 240px 200px;
+    -webkit-mask-size: 240px 200px;
+    mask-position: top right;
+    -webkit-mask-position: top right;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+  }
+
+  .dcard[data-corner='bl']::after {
+    inset-block: auto 0;
+    inset-inline: 0 auto;
+    rotate: 180deg;
+  }
+
+  .dcard[data-corner='br']::after {
+    inset-block: auto 0;
+    scale: 1 -1;
+  }
+
+  /* A card with no room for a rest corner (the compact project cards, whose
+     top is a screenshot) carries its dots only when the pointer is on it. */
+  .dcard[data-corner='none']::after {
+    display: none;
+  }
+
+  @media (max-width: 39.99rem) {
+    .dcard[data-corner-from='40']::after { display: none; }
+  }
+
+  @media (max-width: 59.99rem) {
+    .dcard[data-corner-from='60']::after { display: none; }
+  }
+}
+
+/* data-dots="over": the glow draws over the card's picture (a screenshot)
+   instead of under its content, so a card that is mostly image still
+   answers the pointer. The text it must stay clear of is still cleared. */
+.dcard[data-dots='over'] > .dcard__dots {
+  z-index: 1;
+}

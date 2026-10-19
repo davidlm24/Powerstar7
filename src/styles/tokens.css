@@ -327,11 +327,16 @@
      One radius. One shadow, used almost never. The old site had twenty
      surface classes, twelve of them the same rounded-rectangle-plus-
      hairline-plus-bevel. */
-  /* No radius tokens. Every surface on the site is square (cards, form
-     fields, the notice) with one exception by David's call (2026-10-19): the
-     buttons are pills, set in global.css. The other curves are small round
-     accent marks; an outline follows its element's own radius, so the focus
-     ring matches whatever it rings.
+  /* Corners. Slightly rounded surfaces (David, 2026-10-20, after a square
+     system and a pill button): --radius for cards, panels and the dark row,
+     --radius-sm for fields and small controls. The buttons stay pills (set
+     in global.css) and the hairline rules and bands stay square. The other
+     curves are small round accent marks; an outline follows its element's
+     own radius, so the focus ring matches whatever it rings. */
+  --radius: 6px;
+  --radius-sm: 4px;
+
+  /*
 
      No --shadow token either. Its first layer was a 1px offset at the same
      0.04 as --rule, i.e. a hairline drawn in shadow instead of in border — the
