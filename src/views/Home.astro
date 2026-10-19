@@ -4,6 +4,8 @@ import Illo from '../components/Illo.astro';
 import AsciiCallout from '../components/AsciiCallout.astro';
 import Closing from '../components/Closing.astro';
 import Accent from '../components/Accent.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { PROJECTS } from '../data/projects';
 import { accentParts } from '../i18n/accent';
 import { useTranslations, route, type Lang } from '../i18n/ui';
 
@@ -198,6 +200,22 @@ const position = [
             </article>
           ))
         }
+      </div>
+    </div>
+  </section>
+
+  {/* --- Recent work -----------------------------------------------------
+      The three client sites the team built (as Powerstar7), back on the home
+      page as the old site had them (David, 2026-10-19). On paper, between the
+      blue-wash band and the dark process band. */}
+  <section class="work rails">
+    <div class="container">
+      <div class="work__head">
+        <h2><Accent text={t('home.work.h2')} /></h2>
+        <a class="work__all" href={route('work', lang)}>{t('home.work.link')} &rarr;</a>
+      </div>
+      <div class="work__grid">
+        {PROJECTS.map((p) => <ProjectCard project={p} lang={lang} />)}
       </div>
     </div>
   </section>
@@ -635,8 +653,34 @@ const position = [
      paper services section gets a bottom pad too, because a band follows it. */
   .services,
   .position,
+  .work,
   .process {
     padding-block: var(--section-y);
+  }
+
+  .work__head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s3);
+    margin-block-end: var(--s5);
+  }
+
+  .work__all {
+    font-size: var(--t-small);
+  }
+
+  .work__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s5) var(--s4);
+  }
+
+  @media (max-width: 59.99rem) {
+    .work__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 
   .position {

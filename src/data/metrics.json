@@ -1,14 +1,14 @@
 {
   "measuredAt": "2026-10-19",
   "page": "/",
-  "requests": 15,
+  "requests": 18,
   "thirdPartyRequests": 0,
-  "weightKb": 110.6,
-  "weightRawKb": 155.5,
+  "weightKb": 187.8,
+  "weightRawKb": 237.4,
   "cookies": 0,
   "assets": [
-    "/_astro/Home.Bn_0yuAq.css",
-    "/_astro/Illo.BHH-JAGY.css",
+    "/_astro/Home.D0_cIxZr.css",
+    "/_astro/Illo.B_E3TOnk.css",
     "/assets/fonts/geist-latin.woff2",
     "/assets/fonts/source-serif-4-italic-latin.woff2",
     "/assets/illo/brand.png",
@@ -20,6 +20,9 @@
     "/assets/illo/seo.png",
     "/assets/illo/web.png",
     "/assets/img/favicon.svg",
-    "/assets/js/site.js"
+    "/assets/js/site.js",
+    "/assets/work/iconta.webp",
+    "/assets/work/ipda.webp",
+    "/assets/work/service.webp"
   ]
 }

@@ -68,12 +68,12 @@ select {
    IntersectionObserver, and is withdrawn if site.js does not arrive, so the
    resting state everyone else sees is simply the finished page. The hero is
    left out: it has its own landing. The selector list matches site.js. */
-.reveal main > :not(.hero) :is(h1, h2, .lead, .illo--field, .illo--aside, .lane, .lanes__more, .point, .step, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated) {
+.reveal main > :not(.hero) :is(h1, h2, .lead, .illo--field, .illo--aside, .lane, .lanes__more, .point, .step, .project, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated) {
   opacity: 0;
   transform: translateY(24px);
 }
 
-.reveal main > :not(.hero) :is(h1, h2, .lead, .illo--field, .illo--aside, .lane, .lanes__more, .point, .step, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated).is-in {
+.reveal main > :not(.hero) :is(h1, h2, .lead, .illo--field, .illo--aside, .lane, .lanes__more, .point, .step, .project, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated).is-in {
   opacity: 1;
   transform: none;
   transition:
@@ -492,9 +492,10 @@ a:hover { text-decoration-thickness: 2px; }
   letter-spacing: -0.01em;
   text-decoration: none;
   border: 1px solid transparent;
-  /* Square, by request. The sheen's ::after inherits this, so it squares off
-     with the button rather than leaving rounded corners behind. */
-  border-radius: 0;
+  /* Pill (David, 2026-10-19, of square / 8px / pill), like the old site's
+     buttons and set against a site that is otherwise square. The sheen's
+     ::after inherits it; the focus ring follows it on its own. */
+  border-radius: 999px;
   cursor: pointer;
   /* A hairline of light along the top edge — one inset, not the three-layer
      bevel the old system stamped on twelve different surfaces. */

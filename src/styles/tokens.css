@@ -327,10 +327,11 @@
      One radius. One shadow, used almost never. The old site had twenty
      surface classes, twelve of them the same rounded-rectangle-plus-
      hairline-plus-bevel. */
-  /* No radius tokens. Every surface on the site is square — controls, cards,
-     form fields, the notice. The only curves left are two 50%-round accent
-     marks, and an outline follows its element's own radius, so the focus ring
-     squares with them.
+  /* No radius tokens. Every surface on the site is square (cards, form
+     fields, the notice) with one exception by David's call (2026-10-19): the
+     buttons are pills, set in global.css. The other curves are small round
+     accent marks; an outline follows its element's own radius, so the focus
+     ring matches whatever it rings.
 
      No --shadow token either. Its first layer was a 1px offset at the same
      0.04 as --rule, i.e. a hairline drawn in shadow instead of in border — the

@@ -3,6 +3,8 @@ import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import AsciiCallout from '../components/AsciiCallout.astro';
 import Closing from '../components/Closing.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { PROJECTS } from '../data/projects';
 import { useTranslations, metrics, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -34,17 +36,15 @@ const evidence = [
 <Base lang={lang} page="work" title={t('work.title')} description={t('work.lead')}>
   <PageHead title={t('work.h1')} lead={t('work.lead')} figure="work" />
 
-  {/* The site itself as the evidence, until client work can be shown. The
-      old site put six tiles here labelled "Project 1" through "Project 6",
-      pointing at six 2 KB images that were solid black. Showing real proof
-      is worth more than a page that pretends.
-
-      A block describing the first client project in build sat above this
-      one. It was cut on 2026-10-08 until the client agrees to be shown; the
-      markup and its work.case.* strings are in git history, in the commit
-      that removed them. */}
+  {/* The client sites first, one to a row (David, 2026-10-19: the three
+      projects from the old Powerstar7 site are theirs), then this site as
+      the team's own example. */}
   <div class="exhibits rails">
     <div class="container">
+      <div class="projects">
+        {PROJECTS.map((p) => <ProjectCard project={p} lang={lang} level="h2" wide />)}
+      </div>
+
       {/* --- This site --------------------------------------------------- */}
       <article class="exhibit row row--statement">
         <header class="exhibit__head row__title">
@@ -101,6 +101,12 @@ const evidence = [
 </Base>
 
 <style>
+  .projects {
+    display: grid;
+    gap: var(--s6);
+    padding-block: var(--s5) var(--s6);
+  }
+
   .exhibit {
     padding-block: var(--s5) var(--s6);
   }
