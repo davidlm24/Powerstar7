@@ -3,8 +3,8 @@
   "page": "/",
   "requests": 30,
   "thirdPartyRequests": 0,
-  "weightKb": 188,
-  "weightRawKb": 263.6,
+  "weightKb": 188.5,
+  "weightRawKb": 265.2,
   "cookies": 0,
   "assets": [
     "/_astro/Home.BkYOuvaX.css",
