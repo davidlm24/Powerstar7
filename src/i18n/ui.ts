@@ -324,6 +324,8 @@ export const ui = {
     'services.pricing.lead':
       'We put the agreed work, price and timeline in writing. If you request more work later, we’ll quote it before doing it.',
     'services.pricing.from': 'From',
+    'services.currency.label': 'Show prices in',
+    'services.currency.note': 'Prices are set in euros. Reais are an estimate at about R$ {rate} per €1, rounded, and may differ when you pay.',
     'services.pricing.includes': 'What’s included',
     'services.pricing.perMonth': 'per month',
     'services.pricing.perPage': '{price} per page',
@@ -344,8 +346,8 @@ export const ui = {
     'services.care.kind': 'After launch · optional',
     'services.care.name': 'Website care',
     'services.care.note':
-      'Recommended, not required. Without it, later updates and support are quoted as they come up.',
-    'services.care.i1': 'Hosting',
+      'Recommended, not required. Without it, later updates and support are quoted as they come up, and after the first year the handover guide explains how to move the site to your own hosting.',
+    'services.care.i1': 'Hosting from the second year (the first is in your project)',
     'services.care.i2': 'Uptime monitoring',
     'services.care.i3': 'Security and platform updates',
     'services.care.i4': 'Backups',
@@ -359,7 +361,8 @@ export const ui = {
     'services.addons.lead': 'Quoted with the rest of the scope, so they are part of the agreed price.',
     'services.addons.pages': 'Extra pages',
     'services.addons.language': 'Each additional language',
-    'services.addons.brand': 'Branding refinement',
+    'services.addons.identity': 'Brand identity, created from scratch',
+    'services.addons.brand': 'Branding refinement (you already have a logo)',
     'services.addons.email': 'Email setup and basic automation',
     'services.addons.automation': 'Process automation',
 
@@ -380,13 +383,13 @@ export const ui = {
     'services.faq.a3':
       'Yes, if you want to. If you’ll be updating it yourself, we add a simple editor for your text, prices and photos, and it goes into the scope and the price. Changes to the structure stay with us, and Website care includes a small change every month if you’d rather not touch it at all.',
     'services.faq.a4':
-      'You are not locked in. Your proposal and handover guide say which domain, code and hosting accounts are yours and how to move the site, so leaving means ending Website care, if you have it, not asking for your own site back.',
+      'You are not locked in. Your proposal and handover guide say which domain, code and hosting accounts are yours and how to move the site, so leaving means ending Website care, if you have it, not asking for your own site back. Website care is month to month: you can end it with 30 days’ notice by email.',
     'services.faq.a5':
       'Yes. We talk with you in English or Portuguese, and read German. The site itself can be in several languages at once — French and German are common in Luxembourg — and each language beyond the first is priced up front, from {price}.',
     'services.faq.a6':
       'It means people who can’t use a mouse, don’t see well or use a screen reader can still use your site. We design with accessibility in mind and check the agreed pages with a keyboard and a screen reader before launch. It also makes the site easier to use on a cheap phone in bright sun.',
     'services.faq.a7':
-      'If you want us to. Website care costs {price} a month and covers hosting, updates, backups, monitoring, email support and one small change each month. It is optional — without it, anything later is quoted when you need it.',
+      'If you want us to. Website care costs {price} a month and covers hosting from the second year (the first is included in your project), updates, backups, monitoring, email support and one small change each month. It is optional: without it, anything later is quoted when you need it, and after the first year you can move the site to your own hosting.',
   },
 
   pt: {
@@ -649,6 +652,8 @@ export const ui = {
     'services.pricing.lead':
       'Registramos por escrito o trabalho combinado, o preço e o prazo. Se você pedir algo a mais depois, vamos enviar um orçamento antes de executar.',
     'services.pricing.from': 'A partir de',
+    'services.currency.label': 'Mostrar preços em',
+    'services.currency.note': 'Os preços são definidos em euros. Os valores em reais são uma estimativa a cerca de R$ {rate} por €1, arredondada, e podem variar na hora do pagamento.',
     'services.pricing.includes': 'O que está incluído',
     'services.pricing.perMonth': 'por mês',
     'services.pricing.perPage': '{price} por página',
@@ -669,8 +674,8 @@ export const ui = {
     'services.care.kind': 'Depois do lançamento · opcional',
     'services.care.name': 'Manutenção do site',
     'services.care.note':
-      'Recomendada, não obrigatória. Sem ela, atualizações e suporte posteriores são orçados à parte, conforme surgirem.',
-    'services.care.i1': 'Hospedagem',
+      'Recomendada, não obrigatória. Sem ela, atualizações e suporte posteriores são orçados à parte, conforme surgirem, e depois do primeiro ano o guia de entrega explica como levar o site para a sua própria hospedagem.',
+    'services.care.i1': 'Hospedagem a partir do segundo ano (o primeiro já está no projeto)',
     'services.care.i2': 'Monitoramento de disponibilidade',
     'services.care.i3': 'Atualizações de segurança e da plataforma',
     'services.care.i4': 'Backups',
@@ -684,7 +689,8 @@ export const ui = {
     'services.addons.lead': 'Orçados junto com o resto do escopo, então já entram no preço combinado.',
     'services.addons.pages': 'Páginas extras',
     'services.addons.language': 'Cada idioma adicional',
-    'services.addons.brand': 'Refinamento de marca',
+    'services.addons.identity': 'Identidade de marca, criada do zero',
+    'services.addons.brand': 'Refinamento de marca (você já tem um logotipo)',
     'services.addons.email': 'Configuração de e-mail e automação básica',
     'services.addons.automation': 'Automação de processos',
 
@@ -705,13 +711,13 @@ export const ui = {
     'services.faq.a3':
       'Sim, se você quiser. Se for você quem vai atualizar o site, incluímos um editor simples para textos, preços e fotos, e ele entra no escopo e no preço. Mudanças na estrutura ficam com a gente, e a Manutenção do site inclui uma pequena alteração por mês, se você preferir não mexer em nada.',
     'services.faq.a4':
-      'Você não fica preso. A proposta e o guia de entrega dizem quais contas de domínio, código e hospedagem são suas e como levar o site, então sair é só encerrar a Manutenção do site, se você tiver, e não pedir o seu próprio site de volta.',
+      'Você não fica preso. A proposta e o guia de entrega dizem quais contas de domínio, código e hospedagem são suas e como levar o site, então sair é só encerrar a Manutenção do site, se você tiver, e não pedir o seu próprio site de volta. A Manutenção do site é mensal: você pode encerrá-la com 30 dias de aviso por e-mail.',
     'services.faq.a5':
       'Sim. Falamos com você em inglês ou português, e lemos alemão. O site em si pode ter vários idiomas ao mesmo tempo — francês e alemão são comuns no Luxemburgo — e cada idioma além do primeiro tem preço definido desde o início, a partir de {price}.',
     'services.faq.a6':
       'Significa que pessoas que não usam mouse, que enxergam mal ou que usam leitor de tela conseguem usar o seu site do mesmo jeito. Pensamos a acessibilidade desde o design e conferimos as páginas combinadas com teclado e leitor de tela antes do lançamento. Isso também deixa o site mais fácil de usar num celular barato, sob sol forte.',
     'services.faq.a7':
-      'Se você quiser. A Manutenção do site custa {price} por mês e cobre hospedagem, atualizações, backups, monitoramento, suporte por e-mail e uma pequena alteração mensal. É opcional — sem ela, qualquer coisa depois é orçada quando você precisar.',
+      'Se você quiser. A Manutenção do site custa {price} por mês e cobre hospedagem a partir do segundo ano (o primeiro está incluído no projeto), atualizações, backups, monitoramento, suporte por e-mail e uma pequena alteração mensal. É opcional: sem ela, qualquer coisa depois é orçada quando você precisar, e depois do primeiro ano você pode levar o site para a sua própria hospedagem.',
   },
 } as const;
 

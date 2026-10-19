@@ -2,9 +2,9 @@
    DesignActiv — site behaviour
    =========================================================================
 
-   Six things earn their place here: the mobile nav, the sticky header's
+   Seven things earn their place here: the mobile nav, the sticky header's
    scrolled hairline, the contact form, the section entrances, the footer
-   year, and the hero wash. The entrances came back on 2026-10-16 at David's
+   year, the hero wash, and the euro/real toggle on the prices. The entrances came back on 2026-10-16 at David's
    call (the taste-skill audit's motion layer): each section's parts once, in
    order, never for reduced motion, and never able to leave content hidden.
 
@@ -548,5 +548,49 @@
     var btn = buttonOf(e);
     if (btn && btn.__dots && !btn.matches(':hover')) fadeDots(btn.__dots, 0);
   });
+
+  /* ---------- Price currency --------------------------------------------
+     Services only. Every price is drawn in euros with its reais in data-brl;
+     this swaps the text and remembers the choice. Without JavaScript the
+     toggle stays hidden and the prices stay in euros, which is what they are
+     set in. */
+
+  var currency = document.querySelector('[data-currency]');
+
+  if (currency) {
+    var currencyNote = document.querySelector('[data-currency-note]');
+    var priceEls = document.querySelectorAll('.price[data-eur]');
+    var currencyBtns = currency.querySelectorAll('button[data-cur]');
+    var CURRENCY_KEY = 'designactiv-currency';
+
+    var setCurrency = function (cur, remember) {
+      for (var i = 0; i < priceEls.length; i++) {
+        priceEls[i].textContent = priceEls[i].dataset[cur];
+      }
+      for (var j = 0; j < currencyBtns.length; j++) {
+        currencyBtns[j].setAttribute('aria-pressed', String(currencyBtns[j].dataset.cur === cur));
+      }
+      if (currencyNote) currencyNote.hidden = cur !== 'brl';
+      if (remember) {
+        try {
+          window.localStorage.setItem(CURRENCY_KEY, cur);
+        } catch (e) {}
+      }
+    };
+
+    currency.hidden = false;
+
+    for (var k = 0; k < currencyBtns.length; k++) {
+      currencyBtns[k].addEventListener('click', function (e) {
+        setCurrency(e.currentTarget.dataset.cur, true);
+      });
+    }
+
+    var savedCurrency = null;
+    try {
+      savedCurrency = window.localStorage.getItem(CURRENCY_KEY);
+    } catch (e) {}
+    if (savedCurrency === 'brl') setCurrency('brl', false);
+  }
 
 })();
