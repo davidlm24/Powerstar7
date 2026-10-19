@@ -41,6 +41,12 @@
   var rgba = function (r, g, b) { return ((255 << 24) | (b << 16) | (g << 8) | r) >>> 0; };
   var BLUE = rgba(12, 98, 224);      // --blue-fn
   var ON_INK_BLUE = rgba(92, 157, 255);   // --on-ink-blue, for a print on a dark band
+  /* The tritone (2026-10-19): a dot's ink from its coverage, the same bands
+     as scripts/illustrations.mjs, so at rest the canvas is the static PNG.
+     Effects bend v before the lookup, so a relit passage lightens toward
+     blue: the 3-colour gradient is live. */
+  var TRI_BLUE = rgba(0x17, 0x6f, 0xfd), TRI_PURPLE = rgba(0x65, 0x39, 0xe4), TRI_DARK = rgba(0x14, 0x14, 0x15);
+  var triOf = function (v) { var b = v * 255; return b < 115.5 ? TRI_BLUE : b < 191.5 ? TRI_PURPLE : TRI_DARK; };
   /* The wash dots are see-through, so a dot is a tint and not a solid
      pixel: 55% of --blue / --purple. Solid dots read as noise. */
   var rgbaA = function (r, g, b, a) { return ((Math.round(a * 255) << 24) | (b << 16) | (g << 8) | r) >>> 0; };
@@ -104,6 +110,8 @@
     this.ctx = canvas.getContext('2d');
     this.s = (window.devicePixelRatio || 1) >= 1.5 ? 2 : 1;
     this.ink = opts && opts.ink === 'on-ink' ? ON_INK_BLUE : BLUE;
+    /* Light-ground prints are tritone; a print on a dark band stays one ink. */
+    this.tri = !(opts && opts.ink === 'on-ink');
     this.state = {};
     this.anim = 0;
     var self = this;
@@ -185,7 +193,7 @@
 
     /* The pointer effects, in device px. */
     var lit = S.lit, line = S.line, neg = S.neg, org = S.organic;
-    var fs = org ? this.organic() : null, inkC = this.ink;
+    var fs = org ? this.organic() : null, inkC = this.ink, tri = this.tri;
     var cx = 0, cy = 0, litR = 0.38 * Math.max(W, H), lineR2 = 0, negR2 = 0, lineP = 5 * sc, ex, ey, d2c;
     if (lit) { cx = lit.x * sc; cy = lit.y * sc; }
     if (line) { cx = line.x * sc; cy = line.y * sc; lineR2 = line.r * line.r * sc * sc; }
@@ -216,8 +224,8 @@
             var ddx = i - rx, d2 = ddx * ddx + dy2;
             if (d2 < R2) v += prof[(Math.sqrt(d2) * 2) | 0];
           }
-          if (fs) { px[k] = (T[k] < org.p ? fs[k] && gain > 0.6 : v > t) ? inkC : 0; continue; }
-          px[k] = v > t ? inkC : 0;
+          if (fs) { px[k] = (T[k] < org.p ? fs[k] && gain > 0.6 : v > t) ? (tri ? triOf(v) : inkC) : 0; continue; }
+          px[k] = v > t ? (tri ? triOf(v) : inkC) : 0;
         }
       }
       this.ctx.putImageData(this.img, 0, 0);
@@ -261,7 +269,7 @@
           var ex = ii - rx, ey = jj - ry, e2 = ex * ex + ey * ey;
           if (e2 < R2) v += prof[(Math.sqrt(e2) * 2) | 0];
         }
-        px[k] = v > t ? inkC : 0;
+        px[k] = v > t ? (tri ? triOf(v) : inkC) : 0;
       }
     }
     this.ctx.putImageData(this.img, 0, 0);
@@ -434,8 +442,10 @@
   /* --- Wash -------------------------------------------------------------- */
 
   /**
-   * The hero wash as dots. Two blobs, blue top-left and purple top-right, at
-   * the same places as the CSS wash, drifting slowly through a flow field.
+   * The hero wash as dots. Two blobs, blue mid-right and purple top-right,
+   * rising from the right and dissipating before they reach the copy
+   * (David, 2026-10-19), at the same places as the CSS wash, drifting
+   * slowly through a flow field.
    * mode 'glow' brightens dots near the pointer, 'rings' sends rings out
    * from it.
    *
@@ -484,11 +494,12 @@
     '  vec2 css=(c+.5)*u_cell/u_dpr;',
     '  float x=css.x/u_size.x,y=css.y/u_size.y,asp=u_size.x/u_size.y,t=u_t;',
     '  float n=.5+.5*sin(x*7.*asp*.35+t*.35+sin(y*5.-t*.22)*1.6);',
-    '  vec2 bc=vec2(.26+.05*sin(t*.11),.16+.05*cos(t*.09))-u_par*vec2(.05,.04);',
-    '  vec2 pc=vec2(.78+.05*cos(t*.13),.28+.06*sin(t*.1))+u_par*vec2(.07,.06);',
+    '  vec2 bc=vec2(.9+.04*sin(t*.11),.52+.06*cos(t*.09))-u_par*vec2(.05,.04);',
+    '  vec2 pc=vec2(.7+.05*cos(t*.13),.14+.05*sin(t*.1))+u_par*vec2(.07,.06);',
     '  vec2 db=vec2((x-bc.x)*asp*.55,y-bc.y),dp=vec2((x-pc.x)*asp*.55,y-pc.y);',
     '  float ib=u_max*exp(-dot(db,db)*5.5)*(.55+.45*n);',
     '  float ip=u_max*exp(-dot(dp,dp)*6.)*(.55+.45*(1.-n));',
+    '  float fd=smoothstep(.3,.6,x);ib*=fd;ip*=fd;',
     '  if(u_ptr.z>.5){float d=length(css-u_ptr.xy);',
     '    if(u_mode<1.5)ib+=.3*exp(-d*d/16000.);',
     '    else ib+=.26*max(0.,sin(d/11.-t*5.))*exp(-d/170.);}',
@@ -619,8 +630,8 @@
     }
     var C = this.cols, R = this.rows, px = this.px, cs = this.cssCell, M = this.max, F = this.feather;
     var aspect = this.w / this.h, pnt = this.pt, rects = this.rects, mode = this.mode;
-    var bx = 0.26 + 0.05 * Math.sin(t * 0.11), by = 0.16 + 0.05 * Math.cos(t * 0.09);
-    var ppx = 0.78 + 0.05 * Math.cos(t * 0.13), ppy = 0.28 + 0.06 * Math.sin(t * 0.1);
+    var bx = 0.9 + 0.04 * Math.sin(t * 0.11), by = 0.52 + 0.06 * Math.cos(t * 0.09);
+    var ppx = 0.7 + 0.05 * Math.cos(t * 0.13), ppy = 0.14 + 0.05 * Math.sin(t * 0.1);
     for (var r = 0; r < R; r++) {
       var yc = (r + 0.5) * cs, y = yc / this.h;
       for (var c = 0; c < C; c++) {
@@ -630,6 +641,9 @@
         var dxp = (x - ppx) * aspect * 0.55, dyp = y - ppy;
         var ib = M * Math.exp(-(dxb * dxb + dyb * dyb) * 5.5) * (0.55 + 0.45 * n);
         var ip = M * Math.exp(-(dxp * dxp + dyp * dyp) * 6) * (0.55 + 0.45 * (1 - n));
+        var fd = x <= 0.3 ? 0 : x >= 0.6 ? 1 : (x - 0.3) / 0.3;
+        fd = fd * fd * (3 - 2 * fd);
+        ib *= fd; ip *= fd;
         if (pnt && mode !== 'flow') {
           var ex = xc - pnt.x, ey = yc - pnt.y, d = Math.sqrt(ex * ex + ey * ey);
           if (mode === 'glow') ib += 0.3 * Math.exp(-(d * d) / 16000);

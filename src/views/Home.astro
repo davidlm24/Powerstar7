@@ -81,6 +81,12 @@ const position = [
       data URI in a custom property: not a request. Astro's scoped style
       cannot take a frontmatter value, hence set:html. */}
   <Fragment set:html={`<style>:root{${rampCss()}}</style>`} />
+  {/* The hero fields, preloaded: the landing races the 2.5s arm-and-withdraw
+      (Base.astro), and in a throttled or slow tab the two field images were
+      losing that race, which left the static hero. A body preload is valid
+      and starts them with the page, not after three deferred scripts. */}
+  <link rel="preload" as="image" href="/assets/dither/desk.png" imagesrcset="/assets/dither/desk.png 1x, /assets/dither/desk@2x.png 2x" />
+  <link rel="preload" as="image" href="/assets/dither/check.png" imagesrcset="/assets/dither/check.png 1x, /assets/dither/check@2x.png 2x" />
   {/* --- Hero ------------------------------------------------------------
       David's picks (2026-10-14): "Your website, sorted." with the last word
       highlighted; beside it one general picture, a laptop and a phone
@@ -175,7 +181,20 @@ const position = [
                 </div>
                 <span class="lane__art">
                   <span class="icon-wash" aria-hidden="true">
-                    <Illo name={s.key} variant="icon" />
+                    {/* The -lg print, inline rather than through Illo: the
+                        manifest only knows the 224px icon box. Same classes,
+                        so the engine upgrades and relights it the same way. */}
+                    <span class="illo illo--icon" data-illo={`${s.key}-lg`} data-nosnippet>
+                      <img
+                        src={`/assets/illo/${s.key}-lg.png`}
+                        srcset={`/assets/illo/${s.key}-lg.png 1x, /assets/illo/${s.key}-lg@2x.png 2x`}
+                        width="288"
+                        height="221"
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
                   </span>
                 </span>
               </a>
@@ -329,15 +348,20 @@ const position = [
     inset: -35% -12% -25%;
     background:
       radial-gradient(
-        34% 38% at calc(78% + var(--hx, 0) * 7%) calc(24% + var(--hy, 0) * 6%),
+        34% 38% at calc(70% + var(--hx, 0) * 7%) calc(14% + var(--hy, 0) * 6%),
         color-mix(in srgb, var(--purple) 26%, transparent),
         transparent 68%
       ),
       radial-gradient(
-        40% 44% at calc(26% - var(--hx, 0) * 5%) calc(12% - var(--hy, 0) * 4%),
+        40% 44% at calc(90% - var(--hx, 0) * 5%) calc(52% - var(--hy, 0) * 4%),
         color-mix(in srgb, var(--blue) 26%, transparent),
         transparent 70%
       );
+    /* Rising from the right and dissipating before it reaches the copy
+       (David, 2026-10-19); the WebGL dots fade the same way (dither.js),
+       and both stay cleared off the text itself. */
+    -webkit-mask-image: linear-gradient(100deg, transparent 30%, #000 58%);
+    mask-image: linear-gradient(100deg, transparent 30%, #000 58%);
     animation: hero-drift 26s var(--ease) infinite alternate;
     pointer-events: none;
   }
@@ -774,7 +798,7 @@ const position = [
      lanes any more (2026-10-16 audit); the lane's own padding separates. */
   .lane {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 15rem;
+    grid-template-columns: minmax(0, 1fr) 19rem;
     grid-template-areas: 'text art';
     align-items: baseline;
     column-gap: var(--s4);
@@ -803,12 +827,13 @@ const position = [
     color: var(--fg-muted);
   }
 
-  /* The sticker at its own 1x width, 224px, in the 15rem track: one image
-     pixel to one screen pixel keeps the dither crisp. */
+  /* The icon a size up (David, 2026-10-19), at its own 1x width in the
+     19rem track: the -lg render, one image pixel to one screen pixel,
+     never a scaled dither. */
   .lane__art {
     grid-area: art;
     align-self: center;
-    --illo-w: 224px;
+    --illo-w: 288px;
   }
 
   /* Inline after the name now: the end of the lane belongs to the art,

@@ -8,9 +8,11 @@
    THE HOUSE STYLE (David, 2026-10-19): every illustration is drawn from
    zero for the job it does on its page, in tone made for the dither:
    gradients, glows, soft shadows and light, with thin ink outlines
-   (scripts/illo/paint.mjs). Dithered to 1 bit by an 8x8 Bayer matrix: blue
-   dots, and nothing else. No sticker paper, no halo (David: "remove the
-   white border"): the page ground shows between the dots. The tilt is
+   (scripts/illo/paint.mjs). Dithered by an 8x8 Bayer matrix into the three
+   inks (David, 2026-10-19): a dot takes its colour from its coverage, blue
+   where the tone is light, purple through the middle, dark at the deepest,
+   so the tonal drawing reads as one 3-colour gradient in dots. No sticker
+   paper, no halo: the page ground shows between the dots. The tilt is
    applied to the scene before dithering, so the grain stays square to the
    pixels.
 
@@ -24,7 +26,11 @@
    can never be written cut off.
 
    Written:
-     public/assets/illo/<name>[@2x].png        the dots, in --blue-fn
+     public/assets/illo/<name>[@2x].png        the dots, in the three inks
+     public/assets/illo/<icon>-lg[@2x].png     a service icon a size up
+                                               (288px) for the home lanes,
+                                               rendered at its own box so
+                                               the dither is never scaled
      public/assets/illo/<icon>-dark[@2x].png   a service icon in --on-ink-blue,
                                                for an icon on a dark band
      public/assets/dither/<name>[@2x].png      the continuous ink, for the
@@ -42,7 +48,7 @@
 import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { paint, clamp } from './illo/paint.mjs';
 import { SCENES } from './illo/scenes.mjs';
-import { png1, pngGrey } from './illo/png.mjs';
+import { png1, pngGrey, pngIndexed } from './illo/png.mjs';
 import { sampler, bayer8 } from './illo/dither.mjs';
 
 /* Display box at 1x and tilt, per kind. */
@@ -147,9 +153,24 @@ mkdirSync(FIELDS, { recursive: true });
 
 const failures = [];
 const t0 = Date.now();
+/* The tritone bands, in coverage bytes: below prints blue, between prints
+   purple, above prints dark (0.45 and 0.75 of full ink). dither.js uses the
+   same bands live, so the canvas lands on exactly these colours. */
+const TRI = [[0, 0, 0, 0], [0x17, 0x6f, 0xfd, 255], [0x65, 0x39, 0xe4, 255], [0x14, 0x14, 0x15, 255]];
+const B1 = 115.5, B2 = 191.5;
+
+/** The tritone dots: 0 none, 1 blue, 2 purple, 3 dark. */
+function dotsTri(ink8, owner, W, H) {
+  const idx = new Uint8Array(W * H);
+  for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
+    const k = j * W + i;
+    if (owner[k] && ink8[k] / 255 > bayer8(i, j)) idx[k] = ink8[k] < B1 ? 1 : ink8[k] < B2 ? 2 : 3;
+  }
+  return idx;
+}
+
 let bytes = 0;
-for (const name of names) {
-  const kind = KIND_OF[name], { box: [W, H], tilt } = KINDS[kind];
+function render(name, outName, W, H, tilt, dark) {
   const l2 = paint(SCENES[name], W * 2, H * 2, tilt);
   // 1x: average the 2x ink; a pixel is object if any of its four is
   const l1 = l2.map(({ ink, obj }) => {
@@ -163,18 +184,26 @@ for (const name of names) {
   });
   for (const [suffix, layers, w, h, halo, margin] of [['', l1, W, H, 4, 2], ['@2x', l2, W * 2, H * 2, 7, 4]]) {
     const { ink8, owner } = composite(layers, w, h, halo, margin);
-    const full = dots(ink8, owner, w, h);
-    const sides = cutSides(full, w, h);
-    if (sides.length && suffix) failures.push(`${name}: dots touch the ${sides.join(', ')}`);
-    const png = png1(full, w, h, BLUE);
-    writeFileSync(`${OUT}/${name}${suffix}.png`, png);
-    writeFileSync(`${FIELDS}/${name}${suffix}.png`, field(ink8, owner, w, h));
+    const idx = dotsTri(ink8, owner, w, h);
+    const sides = cutSides(idx, w, h);
+    if (sides.length && suffix) failures.push(`${outName}: dots touch the ${sides.join(', ')}`);
+    const png = pngIndexed(idx, w, h, TRI);
+    writeFileSync(`${OUT}/${outName}${suffix}.png`, png);
+    writeFileSync(`${FIELDS}/${outName}${suffix}.png`, field(ink8, owner, w, h));
     bytes += png.length;
-    if (kind === 'icon') {
-      writeFileSync(`${OUT}/${name}-dark${suffix}.png`, png1(full, w, h, ON_INK_BLUE));
+    if (dark) {
+      /* The dark-band print stays single-ink: the tritone's dark would
+         vanish on the dark ground. */
+      writeFileSync(`${OUT}/${outName}-dark${suffix}.png`, png1(dots(ink8, owner, w, h), w, h, ON_INK_BLUE));
     }
-    if (!suffix) console.log(`${name}: ${(png.length / 1024).toFixed(1)} KB`);
+    if (!suffix) console.log(`${outName}: ${(png.length / 1024).toFixed(1)} KB`);
   }
+}
+for (const name of names) {
+  const kind = KIND_OF[name], { box: [W, H], tilt } = KINDS[kind];
+  render(name, name, W, H, tilt, kind === 'icon');
+  /* The home lanes carry the icons a size up (David: bigger). */
+  if (kind === 'icon') render(name, name + '-lg', 288, 221, KINDS.icon.tilt, false);
 }
 if (names === ALL) {
   for (const [suffix, w, h] of [['', 240, 200], ['@2x', 480, 400]]) {

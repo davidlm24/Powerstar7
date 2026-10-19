@@ -107,6 +107,9 @@
       } else {
         hero.classList.add('has-dots');
         wash.start();
+        /* The dots answer the pointer: a soft glow where the cursor is
+           (David, 2026-10-19), still cleared off every line of text. */
+        if (pointerEffects) wash.mode = 'glow';
         if (document.fonts) document.fonts.ready.then(function () { wash.resize(); });
         // Nothing to draw once the hero has scrolled away.
         var washVisible = true;
