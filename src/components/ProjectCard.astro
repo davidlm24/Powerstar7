@@ -1,0 +1,134 @@
+---
+/* One client project: the live site's home page in a plain browser frame,
+   what the business is, and a link to the site. Used three-up on the home
+   page and one-to-a-row on the Work page (`wide`). The heading level follows
+   the page: h3 under the home section's h2, h2 directly under the Work h1. */
+import type { Project } from '../data/projects';
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  project: Project;
+  lang: Lang;
+  level?: 'h2' | 'h3';
+  wide?: boolean;
+}
+
+const { project: p, lang, level = 'h3', wide = false } = Astro.props;
+const t = useTranslations(lang);
+const Heading = level;
+
+/* Written out rather than built with a template literal, so every key keeps
+   its type check (a template-literal key needs an `as any`). */
+const copy = {
+  service: { line: t('work.project.service.line'), tag: t('work.project.service.tag') },
+  iconta: { line: t('work.project.iconta.line'), tag: t('work.project.iconta.tag') },
+  ipda: { line: t('work.project.ipda.line'), tag: t('work.project.ipda.tag') },
+}[p.key];
+---
+
+<article class:list={['project', wide && 'project--wide']}>
+  <div class="project__shot">
+    {/* The bar is drawn, not captured: it frames the screenshot as a website
+        and names the address, without any one browser's chrome. */}
+    <span class="project__bar" aria-hidden="true"><i></i><i></i><i></i><b>{p.host}</b></span>
+    <img
+      src={`/assets/work/${p.key}.webp`}
+      srcset={`/assets/work/${p.key}.webp 1x, /assets/work/${p.key}@2x.webp 2x`}
+      width="720"
+      height="450"
+      alt={t('work.shot.alt', { name: p.name })}
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  <div class="project__text">
+    <p class="project__tag">{copy.tag}</p>
+    <Heading class="project__name">{p.name}</Heading>
+    <p class="project__line">{copy.line}</p>
+    <a class="project__link" href={p.url}>{t('work.visit')}<span class="visually-hidden"> — {p.name}</span> <span aria-hidden="true">&rarr;</span></a>
+  </div>
+</article>
+
+<style>
+  .project__shot {
+    background: var(--paper-hi);
+    border: 1px solid var(--rail);
+  }
+
+  .project__bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--rail);
+    font-size: var(--t-micro);
+    color: var(--fg-muted);
+  }
+
+  /* The three dots: round accent marks, the one place a curve is allowed
+     besides the buttons. */
+  .project__bar i {
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: 50%;
+    background: var(--rail);
+  }
+
+  .project__bar b {
+    margin-inline-start: 6px;
+    font-weight: var(--weight-text);
+  }
+
+  .project__shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .project__tag {
+    margin-block-start: var(--s3);
+    font-size: var(--t-small);
+    font-weight: var(--weight-heading);
+    color: var(--fg-muted);
+  }
+
+  .project__name {
+    margin-block-start: var(--s1);
+    font-size: var(--t-h3);
+  }
+
+  .project__line {
+    margin-block-start: var(--s1);
+    max-width: 44ch;
+    color: var(--fg-muted);
+  }
+
+  .project__link {
+    display: inline-block;
+    margin-block-start: var(--s2);
+    font-weight: var(--weight-medium);
+  }
+
+  /* Work page: the screenshot large on the left, the text beside it. */
+  .project--wide {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: center;
+    gap: var(--s5);
+  }
+
+  .project--wide .project__tag {
+    margin-block-start: 0;
+  }
+
+  @media (max-width: 59.99rem) {
+    .project--wide {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .project--wide .project__tag {
+      margin-block-start: var(--s3);
+    }
+  }
+</style>

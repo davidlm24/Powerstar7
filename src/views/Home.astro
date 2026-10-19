@@ -4,6 +4,8 @@ import Illo from '../components/Illo.astro';
 import AsciiCallout from '../components/AsciiCallout.astro';
 import Closing from '../components/Closing.astro';
 import Accent from '../components/Accent.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { PROJECTS } from '../data/projects';
 import { accentParts } from '../i18n/accent';
 import { useTranslations, route, type Lang } from '../i18n/ui';
 import { rampCss } from '../lib/bayer';
@@ -154,10 +156,8 @@ const position = [
   {/* --- What we do -------------------------------------------------------
       Layout B from the illustration options, which David picked: copy-led
       lanes, one service to a row, instead of five cards. Each service keeps
-      its own sticker at the end of the lane: at rest only the soft wash
-      shows, and the sticker appears on it when the lane is pointed at or
-      focused, so the section reads as type first and art second. With no
-      hover (touch), the stickers simply sit there. */}
+      its own sticker at the end of the lane, on its soft wash, at full
+      strength (option C, 2026-10-19). */}
   <section class="services rails">
     <div class="container">
       <div class="services__head">
@@ -214,12 +214,28 @@ const position = [
     </div>
   </section>
 
+  {/* --- Recent work -----------------------------------------------------
+      The three client sites the team built (as Powerstar7), back on the home
+      page as the old site had them (David, 2026-10-19). On paper, between the
+      blue-wash band and the dark process band. */}
+  <section class="work rails">
+    <div class="container">
+      <div class="work__head">
+        <h2><Accent text={t('home.work.h2')} /></h2>
+        <a class="work__all" href={route('work', lang)}>{t('home.work.link')} &rarr;</a>
+      </div>
+      <div class="work__grid">
+        {PROJECTS.map((p) => <ProjectCard project={p} lang={lang} />)}
+      </div>
+    </div>
+  </section>
+
   {/* --- Process ----------------------------------------------------------
       A timeline rather than a fourth grid of numbered cards. The site already
       has three of those (the service cards, the position points, About's
       "how"), and a process is a SEQUENCE — so it gets one continuous rule
       with a node where each step starts, instead of four separate boxes. */}
-  <section class="process rails">
+  <section class="process rails invert">
     <div class="container">
       <div class="process__head">
         <h2><Accent text={t('home.process.h2')} /></h2>
@@ -696,12 +712,45 @@ const position = [
 
   /* --- Services ---------------------------------------------------------- */
 
-  /* Every Home section below the hero takes --section-y on top only, so the
-     space between two of them is that one value, never two stacked. */
+  /* The colour rhythm (David, 2026-10-19, option C, after his partner found
+     the page empty next to the old Powerstar7 site, which changed ground 17
+     times): paper, then the blue-wash band, then the dark process band, then
+     the blue closing band. Each band carries --section-y top and bottom; the
+     paper services section gets a bottom pad too, because a band follows it. */
   .services,
   .position,
+  .work,
   .process {
-    padding-block-start: var(--section-y);
+    padding-block: var(--section-y);
+  }
+
+  .work__head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s3);
+    margin-block-end: var(--s5);
+  }
+
+  .work__all {
+    font-size: var(--t-small);
+  }
+
+  .work__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s5) var(--s4);
+  }
+
+  @media (max-width: 59.99rem) {
+    .work__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .position {
+    background: var(--blue-wash);
   }
 
   .services__head {

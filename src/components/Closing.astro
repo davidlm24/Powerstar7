@@ -11,10 +11,11 @@ const { lang, label, lead } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-{/* What replaced .cta-band — the identical blue slab that closed six of the
-    old site's ten pages. One line of type at heading scale, between two
-    hairlines, and the whole line is the link. */}
-<section class="closing rails">
+{/* The page's last word: one line of type at heading scale, and the whole
+    line is the link, on the blue band (David, 2026-10-19, option C). The old
+    site closed on a blue slab too; this brings that moment back without its
+    template look. */}
+<section class="closing rails band-blue">
   <div class="container">
     <a class="closing__link" href={route('contact', lang)}>
       <span>{label ?? t('home.cta')}</span>

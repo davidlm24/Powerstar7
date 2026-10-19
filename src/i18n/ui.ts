@@ -96,6 +96,8 @@ export const ui = {
 
     'home.services.h2': 'Five things, done *properly*.',
     'home.services.link': 'All services',
+    'home.work.h2': 'Recent *work*.',
+    'home.work.link': 'All work',
 
     'home.position.h2': 'A website that *fits* your business.',
     'home.position.body':
@@ -156,10 +158,20 @@ export const ui = {
 
     /* --- Work ----------------------------------------------------------- */
     'work.title': 'Work — DesignActiv',
-    'work.h1': 'Proof, before the *portfolio*.',
+    'work.h1': 'Sites we’ve *built*.',
     'work.callout': 'you’re looking at it',
     'work.lead':
-      'Our first client sites are being built now and will appear here once they launch. Until then, the best evidence of how we work is this site itself.',
+      'Websites we designed and built for businesses and organisations, in three languages. Below them, this site: our own example.',
+    'work.visit': 'Visit the site',
+    'work.shot.alt': 'The {name} home page',
+    /* Facts only from each live site or the old Powerstar7 page: what the
+       organisation does and the site's language. No figures or results. */
+    'work.project.service.line': 'Home cleaning in Brussels since 2014: cleaning, ironing and help with shopping.',
+    'work.project.service.tag': 'Website · in French',
+    'work.project.iconta.line': 'Digital financial services for people, businesses and partner shops.',
+    'work.project.iconta.tag': 'Website · in Portuguese',
+    'work.project.ipda.line': 'The German site of the Pentecostal church God is Love, with services in Essen and Münster.',
+    'work.project.ipda.tag': 'Website · in German and Portuguese',
 
     'work.this.h': 'This website',
     'work.this.b':
@@ -430,6 +442,8 @@ export const ui = {
 
     'home.services.h2': 'Cinco coisas, bem *feitas*.',
     'home.services.link': 'Todos os serviços',
+    'home.work.h2': 'Trabalhos *recentes*.',
+    'home.work.link': 'Todos os trabalhos',
 
     'home.position.h2': 'Um site que faz sentido para o seu *negócio*.',
     'home.position.body':
@@ -490,10 +504,18 @@ export const ui = {
 
     /* --- Work ----------------------------------------------------------- */
     'work.title': 'Trabalhos — DesignActiv',
-    'work.h1': 'A prova vem antes do *portfólio*.',
+    'work.h1': 'Sites que *fizemos*.',
     'work.callout': 'é este que você está vendo',
     'work.lead':
-      'Nossos primeiros sites de clientes estão em construção e vão aparecer aqui quando forem ao ar. Até lá, a melhor prova de como trabalhamos é este próprio site.',
+      'Sites que desenhamos e construímos para empresas e organizações, em três idiomas. Logo abaixo, este site: o nosso próprio exemplo.',
+    'work.visit': 'Ver o site',
+    'work.shot.alt': 'Página inicial do site {name}',
+    'work.project.service.line': 'Limpeza residencial em Bruxelas desde 2014: limpeza, passadoria e ajuda com compras.',
+    'work.project.service.tag': 'Site · em francês',
+    'work.project.iconta.line': 'Serviços financeiros digitais para pessoas, empresas e lojas credenciadas.',
+    'work.project.iconta.tag': 'Site · em português',
+    'work.project.ipda.line': 'O site alemão da Igreja Pentecostal Deus é Amor, com cultos em Essen e Münster.',
+    'work.project.ipda.tag': 'Site · em alemão e português',
 
     'work.this.h': 'Este site',
     'work.this.b':

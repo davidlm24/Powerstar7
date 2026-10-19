@@ -25,10 +25,8 @@
 
    Written:
      public/assets/illo/<name>[@2x].png        the dots, in --blue-fn
-     public/assets/illo/<icon>-rest[@2x].png   a service icon's resting print,
-                                               30% ink (a subset of the dots)
-     public/assets/illo/<icon>-dark[-rest]…    the same in --on-ink-blue, for
-                                               an icon on a dark band
+     public/assets/illo/<icon>-dark[@2x].png   a service icon in --on-ink-blue,
+                                               for an icon on a dark band
      public/assets/dither/<name>[@2x].png      the continuous ink, for the
                                                live dither (dither.js): one
                                                8-bit grey image of W x 2H; the
@@ -63,7 +61,6 @@ const KIND_OF = {
   fit: 'aside', question: 'aside', desk: 'hero', check: 'seal',
 };
 const EDGE = 2;
-const REST = 0.3;                                       // an icon's resting ink
 
 const BLUE = [12, 98, 224];                             // --blue-fn
 const ON_INK_BLUE = [92, 157, 255];                     // --on-ink-blue
@@ -174,10 +171,7 @@ for (const name of names) {
     writeFileSync(`${FIELDS}/${name}${suffix}.png`, field(ink8, owner, w, h));
     bytes += png.length;
     if (kind === 'icon') {
-      const rest = dots(ink8, owner, w, h, REST);
-      writeFileSync(`${OUT}/${name}-rest${suffix}.png`, png1(rest, w, h, BLUE));
       writeFileSync(`${OUT}/${name}-dark${suffix}.png`, png1(full, w, h, ON_INK_BLUE));
-      writeFileSync(`${OUT}/${name}-dark-rest${suffix}.png`, png1(rest, w, h, ON_INK_BLUE));
     }
     if (!suffix) console.log(`${name}: ${(png.length / 1024).toFixed(1)} KB`);
   }

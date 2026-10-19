@@ -58,14 +58,19 @@
   window.addEventListener('scroll', schedule, { passive: true });
   window.addEventListener('resize', schedule);
 
-  /* --- Service icons: rest sparse, line screen on hover --------------------- */
+  /* --- Service icons: full ink, relit from the pointer --------------------- */
 
+  /* The same hover as the home hero's picture (David, 2026-10-19: "same as
+     hero illustration hover effect, with opacity always at 100"): the print
+     rests at full ink and, while the lane or row is pointed at, is relit
+     from the pointer, light near it and dense away from it. It never drops
+     below full; leaving fades the light back out. */
   if (pointerEffects) {
     each('[data-illo-zone]', function (zone) {
       var illo = zone.querySelector('.illo--icon');
       if (!illo) return;
       whenNear(zone, function () {
-        upgrade(illo, { gain: 0.3 }).then(function (st) { D.hover(zone, st, 'line', { gain: 0.3 }); });
+        upgrade(illo).then(function (st) { D.hover(zone, st, 'lit', {}); });
       });
     });
 

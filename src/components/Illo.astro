@@ -10,10 +10,9 @@
    ink: 'blue' (the default) or 'on-ink', the dots for a dark band.
 
    variant:
-   - icon:  a service icon. At rest a sparse print (30% ink, the -rest
-            file); on its zone's hover or keyboard focus the full print
-            (global.css swaps the two images where no canvas has taken
-            over). Where there is no hover (touch) the full print shows.
+   - icon:  a service icon, at full ink always (David, 2026-10-19). Where
+            the page runs the engine, its zone's hover relights it from the
+            pointer, as the hero picture does (dither-site.js).
    - field: the page-heading figure, behind the text, faded towards the
             copy by its wrapper's masks.
    - aside: the smaller second figure, wide screens only.
@@ -36,16 +35,11 @@ const { name, variant, ink = 'blue', class: className } = Astro.props;
 const { w, h } = manifest[name];
 const base = `/assets/illo/${name}${ink === 'on-ink' ? '-dark' : ''}`;
 const full = { src: `${base}.png`, srcset: `${base}.png 1x, ${base}@2x.png 2x` };
-const rest = { src: `${base}-rest.png`, srcset: `${base}-rest.png 1x, ${base}-rest@2x.png 2x` };
 const eager = variant === 'field' || variant === 'sticker';
 ---
 
 <div class:list={['illo', `illo--${variant}`, (variant === 'field' || variant === 'aside') && 'print-in', className]} aria-hidden="true" data-nosnippet data-illo={name} data-ink={ink}>
-  {variant === 'icon' && (
-    <img class="illo__rest" src={rest.src} srcset={rest.srcset} width={w} height={h} alt="" loading="lazy" decoding="async" />
-  )}
   <img
-    class={variant === 'icon' ? 'illo__full' : undefined}
     src={full.src}
     srcset={full.srcset}
     width={w}
