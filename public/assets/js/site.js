@@ -427,15 +427,16 @@
      Contrast is the cap. On the solid button the dots are --blue over the
      --blue-hover fill, and white on solid --blue is 4.43:1, which fails AA.
      So the dots never pass CAP_SOLID: at 60% the label's backdrop averages
-     out at 5.4:1. The quiet button's dots are ink at no more than 22%, about the
-     strength the old 7% ink gradient had at its centre, drawn tighter so it
-     still reads as a glow and not a screen: 22% ink keeps the label at 12:1.
+     out at 5.4:1. The quiet button turns dark on hover (global.css), so its
+     dots are the on-ink blue at no more than 38%: the paper label's backdrop
+     averages 4.9:1 at the glow's centre. Inside .invert the swap goes light
+     and the dots are ink at the same cap, which keeps that label near 10:1.
 
      One delegated, rAF-throttled pointer listener, as before; skipped on
      touch and for reduced motion (pointerEffects). Keyboard focus shows
      the dots at the centre, still, for everyone. */
-  var CAP_SOLID = 0.6, CAP_QUIET = 0.22;
-  var SPREAD_SOLID = 3600, SPREAD_QUIET = 1400;           // px²: the glow's reach
+  var CAP_SOLID = 0.6, CAP_QUIET = 0.38;
+  var SPREAD_SOLID = 3600, SPREAD_QUIET = 2600;           // px²: the glow's reach
 
   /* 8x8 Bayer, the illustrations' matrix: 64 steps, so the glow fades
      smoothly even at the quiet button's low density. */
@@ -468,8 +469,8 @@
       c: c, x: c.getContext('2d'), on: 0, pt: null, raf: 0,
       cap: quiet ? CAP_QUIET : CAP_SOLID,
       spread: quiet ? SPREAD_QUIET : SPREAD_SOLID,
-      // little-endian RGBA words: --blue, --ink, --on-ink
-      colour: !quiet ? 0xffff6f0e : onInk ? 0xffebf2f5 : 0xff171b1c,
+      // little-endian RGBA words: --blue, --ink, --on-ink-blue
+      colour: !quiet ? 0xffff6f0e : onInk ? 0xff171b1c : 0xffff9d5c,
     };
     var r = btn.getBoundingClientRect();
     c.width = Math.max(1, Math.round(r.width));

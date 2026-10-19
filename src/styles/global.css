@@ -566,6 +566,8 @@ a:hover { text-decoration-thickness: 2px; }
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22);
   transition:
     background var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
     transform var(--dur) var(--ease),
     box-shadow var(--dur) var(--ease);
 }
@@ -671,30 +673,32 @@ a:hover { text-decoration-thickness: 2px; }
   box-shadow: none;
 }
 
-.btn--quiet:not(:disabled):hover {
+/* The quiet button turns dark on hover (David, 2026-10-19): the roles
+   swap, fill from --fg and label from --bg, so on a dark band it turns
+   light instead and the label always keeps the ground's full contrast
+   (15.41:1 on paper). :not(:disabled) on the focus rule too: it costs
+   nothing and lifts the specificity over .invert .btn--quiet. */
+.btn--quiet:not(:disabled):hover,
+.btn--quiet:not(:disabled):focus-visible {
+  --btn-bg: var(--fg);
+  --btn-fg: var(--bg);
   border-color: var(--fg);
 }
 
-/* On the quiet button the sheen is ink, not light — white on the paper
-   ground would be invisible. Mixed from --ink rather than written out as
-   rgb(17 19 24), which is the same colour the token already names. */
+/* The quiet sheen only ever shows on hover or focus, when the fill has
+   swapped dark — so it is cut from the LABEL's colour (currentColor): a
+   light sheen on the dark fill, and, inside .invert where the swap goes
+   the other way, a dark sheen on the light fill. 14% keeps the label
+   above 5:1 at the sheen's centre. */
 .btn--quiet::after {
   background: radial-gradient(
     9rem circle at var(--mx, 50%) var(--my, 50%),
-    color-mix(in srgb, var(--ink) 7%, transparent),
+    color-mix(in srgb, currentColor 14%, transparent),
     transparent 60%
   );
 }
 
 .invert .btn--quiet { --btn-fg: var(--on-ink); }
-
-.invert .btn--quiet::after {
-  background: radial-gradient(
-    9rem circle at var(--mx, 50%) var(--my, 50%),
-    rgb(255 255 255 / 0.12),
-    transparent 60%
-  );
-}
 
 /* --- Accessibility -------------------------------------------------------- */
 
