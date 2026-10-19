@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import AsciiCallout from '../components/AsciiCallout.astro';
-import { useTranslations, CONTACT, type Lang } from '../i18n/ui';
+import { useTranslations, route, CONTACT, type Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
@@ -94,6 +94,10 @@ const topics = [
           <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
         </div>
 
+        <p class="form__privacy">
+          {t('contact.form.privacy')} <a href={route('privacy', lang)}>{t('contact.form.privacyLink')}</a>
+        </p>
+
         <div class="form__foot">
           <button class="btn" type="submit">{t('contact.form.submit')}</button>
           <p class="form__status" role="status" aria-live="polite"></p>
@@ -106,6 +110,16 @@ const topics = [
         <h2 class="direct__h">{t('contact.direct.h')}</h2>
         <p class="direct__b">{t('contact.direct.b')}</p>
         <a class="direct__email" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+        {
+          CONTACT.whatsapp && (
+            <a class="direct__alt" href={`https://wa.me/${CONTACT.whatsapp}`}>{t('contact.direct.whatsapp')}</a>
+          )
+        }
+        {
+          CONTACT.phone && (
+            <a class="direct__alt" href={`tel:${CONTACT.phone.replace(/s/g, '')}`}>{t('contact.direct.phone')}: {CONTACT.phone}</a>
+          )
+        }
       </aside>
     </div>
   </section>
@@ -231,6 +245,11 @@ const topics = [
     gap: var(--s3);
   }
 
+  .form__privacy {
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+  }
+
   .form__status {
     font-size: var(--t-small);
     color: var(--fg-muted);
@@ -265,6 +284,13 @@ const topics = [
     font-size: 1.125rem;
     font-weight: var(--weight-medium);
     letter-spacing: -0.02em;
+  }
+
+  .direct__alt {
+    display: block;
+    margin-block-start: var(--s2);
+    font-size: var(--t-small);
+    font-weight: var(--weight-medium);
   }
 
   @media (max-width: 60rem) {

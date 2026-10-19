@@ -41,6 +41,12 @@ import { accentCount } from './accent';
 
 export const CONTACT = {
   email: 'hello@designactiv.com',
+  /* Optional channels. Leave empty until the number is real: Contact.astro
+     renders nothing for an empty value, so no placeholder ever reaches the
+     page. WhatsApp: digits only with country code (e.g. '352621000000').
+     Phone: international format for the tel: link (e.g. '+352 621 000 000'). */
+  whatsapp: '' as string,
+  phone: '' as string,
   /* Deliberately absent until they are real: phone and street address.
      The old site shipped "+49 (0) 000 000 0000" and "Street and number,
      10000 Berlin" on all ten pages. A fake number is worse than no number. */
@@ -110,7 +116,7 @@ export const ui = {
     'services.title': 'Services — DesignActiv',
     'services.h1': 'What it costs, and what you *get*.',
     'services.lead':
-      'One price to build your site, one to keep it looked after — and a person who answers when something needs to change.',
+      'A starting price to build your site, a monthly one to keep it looked after — and a person who answers when something needs to change.',
     'services.deliverables': 'What you get',
 
     'svc.web.name': 'Web design & development',
@@ -213,6 +219,8 @@ export const ui = {
     'contact.form.messageHint':
       'What you need, roughly when you need it, and anything already decided.',
     'contact.form.submit': 'Send message',
+    'contact.form.privacy': 'We use what you send to reply to you, not for marketing.',
+    'contact.form.privacyLink': 'How we handle your data',
     'contact.form.sending': 'Sending…',
     'contact.form.trap': 'Leave this field empty',
 
@@ -229,6 +237,8 @@ export const ui = {
     'contact.unconfigured': 'This form is not connected yet — please email us at {email}.',
 
     'contact.direct.h': 'Or write to us directly',
+    'contact.direct.whatsapp': 'Message us on WhatsApp',
+    'contact.direct.phone': 'Call us',
     'contact.direct.b':
       'Email reaches us fastest. We work in English and Portuguese, and read German.',
 
@@ -302,7 +312,7 @@ export const ui = {
     'home.process.s3.h': 'Build and test',
     'home.process.s4.h': 'Handover',
     'home.process.s1.b':
-      'You tell us what you need, and we write it up as a scope with the price attached — agreed before any work starts.',
+      'You tell us what you need, and we write it up as a scope with the price attached, including what we need from you, such as text and photos — agreed before any work starts.',
     'home.process.s2.b':
       'We design straight into a working page, so you review the real site on your own phone — not a picture of it.',
     'home.process.s3.b':
@@ -327,7 +337,7 @@ export const ui = {
     'services.design.i3': 'Page structure and layout',
     'services.design.i4': 'Contact form',
     'services.design.i5': 'Basic SEO setup',
-    'services.design.i6': 'Domain and hosting set up',
+    'services.design.i6': 'Domain set up and the first year of hosting',
     'services.design.i7': 'Testing before launch',
     'services.design.i8': 'Launch and handover',
 
@@ -364,7 +374,7 @@ export const ui = {
     'services.faq.q6': 'What does “accessible” mean in practice?',
     'services.faq.q7': 'Do you keep working on it after launch?',
     'services.faq.a1':
-      'It depends on what the site has to do, so the timeline goes into the written scope next to the price — you have a date before anything starts. The biggest variable is usually content: text and photos arriving when agreed keep it on schedule.',
+      'A straightforward small-business site usually takes 2 to 4 weeks from the day we have your text and photos. The exact timeline goes into the written scope next to the price, so you have a date before anything starts. Text and photos arriving when agreed is what keeps it on schedule.',
     'services.faq.a2':
       'To start, just a short description of the business and what the site needs to do — the contact form asks for exactly that. Once the scope is agreed, we need your text, photos and logo, and access to your domain if you already have one. If any of that doesn’t exist yet, say so: it goes into the scope.',
     'services.faq.a3':
@@ -437,7 +447,7 @@ export const ui = {
     'services.title': 'Serviços — DesignActiv',
     'services.h1': 'Quanto custa, e o que você *recebe*.',
     'services.lead':
-      'Um preço para construir o seu site, outro para cuidar dele depois — e uma pessoa que responde quando algo precisa mudar.',
+      'Um preço de partida para construir o seu site, outro mensal para cuidar dele depois — e uma pessoa que responde quando algo precisa mudar.',
     'services.deliverables': 'O que você recebe',
 
     'svc.web.name': 'Design e desenvolvimento web',
@@ -540,6 +550,8 @@ export const ui = {
     'contact.form.messageHint':
       'O que você precisa, mais ou menos para quando, e o que já estiver decidido.',
     'contact.form.submit': 'Enviar mensagem',
+    'contact.form.privacy': 'Usamos o que você enviar para responder, não para marketing.',
+    'contact.form.privacyLink': 'Como tratamos seus dados',
     'contact.form.sending': 'Enviando…',
     'contact.form.trap': 'Deixe este campo vazio',
 
@@ -556,6 +568,8 @@ export const ui = {
     'contact.unconfigured': 'Este formulário ainda não está conectado — escreva para {email}.',
 
     'contact.direct.h': 'Ou escreva direto para nós',
+    'contact.direct.whatsapp': 'Fale com a gente no WhatsApp',
+    'contact.direct.phone': 'Ligue para nós',
     'contact.direct.b':
       'O e-mail chega mais rápido. Trabalhamos em português e inglês, e lemos alemão.',
 
@@ -623,7 +637,7 @@ export const ui = {
     'home.process.s3.h': 'Criação e testes',
     'home.process.s4.h': 'Entrega',
     'home.process.s1.b':
-      'Você conta do que precisa, e nós escrevemos um escopo com o preço junto — combinado antes de qualquer trabalho começar.',
+      'Você conta do que precisa, e nós escrevemos um escopo com o preço junto, incluindo o que precisamos de você, como textos e fotos — combinado antes de qualquer trabalho começar.',
     'home.process.s2.b':
       'Fazemos o design direto em uma página que já funciona, então você revisa o site de verdade no seu próprio celular — não uma imagem dele.',
     'home.process.s3.b':
@@ -648,7 +662,7 @@ export const ui = {
     'services.design.i3': 'Estrutura e layout das páginas',
     'services.design.i4': 'Formulário de contato',
     'services.design.i5': 'SEO básico configurado',
-    'services.design.i6': 'Domínio e hospedagem configurados',
+    'services.design.i6': 'Domínio configurado e o primeiro ano de hospedagem',
     'services.design.i7': 'Testes antes do lançamento',
     'services.design.i8': 'Lançamento e entrega',
 
@@ -685,7 +699,7 @@ export const ui = {
     'services.faq.q6': 'O que significa “acessível” na prática?',
     'services.faq.q7': 'Vocês continuam cuidando do site depois do lançamento?',
     'services.faq.a1':
-      'Depende do que o site precisa fazer, então o prazo entra no escopo escrito, junto com o preço — você tem uma data antes de qualquer coisa começar. O que mais pesa costuma ser o conteúdo: textos e fotos chegando quando combinado mantêm o cronograma.',
+      'Um site simples de pequeno negócio costuma levar de 2 a 4 semanas, a partir do dia em que recebemos seus textos e fotos. O prazo exato entra no escopo escrito, junto com o preço, então você tem uma data antes de qualquer coisa começar. Textos e fotos chegando quando combinado é o que mantém o cronograma.',
     'services.faq.a2':
       'Para começar, só uma descrição curta do negócio e do que o site precisa fazer — é exatamente o que o formulário de contato pede. Depois de combinado o escopo, precisamos dos seus textos, fotos e logotipo, e do acesso ao seu domínio, se você já tiver um. Se alguma dessas coisas ainda não existir, é só dizer: isso entra no escopo.',
     'services.faq.a3':
