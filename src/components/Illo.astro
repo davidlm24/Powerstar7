@@ -40,7 +40,7 @@ const rest = { src: `${base}-rest.png`, srcset: `${base}-rest.png 1x, ${base}-re
 const eager = variant === 'field' || variant === 'sticker';
 ---
 
-<div class:list={['illo', `illo--${variant}`, className]} aria-hidden="true" data-nosnippet data-illo={name} data-ink={ink}>
+<div class:list={['illo', `illo--${variant}`, (variant === 'field' || variant === 'aside') && 'print-in', className]} aria-hidden="true" data-nosnippet data-illo={name} data-ink={ink}>
   {variant === 'icon' && (
     <img class="illo__rest" src={rest.src} srcset={rest.srcset} width={w} height={h} alt="" loading="lazy" decoding="async" />
   )}

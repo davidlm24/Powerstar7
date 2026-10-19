@@ -3,6 +3,7 @@ import '../styles/fonts.css';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { levelsCss, stepsKeyframes } from '../lib/bayer';
 import { useTranslations, ROUTES, type Lang, type PageKey } from '../i18n/ui';
 
 interface Props {
@@ -24,6 +25,13 @@ const canonical = page ? new URL(ROUTES[page][lang], site).href : null;
 /* A WhatsApp referral sees this card before it sees the site, so PT pages get
    the Portuguese card. Both come from scripts/og-card.mjs. */
 const ogImage = new URL(lang === 'pt' ? '/assets/img/og-card-pt.png' : '/assets/img/og-card.png', site).href;
+
+/* The print coming up: every 4x4 Bayer level as a CSS mask (--dz-0 … --dz-16)
+   and the keyframes that step through them (src/lib/bayer.ts). What the
+   studio prints develops in dots on every page: the page figures, the
+   process numerals, the prices, the proof figures, the form's reply. Data
+   URIs in custom properties, 485 bytes gzipped; not a request. */
+const dz = `:root{${levelsCss()}}${stepsKeyframes('dz-in', 0, 16)}`;
 ---
 
 <!doctype html>
@@ -49,6 +57,8 @@ const ogImage = new URL(lang === 'pt' ? '/assets/img/og-card-pt.png' : '/assets/
         </>
       )
     }
+
+    <Fragment set:html={`<style>${dz}</style>`} />
 
     <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#f5f2eb" />

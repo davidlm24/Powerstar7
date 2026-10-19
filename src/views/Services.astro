@@ -142,7 +142,7 @@ const faqs = [
               and paste, search snippets, some screen readers. The flex gap
               still sets the visible spacing; the space is for everything else. */}
           <p class="plan__price">
-            <span class="plan__unit">{t('services.pricing.from')}</span> <span class="plan__amount"><Priced text={eur(PRICING.design)} lang={lang} /></span>
+            <span class="plan__unit">{t('services.pricing.from')}</span> <span class="plan__amount print-in"><Priced text={eur(PRICING.design)} lang={lang} /></span>
           </p>
           <p class="plan__note">{t('services.design.note')}</p>
           <h4 class="plan__includes">{t('services.pricing.includes')}</h4>
@@ -156,7 +156,7 @@ const faqs = [
           <p class="plan__kind">{t('services.care.kind')}</p>
           <h3 class="plan__name">{t('services.care.name')}</h3>
           <p class="plan__price">
-            <span class="plan__amount"><Priced text={eur(PRICING.care)} lang={lang} /></span> <span class="plan__unit">{t('services.pricing.perMonth')}</span>
+            <span class="plan__amount print-in"><Priced text={eur(PRICING.care)} lang={lang} /></span> <span class="plan__unit">{t('services.pricing.perMonth')}</span>
           </p>
           <p class="plan__note">{t('services.care.note')}</p>
           <h4 class="plan__includes">{t('services.pricing.includes')}</h4>
@@ -446,6 +446,12 @@ const faqs = [
     letter-spacing: var(--tr-display);
     line-height: 1;
     font-variant-numeric: tabular-nums;
+    /* The number people came for prints in dots once its card has landed
+       ("yes, our prices are public ^"): printed in the open, in the site's
+       own ink. Once, on scroll-in; it is still and solid before anyone
+       reads it (global.css, the print coming up). */
+    --print-dur: 360ms;
+    --print-delay: calc(var(--reveal-delay, 0ms) + 120ms);
   }
 
   .plan__unit {
@@ -641,6 +647,36 @@ const faqs = [
 
   .faq-item[open] .faq-item__q::after {
     content: '\2212';
+  }
+
+  /* Opening: the answer prints (dz-in, 200ms: readable by the third step)
+     and the list below moves with it instead of jumping. The height
+     interpolation is Chrome 131+ and ignored elsewhere; the print is keyed
+     on html.reveal, so reduced motion and no JavaScript keep the native
+     snap. Closing stays instant: a visitor closing is done reading. */
+  @media (prefers-reduced-motion: no-preference) {
+    .faq-item {
+      interpolate-size: allow-keywords;
+    }
+
+    .faq-item::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        block-size 220ms var(--ease),
+        content-visibility 220ms allow-discrete;
+    }
+
+    .faq-item[open]::details-content {
+      block-size: auto;
+    }
+  }
+
+  @supports (mask-image: url('')) {
+    :global(html.reveal) .faq-item[open] .faq-item__a {
+      mask-size: 4px 4px;
+      animation: dz-in 200ms linear both;
+    }
   }
 
   .faq-item__a {

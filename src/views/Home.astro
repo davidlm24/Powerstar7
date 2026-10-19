@@ -229,7 +229,7 @@ const position = [
         {
           steps.map((s, i) => (
             <li class="step">
-              <span class="step__n">{String(i + 1).padStart(2, '0')}</span>
+              <span class="step__n print-in">{String(i + 1).padStart(2, '0')}</span>
               <h3 class="step__h">{s.h}</h3>
               <p class="step__b">{s.b}</p>
             </li>
@@ -846,6 +846,12 @@ const position = [
     font-weight: var(--weight-heading);
     color: var(--accent-fn);
     font-variant-numeric: tabular-nums;
+    /* A process is an ORDER. The steps rise together, 70ms apart, which says
+       "four things"; the numerals print in one after another, twice as far
+       apart, after each step has landed, which says "in this order"
+       (global.css, the print coming up). */
+    --print-dur: 320ms;
+    --print-delay: calc(var(--reveal-delay, 0ms) * 2 + 100ms);
   }
 
   .step__h {

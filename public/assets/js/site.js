@@ -114,6 +114,20 @@
     applyFrost();
   }
 
+  /* ---------- The print coming up ---------------------------------------- */
+
+  /* Text that changes in answer to the visitor prints in dots (global.css
+     .print-now): the class is taken off and put back, with a layout read
+     between so the browser sees two changes and restarts the keyframes.
+     The CSS is keyed on html.reveal, so with reduced motion or no masks
+     this is a class toggle and nothing more. Screen readers are untouched:
+     the text is set first, in full. */
+  var reprint = function (el) {
+    el.classList.remove('print-now');
+    void el.offsetWidth;
+    el.classList.add('print-now');
+  };
+
   /* ---------- Contact form ----------------------------------------------- */
 
   var form = document.querySelector('form[data-contact]');
@@ -123,10 +137,16 @@
     var submitBtn = form.querySelector('button[type="submit"]');
     var copy = JSON.parse(form.dataset.copy || '{}');
 
+    /* The reply prints in dots each time it changes, and once the message
+       has gone the form keeps .is-sent (Contact.astro: the corner goes
+       dense and stays), so the end of the only thing a visitor DOES on this
+       site is answered in the site's own ink and not only in 15px of text. */
     var setStatus = function (kind, text) {
       if (!statusEl) return;
       statusEl.dataset.kind = kind;
       statusEl.textContent = text;
+      reprint(statusEl);
+      form.classList.toggle('is-sent', kind === 'ok');
     };
 
     /* Authored validation, deliberately not reportValidity().
@@ -493,8 +513,15 @@
     return btn && !btn.disabled ? btn : null;
   };
 
+  /* sheenPending, not pending: every var in this file shares one function
+     scope, and the section entrances above keep their waiting list in
+     `pending`. The sheen used the same name, set it to null at start-up,
+     and from then on every entrance callback threw after its first element
+     (one part entered per observer callback, the rest stayed at opacity 0
+     until another crossed) and the scroll fallback never ran. Found on
+     2026-10-19 while verifying the print entrances. */
   if (pointerEffects) {
-    var pending = null;
+    var sheenPending = null;
     var queued = false;
 
     document.addEventListener('pointerover', function (e) {
@@ -512,7 +539,7 @@
       fadeDots(btn.__dots, 0);
     });
 
-    /* `queued` lives OUTSIDE `pending` on purpose: `pending` is replaced on
+    /* `queued` lives OUTSIDE `sheenPending` on purpose: it is replaced on
        every move, so a flag stored on it would read undefined each time and
        schedule a frame per event, the cost this throttle exists to avoid. */
     document.addEventListener(
@@ -520,16 +547,16 @@
       function (e) {
         var btn = buttonOf(e);
         if (!btn) return;
-        pending = { btn: btn, x: e.clientX, y: e.clientY };
+        sheenPending = { btn: btn, x: e.clientX, y: e.clientY };
         if (queued) return;
         queued = true;
         window.requestAnimationFrame(function () {
           queued = false;
-          if (!pending) return;
-          var d = dotsFor(pending.btn), r = pending.btn.getBoundingClientRect();
-          d.pt = { x: pending.x - r.left, y: pending.y - r.top };
+          if (!sheenPending) return;
+          var d = dotsFor(sheenPending.btn), r = sheenPending.btn.getBoundingClientRect();
+          d.pt = { x: sheenPending.x - r.left, y: sheenPending.y - r.top };
           if (d.on >= 1) drawDots(d);
-          pending = null;
+          sheenPending = null;
         });
       },
       { passive: true }
@@ -563,9 +590,14 @@
     var currencyBtns = currency.querySelectorAll('button[data-cur]');
     var CURRENCY_KEY = 'designactiv-currency';
 
+    /* Each price re-prints as it swaps (240ms in dots), so the visitor who
+       looked up to press BRL and back sees WHICH numbers were re-expressed
+       rather than a page where figures silently changed. Skipped on the
+       remembered choice at load: nothing changed in front of anyone. */
     var setCurrency = function (cur, remember) {
       for (var i = 0; i < priceEls.length; i++) {
         priceEls[i].textContent = priceEls[i].dataset[cur];
+        if (remember) reprint(priceEls[i]);
       }
       for (var j = 0; j < currencyBtns.length; j++) {
         currencyBtns[j].setAttribute('aria-pressed', String(currencyBtns[j].dataset.cur === cur));

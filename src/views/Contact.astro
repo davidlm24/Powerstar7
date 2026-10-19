@@ -173,8 +173,12 @@ const topics = [
       transition: translate var(--dur) var(--ease);
     }
 
+    /* .is-sent (site.js, once the message went): the corner steps dense
+       and stays, the same move it makes for the pointer, now meaning
+       "received", while the reply under the button prints in dots. */
     .form:hover::after,
-    .form:focus-within::after {
+    .form:focus-within::after,
+    .form.is-sent::after {
       translate: 2px -2px;
       mask-image: image-set(url('/assets/dither/corner-hi.png') 1x, url('/assets/dither/corner-hi@2x.png') 2x);
       -webkit-mask-image: image-set(url('/assets/dither/corner-hi.png') 1x, url('/assets/dither/corner-hi@2x.png') 2x);

@@ -87,6 +87,53 @@ select {
   .reveal main > :not(.hero) * {
     opacity: 1 !important;
     transform: none !important;
+    mask-image: none !important;
+  }
+}
+
+/* --- The print coming up ---------------------------------------------------
+   What the studio prints does not rise and fade like a paragraph: it
+   DEVELOPS, the dots coming up in Bayer order like a print in the tray,
+   which is what the hero's picture already does in canvas. Here it is CSS
+   only: the element waits behind an empty 4x4 Bayer mask (--dz-0, Base.astro)
+   and, when its section enters (.is-in, site.js), steps through the sixteen
+   levels to solid (dz-in). 1px cells (mask-size 4px for the 4-cell tile), the
+   grain of the illustrations themselves. mask-image is paint, not layout.
+
+   Who prints: .print-in on the element. The page figures and asides are in
+   the entrance list themselves, so they carry .is-in; the numerals, prices
+   and proof figures sit inside a part that does (.step, .plan, .details),
+   and --reveal-delay inherits from it. Each sets its own --print-dur and
+   --print-delay. .print-now is for a reply that prints when it changes
+   (the form status, a swapped price), added by site.js on each change.
+
+   Keyed on .reveal, so with reduced motion or without JavaScript nothing
+   waits and nothing is masked: the finished page, as today. If a browser
+   has no masks the @supports block is skipped and the figures take the
+   section entrance like everything else. */
+@supports (mask-image: url('')) {
+  .reveal main > :not(.hero) .print-in {
+    mask-image: var(--dz-0);
+    mask-size: 4px 4px;
+  }
+
+  /* A figure prints instead of rising: the entrance's offset is cancelled
+     for it, and the mask does the arriving. */
+  .reveal main > :not(.hero) :is(.illo--field, .illo--aside) {
+    --print-dur: 640ms;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .reveal main > :not(.hero) .is-in.print-in,
+  .reveal main > :not(.hero) .is-in .print-in {
+    animation: dz-in var(--print-dur, 360ms) linear var(--print-delay, var(--reveal-delay, 0ms)) both;
+  }
+
+  .reveal .print-now {
+    mask-size: 4px 4px;
+    animation: dz-in var(--print-dur, 240ms) linear both;
   }
 }
 

@@ -68,18 +68,18 @@ const evidence = [
               <dl class="figures">
                 <div>
                   <dt>{t('home.proof.weight')}</dt>
-                  <dd>
+                  <dd class="print-in">
                     {metrics.weightKb}
                     <span>KB</span>
                   </dd>
                 </div>
                 <div>
                   <dt>{t('home.proof.requests')}</dt>
-                  <dd>{metrics.requests}</dd>
+                  <dd class="print-in">{metrics.requests}</dd>
                 </div>
                 <div>
                   <dt>{t('home.proof.thirdParty')}</dt>
-                  <dd>{metrics.thirdPartyRequests}</dd>
+                  <dd class="print-in">{metrics.thirdPartyRequests}</dd>
                 </div>
               </dl>
               </div>
@@ -175,6 +175,11 @@ const evidence = [
     font-weight: var(--weight-medium);
     letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
+    /* The measured figures are the proof: they print in dots once the
+       details have landed, the way the prices do on Services (global.css,
+       the print coming up). */
+    --print-dur: 360ms;
+    --print-delay: calc(var(--reveal-delay, 0ms) + 120ms);
   }
 
   .figures dd span {
