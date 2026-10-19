@@ -82,6 +82,13 @@ select {
   transition-delay: var(--reveal-delay, 0ms);
 }
 
+/* The section before the closing band ends with its own breathing room:
+   sections take --section-y on top only, which on one ground is right, but
+   against a band of another colour the last line would sit on the edge. */
+main > :has(+ .closing) {
+  padding-block-end: var(--section-y);
+}
+
 /* Paper shows every part, whether or not it has scrolled into view. */
 @media print {
   .reveal main > :not(.hero) * {
@@ -161,6 +168,8 @@ a:hover { text-decoration-thickness: 2px; }
 }
 
 .invert :focus-visible { outline-color: var(--on-ink-blue); }
+/* The default ring is the brand blue, which vanishes on the blue band. */
+.band-blue :focus-visible { outline-color: #fff; }
 
 /* --blue-fn, not --blue: the display blue behind white measured 4.43:1 and
    failed AA for selected text. The functional sibling is 5.47:1. #fff stays
@@ -343,26 +352,9 @@ a:hover { text-decoration-thickness: 2px; }
   height: auto;
 }
 
-/* Icons: at rest a faint ghost (15%) on their zone's soft wash; on hover
-   or keyboard focus of the zone the sticker comes up to full on top of it
-   — the one animation (David). Where there is no hover at all (touch),
-   the icons simply show. */
-.illo--icon img {
-  opacity: 0.15;
-  transition: opacity 260ms var(--ease);
-}
-
-[data-illo-zone]:hover .illo--icon img,
-[data-illo-zone]:focus-visible .illo--icon img,
-[data-illo-zone]:focus-within .illo--icon img {
-  opacity: 1;
-}
-
-@media (hover: none) {
-  .illo--icon img {
-    opacity: 1;
-  }
-}
+/* Icons show at full strength, always (David, 2026-10-19, option C). They
+   rested at 15% until then and only came up on hover, which left the right
+   half of the services sections nearly blank. */
 
 /* The page figure and the section asides: full-strength stickers in their
    own grid column beside a heading (PageHead.astro, Home's position head,

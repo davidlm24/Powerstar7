@@ -359,3 +359,22 @@
   background: var(--bg);
   color: var(--fg);
 }
+
+/* The blue band (David, 2026-10-19, option C of the "colour rhythm" pass):
+   the closing call to action on the brand blue, the loud moment the old
+   Powerstar7 site had in "Let's Bring Your Vision to Life". Roles flip the
+   same way .invert does. White on --blue-fn is 5.47:1; the muted white is
+   92%, which blends to 4.79:1 on the blue, so it still clears AA for the
+   20px lead. */
+.band-blue {
+  --bg: var(--blue-fn);
+  --fg: #fff;
+  --fg-muted: rgb(255 255 255 / 0.92);
+  --accent: #fff;
+  --accent-fn: #fff;
+  --rail: rgb(255 255 255 / 0.22);
+  --rule: rgb(255 255 255 / 0.16);
+
+  background: var(--bg);
+  color: var(--fg);
+}

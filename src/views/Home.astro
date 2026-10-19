@@ -144,10 +144,8 @@ const position = [
   {/* --- What we do -------------------------------------------------------
       Layout B from the illustration options, which David picked: copy-led
       lanes, one service to a row, instead of five cards. Each service keeps
-      its own sticker at the end of the lane: at rest only the soft wash
-      shows, and the sticker appears on it when the lane is pointed at or
-      focused, so the section reads as type first and art second. With no
-      hover (touch), the stickers simply sit there. */}
+      its own sticker at the end of the lane, on its soft wash, at full
+      strength (option C, 2026-10-19). */}
   <section class="services rails">
     <div class="container">
       <div class="services__head">
@@ -209,7 +207,7 @@ const position = [
       has three of those (the service cards, the position points, About's
       "how"), and a process is a SEQUENCE — so it gets one continuous rule
       with a node where each step starts, instead of four separate boxes. */}
-  <section class="process rails">
+  <section class="process rails invert">
     <div class="container">
       <div class="process__head">
         <h2><Accent text={t('home.process.h2')} /></h2>
@@ -630,12 +628,19 @@ const position = [
 
   /* --- Services ---------------------------------------------------------- */
 
-  /* Every Home section below the hero takes --section-y on top only, so the
-     space between two of them is that one value, never two stacked. */
+  /* The colour rhythm (David, 2026-10-19, option C, after his partner found
+     the page empty next to the old Powerstar7 site, which changed ground 17
+     times): paper, then the blue-wash band, then the dark process band, then
+     the blue closing band. Each band carries --section-y top and bottom; the
+     paper services section gets a bottom pad too, because a band follows it. */
   .services,
   .position,
   .process {
-    padding-block-start: var(--section-y);
+    padding-block: var(--section-y);
+  }
+
+  .position {
+    background: var(--blue-wash);
   }
 
   .services__head {

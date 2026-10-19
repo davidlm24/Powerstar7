@@ -1,14 +1,14 @@
 {
-  "measuredAt": "2026-10-16",
+  "measuredAt": "2026-10-19",
   "page": "/",
   "requests": 15,
   "thirdPartyRequests": 0,
   "weightKb": 110.6,
-  "weightRawKb": 155.4,
+  "weightRawKb": 155.5,
   "cookies": 0,
   "assets": [
-    "/_astro/Home.DJbyA5Nl.css",
-    "/_astro/Illo.BRawCmN2.css",
+    "/_astro/Home.Bn_0yuAq.css",
+    "/_astro/Illo.BHH-JAGY.css",
     "/assets/fonts/geist-latin.woff2",
     "/assets/fonts/source-serif-4-italic-latin.woff2",
     "/assets/illo/brand.png",
