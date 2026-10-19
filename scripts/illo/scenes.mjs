@@ -265,21 +265,24 @@ export function contact(p, R) {
   const along = (x, y) => { let best = 0, bd = Infinity; for (let i = 0; i < pts.length; i++) { const d = (x - pts[i][0]) ** 2 + (y - pts[i][1]) ** 2; if (d < bd) { bd = d; best = lens[i]; } } return best; };
   p.fill(trail, (x, y) => { const s = along(x, y); return (s / 0.035) % 1 < 0.55 ? 0.3 + 0.65 * (s / acc) : null; });
 
-  // the dart: nose top right, tail bottom left; the fold runs down the
-  // middle, the far wing lies flatter and darker, the near wing catches
-  // the light, and the keel hangs under the fold
-  const nose = [1.14, 0.17], tail = [0.76, 0.43];
-  const farTip = [0.9, 0.2], nearTip = [0.84, 0.56], keelTip = [0.9, 0.5];
-  const far = S.poly([tail, nose, farTip]);
-  const near = S.poly([tail, nose, nearTip]);
-  const keel = S.poly([[0.8, 0.45], nose, keelTip]);
+  // the dart, the classic fold (David's reference, 2026-10-19): the nose
+  // top right, the rear corners swept back either side of the fold, the
+  // keel a clear triangle hanging under it. The far wing lies flatter and
+  // darker, the near wing catches the light, each face outlined on its own
+  // so every fold reads as a line.
+  const nose = [1.17, 0.14], mid = [0.8, 0.4];
+  const farCorner = [0.7, 0.3], nearCorner = [0.95, 0.52], keelTip = [0.88, 0.6];
+  const far = S.poly([farCorner, nose, mid]);
+  const near = S.poly([mid, nose, nearCorner]);
+  const keel = S.poly([[0.82, 0.43], nose, keelTip]);
   p.shadow(S.union(far, near), { dx: 0.02, dy: 0.06, blur: 0.04, amt: 0.3 });
-  p.fill(keel, 0.9);
-  p.fill(far, G.lin(tail[0], tail[1], farTip[0], farTip[1], 0.45, 0.72));
-  p.fill(near, G.lin(nearTip[0], nearTip[1], tail[0], tail[1], PAPER, 0.3));
-  p.stroke(S.union(far, near, keel), OW);
-  p.fill(S.path([tail, nose], OW * 1.1), 1);                     // the fold
-  p.fill(S.path([[0.8, 0.45], nose], OW * 0.8), 1);
+  p.fill(keel, 0.85);
+  p.stroke(keel, OW);
+  p.fill(far, G.lin(farCorner[0], farCorner[1], nose[0], nose[1], 0.5, 0.68));
+  p.stroke(far, OW);
+  p.fill(near, G.lin(nearCorner[0], nearCorner[1], nose[0], nose[1], PAPER, 0.3));
+  p.stroke(near, OW);
+  p.fill(S.path([mid, nose], OW * 1.1), 1);                      // the fold
   // the reply: a bubble coming the other way, its own short trail
   const bx = 1.02, by = 0.78;
   const bub = S.union(S.rbox(bx, by, 0.15, 0.085, 0.085), S.poly([[bx + 0.06, by + 0.06], [bx + 0.14, by + 0.15], [bx + 0.11, by + 0.05]]));
