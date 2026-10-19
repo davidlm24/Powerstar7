@@ -135,7 +135,7 @@ export const ui = {
 
     'svc.seo.name': 'SEO',
     'svc.seo.body':
-      'We help search engines understand your site and help customers find the right pages. That can include page titles, site structure, speed checks and redirects when replacing an existing site. We’ll specify what is included in your proposal.',
+      'We help search engines understand your site and help customers find the right pages. That can include page titles, site structure, speed checks and redirects when replacing an existing site. Basic SEO setup is included in the Website design price, and your proposal says exactly what it covers.',
     'svc.seo.d1': 'Review of your existing site, if you have one',
     'svc.seo.d2': 'Page titles and information that help search engines',
     'svc.seo.d3': 'Speed checks after launch',
@@ -466,7 +466,7 @@ export const ui = {
 
     'svc.seo.name': 'SEO',
     'svc.seo.body':
-      'Ajudamos os buscadores a entender seu site e os clientes a encontrar as páginas certas. Isso pode incluir títulos das páginas, organização do site, testes de velocidade e redirecionamentos ao substituir um site existente. A proposta dirá o que está incluído.',
+      'Ajudamos os buscadores a entender seu site e os clientes a encontrar as páginas certas. Isso pode incluir títulos das páginas, organização do site, testes de velocidade e redirecionamentos ao substituir um site existente. A configuração básica de SEO está incluída no preço do site, e a proposta diz exatamente o que ela cobre.',
     'svc.seo.d1': 'Análise do seu site atual, se você tiver um',
     'svc.seo.d2': 'Títulos e informações que ajudam os buscadores',
     'svc.seo.d3': 'Testes de velocidade depois do lançamento',
