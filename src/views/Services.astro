@@ -4,8 +4,9 @@ import PageHead from '../components/PageHead.astro';
 import Accent from '../components/Accent.astro';
 import Illo from '../components/Illo.astro';
 import Closing from '../components/Closing.astro';
+import Priced from '../components/Priced.astro';
 import { useTranslations, route, type Lang } from '../i18n/ui';
-import { PRICING, euros } from '../data/pricing';
+import { PRICING, rateLabel } from '../data/pricing';
 
 interface Props {
   lang: Lang;
@@ -13,7 +14,9 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const eur = (amount: number) => euros(amount, lang);
+/* Prices travel as §amount§ markers and <Priced> draws them (euros, with the
+   reais attached for the currency toggle). Strings never hold a number. */
+const eur = (amount: number) => `§${amount}§`;
 const from = (amount: number) => `${t('services.pricing.from')} ${eur(amount)}`;
 
 /* Pricing is one offer and the plan that follows it, then the extras — not a
@@ -47,6 +50,7 @@ const addons = [
     price: t('services.pricing.perPage', { price: eur(PRICING.addons.page) }),
   },
   { name: t('services.addons.language'), price: from(PRICING.addons.language) },
+  { name: t('services.addons.identity'), price: from(PRICING.addons.identity) },
   { name: t('services.addons.brand'), price: from(PRICING.addons.brand) },
   { name: t('services.addons.email'), price: from(PRICING.addons.email) },
   { name: t('services.addons.automation'), price: from(PRICING.addons.automation) },
@@ -113,6 +117,18 @@ const faqs = [
       <div class="pricing__head">
         <h2><Accent text={t('services.pricing.h2')} /></h2>
         <p class="lead measure">{t('services.pricing.lead')}</p>
+
+        {/* Shown by site.js, so it never appears where it would do nothing. */}
+        <div class="currency" data-currency hidden role="group" aria-label={t('services.currency.label')}>
+          <span class="currency__label" aria-hidden="true">{t('services.currency.label')}</span>
+          <span class="currency__btns">
+            <button type="button" class="currency__btn" data-cur="eur" aria-pressed="true">EUR · €</button>
+            <button type="button" class="currency__btn" data-cur="brl" aria-pressed="false">BRL · R$</button>
+          </span>
+        </div>
+        <p class="currency__note" data-currency-note role="status" hidden>
+          {t('services.currency.note', { rate: rateLabel(lang) })}
+        </p>
       </div>
 
       <div class="plans">
@@ -126,7 +142,7 @@ const faqs = [
               and paste, search snippets, some screen readers. The flex gap
               still sets the visible spacing; the space is for everything else. */}
           <p class="plan__price">
-            <span class="plan__unit">{t('services.pricing.from')}</span> <span class="plan__amount">{eur(PRICING.design)}</span>
+            <span class="plan__unit">{t('services.pricing.from')}</span> <span class="plan__amount"><Priced text={eur(PRICING.design)} lang={lang} /></span>
           </p>
           <p class="plan__note">{t('services.design.note')}</p>
           <h4 class="plan__includes">{t('services.pricing.includes')}</h4>
@@ -140,7 +156,7 @@ const faqs = [
           <p class="plan__kind">{t('services.care.kind')}</p>
           <h3 class="plan__name">{t('services.care.name')}</h3>
           <p class="plan__price">
-            <span class="plan__amount">{eur(PRICING.care)}</span> <span class="plan__unit">{t('services.pricing.perMonth')}</span>
+            <span class="plan__amount"><Priced text={eur(PRICING.care)} lang={lang} /></span> <span class="plan__unit">{t('services.pricing.perMonth')}</span>
           </p>
           <p class="plan__note">{t('services.care.note')}</p>
           <h4 class="plan__includes">{t('services.pricing.includes')}</h4>
@@ -162,7 +178,7 @@ const faqs = [
             addons.map((a) => (
               <div class="addon">
                 <dt>{a.name}</dt>
-                <dd class="addon__price">{a.price}</dd>
+                <dd class="addon__price"><Priced text={a.price} lang={lang} /></dd>
               </div>
             ))
           }
@@ -231,7 +247,7 @@ const faqs = [
             <details class="faq-item">
               <summary class="faq-item__q">{f.q}</summary>
               <div class="faq-item__a">
-                <p>{f.a}</p>
+                <p><Priced text={f.a} lang={lang} /></p>
               </div>
             </details>
           ))
@@ -287,6 +303,60 @@ const faqs = [
     font-weight: var(--weight-heading);
     letter-spacing: 0;
     text-transform: none;
+    color: var(--fg-muted);
+  }
+
+  /* Currency toggle: two square buttons, the chosen one filled. */
+  .currency {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s2) var(--s3);
+  }
+
+  .currency[hidden],
+  .currency__note[hidden] {
+    display: none;
+  }
+
+  .currency__label {
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+  }
+
+  .currency__btns {
+    display: inline-flex;
+  }
+
+  .currency__btn {
+    min-block-size: 2.5rem;
+    padding: 0.4rem 0.9rem;
+    font: inherit;
+    font-size: var(--t-small);
+    font-weight: var(--weight-medium);
+    background: var(--paper-hi);
+    color: var(--fg);
+    border: 1px solid var(--field-edge);
+    cursor: pointer;
+  }
+
+  .currency__btn + .currency__btn {
+    margin-inline-start: -1px;
+  }
+
+  .currency__btn:hover {
+    background: var(--blue-wash);
+  }
+
+  .currency__btn[aria-pressed='true'] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  .currency__note {
+    max-width: 52ch;
+    font-size: var(--t-small);
     color: var(--fg-muted);
   }
 
