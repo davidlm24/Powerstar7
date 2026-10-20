@@ -748,7 +748,7 @@ main { padding-block-start: var(--header-h); }
    data-corner: tr (default), bl, br, or none. data-corner-from: the
    viewport width in rem below which the corner is hidden (the layout has
    no empty corner there). --dc-w / --dc-h size the CSS corner window.
-   data-dots="over" draws the canvas over the card's picture. */
+   data-corner-scale shrinks the live corner for a small card. */
 .dcard {
   position: relative;
   isolation: isolate;
@@ -812,11 +812,4 @@ main { padding-block-start: var(--header-h); }
   @media (max-width: 59.99rem) {
     .dcard[data-corner-from='60']::after { display: none; }
   }
-}
-
-/* data-dots="over": the corner draws over the card's picture (a screenshot)
-   instead of under its content. The text it must stay clear of is still
-   cleared. */
-.dcard[data-dots='over'] > .dcard__dots {
-  z-index: 1;
 }
