@@ -98,7 +98,6 @@ export const ui = {
 
     'home.services.h2': 'Five things, done *properly*.',
     'home.services.link': 'All services',
-    'home.services.more': 'Each one explained: what it is, how we work, what you get, what we need from you.',
     'home.work.h2': 'Recent *work*.',
     'home.work.link': 'All work',
 
@@ -506,7 +505,6 @@ export const ui = {
 
     'home.services.h2': 'Cinco coisas, bem *feitas*.',
     'home.services.link': 'Todos os serviços',
-    'home.services.more': 'Cada um explicado: o que é, como trabalhamos, o que você recebe e o que precisamos de você.',
     'home.work.h2': 'Trabalhos *recentes*.',
     'home.work.link': 'Todos os trabalhos',
 

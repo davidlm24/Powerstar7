@@ -68,12 +68,12 @@ select {
    IntersectionObserver, and is withdrawn if site.js does not arrive, so the
    resting state everyone else sees is simply the finished page. The hero is
    left out: it has its own landing. The selector list matches site.js. */
-.reveal main > :not(.hero) :is(h1, h2, .lead, .illo--field, .illo--aside, .svc-card, .point, .step, .project, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated) {
+.reveal main > :not(.hero) :is(h1, h2, .lead, .illo--field, .illo--aside, .lane, .lanes__more, .point, .step, .project, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated) {
   opacity: 0;
   transform: translateY(24px);
 }
 
-.reveal main > :not(.hero) :is(h1, h2, .lead, .illo--field, .illo--aside, .svc-card, .point, .step, .project, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated).is-in {
+.reveal main > :not(.hero) :is(h1, h2, .lead, .illo--field, .illo--aside, .lane, .lanes__more, .point, .step, .project, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated).is-in {
   opacity: 1;
   transform: none;
   transition:
