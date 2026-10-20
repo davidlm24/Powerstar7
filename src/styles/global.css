@@ -731,22 +731,24 @@ a:hover { text-decoration-thickness: 2px; }
 main { padding-block-start: var(--header-h); }
 
 /* --- Cards with dots in them -----------------------------------------------
-   A card carries its dither INSIDE it (David, 2026-10-20: "dither inside
-   cards, on hover some proximity cursor animation, not just move outside").
+   A card carries its dither INSIDE it, in one corner (David, 2026-10-20),
+   and the corner answers the pointer.
 
-   At rest: a fixed corner of Bayer dots in the empty corner of the card
-   (public/assets/dither/corner.png as a mask over the accent), so it never
-   sits under text, and the card's own rounded corner clips it. With no
-   JavaScript, or on touch, that is all.
+   At rest: a corner of Bayer dots (public/assets/dither/corner.png as a
+   mask over the accent), clipped by the card's own rounded corner. That is
+   all there is with no JavaScript, on touch and for reduced motion.
 
-   On hover (site.js, fine pointers only): a canvas under the content draws
-   a glow of dots around the POINTER, blue thickening to purple at its core,
-   fading out around every line of text, so the dots answer the cursor
-   without ever sitting behind readable words. Nothing moves.
+   With JavaScript on a fine pointer (site.js), the same corner is drawn
+   live on a small canvas in that corner, and it REACTS to the cursor's
+   movement: it thickens and spreads as the pointer comes near, leans
+   toward it, and eases back when it leaves. Nothing is ever drawn at the
+   pointer itself, and the dots are cleared around every line of text, so
+   the corner never sits behind readable words.
 
-   data-corner: tr (default), bl or br. data-corner-from: the viewport width
-   in rem below which the rest corner is hidden (the layout has no empty
-   corner there). --dc-w / --dc-h size the corner window. */
+   data-corner: tr (default), bl, br, or none. data-corner-from: the
+   viewport width in rem below which the corner is hidden (the layout has
+   no empty corner there). --dc-w / --dc-h size the CSS corner window.
+   data-dots="over" draws the canvas over the card's picture. */
 .dcard {
   position: relative;
   isolation: isolate;
@@ -754,14 +756,17 @@ main { padding-block-start: var(--header-h); }
   overflow: clip;
 }
 
+/* The canvas sits in the card's corner; site.js sets its position and size
+   (left, top, width, height) and the CSS corner steps aside (.has-dots). */
 .dcard__dots {
   position: absolute;
-  inset: 0;
   z-index: -1;
-  inline-size: 100%;
-  block-size: 100%;
   image-rendering: pixelated;
   pointer-events: none;
+}
+
+.dcard.has-dots::after {
+  display: none;
 }
 
 @supports (mask-image: url('')) or (-webkit-mask-image: url('')) {
@@ -796,8 +801,6 @@ main { padding-block-start: var(--header-h); }
     scale: 1 -1;
   }
 
-  /* A card with no room for a rest corner (the compact project cards, whose
-     top is a screenshot) carries its dots only when the pointer is on it. */
   .dcard[data-corner='none']::after {
     display: none;
   }
@@ -811,9 +814,9 @@ main { padding-block-start: var(--header-h); }
   }
 }
 
-/* data-dots="over": the glow draws over the card's picture (a screenshot)
-   instead of under its content, so a card that is mostly image still
-   answers the pointer. The text it must stay clear of is still cleared. */
+/* data-dots="over": the corner draws over the card's picture (a screenshot)
+   instead of under its content. The text it must stay clear of is still
+   cleared. */
 .dcard[data-dots='over'] > .dcard__dots {
   z-index: 1;
 }

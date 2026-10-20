@@ -1,14 +1,14 @@
 {
-  "measuredAt": "2026-10-19",
+  "measuredAt": "2026-10-20",
   "page": "/",
   "requests": 23,
   "thirdPartyRequests": 0,
-  "weightKb": 238.2,
-  "weightRawKb": 336.3,
+  "weightKb": 239,
+  "weightRawKb": 339.3,
   "cookies": 0,
   "assets": [
     "/_astro/Home.BavB6i4W.css",
-    "/_astro/illo.CpSKYJeo.css",
+    "/_astro/illo.Caycx2gu.css",
     "/assets/dither/check.png",
     "/assets/dither/desk.png",
     "/assets/dither/fit.png",

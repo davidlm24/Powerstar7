@@ -577,52 +577,85 @@
     if (btn && btn.__dots && !btn.matches(':hover')) fadeDots(btn.__dots, 0);
   });
 
-  /* ---------- Card dither: the proximity glow -------------------------------
+  /* ---------- Card dither: the corner that answers the pointer ---------------
 
-     Cards (.dcard, global.css) carry a corner of Bayer dots at rest. On a
-     fine pointer, a canvas is added under the card's content the first time
-     it is hovered or focused, and draws a glow of dots around the POINTER
-     (David, 2026-10-20: "on hover some proximity cursor animation, not just
-     move outside"): the same ordered dither as everything else, coverage
-     highest at the cursor and falling off with distance, so it thickens
-     through blue to purple at its core, the tritone's two light inks.
+     Cards (.dcard, global.css) carry a corner of Bayer dots, clipped by the
+     card's own rounded corner. With JavaScript on a fine pointer the corner
+     is drawn live on a small canvas in that corner (the CSS corner stays as
+     the no-JS and touch version and steps aside), and it REACTS to the
+     pointer (David, 2026-10-20: "keep the corner dither effect, and its
+     reaction to the cursor should be only that corner reaction to the
+     movement, not adding on the cursor itself"):
 
-     Never behind readable text. The text's line boxes (and the buttons)
-     are measured when the card is entered, and the glow is multiplied by a
-     clearing map that fades to nothing within ~18px of any of them, the way
-     the hero wash keeps clear of the headline. Inside a dark card (.invert)
-     the dots are the single on-ink blue, since the tritone's dark would
-     vanish there.
+       - as the pointer comes nearer the corner it thickens and spreads,
+         from the rest coverage towards a purple core (the tritone's second
+         ink);
+       - it leans toward the pointer: the centre of the gradient moves a
+         little the way the pointer is, up to 48px;
+       - it eases back to rest when the pointer leaves.
 
-     Cost: only the window round the pointer (3 sigma) is drawn each frame,
-     from a lookup of the falloff, into one reused ImageData; the previous
-     window is cleared, nothing else is touched. One delegated, rAF-
-     throttled listener set, skipped on touch and for reduced motion
-     (pointerEffects), where the CSS corner is all there is. */
-  var CARD_SIGMA = 66;                    // css px: the glow's reach
-  var CARD_PEAK = 0.56;                   // coverage at the pointer
-  var CARD_CELL = 4, CARD_FEATHER = 26;   // the clearing map: cell and fade, css px
-  /* little-endian RGBA words: --blue-fn (as the tritone), violet, --on-ink-blue */
-  var CARD_BLUE = 0xfffd6f17, CARD_PURPLE = 0xffe43965, CARD_ON_INK = 0xffff9d5c;
+     Nothing is ever drawn at the pointer. At rest the canvas draws the same
+     gradient as the corner mask (public/assets/dither/corner.png, 0.4
+     coverage, sigma 69.6px) in the card's own accent. Dots are cleared
+     within ~22px of every line of text and every button in the corner's
+     window, so the corner never sits behind readable words, even when it
+     spreads. data-corner-scale shrinks the whole corner (window, spread,
+     lean, reach) for a small card.
+
+     Cost: only the corner's window (340 x 300px at most) is drawn, from a
+     falloff table, into one reused ImageData; rAF-throttled; created once
+     at idle. Nothing under reduced motion or on touch (pointerEffects),
+     where the CSS corner is all there is. */
+  var CORNER_AMP = 0.4, CORNER_SIGMA = 69.6;            // the rest corner, as corner.png
+  var CORNER_REACH = 380;                               // css px: how near the pointer starts to matter
+  var CORNER_WIN_W = 340, CORNER_WIN_H = 300;           // css px: the canvas window
+  var CARD_CELL = 4, CARD_FEATHER = 22;                 // the clearing map: cell and fade, css px
+  var KLUT = 64, KMAX = 4.6;
+  var CARD_PURPLE = 0xffe43965;                         // the tritone's violet, little-endian RGBA
+
+  var kLut = new Float32Array(Math.ceil(KMAX * KLUT) + 2);
+  for (var ki = 0; ki < kLut.length; ki++) kLut[ki] = Math.exp(-ki / KLUT);
+
+  var wordOf = function (css, fallback) {
+    var m = /^#?([0-9a-f]{6})$/i.exec((css || '').trim());
+    if (!m) return fallback;
+    var n = parseInt(m[1], 16);
+    return (0xff000000 | ((n & 255) << 16) | (((n >> 8) & 255) << 8) | (n >> 16)) >>> 0;
+  };
+  var smoothstep = function (v) { v = v < 0 ? 0 : v > 1 ? 1 : v; return v * v * (3 - 2 * v); };
 
   var dcardOf = function (el) {
     return el && el.closest ? el.closest('.dcard') : null;
   };
 
-  /* The clearing map: 1 = free, falling to 0 beside text. */
+  /* The window, the corner point and the clearing map, from the card's
+     current size and text. */
   var dcardMeasure = function (card, d) {
     var r = card.getBoundingClientRect();
-    d.w = r.width; d.h = r.height;
-    d.cols = Math.max(1, Math.ceil(d.w / CARD_CELL));
-    d.rows = Math.max(1, Math.ceil(d.h / CARD_CELL));
-    d.c.width = Math.max(1, Math.round(d.w * d.dpr));
-    d.c.height = Math.max(1, Math.round(d.h * d.dpr));
+    var from = parseFloat(card.getAttribute('data-corner-from')) || 0;
+    d.enabled = window.innerWidth >= from * 16;
+    d.c.style.display = d.enabled ? '' : 'none';
+    d.card.classList.toggle('has-dots', d.enabled);
+    if (!d.enabled) return;
+    var sc = d.scale, W = r.width, H = r.height, ww = Math.min(CORNER_WIN_W * sc, W), hh = Math.min(CORNER_WIN_H * sc, H);
+    var right = d.corner !== 'bl', bottom = d.corner !== 'tr';
+    d.left = right ? W - ww : 0;
+    d.top = bottom ? H - hh : 0;
+    d.cardCorner = { x: right ? W : 0, y: bottom ? H : 0 };
+    d.c.style.left = d.left + 'px';
+    d.c.style.top = d.top + 'px';
+    d.c.style.width = ww + 'px';
+    d.c.style.height = hh + 'px';
+    d.c.width = Math.max(1, Math.round(ww * d.dpr));
+    d.c.height = Math.max(1, Math.round(hh * d.dpr));
+    d.cols = Math.max(1, Math.ceil(ww / CARD_CELL));
+    d.rows = Math.max(1, Math.ceil(hh / CARD_CELL));
     var keep = d.keep && d.keep.length === d.cols * d.rows ? d.keep : new Float32Array(d.cols * d.rows);
     keep.fill(1);
     var boxes = [];
-    var add = function (b) {
-      if (b.width < 1 || b.height < 1) return;
-      boxes.push([b.left - r.left, b.top - r.top, b.right - r.left, b.bottom - r.top]);
+    var add = function (bx) {
+      if (bx.width < 1 || bx.height < 1) return;
+      boxes.push([bx.left - r.left - d.left, bx.top - r.top - d.top, bx.right - r.left - d.left, bx.bottom - r.top - d.top]);
     };
     var walker = document.createTreeWalker(card, NodeFilter.SHOW_TEXT), n, range = document.createRange();
     while ((n = walker.nextNode())) {
@@ -632,13 +665,13 @@
     }
     Array.prototype.forEach.call(card.querySelectorAll('.btn, input, select, textarea'), function (el) { add(el.getBoundingClientRect()); });
     var reach = CARD_FEATHER * 2.2;
-    boxes.forEach(function (b) {
-      var c0 = Math.max(0, Math.floor((b[0] - reach) / CARD_CELL)), c1 = Math.min(d.cols - 1, Math.ceil((b[2] + reach) / CARD_CELL));
-      var r0 = Math.max(0, Math.floor((b[1] - reach) / CARD_CELL)), r1 = Math.min(d.rows - 1, Math.ceil((b[3] + reach) / CARD_CELL));
+    boxes.forEach(function (bx) {
+      var c0 = Math.max(0, Math.floor((bx[0] - reach) / CARD_CELL)), c1 = Math.min(d.cols - 1, Math.ceil((bx[2] + reach) / CARD_CELL));
+      var r0 = Math.max(0, Math.floor((bx[1] - reach) / CARD_CELL)), r1 = Math.min(d.rows - 1, Math.ceil((bx[3] + reach) / CARD_CELL));
       for (var j = r0; j <= r1; j++) {
-        var cy = (j + 0.5) * CARD_CELL, dy = Math.max(b[1] - cy, 0, cy - b[3]);
+        var cy = (j + 0.5) * CARD_CELL, dy = Math.max(bx[1] - cy, 0, cy - bx[3]);
         for (var i = c0; i <= c1; i++) {
-          var cx = (i + 0.5) * CARD_CELL, dx = Math.max(b[0] - cx, 0, cx - b[2]);
+          var cx = (i + 0.5) * CARD_CELL, dx = Math.max(bx[0] - cx, 0, cx - bx[2]);
           var q = Math.sqrt(dx * dx + dy * dy) / CARD_FEATHER;
           var k = 1 - Math.exp(-q * q * 3);
           if (k < keep[j * d.cols + i]) keep[j * d.cols + i] = k;
@@ -646,62 +679,65 @@
       }
     });
     d.keep = keep;
+    d.img = null;
   };
 
   var dcardInit = function (card) {
+    var corner = card.getAttribute('data-corner') || 'tr';
+    if (corner === 'none') return null;
     var c = document.createElement('canvas');
     c.className = 'dcard__dots';
     c.setAttribute('aria-hidden', 'true');
     card.insertBefore(c, card.firstChild);
-    var dpr = Math.min(2, window.devicePixelRatio || 1);
-    /* the falloff, by squared distance in device px, in bins of 4 */
-    var R = Math.ceil(CARD_SIGMA * 3 * dpr), nb = Math.ceil((R * R) / 4) + 2, lut = new Float32Array(nb);
-    var s2 = 1 / (2 * CARD_SIGMA * CARD_SIGMA * dpr * dpr);
-    for (var q = 0; q < nb; q++) lut[q] = Math.exp(-q * 4 * s2);
+    var cs = getComputedStyle(card);
+    var dark = !!card.closest('.invert');
     var d = {
-      c: c, x: c.getContext('2d'), dpr: dpr, R: R, lut: lut, on: 0, pt: null, raf: 0,
-      img: null, last: null, keep: null, dark: !!card.closest('.invert'), card: card,
+      c: c, x: c.getContext('2d'), card: card, corner: corner, dpr: Math.min(2, window.devicePixelRatio || 1),
+      dark: dark, on: 0, pt: null, raf: 0, enabled: true, img: null, keep: null,
+      scale: parseFloat(card.getAttribute('data-corner-scale')) || 1,
+      ink: wordOf(cs.getPropertyValue('--accent-fn'), dark ? 0xffff9d5c : 0xffe0620c),
     };
     card.__dc = d;
+    dcardMeasure(card, d);
     return d;
   };
 
   var dcardDraw = function (d) {
-    var cw = d.c.width, ch = d.c.height;
-    if (d.last) d.x.clearRect(d.last[0], d.last[1], d.last[2], d.last[3]);
-    d.last = null;
-    if (!d.pt || d.on <= 0.004) return;
-    var dpr = d.dpr, R = d.R, cx = d.pt.x * dpr, cy = d.pt.y * dpr;
-    var x0 = Math.max(0, Math.floor(cx - R)), y0 = Math.max(0, Math.floor(cy - R));
-    var x1 = Math.min(cw, Math.ceil(cx + R)), y1 = Math.min(ch, Math.ceil(cy + R));
-    var w = x1 - x0, h = y1 - y0;
-    if (w <= 0 || h <= 0) return;
-    if (!d.img || d.img.width !== w || d.img.height !== h) {
-      d.img = d.x.createImageData(w, h);
-      d.px = new Uint32Array(d.img.data.buffer);
-    } else {
-      d.px.fill(0);
+    if (!d.enabled) return;
+    var dpr = d.dpr, W = d.c.width, H = d.c.height;
+    // how near the pointer is to the corner, and which way it lies
+    var near = 0, lean = 0, shx = 0, shy = 0;
+    if (d.pt && d.on > 0) {
+      var vx = d.pt.x - d.cardCorner.x, vy = d.pt.y - d.cardCorner.y, dist = Math.sqrt(vx * vx + vy * vy) || 1;
+      near = d.on * smoothstep(1 - dist / (CORNER_REACH * d.scale));
+      lean = d.on * smoothstep(1 - dist / (CORNER_REACH * 2 * d.scale));
+      var step = Math.min(48 * d.scale, 0.22 * dist) * lean;
+      shx = (vx / dist) * step; shy = (vy / dist) * step;
     }
-    var px = d.px, amp = CARD_PEAK * d.on, lut = d.lut, keep = d.keep, cols = d.cols, rows = d.rows;
-    var R2 = R * R, inv = 1 / (dpr * CARD_CELL);
-    for (var j = 0; j < h; j++) {
-      var gy = y0 + j, dy = gy - cy, row = Math.min(rows - 1, (gy * inv) | 0) * cols, brow = (gy & 7) * 8;
-      for (var i = 0; i < w; i++) {
-        var gx = x0 + i, dx = gx - cx, d2 = dx * dx + dy * dy;
-        if (d2 > R2) continue;
-        var v = amp * lut[(d2 * 0.25) | 0];
+    var amp = CORNER_AMP * (1 + 0.5 * near);
+    var sig = CORNER_SIGMA * d.scale * (1 + 0.35 * near);
+    var k2 = KLUT / (2 * sig * sig * dpr * dpr);
+    var ccx = (d.cardCorner.x - d.left + shx) * dpr, ccy = (d.cardCorner.y - d.top + shy) * dpr;
+    if (!d.img) { d.img = d.x.createImageData(W, H); d.px = new Uint32Array(d.img.data.buffer); } else { d.px.fill(0); }
+    var px = d.px, keep = d.keep, cols = d.cols, rows = d.rows, inv = 1 / (dpr * CARD_CELL), N = kLut.length;
+    var ink = d.ink, core = d.dark ? d.ink : CARD_PURPLE;
+    for (var j = 0; j < H; j++) {
+      var dy = j + 0.5 - ccy, dy2 = dy * dy, row = Math.min(rows - 1, (j * inv) | 0) * cols, brow = (j & 7) * 8;
+      for (var i = 0; i < W; i++) {
+        var dx = i + 0.5 - ccx, ix = ((dx * dx + dy2) * k2) | 0;
+        if (ix >= N) continue;
+        var v = amp * kLut[ix];
         if (v < 0.02) continue;
-        v *= keep[row + Math.min(cols - 1, (gx * inv) | 0)];
-        if (v > B8[brow + (gx & 7)]) px[j * w + i] = d.dark ? CARD_ON_INK : v < 0.45 ? CARD_BLUE : CARD_PURPLE;
+        v *= keep[row + Math.min(cols - 1, (i * inv) | 0)];
+        if (v > B8[brow + (i & 7)]) px[j * W + i] = v < 0.45 ? ink : core;
       }
     }
-    d.x.putImageData(d.img, x0, y0);
-    d.last = [x0, y0, w, h];
+    d.x.putImageData(d.img, 0, 0);
   };
 
   var dcardFade = function (d, to) {
     cancelAnimationFrame(d.raf);
-    var from = d.on, t0 = 0, ms = to > from ? 160 : 260;
+    var from = d.on, t0 = 0, ms = to > from ? 200 : 380;
     var step = function (now) {
       if (!t0) t0 = now;
       var p = Math.min(1, (now - t0) / ms);
@@ -717,13 +753,28 @@
     d.pt = { x: x - r.left, y: y - r.top };
   };
 
+  var dcards = [];
+  var dcardsStart = function () {
+    Array.prototype.forEach.call(document.querySelectorAll('.dcard'), function (card) {
+      var d = dcardInit(card);
+      if (d) { dcards.push(d); dcardDraw(d); }
+    });
+    var again = function () { dcards.forEach(function (d) { dcardMeasure(d.card, d); dcardDraw(d); }); };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(again);
+    var rt = 0;
+    window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(again, 150); });
+  };
+
   if (pointerEffects) {
+    if (window.requestIdleCallback) window.requestIdleCallback(dcardsStart, { timeout: 600 });
+    else setTimeout(dcardsStart, 60);
+
     var cardPending = null, cardQueued = false;
 
     document.addEventListener('pointerover', function (e) {
       var card = dcardOf(e.target);
-      if (!card || (e.relatedTarget && card.contains(e.relatedTarget))) return;
-      var d = card.__dc || dcardInit(card);
+      if (!card || !card.__dc || (e.relatedTarget && card.contains(e.relatedTarget))) return;
+      var d = card.__dc;
       dcardMeasure(card, d);
       dcardPoint(d, e.clientX, e.clientY);
       dcardFade(d, 1);
@@ -753,14 +804,13 @@
       });
     }, { passive: true });
 
-    /* Keyboard: the glow sits on the focused control, still. */
+    /* Keyboard: the corner leans toward the focused control, still. */
     document.addEventListener('focusin', function (e) {
       var card = dcardOf(e.target);
-      if (!card || !e.target.matches || !e.target.matches(':focus-visible')) return;
-      var d = card.__dc || dcardInit(card);
+      if (!card || !card.__dc || !e.target.matches || !e.target.matches(':focus-visible')) return;
+      var d = card.__dc, bx = e.target.getBoundingClientRect();
       dcardMeasure(card, d);
-      var b = e.target.getBoundingClientRect();
-      dcardPoint(d, b.left + b.width / 2, b.top + b.height / 2);
+      dcardPoint(d, bx.left + bx.width / 2, bx.top + bx.height / 2);
       dcardFade(d, 1);
     });
 

@@ -177,7 +177,7 @@ const position = [
         {
           services.map((s) => (
             <li>
-              <a class="svc-card dcard" data-illo-zone data-corner="tr" data-corner-from="40" href={`${route('services', lang)}#${s.key}`}>
+              <a class="svc-card dcard" data-illo-zone data-corner="tr" data-corner-from="40" data-corner-scale="0.7" href={`${route('services', lang)}#${s.key}`}>
                 <span class="svc-card__art" aria-hidden="true">
                   {/* The -sm print, inline rather than through Illo: the
                       manifest only knows the 224px icon box. Same classes,
@@ -201,7 +201,7 @@ const position = [
           ))
         }
         <li>
-          <a class="svc-card svc-card--more invert dcard" data-corner="tr" data-corner-from="40" href={route('services', lang)}>
+          <a class="svc-card svc-card--more invert dcard" data-corner="tr" data-corner-from="40" data-corner-scale="0.7" href={route('services', lang)}>
             <h3 class="svc-card__name">{t('home.services.link')} <span class="svc-card__go" aria-hidden="true">&rarr;</span></h3>
             <p class="svc-card__b">{t('home.services.more')}</p>
           </a>

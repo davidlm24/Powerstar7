@@ -26,7 +26,7 @@ const copy = {
 }[p.key];
 ---
 
-<article class:list={['project', 'dcard', wide && 'project--wide']} data-corner="none" data-dots="over">
+<article class:list={['project', 'dcard', wide && 'project--wide']} data-corner="tr" data-corner-from="0" data-corner-scale="0.7" data-dots="over" style="--dc-w: 150px; --dc-h: 110px;">
   <div class="project__shot">
     {/* The bar is drawn, not captured: it frames the screenshot as a website
         and names the address, without any one browser's chrome. */}
@@ -54,8 +54,8 @@ const copy = {
 <style>
   /* A compact card (David, 2026-10-20): the screenshot cropped to the top of
      the page at 2:1, and a short body under it, the name and what the
-     business is on one line. Its dots come with the pointer, drawn over the
-     screenshot and kept clear of the text (global.css .dcard). */
+     business is on one line. Its corner of dots sits over the top right of
+     the screenshot and answers the pointer (global.css .dcard). */
   .project {
     background: var(--paper-hi);
     border: 1px solid var(--rail);
