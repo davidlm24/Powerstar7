@@ -181,24 +181,11 @@ const position = [
                   <h3 class="lane__name">{s.name} <span class="lane__go" aria-hidden="true">&rarr;</span></h3>
                   <p class="lane__b">{s.b}</p>
                 </div>
-                <span class="lane__art">
-                  <span class="icon-wash" aria-hidden="true">
-                    {/* The -sm print, inline rather than through Illo: the
-                        manifest only knows the 224px icon box. Same classes,
-                        so the engine upgrades and relights it the same way. */}
-                    <span class="illo illo--icon" data-illo={`${s.key}-sm`} data-nosnippet>
-                      <img
-                        src={`/assets/illo/${s.key}-sm.png`}
-                        srcset={`/assets/illo/${s.key}-sm.png 1x, /assets/illo/${s.key}-sm@2x.png 2x`}
-                        width="160"
-                        height="123"
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </span>
-                  </span>
-                </span>
+                <div class="lane__art">
+                  <div class="icon-wash" aria-hidden="true">
+                    <Illo name={s.key} variant="icon" />
+                  </div>
+                </div>
               </a>
             </li>
           ))
@@ -306,10 +293,14 @@ const position = [
   .hero {
     position: relative;
     isolation: isolate;
-    /* No bottom padding: the band closes the hero. Pulled up under the
-       transparent header, so the wash runs behind it. */
+    /* Pulled up under the transparent header, so the wash runs behind it.
+       The bottom padding is room for the band's lean: the stripe tilts 1.3
+       degrees about its middle, so its lower corner drops about 1.3vw below
+       where it would sit level. overflow: clip cuts at the padding box, so
+       the drop has to be inside it (a margin on the band collapsed out of
+       the hero and the corner was clipped flat, 2026-10-20). */
     margin-block-start: calc(-1 * var(--header-h));
-    padding-block: calc(var(--s6) + var(--header-h)) 0;
+    padding-block: calc(var(--s6) + var(--header-h)) calc(var(--s2) + 1.3vw);
     /* The wash is inset negatively so it bleeds past the section, and the
        drift pushes it further still — which put 244px of horizontal scroll
        on the page. `clip` on the x axis only, so the wash can still bleed
@@ -397,6 +388,16 @@ const position = [
 
   .hero.has-dots .hero__dots { display: block; }
   .hero.has-dots .hero__fx { display: none; }
+
+  /* The wash ends behind the stripe, on the line through its middle, so no
+     dots show in the strip of padding under it and nothing ends in a
+     straight edge. The padding is s2 + 1.3vw; 2.1rem is about half the
+     stripe's own height. Negative insets leave the other three sides
+     unclipped, so the fx layer still bleeds up behind the header. */
+  .hero__fx,
+  .hero__dots {
+    clip-path: inset(-100vh -100vw calc(var(--s2) + 1.3vw + 2.1rem) -100vw);
+  }
 
   /* Transform only, so the drift runs on the compositor and never touches
      layout. prefers-reduced-motion is handled globally: the blanket rule
@@ -628,17 +629,18 @@ const position = [
      stripe set a little off the horizontal (David, 2026-10-20): the one
      continuous motion, in the place webhero runs its client logos. About
      50px a second. The stripe is .invert, so every role flips by itself
-     (on-ink 15.6:1 on the stripe). It runs past both page edges and leans
-     1.3 degrees; the hero keeps a margin under it so its lower corner is
-     never clipped. Hover pauses it, tapping it toggles it; with less motion
-     asked for it never starts. */
+     (on-ink 15.6:1 on the stripe). The black is a ::before layer 6% wider
+     than the page each side, so it runs past both edges, while the band
+     itself is the page's own width: the label and the run sit on the same
+     content edge as the headline at every width, where a 112% band put the
+     label off-screen below about 1300px. It leans 1.3 degrees; the hero's
+     bottom padding holds the lowered corner. Hover pauses it, tapping it
+     toggles it; with less motion asked for it never starts. */
   .hero__band {
     position: relative;
     z-index: 1;
-    inline-size: 112%;
-    margin-inline: -6%;
-    margin-block: var(--s2) 1.75rem;
-    background: var(--bg);
+    margin-block: var(--s2) 0;
+    background: none;
     transform: rotate(-1.3deg);
     font-family: var(--font-mono);
     font-size: var(--t-micro);
@@ -647,7 +649,17 @@ const position = [
     cursor: pointer;
   }
 
+  .hero__band::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline: -6%;
+    z-index: -1;
+    background: var(--bg);
+  }
+
   .hero__band-in {
+    position: relative;
     display: flex;
     align-items: center;
     gap: var(--s3);
@@ -707,7 +719,7 @@ const position = [
      control (David) and still answers WCAG 2.2.2 for keyboard users. */
   .hero__band-pause {
     position: absolute;
-    inset-inline-end: calc(var(--gutter) + 6%);
+    inset-inline-end: var(--gutter);
     inset-block-start: 50%;
     translate: 0 -50%;
     inline-size: 1px;
@@ -781,7 +793,6 @@ const position = [
 
     .hero__band {
       transform: rotate(-1deg);
-      margin-block-end: 1.25rem;
     }
   }
 
@@ -835,8 +846,8 @@ const position = [
   /* --- What we do: lanes --------------------------------------------------
      One service to a row, the whole container wide (David, 2026-10-20:
      "return to the vertical listing, but narrower" - vertically; the width
-     stays). The row is as tall as the 160px print (123px) plus 1rem above
-     and below, about 155px, where the first lanes were 285px. No rules
+     stays). The row is as tall as the 224px print (172px) plus 1rem above
+     and below, about 204px, where the first lanes were 285px. No rules
      between rows (2026-10-16 audit); the padding separates. */
   .lanes {
     list-style: none;
@@ -847,7 +858,7 @@ const position = [
   /* Two tracks: the copy and the art. */
   .lane {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 10rem;
+    grid-template-columns: minmax(0, 1fr) 14rem;
     grid-template-areas: 'text art';
     align-items: baseline;
     column-gap: var(--s4);
@@ -878,12 +889,12 @@ const position = [
     color: var(--fg-muted);
   }
 
-  /* The print is the -sm render at its own 160px, one image pixel to one
-     screen pixel, never a scaled dither. */
+  /* The print is the icon's own 224px render (the Services page's), one
+     image pixel to one screen pixel, never a scaled dither. */
   .lane__art {
     grid-area: art;
     align-self: center;
-    --illo-w: 160px;
+    --illo-w: 224px;
   }
 
   /* Inline after the name. */
