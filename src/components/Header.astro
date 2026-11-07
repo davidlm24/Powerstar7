@@ -336,4 +336,28 @@ const items: { key: PageKey; label: string }[] = [
   :global(html.no-js) .nav-toggle {
     display: none !important;
   }
+
+  /* ...and on narrow screens it is a plain list under the wordmark, in the
+     flow, with the header no longer sticky. As an absolute panel it sat over
+     the hero and hid the heading, the lead and both buttons; sticky, it
+     would have carried ~350px of links down the whole page. The header's
+     negative margin-bottom only subtracts --header-h, so the extra height
+     pushes the page down by exactly the list's height and nothing overlaps. */
+  @media (max-width: 60rem) {
+    :global(html.no-js) .site-header {
+      position: static;
+    }
+
+    :global(html.no-js) .site-header__row {
+      flex-wrap: wrap;
+    }
+
+    :global(html.no-js) .nav {
+      position: static;
+      flex: 1 1 100%;
+      max-height: none;
+      box-shadow: none;
+      padding-inline: 0;
+    }
+  }
 </style>

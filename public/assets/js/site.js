@@ -16,7 +16,11 @@
    The sheen is drawn in dots now, the same Bayer print as the illustrations.
 
    No dependencies, no external requests. With JavaScript off the navigation
-   stays open and the form falls back to the browser's own validation.
+   stays open (Header.astro, html.no-js) and the form shows the email address
+   instead of a Send button (Contact.astro, <noscript>). Each block below is
+   its own try/catch, so a failure in one never stops the ones after it: in
+   particular the section entrances must always reach their ready flag, or
+   Base.astro's 2.5s fail-safe is the only thing showing the page.
    ========================================================================= */
 (function () {
   'use strict';
@@ -70,6 +74,23 @@
         mq.matches &&
         !nav.contains(e.target) &&
         !toggle.contains(e.target)
+      ) {
+        setOpen(false);
+      }
+    });
+
+    /* Keyboard: Tab past the last link (or Shift+Tab before the button) and
+       the panel closes, so the focus never lands on page content hidden
+       under the open panel (WCAG 2.4.11). relatedTarget is null when focus
+       leaves the document or goes to a non-focusable click, so those are
+       left to the click and Escape handlers above. */
+    var header = toggle.closest('header') || document.body;
+    header.addEventListener('focusout', function (e) {
+      if (
+        nav.dataset.open === 'true' &&
+        mq.matches &&
+        e.relatedTarget &&
+        !header.contains(e.relatedTarget)
       ) {
         setOpen(false);
       }
@@ -132,7 +153,12 @@
 
   var form = document.querySelector('form[data-contact]');
 
-  if (form) {
+  if (form) try {
+    /* Validation is authored below, so the browser's bubbles are switched
+       off here and not in the markup: without this script the native
+       required/type=email checks still run. */
+    form.noValidate = true;
+
     var statusEl = form.querySelector('.form__status');
     var submitBtn = form.querySelector('button[type="submit"]');
     var copy = JSON.parse(form.dataset.copy || '{}');
@@ -300,6 +326,11 @@
           if (submitBtn) submitBtn.disabled = false;
         });
     });
+  } catch (err) {
+    /* The form keeps the browser's own validation and the Send button
+       keeps working as a plain submit; nothing else on the page depends
+       on this block. */
+    form.noValidate = false;
   }
 
   /* ---------- Section entrances ----------------------------------------- */
@@ -309,7 +340,7 @@
      order as they scroll in, 70ms apart within their section, once. The
      selector list matches global.css exactly. */
   var REVEAL = "h1, h2, .lead, .illo--field, .illo--aside, .lane, .lanes__more, .point, .step, .project, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated";
-  if (document.documentElement.classList.contains('reveal')) {
+  if (document.documentElement.classList.contains('reveal')) try {
     var pending = [];
     Array.prototype.forEach.call(document.querySelectorAll('main > :not(.hero)'), function (section) {
       Array.prototype.forEach.call(section.querySelectorAll(REVEAL), function (el, i) {
@@ -320,7 +351,8 @@
 
     var enter = function (el) {
       el.classList.add('is-in');
-      pending.splice(pending.indexOf(el), 1);
+      var at = pending.indexOf(el);
+      if (at > -1) pending.splice(at, 1);
     };
 
     /* Whatever is on screen right now enters at once, with no observer in
@@ -354,6 +386,12 @@
         pending.slice().forEach(function (el) { if (inView(el)) enter(el); });
       });
     }, { passive: true });
+  } catch (err) {
+    /* Anything wrong here would leave parts at opacity 0 until the 2.5s
+       fail-safe: withdraw the class now instead, and the finished page is
+       simply there. */
+    document.documentElement.classList.remove('reveal');
+    window.__revealReady = true;
   }
 
   /* ---------- Footer year ------------------------------------------------ */

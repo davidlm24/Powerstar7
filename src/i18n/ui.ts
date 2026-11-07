@@ -299,6 +299,7 @@ export const ui = {
     'contact.form.privacyLink': 'How we handle your data',
     'contact.form.sending': 'Sending…',
     'contact.form.trap': 'Leave this field empty',
+    'contact.form.noscript': 'This form needs JavaScript. Write to us at',
 
     'contact.err.name': 'Please tell us your name.',
     'contact.err.email': 'We need an email address to reply to.',
@@ -704,6 +705,7 @@ export const ui = {
     'contact.form.privacyLink': 'Como tratamos seus dados',
     'contact.form.sending': 'Enviando…',
     'contact.form.trap': 'Deixe este campo vazio',
+    'contact.form.noscript': 'Este formulário precisa de JavaScript. Escreva para',
 
     'contact.err.name': 'Diga seu nome, por favor.',
     'contact.err.email': 'Precisamos de um e-mail para responder.',

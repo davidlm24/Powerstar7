@@ -3,17 +3,21 @@
 Marketing site for DesignActiv, a web studio in **Germany and Luxembourg**
 working with clients across Europe and Brazil.
 
-Built with **Astro**, output as static HTML. No client-side framework, no
-runtime JavaScript beyond one 4 KB file, and — the hard constraint —
+Built with **Astro**, output as static HTML and deployed to Cloudflare
+Workers as static assets (see `DEPLOY.md`). No client-side framework; the
+runtime JavaScript is a handful of plain files in `public/assets/js`
+(`site.js` on every page; the dither engine on Home, Services and Pricing;
+the live hero print on Home only), and — the hard constraint —
 **zero third-party requests**. Fonts are self-hosted with hand-written
 `unicode-range` subsets, there is no analytics and there are no cookies, so
 the site needs no consent banner. That is a legal position in Germany, not an
 aesthetic one, and nothing may be added that breaks it.
 
-The home page is **about 110 KB over the wire in 15 requests** (2026-10-14).
-Those figures come from `scripts/measure.mjs` reading the real build output
-(`src/data/metrics.json` holds the exact numbers), and they are printed on the
-**Work** page.
+The home page's weight and request count come from `scripts/measure.mjs`
+reading the real build output; `src/data/metrics.json` holds the current
+numbers (301 KB gzipped in 28 requests on 2026-11-07, since the live dither
+hero), and they are printed on the **Work** page. Do not copy them here:
+this line goes stale, the JSON does not.
 
 ## Run it
 
@@ -32,12 +36,15 @@ npm run dev
 npm run build && npm run preview
 ```
 
-`npm run preview` runs `.claude/serve.js` against `dist/` on
-<http://localhost:4000>. Use it to check the **built** output behaves the way
-a host will serve it: extensionless URLs, the legacy 301 map and a 404 page.
-It also exposes a dev-only echo endpoint at
-`POST /api/contact` for exercising the contact form's `fetch` path — point the
-form's `data-endpoint` at it to test. It only logs; it never sends mail.
+`npm run preview` builds and then runs `wrangler dev`, the Cloudflare
+runtime itself, so what it serves is what the host will serve: extensionless
+URLs, the trailing-slash redirect, the legacy 301 map and the 404 page
+(`DEPLOY.md` has the table of URLs to check). The older
+`node .claude/serve.js` (port 4000, the `production-preview` launch config)
+still serves `dist/client` with a dev-only echo endpoint at
+`POST /api/contact` for exercising the contact form's `fetch` path — point
+the form's `data-endpoint` at it to test. It only logs; it never sends mail.
+It is not the Cloudflare runtime and proves nothing about routing.
 
 ```bash
 npm run measure
@@ -55,7 +62,8 @@ src/
                     under pt/ with Portuguese slugs (/pt/sobre-nos).
                     Each one is a three-line wrapper around a view.
   views/            The actual pages, each rendered in both languages.
-  components/       Header, Footer, ProofStrip, PageHead, Closing, Notice.
+  components/       Header, Footer, PageHead, Closing, Faq, Priced,
+                    ProjectCard, Illo, Accent, AsciiCallout, Notice.
   layouts/Base      <head>, canonical, hreflang, Open Graph, skip link.
   i18n/ui.ts        ALL copy, both languages, side by side. Also ROUTES —
                     the single source of truth for nav, the language
@@ -97,8 +105,12 @@ Headings run at **7.8× body** at desktop (140px against an 18px body). The
 hero floor is set by the longest line in the *widest* language — Portuguese —
 so three lines stay three lines from 320px upward.
 
-Motion is rationed: hover transitions only, no scroll-reveal, no cursor
-tracking, no header that turns into a glass pill.
+Motion is rationed and all of it respects `prefers-reduced-motion`: each
+section's parts rise in once as they scroll into view (`site.js`, armed by
+Base.astro only where motion is allowed, withdrawn if the script never
+arrives), the hero print and page figures develop in dots, the buttons carry
+a pointer-following dot sheen, the home hero follows the pointer, and the
+header turns to frosted glass once the page scrolls.
 
 ## Content status
 

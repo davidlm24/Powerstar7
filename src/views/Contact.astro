@@ -53,7 +53,12 @@ const topics = [
           Until then the form composes an email instead — and says that is
           what it is doing, rather than reporting a success it cannot know
           about (which is what the old site did). See DEPLOY.md. */}
-      <form class="form" data-contact data-mailto={CONTACT.email} data-copy={formCopy} novalidate>
+      {/* method="post": with JavaScript off a form without a method submits
+          a GET, which put the visitor's name, email and message into the
+          URL (history, server logs). novalidate is set by site.js, so the
+          browser's own validation stays on when the script is not there.
+          The <noscript> block below hides the button and offers the email. */}
+      <form class="form" method="post" data-contact data-mailto={CONTACT.email} data-copy={formCopy}>
         <div class="field">
           <label for="name">{t('contact.form.name')}</label>
           <input id="name" name="name" type="text" autocomplete="name" required />
@@ -97,6 +102,17 @@ const topics = [
         <p class="form__privacy">
           {t('contact.form.privacy')} <a href={route('privacy', lang)}>{t('contact.form.privacyLink')}</a>
         </p>
+
+        <noscript>
+          <style>
+            .form__foot .btn {
+              display: none;
+            }
+          </style>
+          <p class="form__noscript">
+            {t('contact.form.noscript')} <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+          </p>
+        </noscript>
 
         <div class="form__foot">
           <button class="btn" type="submit">{t('contact.form.submit')}</button>
@@ -286,7 +302,8 @@ const topics = [
     gap: var(--s3);
   }
 
-  .form__privacy {
+  .form__privacy,
+  .form__noscript {
     font-size: var(--t-small);
     color: var(--fg-muted);
   }
