@@ -1,5 +1,6 @@
-# Apache configuration for designactiv.com
-# Mirrors _redirects (Netlify / Cloudflare Pages). See DEPLOY.md.
+# Apache configuration for designactiv.com — fallback host only.
+# The live site runs on Cloudflare (see DEPLOY.md); this file is excluded from
+# the Cloudflare upload by .assetsignore. Mirrors _redirects.
 
 RewriteEngine On
 
@@ -27,8 +28,7 @@ RewriteRule ^en/(.*)$ /$1 [R=301,L]
 RewriteRule ^about-us/?$ /about [R=301,L]
 RewriteRule ^our-work/?$ /work [R=301,L]
 RewriteRule ^web-design-development/?$ /services [R=301,L]
-# The pricing ladder is gone: it advertised EUR 0 across all three tiers.
-RewriteRule ^pricing/?$ /services [R=301,L]
+# (/pricing is a real page since 2026-10-20; it no longer forwards.)
 
 # --- Strip .html so extensionless URLs are the only public form -------------
 

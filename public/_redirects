@@ -1,4 +1,4 @@
-# Netlify / Cloudflare Pages redirect rules.
+# Cloudflare static-asset redirect rules (also valid on Netlify / Pages).
 # (Apache hosts use .htaccess instead; see DEPLOY.md.)
 #
 # This map is preserved SEO and survives every rebuild. Two generations of
@@ -6,15 +6,13 @@
 # that replaced it. Deleting a line here silently discards whatever ranking
 # and inbound links that URL had.
 
-# --- Legacy DOMAIN (301) ----------------------------------------------------
-# Renamed from Powerstar7 to DesignActiv on 2026-09-19. The old host is kept
-# and forwards path-for-path, so legacy Sitejet URLs still reach their real
-# successor. Requires powerstar7.com to be attached to this site as a domain
-# alias — see DEPLOY.md.
-http://powerstar7.com/*      https://www.designactiv.com/:splat   301!
-http://www.powerstar7.com/*  https://www.designactiv.com/:splat   301!
-https://powerstar7.com/*     https://www.designactiv.com/:splat   301!
-https://www.powerstar7.com/* https://www.designactiv.com/:splat   301!
+# --- Legacy DOMAIN: NOT here ------------------------------------------------
+# Renamed from Powerstar7 to DesignActiv on 2026-09-19. powerstar7.com must
+# forward path-for-path to www.designactiv.com, and designactiv.com (apex)
+# to www. Cloudflare's _redirects only matches PATHS: a source with a host
+# ("https://powerstar7.com/*") and Netlify's "301!" force suffix are both
+# rejected at deploy time ("Only relative URLs are allowed"). Both domain
+# redirects are Redirect Rules on the Cloudflare zones — see DEPLOY.md §1.
 
 # --- Portuguese -------------------------------------------------------------
 # /pt/ is a REAL section again, so the old blanket "/pt/* -> /" rule is gone.
@@ -26,19 +24,20 @@ https://www.powerstar7.com/* https://www.designactiv.com/:splat   301!
 # Nothing to declare here: /pt, /pt/sobre-nos, /pt/servicos, /pt/trabalhos,
 # /pt/contato, /pt/aviso-legal and /pt/privacidade are all served directly.
 
-# --- Legacy Sitejet URLs (301) ----------------------------------------------
-/en               /            301
-/en/*             /:splat      301
-
 # --- Pages the rebuild renamed or merged (301) ------------------------------
+# Exact paths first: Cloudflare evaluates them before the splat rules below.
 /about-us                    /about       301
 /our-work                    /work        301
 /web-design-development      /services    301
+/index.html                  /            301
+
+# --- Legacy Sitejet URLs (301) ----------------------------------------------
+/en               /            301
+/en/*             /:splat      301
 # The three-tier pricing ladder is gone — it advertised EUR 0 across all
 # three tiers and "Placeholder feature" bullets. Services is the honest
 # destination for anyone who arrives looking for it.
 # /pricing is a real page since 2026-10-20 (it used to forward to /services).
 
 # --- Strip .html so canonical extensionless URLs are the only public form ---
-/index.html       /                        301
 /*.html           /:splat                  301

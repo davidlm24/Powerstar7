@@ -3,10 +3,18 @@
 	"compatibility_date": "2026-10-12",
 	"compatibility_flags": ["global_fetch_strictly_public"],
 	"name": "designactiv",
-	"main": "@astrojs/cloudflare/entrypoints/server",
+	// Every route is prerendered, so this is a static-assets Worker: the adapter
+	// writes the real config to dist/client/wrangler.json and `wrangler deploy`
+	// follows the redirect in .wrangler/deploy/config.json. These three settings
+	// are carried over. Canonical URLs have no trailing slash (astro.config:
+	// trailingSlash 'never', build.format 'directory'), so Cloudflare must serve
+	// /about/index.html AT /about and redirect /about/ to /about; the default
+	// (auto-trailing-slash) does the opposite. 404-page serves the designed
+	// 404.html instead of an empty 404.
 	"assets": {
-		"directory": "./dist",
-		"binding": "ASSETS"
+		"directory": "./dist/client",
+		"html_handling": "drop-trailing-slash",
+		"not_found_handling": "404-page"
 	},
 	"observability": {
 		"enabled": true

@@ -43,6 +43,11 @@ export default defineConfig({
     enabled: false,
   },
 
+  /* Nothing on the site keeps state, so no session store: without this the
+     Cloudflare adapter adds a KV binding named SESSION to the generated
+     wrangler.json and `wrangler deploy` tries to provision a namespace. */
+  session: false,
+
   /* The harness assigns a free port and passes it as PORT (autoPort in
      .claude/launch.json). Astro's CLI reads --port or server.port and does
      NOT read PORT, so it has to be picked up here.
@@ -57,5 +62,8 @@ export default defineConfig({
     port: Number(process.env.PORT) || 3000,
   },
 
-  adapter: cloudflare(),
+  /* No <Image> anywhere (illustrations are plain <img> with baked srcsets),
+     so no Images binding either: 'passthrough' keeps the generated config
+     free of an IMAGES binding the site never calls. */
+  adapter: cloudflare({ imageService: 'passthrough' }),
 });
