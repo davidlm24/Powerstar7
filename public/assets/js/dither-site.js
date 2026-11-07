@@ -7,9 +7,8 @@
 
    Each illustration keeps its static <img> as the initial and no-JS
    render; a canvas is drawn at rest first and only then placed over it, so
-   the swap is invisible. The hero's picture is the one exception: its img
-   is hidden from first paint (Home.astro) so the develop entrance can play
-   from nothing.
+   the swap is invisible. The home hero's picture is not one of these: it is
+   a live print of its own (hero-print.js).
 
    With reduced motion none of this runs (no html.dither): the static dots
    and the CSS fallbacks are what shows. */
@@ -89,10 +88,6 @@
   if (!hero) {
     window.__ditherReady = true;
   } else {
-    var pic = hero.querySelector('.hero__pic');
-    var deskIllo = pic && pic.querySelector('.hero__desk');
-    var sealIllo = pic && pic.querySelector('.hero__check');
-
     /* The wash: fine dots drifting behind the copy, never under text. Where
        there is no WebGL the CSS wash stays. */
     var dots = hero.querySelector('.hero__dots');
@@ -120,30 +115,11 @@
       }
     }
 
-    /* The landing: the picture develops layer by layer, the seal is stamped
-       and develops as it lands, then the highlight wipes in (CSS, keyed on
-       .is-run). The CSS clock starts with .is-run, so it can never run ahead
-       of the fields. */
-    if (deskIllo && sealIllo) {
-      Promise.all([upgrade(deskIllo, { reveal: 0 }), upgrade(sealIllo, { reveal: 0 })]).then(function (both) {
-        var desk = both[0], seal = both[1];
-        window.__ditherReady = true;
-        if (!armed()) { desk.set({}); seal.set({}); return; }
-        hero.classList.add('is-run');
-        setTimeout(function () {
-          desk.tween(1000, function (p) { return D.ENTER.layers(p, desk.f.layers); });
-        }, 200);
-        setTimeout(function () { seal.tween(380, D.ENTER.develop); }, 900);
-        if (pointerEffects) {
-          D.hover(pic, desk, function () { return hero.classList.contains('is-run') && !desk.anim ? 'lit' : 'none'; }, {});
-        }
-      }, function () {
-        // A field failed to load: show the static picture.
-        html.classList.remove('dither');
-      });
-    } else {
-      window.__ditherReady = true;
-    }
+    /* The landing: the highlight wipes in (CSS, keyed on .is-run). The
+       picture is a live print of its own (hero-print.js), with no fields to
+       wait for. */
+    window.__ditherReady = true;
+    hero.classList.add('is-run');
   }
 
   check();

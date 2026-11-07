@@ -78,21 +78,13 @@ const position = [
       data URI in a custom property: not a request. Astro's scoped style
       cannot take a frontmatter value, hence set:html. */}
   <Fragment set:html={`<style>:root{${rampCss()}}</style>`} />
-  {/* The hero fields, preloaded: the landing races the 2.5s arm-and-withdraw
-      (Base.astro), and in a throttled or slow tab the two field images were
-      losing that race, which left the static hero. A body preload is valid
-      and starts them with the page, not after three deferred scripts. */}
-  <link rel="preload" as="image" href="/assets/dither/desk.png" imagesrcset="/assets/dither/desk.png 1x, /assets/dither/desk@2x.png 2x" />
-  <link rel="preload" as="image" href="/assets/dither/check.png" imagesrcset="/assets/dither/check.png 1x, /assets/dither/check@2x.png 2x" />
   {/* --- Hero ------------------------------------------------------------
       David's picks (2026-10-14): "Your website, sorted." with the last word
-      highlighted; beside it one general picture, a laptop and a phone
-      showing a site with a plant beside them (illustration D, "mix A + B",
-      so it fits any kind of client and does not repeat the service icons
-      below); and a slow band of the kinds of business we make sites for
-      along the foot. On load the picture lands, the check seal is stamped
-      on it, then the highlight fills. After that nothing moves but the
-      band. */}
+      highlighted, and a slow band of the kinds of business we make sites for
+      along the foot. The picture beside it (David, 2026-10-20) is the same
+      laptop, phone and plant, now a live print: the browser on the laptop
+      is resized by the pointer, or by an idle cursor, and its page reflows
+      into the phone's below 768px (hero-print.js). */}
   <section class="hero rails">
     {/* Both decorative layers live on this one element rather than on the
         section's own pseudos. That began as a way to keep ::before free for
@@ -128,9 +120,16 @@ const position = [
         </div>
       </div>
 
-      <div class="hero__pic" aria-hidden="true" data-wash-clear>
-        <Illo name="desk" variant="sticker" class="hero__desk" />
-        <Illo name="check" variant="sticker" class="hero__check" />
+      {/* The still is the same print at rest, for the first paint and for no
+          JS; the canvas replaces it once it has printed (.is-live). The stage
+          holds the hidden line figure and takes the pointer. */}
+      <div class="hero__pic" aria-hidden="true" data-wash-clear data-hero-print>
+        {/* One file for every screen: a dot is one CSS pixel at any density,
+            and pixelated scaling keeps it crisp at 2x. */}
+        <img class="hero__still" src="/assets/illo/hero-responsive.png" width="635" height="508" alt="" fetchpriority="high" />
+        <div class="hero__stage"></div>
+        <canvas class="hero__canvas"></canvas>
+        <span class="hero__read"></span>
       </div>
     </div>
 
@@ -264,6 +263,12 @@ const position = [
   </section>
 
   <Closing lang={lang} />
+  {/* The hero print: the kernel and the print first, then the figure, which
+      mounts itself. Deferred classic scripts and module scripts run in
+      document order, after the parse. */}
+  <script src="/assets/js/hairline/kernel.js" defer is:inline></script>
+  <script src="/assets/js/hero-print.js" defer is:inline></script>
+  <script type="module" src="/assets/js/hairline/responsive.js" is:inline></script>
 </Base>
 
 <script>
@@ -510,45 +515,67 @@ const position = [
   }
 
   /* --- The picture -----------------------------------------------------
-     The desk (desk() in scripts/illo/scenes.mjs) at its 1x width, 500px: one
-     image pixel to one screen pixel keeps the dither crisp, and narrower
-     columns scale it down. The check seal is a second sticker, 150px (30%),
-     stamped over the laptop's top right corner. Both are Illo components,
-     so their classes need :global() to be reached from here. */
+     The live print (hero-print.js). The drawing fills about three quarters
+     of the figure's 5:4 frame, so the frame runs past its column by a
+     little (into the gap) to give the laptop the old desk's presence.
+     The still and the canvas are the same print; the canvas sizes itself
+     to whole device pixels from the stage, which holds the hidden line
+     figure and takes the pointer. */
   .hero__pic {
     position: relative;
     justify-self: center;
-    inline-size: min(100%, 500px);
+    inline-size: min(100% + var(--s5), 640px);
+    margin-inline-start: calc(-1 * var(--s5));
   }
 
-  .hero__pic :global(.hero__desk) {
-    --illo-w: 100%;
+  .hero__still {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    image-rendering: pixelated;
   }
 
-  .hero__pic :global(.hero__check) {
+  .hero__stage {
     position: absolute;
-    inset-block-start: -8%;
-    inset-inline-end: 2%;
-    inline-size: 30%;
-    --illo-w: 100%;
+    inset: 0;
+  }
+
+  .hero__stage :global(svg) {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    opacity: 0;
+  }
+
+  .hero__canvas {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    pointer-events: none;
+    image-rendering: pixelated;
+  }
+
+  .hero__pic.is-live .hero__still { visibility: hidden; }
+
+  /* The width the pointer has set, while it is set: the figure's read-out,
+     just above the laptop lid's top right corner (the camera never moves). */
+  .hero__read {
+    position: absolute;
+    inset-block-start: 9%;
+    inset-inline-start: 66%;
+    font: 500 var(--t-micro) / 1 var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-muted);
+    pointer-events: none;
   }
 
   /* --- The landing -------------------------------------------------------
      Only for people who have not asked for less motion; everyone else, and
      anyone without CSS animation, gets the finished state, which is the
-     state every element is written in. The picture lands, the seal is
-     stamped on it, then the highlight fills. */
+     state every element is written in. The highlight fills; the picture
+     moves on its own (hero-print.js). */
   @media (prefers-reduced-motion: no-preference) {
-    .hero__pic :global(.hero__desk) {
-      animation:
-        hero-slap 500ms var(--ease) 200ms both,
-        hero-float 7s ease-in-out 1.2s infinite alternate;
-    }
-
-    .hero__pic :global(.hero__check) {
-      animation: hero-stamp 450ms var(--ease) 900ms both;
-    }
-
     .hero__mark::before {
       animation: hero-fill 450ms var(--ease) 1.35s both;
     }
@@ -556,23 +583,6 @@ const position = [
     .hero__mark {
       animation: hero-ink 120ms ease-out 1.45s both;
     }
-  }
-
-  @keyframes hero-slap {
-    from { opacity: 0; transform: translateY(-14px) scale(1.18); }
-    70% { opacity: 1; transform: scale(0.98); }
-    to { transform: none; }
-  }
-
-  @keyframes hero-float {
-    from { translate: 0 0; }
-    to { translate: 0 -8px; }
-  }
-
-  @keyframes hero-stamp {
-    from { opacity: 0; transform: scale(1.5) rotate(-25deg); }
-    60% { opacity: 1; }
-    to { transform: none; }
   }
 
   @keyframes hero-fill {
@@ -584,18 +594,11 @@ const position = [
   }
 
   /* --- The landing, in dots (html.dither: dither-site.js is running) ------
-     The picture's image is hidden from first paint, and the canvas develops
-     it layer by layer from nothing; the seal is stamped (the same CSS
-     stamp) while it develops; then the highlight wipes in behind a dithered
-     edge (the Bayer ramp mask) instead of scaling. Everything is keyed on
-     .is-run, which the script adds once the fields are ready, so the CSS
-     clock can never run ahead of the picture. If html.dither is withdrawn
-     (the 2.5s fallback) the rules above take over with their delays long
-     gone: everything sits in its finished state. */
-  html.dither .hero__pic .illo img { visibility: hidden; }
-
-  html.dither .hero__pic :global(.hero__desk),
-  html.dither .hero__pic :global(.hero__check),
+     The highlight wipes in behind a dithered edge (the Bayer ramp mask)
+     instead of scaling, keyed on .is-run, which the script adds once it is
+     ready. If html.dither is withdrawn (the 2.5s fallback) the rules above
+     take over with their delays long gone: everything sits in its finished
+     state. */
   html.dither .hero__mark,
   html.dither .hero__mark::before { animation: none; }
 
@@ -608,12 +611,6 @@ const position = [
     mask-position: right calc(var(--dz-ramp-off) * -1px) top 0;
   }
 
-  html.dither .hero.is-run .hero__pic :global(.hero__desk) {
-    animation: hero-float 7s ease-in-out 1.4s infinite alternate;
-  }
-  html.dither .hero.is-run .hero__pic :global(.hero__check) {
-    animation: hero-stamp 450ms var(--ease) 900ms both;
-  }
   html.dither .hero.is-run .hero__mark { animation: hero-ink 1ms linear 1.6s both; }
   html.dither .hero.is-run .hero__mark::before {
     visibility: visible;
