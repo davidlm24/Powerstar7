@@ -1,6 +1,7 @@
 /* Bayer patterns as CSS masks, generated at build time: crisp SVG data URIs,
-   no file and no request. Shared by the home hero (the highlight's dithered
-   wipe) and the dither lab (every level, and the stepped keyframes).
+   no file and no request. Base.astro puts every level and the stepped
+   keyframes on every page (--dz-0 … --dz-16, dz-in), read by global.css
+   (.print-now) and grid.css (the title cells' faint dots).
 
    Everything is in cells; `mask-size` scales a cell to the dot size, and
    crispEdges keeps the cells square at any device ratio. */

@@ -1,6 +1,8 @@
 ---
 import '../styles/fonts.css';
 import '../styles/global.css';
+import '../styles/themes.css';
+import '../styles/grid.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { levelsCss, stepsKeyframes } from '../lib/bayer';
@@ -12,11 +14,17 @@ interface Props {
   page?: PageKey;
   title: string;
   description?: string;
-  /** Load the dither engine: the print moves (Home, Services). */
-  dither?: boolean;
+  /** The themes (src/styles/themes.css). Every page uses 'switch' since the
+      2026-11-26 rollout: dark by default, and the header's theme button lets
+      the visitor change it. 'dark' / 'light' pin one. */
+  theme?: 'dark' | 'light' | 'switch';
 }
 
-const { lang, page, title, description, dither = false } = Astro.props;
+const { lang, page, title, description, theme = 'switch' } = Astro.props;
+// Every page is themed since the 2026-11-26 rollout (theme defaults to
+// 'switch'); kept as a name so the head reads clearly.
+const themed = true;
+const dark = theme === 'dark' || theme === 'switch';
 const t = useTranslations(lang);
 
 const site = Astro.site ?? new URL('https://www.designactiv.com');
@@ -27,15 +35,16 @@ const canonical = page ? new URL(ROUTES[page][lang], site).href : null;
 const ogImage = new URL(lang === 'pt' ? '/assets/img/og-card-pt.png' : '/assets/img/og-card.png', site).href;
 
 /* The print coming up: every 4x4 Bayer level as a CSS mask (--dz-0 … --dz-16)
-   and the keyframes that step through them (src/lib/bayer.ts). What the
-   studio prints develops in dots on every page: the page figures, the
-   process numerals, the prices, the proof figures, the form's reply. Data
-   URIs in custom properties, 485 bytes gzipped; not a request. */
+   and the keyframes that step through them (src/lib/bayer.ts). A reply
+   that changes in front of the visitor develops in dots (the form's status,
+   a swapped price: .print-now, global.css), and the grid's title cells use
+   one level for their faint dots (grid.css). Data URIs in custom
+   properties, 485 bytes gzipped; not a request. */
 const dz = `:root{${levelsCss()}}${stepsKeyframes('dz-in', 0, 16)}`;
 ---
 
 <!doctype html>
-<html lang={lang} class="no-js">
+<html lang={lang} class:list={['no-js', dark && 'theme-dark', theme === 'light' && 'theme-light']}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -61,7 +70,37 @@ const dz = `:root{${levelsCss()}}${stepsKeyframes('dz-in', 0, 16)}`;
     <Fragment set:html={`<style>${dz}</style>`} />
 
     <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#f5f2eb" />
+    <meta name="theme-color" content={dark ? '#0e0e0c' : theme === 'light' ? '#f9f9f9' : '#f5f2eb'} />
+    {themed && <meta name="color-scheme" content={dark ? 'dark light' : 'light'} />}
+    {/* The visitor's own choice, applied before first paint so the page
+        never flashes the other theme. Dark is the default; storage can be
+        missing or blocked, and then dark simply stays. */}
+    {
+      theme === 'switch' && (
+        <script is:inline>
+          try {
+            if (localStorage.getItem('designactiv-theme') === 'light') {
+              var h = document.documentElement;
+              h.classList.remove('theme-dark');
+              h.classList.add('theme-light');
+              document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f9f9f9');
+            }
+          } catch (e) {}
+        </script>
+      )
+    }
+
+    {
+      /* The footer's Animation switch: applied before the
+         first paint, so a page never starts moving and then stops. */
+      themed && (
+        <script is:inline>
+          try {
+            if (localStorage.getItem('designactiv-motion') === 'off') document.documentElement.classList.add('motion-off');
+          } catch (e) {}
+        </script>
+      )
+    }
 
     {/* The two subsets every page actually uses: Geist for all the text, and
         the serif italic for the accent word in each page's headline, which is
@@ -73,6 +112,8 @@ const dz = `:root{${levelsCss()}}${stepsKeyframes('dz-in', 0, 16)}`;
       type="font/woff2"
       crossorigin
     />
+    {/* The trial pages set no serif italic, so they skip its preload. */}
+    {!themed && (
     <link
       rel="preload"
       href="/assets/fonts/source-serif-4-italic-latin.woff2"
@@ -80,6 +121,7 @@ const dz = `:root{${levelsCss()}}${stepsKeyframes('dz-in', 0, 16)}`;
       type="font/woff2"
       crossorigin
     />
+    )}
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="DesignActiv" />
@@ -106,34 +148,16 @@ const dz = `:root{${levelsCss()}}${stepsKeyframes('dz-in', 0, 16)}`;
         }, 2500);
       }
     </script>
-    {/* The same arm-and-withdraw for the live dither (dither-site.js): only
-        with motion allowed and a canvas to draw on, and dropped after 2.5s
-        if the scripts never report ready, so no picture stays blank. */}
-    {
-      dither && (
-        <script is:inline>
-          if (window.HTMLCanvasElement && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            document.documentElement.classList.add('dither');
-            setTimeout(function () {
-              if (!window.__ditherReady) document.documentElement.classList.remove('dither');
-            }, 2500);
-          }
-        </script>
-      )
-    }
   </head>
 
   <body>
     <a class="skip-link" href="#main">{t('nav.skip')}</a>
-    <Header lang={lang} page={page} />
+    <Header lang={lang} page={page} cta={themed} themeToggle={theme === 'switch'} />
     <main id="main" tabindex="-1">
       <slot />
     </main>
-    <Footer lang={lang} page={page} />
+    <Footer lang={lang} page={page} motionToggle={themed} />
     <script src="/assets/js/site.js" defer is:inline></script>
-    {/* Deferred scripts run in document order, so these follow site.js. */}
-    {dither && <script src="/assets/js/dither.js" defer is:inline></script>}
-    {dither && <script src="/assets/js/dither-site.js" defer is:inline></script>}
   </body>
 </html>
 

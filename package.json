@@ -10,7 +10,6 @@
     "preview": "npm run build && wrangler dev",
     "check": "astro check",
     "measure": "node scripts/measure.mjs",
-    "illo": "node scripts/illustrations.mjs",
     "share": "node scripts/share.mjs",
     "generate-types": "wrangler types",
     "deploy": "npm run build && wrangler deploy"

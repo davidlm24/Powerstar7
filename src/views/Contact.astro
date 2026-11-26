@@ -1,7 +1,19 @@
 ---
+/* Contact (the 2026-11 redesign, rolled out 2026-11-26). The page head is
+   the blue panel every inner page opens with (PageTop); under it, one
+   section of the grid: the form in the left half, the ways to reach a person
+   directly in the right half, with the email glyph above them. There is no
+   closing panel: its link would point at this page.
+
+   Everything site.js reads is kept: form[data-contact] with data-mailto and
+   data-copy, the field ids and names, the honeypot input[name="website"],
+   .form__status and the submit button. The grid keeps the contact__inner
+   class so its cells enter with the section entrances (global.css). */
 import Base from '../layouts/Base.astro';
-import PageHead from '../components/PageHead.astro';
-import AsciiCallout from '../components/AsciiCallout.astro';
+import Sheet from '../components/Sheet.astro';
+import PageTop from '../components/PageTop.astro';
+import Pluses from '../components/Pluses.astro';
+import Glyph from '../components/Glyph.astro';
 import { useTranslations, route, CONTACT, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -42,191 +54,172 @@ const topics = [
   t('contact.form.topic.extras'),
   t('contact.form.topic.other'),
 ];
+
+/* The section is one row of two half-width cells, so its top and bottom
+   lines are crossed by the rails and the centre line only. */
+const MID = [0, 50, 100];
 ---
 
 <Base lang={lang} page="contact" title={t('contact.title')} description={t('contact.lead')}>
-  <PageHead title={t('contact.h1')} lead={t('contact.lead')} figure="contact" cursor />
+  <Sheet>
+    <PageTop title={t('contact.h1')} lead={t('contact.lead')} />
 
-  <section class="contact rails">
-    <div class="container contact__inner">
-      {/* TODO before launch: set data-endpoint to the real form handler.
-          Until then the form composes an email instead — and says that is
-          what it is doing, rather than reporting a success it cannot know
-          about (which is what the old site did). See DEPLOY.md. */}
-      {/* method="post": with JavaScript off a form without a method submits
-          a GET, which put the visitor's name, email and message into the
-          URL (history, server logs). novalidate is set by site.js, so the
-          browser's own validation stays on when the script is not there.
-          The <noscript> block below hides the button and offers the email. */}
-      <form class="form" method="post" data-contact data-mailto={CONTACT.email} data-copy={formCopy}>
-        <div class="field">
-          <label for="name">{t('contact.form.name')}</label>
-          <input id="name" name="name" type="text" autocomplete="name" required />
+    <section class="frame frame--last">
+      <Pluses at={MID} />
+      <div class="grid contact__inner">
+        <div class="cell span-2 cell--form">
+          {/* TODO before launch: set data-endpoint to the real form handler.
+              Until then the form composes an email instead — and says that is
+              what it is doing, rather than reporting a success it cannot know
+              about (which is what the old site did). See DEPLOY.md. */}
+          {/* method="post": with JavaScript off a form without a method submits
+              a GET, which put the visitor's name, email and message into the
+              URL (history, server logs). novalidate is set by site.js, so the
+              browser's own validation stays on when the script is not there.
+              The <noscript> block below hides the button and offers the email. */}
+          <form class="form" method="post" data-contact data-mailto={CONTACT.email} data-copy={formCopy}>
+            <div class="field">
+              <label for="name">{t('contact.form.name')}</label>
+              <input id="name" name="name" type="text" autocomplete="name" required />
+            </div>
+
+            <div class="field">
+              <label for="email">{t('contact.form.email')}</label>
+              <input id="email" name="email" type="email" autocomplete="email" spellcheck="false" required />
+            </div>
+
+            <div class="field">
+              <label for="company">
+                {t('contact.form.company')}
+                <span class="field__hint">{t('contact.form.companyHint')}</span>
+              </label>
+              <input id="company" name="company" type="text" autocomplete="organization" />
+            </div>
+
+            <div class="field">
+              <label for="topic">{t('contact.form.topic')}</label>
+              <select id="topic" name="topic">
+                {topics.map((topic) => <option value={topic}>{topic}</option>)}
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="message">{t('contact.form.message')}</label>
+              <p class="field__hint" id="message-hint">{t('contact.form.messageHint')}</p>
+              <textarea id="message" name="message" rows="6" aria-describedby="message-hint" required
+              ></textarea>
+              {/* The old ASCII aside, now a quiet note under the box. It only
+                  repeats the hint above, so it stays hidden from assistive
+                  technology as before. */}
+              <p class="field__aside" aria-hidden="true">{t('contact.callout')}</p>
+            </div>
+
+            {/* Honeypot. Hidden from sight and from assistive technology, so no
+                real visitor is ever asked to leave a field empty. */}
+            <div class="trap" aria-hidden="true">
+              <label for="website">{t('contact.form.trap')}</label>
+              <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <p class="form__privacy">
+              {t('contact.form.privacy')} <a href={route('privacy', lang)}>{t('contact.form.privacyLink')}</a>
+            </p>
+
+            <noscript>
+              <style>
+                .form__foot .btn {
+                  display: none;
+                }
+              </style>
+              <p class="form__noscript">
+                {t('contact.form.noscript')} <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+              </p>
+            </noscript>
+
+            <div class="form__foot">
+              <button class="btn" type="submit">{t('contact.form.submit')}</button>
+              <p class="form__status" role="status" aria-live="polite"></p>
+            </div>
+          </form>
         </div>
 
-        <div class="field">
-          <label for="email">{t('contact.form.email')}</label>
-          <input id="email" name="email" type="email" autocomplete="email" spellcheck="false" required />
-        </div>
+        {/* The ways to reach a person, in their own cell: the email at the
+            size of a heading, since for many visitors it is the whole page. */}
+        <aside class="cell span-2 direct" data-glyph-zone>
+          <span class="cell__art" aria-hidden="true"><Glyph name="email" size={96} /></span>
+          <h2 class="head__h head__h--sm">{t('contact.direct.h')}</h2>
+          <p class="cell__b direct__b">{t('contact.direct.b')}</p>
+          <a class="direct__email" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+          {
+            CONTACT.whatsapp && (
+              <a class="direct__alt" href={`https://wa.me/${CONTACT.whatsapp}`}>{t('contact.direct.whatsapp')}</a>
+            )
+          }
+          {
+            CONTACT.phone && (
+              <a class="direct__alt" href={`tel:${CONTACT.phone.replace(/s/g, '')}`}>{t('contact.direct.phone')}: {CONTACT.phone}</a>
+            )
+          }
+        </aside>
+      </div>
+      <Pluses at={MID} end />
+    </section>
+  </Sheet>
 
-        <div class="field">
-          <label for="company">
-            {t('contact.form.company')}
-            <span class="field__hint">{t('contact.form.companyHint')}</span>
-          </label>
-          <input id="company" name="company" type="text" autocomplete="organization" />
-        </div>
+  <script is:inline>
+    (function () {
+      var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        <div class="field">
-          <label for="topic">{t('contact.form.topic')}</label>
-          <select id="topic" name="topic">
-            {topics.map((topic) => <option value={topic}>{topic}</option>)}
-          </select>
-        </div>
+      if (reduce || !('IntersectionObserver' in window)) return;
 
-        <div class="field">
-          <label for="message">{t('contact.form.message')}</label>
-          <p class="field__hint" id="message-hint">{t('contact.form.messageHint')}</p>
-          <textarea id="message" name="message" rows="6" aria-describedby="message-hint" required
-          ></textarea>
-          <AsciiCallout text={t('contact.callout')} />
-        </div>
-
-        {/* Honeypot. Hidden from sight and from assistive technology, so no
-            real visitor is ever asked to leave a field empty. */}
-        <div class="trap" aria-hidden="true">
-          <label for="website">{t('contact.form.trap')}</label>
-          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
-        </div>
-
-        <p class="form__privacy">
-          {t('contact.form.privacy')} <a href={route('privacy', lang)}>{t('contact.form.privacyLink')}</a>
-        </p>
-
-        <noscript>
-          <style>
-            .form__foot .btn {
-              display: none;
-            }
-          </style>
-          <p class="form__noscript">
-            {t('contact.form.noscript')} <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
-          </p>
-        </noscript>
-
-        <div class="form__foot">
-          <button class="btn" type="submit">{t('contact.form.submit')}</button>
-          <p class="form__status" role="status" aria-live="polite"></p>
-        </div>
-      </form>
-
-      {/* One picture per page: the speech bubbles in the page head. The
-          envelope that sat here was a second one (David, 2026-10-16). */}
-      <aside class="direct">
-        <h2 class="direct__h">{t('contact.direct.h')}</h2>
-        <p class="direct__b">{t('contact.direct.b')}</p>
-        <a class="direct__email" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
-        {
-          CONTACT.whatsapp && (
-            <a class="direct__alt" href={`https://wa.me/${CONTACT.whatsapp}`}>{t('contact.direct.whatsapp')}</a>
-          )
-        }
-        {
-          CONTACT.phone && (
-            <a class="direct__alt" href={`tel:${CONTACT.phone.replace(/s/g, '')}`}>{t('contact.direct.phone')}: {CONTACT.phone}</a>
-          )
-        }
-      </aside>
-    </div>
-  </section>
+      // The glyph's pixels light up once, when the glyph itself first comes
+      // into view. The glyph is watched rather than its cell: the cell runs
+      // as tall as the form beside it, often taller than the screen.
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var zone = e.target.closest('[data-glyph-zone]');
+          if (zone) zone.classList.add('is-play');
+          io.unobserve(e.target);
+        });
+      }, { threshold: 0.4 });
+      document.querySelectorAll('[data-glyph-zone]').forEach(function (el) {
+        io.observe(el.querySelector('.glyph') || el);
+        // Replay on hover or focus; the class stays until the wave has run
+        // (560ms + 22 diagonals x 22ms), so leaving early never cuts it off.
+        var t = 0;
+        var again = function (e) {
+          if (e.type === 'pointerenter' && e.pointerType !== 'mouse') return;
+          if (el.classList.contains('is-again')) return;
+          el.classList.add('is-again');
+          clearTimeout(t);
+          t = setTimeout(function () { el.classList.remove('is-again'); }, 1100);
+        };
+        el.addEventListener('pointerenter', again);
+        el.addEventListener('focusin', again);
+      });
+    })();
+  </script>
 </Base>
 
 <style>
-  .contact {
-    padding-block-end: var(--section-y);
-  }
+  /* The shared grid and panels live in src/styles/grid.css. */
 
-  /* Not the 1-and-3 the other split sections use: at 961px a single column is
-     208px, and --s4 of card padding leaves less than the email address needs.
-     Two and two puts the divider on the centre line and gives the aside room. */
-  .contact__inner {
-    display: grid;
-    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
-    column-gap: 0;
-    row-gap: var(--s6);
-    align-items: start;
-  }
-
-  /* span, not `1 / 3`: a numbered end line breaks when the column count drops
-     — `3 / -1` on a two-column grid resolves to `3 / 3`, which the spec
-     rewrites as an implicit extra track. span degrades on its own, so the
-     layout no longer depends on a media query firing at the right width. */
-  /* --col-pad on both sides of the divider, matching .direct below. It was
-     --s5 here against --s6 there: 16px apart below 1280, and the sign FLIPS
-     above 1440, where .form's own max-width caps it short of its track and
-     leaves this padding dead code while the aside keeps its 64px. */
-  /* The corner, as on the pricing cards (Services.astro): blue dots falling
-     off from the form's top-right corner, denser and nearer on hover. The
-     first field's own paper fill sits over most of it; the rest shows in
-     the gaps between fields, where there is no text. */
-  @supports (mask-image: url('')) or (-webkit-mask-image: url('')) {
-    .form::after {
-      content: '';
-      position: absolute;
-      inset-block-start: 0;
-      inset-inline-end: 0;
-      z-index: -1;
-      inline-size: 240px;
-      block-size: 200px;
-      pointer-events: none;
-      background: var(--accent-fn);
-      mask-image: image-set(url('/assets/dither/corner.png') 1x, url('/assets/dither/corner@2x.png') 2x);
-      -webkit-mask-image: image-set(url('/assets/dither/corner.png') 1x, url('/assets/dither/corner@2x.png') 2x);
-      mask-size: 240px 200px;
-      -webkit-mask-size: 240px 200px;
-      mask-repeat: no-repeat;
-      -webkit-mask-repeat: no-repeat;
-    }
-
-    /* .is-sent (site.js, once the message went): the corner steps dense
-       and stays, the same move it makes for the pointer, now meaning
-       "received", while the reply under the button prints in dots. */
-    .form:hover::after,
-    .form:focus-within::after,
-    .form.is-sent::after {
-      mask-image: image-set(url('/assets/dither/corner-hi.png') 1x, url('/assets/dither/corner-hi@2x.png') 2x);
-      -webkit-mask-image: image-set(url('/assets/dither/corner-hi.png') 1x, url('/assets/dither/corner-hi@2x.png') 2x);
-    }
-
-    @media (max-width: 40rem) {
-      .form::after { display: none; }
-    }
-  }
-
-  .form {
-    position: relative;
-    isolation: isolate;
-    grid-column: span 2;
-    padding-inline-end: var(--col-pad);
-  }
-
-  /* The aside is a COLUMN now, not a card. As a card its own border sat 48px
-     off the grid line — the margin had already pushed it in — so a divider on
-     the column boundary meant two lines 48px apart. Dropping the card lets the
-     divider be the separation, exactly on the line. */
-  .direct {
-    grid-column: span 2;
-    padding-inline-start: var(--col-pad);
+  /* With no closing panel, the last section keeps the gap before the footer
+     itself; the rails run on through it. A margin, not padding: the end
+     marks sit on the frame's bottom edge, which must stay the grid's line. */
+  .frame--last {
+    margin-block-end: var(--section-gap);
   }
 
   /* --- Form -------------------------------------------------------------- */
 
   .form {
+    position: relative;
     display: grid;
     gap: var(--s4);
-    max-width: 36rem;
+    max-inline-size: 36rem;
   }
-
 
   .field {
     display: grid;
@@ -236,6 +229,7 @@ const topics = [
   .field label {
     font-size: var(--t-small);
     font-weight: var(--weight-medium);
+    color: var(--fg);
   }
 
   .field__hint {
@@ -248,6 +242,13 @@ const topics = [
     margin-inline-start: 0.4em;
   }
 
+  .field__aside {
+    justify-self: end;
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    color: var(--fg-muted);
+  }
+
   /* 1rem = 18px here, comfortably above the 16px below which iOS Safari
      zooms the viewport on focus. */
   .field input,
@@ -255,14 +256,12 @@ const topics = [
   .field textarea {
     inline-size: 100%;
     padding: 0.7rem 0.8rem;
+    font: inherit;
     font-size: 1rem;
     background: var(--paper-hi);
     color: var(--fg);
-    /* --field-edge, not --rule. This is a control boundary, which WCAG 1.4.11
-       holds to 3:1; --rule is 1.084:1 and left the inputs effectively
-       invisible, since --paper-hi is only 1.046:1 against the ground as well.
-       See tokens.css for why the fix is a second token rather than a heavier
-       --rule. */
+    /* --field-edge, not --rail: this is a control boundary, which WCAG 1.4.11
+       holds to 3:1 against what is around it, in both themes (themes.css). */
     border: 1px solid var(--field-edge);
     border-radius: var(--radius-sm);
   }
@@ -275,10 +274,15 @@ const topics = [
   .field input:focus-visible,
   .field select:focus-visible,
   .field textarea:focus-visible {
-    border-color: var(--blue);
+    border-color: var(--accent-fn);
   }
 
-  .field :global([aria-invalid='true']) {
+  /* Element + attribute, so it outranks the base border rule above (the
+     :global version lost on specificity: review A5). After :focus-visible,
+     so a focused invalid field stays red. */
+  .field input[aria-invalid='true'],
+  .field select[aria-invalid='true'],
+  .field textarea[aria-invalid='true'] {
     border-color: var(--error);
   }
 
@@ -300,12 +304,19 @@ const topics = [
     flex-wrap: wrap;
     align-items: center;
     gap: var(--s3);
+    margin-block-start: var(--s2);
   }
 
   .form__privacy,
   .form__noscript {
     font-size: var(--t-small);
     color: var(--fg-muted);
+  }
+
+  .form__privacy a,
+  .form__noscript a {
+    color: var(--accent-fn);
+    text-underline-offset: 3px;
   }
 
   .form__status {
@@ -323,55 +334,34 @@ const topics = [
 
   /* --- Direct ------------------------------------------------------------ */
 
-
-
-  .direct__h {
-    font-size: 1.25rem;
+  .direct {
+    gap: var(--s3);
   }
 
   .direct__b {
-    margin-block-start: var(--s2);
-    color: var(--fg-muted);
-    font-size: var(--t-small);
+    max-inline-size: 40ch;
   }
 
   .direct__email {
-    display: inline-block;
-    margin-block-start: var(--s3);
-    font-family: var(--font-display);
-    font-size: 1.125rem;
+    justify-self: start;
+    margin-block-start: var(--s2);
+    font-size: clamp(1.25rem, 2.2vw, 1.6rem);
     font-weight: var(--weight-medium);
     letter-spacing: -0.02em;
+    color: var(--accent-fn);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
+  .direct__email:hover {
+    text-decoration: underline;
+    text-underline-offset: 5px;
   }
 
   .direct__alt {
-    display: block;
-    margin-block-start: var(--s2);
+    justify-self: start;
     font-size: var(--t-small);
     font-weight: var(--weight-medium);
-  }
-
-  @media (max-width: 60rem) {
-    .contact__inner {
-      grid-template-columns: minmax(0, 1fr);
-      /* Halved, because the divider below now sits in this gap and wants equal
-         air on both sides rather than all of it above. */
-      row-gap: var(--s5);
-    }
-
-    .form {
-      padding-inline: 0;
-    }
-
-    /* The column divider becomes a ROW divider rather than disappearing. These
-       are two different things — the form, and the ways to reach a person
-       directly — and when they stop being side by side they still need telling
-       apart. Previously the border was simply reset to 0 here and nothing took
-       its place, so the two ran together as one column of text. */
-    .direct {
-      border-inline-start: 0;
-      padding-inline-start: 0;
-      padding-block-start: var(--s5);
-    }
+    color: var(--accent-fn);
   }
 </style>

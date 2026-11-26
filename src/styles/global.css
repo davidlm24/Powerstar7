@@ -50,43 +50,29 @@ select {
   color: inherit;
 }
 
-/* Motion is rationed (REBUILD-BRIEF.md §3.8): a couple of authored moments,
-   no scroll-reveal fades. Whatever survives that budget still honours this. */
-/* Four columns need roughly 240px each to carry a title; below 60rem they do
-   not have it, which is why every two-part row already collapses here. The
-   column count drops with them so the grid is never decoration. */
-@media (max-width: 60rem) {
-  :root {
-    --grid-cols: 2;
-  }
-}
-
 /* Section entrances (David, 2026-10-16, from the taste-skill audit): as a
    section scrolls in, its parts rise 24px and fade in, one after another
    (site.js sets --reveal-delay, 70ms apart). Armed only by the .reveal class
    (Base.astro), which is never set for reduced motion or without
    IntersectionObserver, and is withdrawn if site.js does not arrive, so the
    resting state everyone else sees is simply the finished page. The hero is
-   left out: it has its own landing. The selector list matches site.js. */
-.reveal main > :not(.hero) :is(h1, h2, .lead, .illo--field, .illo--aside, .lane, .lanes__more, .point, .step, .project, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated) {
+   left out: it has its own landing. The selector list matches site.js
+   (REVEAL) exactly. A grid cell's own text (its heading, body and lead, a
+   project card) enters on its own, unless the cell is already one of the
+   parts above, so nothing rises twice; the cells themselves stay put, since
+   they carry the grid's lines. */
+.reveal main > :not(.hero) :is(h1, h2, .lead, .plan, .svc, .faq-item, .how__item, .closing__link, .prose > *, .contact__inner > *, .notice, .updated, :is(.cell__h, .cell__b, .head__lead, .pw):not(:is(.svc, .plan, .how__item, .contact__inner) *)) {
   opacity: 0;
   transform: translateY(24px);
 }
 
-.reveal main > :not(.hero) :is(h1, h2, .lead, .illo--field, .illo--aside, .lane, .lanes__more, .point, .step, .project, .plan, .addons, .svc, .faq-item, .closing__link, .exhibit__body, .details, .prose > *, .how__item, .contact__inner > *, .notice, .updated).is-in {
+.reveal main > :not(.hero) :is(h1, h2, .lead, .plan, .svc, .faq-item, .how__item, .closing__link, .prose > *, .contact__inner > *, .notice, .updated, :is(.cell__h, .cell__b, .head__lead, .pw):not(:is(.svc, .plan, .how__item, .contact__inner) *)).is-in {
   opacity: 1;
   transform: none;
   transition:
     opacity 600ms var(--ease),
     transform 700ms var(--ease);
   transition-delay: var(--reveal-delay, 0ms);
-}
-
-/* The section before the closing band ends with its own breathing room:
-   sections take --section-y on top only, which on one ground is right, but
-   against a band of another colour the last line would sit on the edge. */
-main > :has(+ .closing) {
-  padding-block-end: var(--section-y);
 }
 
 /* Paper shows every part, whether or not it has scrolled into view. */
@@ -100,44 +86,18 @@ main > :has(+ .closing) {
 
 /* --- The print coming up ---------------------------------------------------
    What the studio prints does not rise and fade like a paragraph: it
-   DEVELOPS, the dots coming up in Bayer order like a print in the tray,
-   which is what the hero's picture already does in canvas. Here it is CSS
-   only: the element waits behind an empty 4x4 Bayer mask (--dz-0, Base.astro)
-   and, when its section enters (.is-in, site.js), steps through the sixteen
-   levels to solid (dz-in). 1px cells (mask-size 4px for the 4-cell tile), the
-   grain of the illustrations themselves. mask-image is paint, not layout.
+   DEVELOPS, the dots coming up in Bayer order like a print in the tray.
+   CSS only: the element steps through the sixteen 4x4 Bayer levels
+   (--dz-0 … --dz-16, Base.astro) to solid (dz-in). 1px cells (mask-size
+   4px for the 4-cell tile). mask-image is paint, not layout.
 
-   Who prints: .print-in on the element. The page figures and asides are in
-   the entrance list themselves, so they carry .is-in; the numerals, prices
-   and proof figures sit inside a part that does (.step, .plan, .details),
-   and --reveal-delay inherits from it. Each sets its own --print-dur and
-   --print-delay. .print-now is for a reply that prints when it changes
-   (the form status, a swapped price), added by site.js on each change.
+   Who prints: .print-now, on a reply that prints when it changes (the
+   form status, a swapped price), added by site.js on each change.
 
    Keyed on .reveal, so with reduced motion or without JavaScript nothing
-   waits and nothing is masked: the finished page, as today. If a browser
-   has no masks the @supports block is skipped and the figures take the
-   section entrance like everything else. */
+   is masked: the text simply changes. If a browser has no masks the
+   @supports block is skipped. */
 @supports (mask-image: url('')) {
-  .reveal main > :not(.hero) .print-in {
-    mask-image: var(--dz-0);
-    mask-size: 4px 4px;
-  }
-
-  /* A figure prints instead of rising: the entrance's offset is cancelled
-     for it, and the mask does the arriving. */
-  .reveal main > :not(.hero) :is(.illo--field, .illo--aside) {
-    --print-dur: 640ms;
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-
-  .reveal main > :not(.hero) .is-in.print-in,
-  .reveal main > :not(.hero) .is-in .print-in {
-    animation: dz-in var(--print-dur, 360ms) linear var(--print-delay, var(--reveal-delay, 0ms)) both;
-  }
-
   .reveal .print-now {
     mask-size: 4px 4px;
     animation: dz-in var(--print-dur, 240ms) linear both;
@@ -215,8 +175,6 @@ a:hover { text-decoration-thickness: 2px; }
 }
 
 .invert :focus-visible { outline-color: var(--on-ink-blue); }
-/* The default ring is the brand blue, which vanishes on the blue band. */
-.band-blue :focus-visible { outline-color: #fff; }
 
 /* --blue-fn, not --blue: the display blue behind white measured 4.43:1 and
    failed AA for selected text. The functional sibling is 5.47:1. #fff stays
@@ -272,75 +230,6 @@ a:hover { text-decoration-thickness: 2px; }
   padding-inline: var(--gutter);
 }
 
-/* --- Title beside content -------------------------------------------------
-   The divider is a border on the body column itself, not a line positioned in
-   a background. That makes it self-aligning — it IS the column edge, so it can
-   never drift from it — and it exists only where a split exists. Column gap is
-   zero on purpose: a gap would float the body off the line it starts on, so
-   the breathing room is padding inside the columns. */
-.row {
-  display: grid;
-  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
-  column-gap: 0;
-  align-items: start;
-}
-
-.row__title {
-  grid-column: 1 / 2;
-  padding-inline-end: var(--col-pad);
-}
-
-/* --col-pad, matching .row__title's padding-inline-end above, rather than
-   --s6. The two sides of this ONE line used to clear it by different amounts:
-   a fluid 24-64px on the left against a fixed 64px on the right, so they
-   agreed only above 1422px and sat 20.8px apart at 960. Content either side
-   of a divider has to be the same distance from it, or the divider stops
-   reading as one line. */
-/* No divider line between the columns any more (2026-10-16 audit: lines
-   only where a form needs them); the --col-pad gap does the separating. */
-.row__body {
-  grid-column: 2 / -1;
-  padding-inline-start: var(--col-pad);
-}
-
-/* THE RULE: a one-column .row__title carries type up to --t-h3 and no further.
-   At four columns the title track is 284px, and --col-pad takes 58 of them —
-   so a heading has 227px to set in. That is fine for 28px (one line) and
-   breaks down above it: --t-h2 at 56px lands on FIVE lines of one or two
-   words each, and --t-h3's own 40px sibling on three.
-
-   The tell that this was always the constraint: .honest__h2 carries
-   max-width: 14ch, which computes to 506px — more than twice the track it
-   sits in, so it never applied. 14ch was written for a title two columns
-   wide. This is that width.
-
-   Proof it is the column and not the type: .svc__name is LARGER, 48px, and
-   sets on one line — it lives in the body track at 853px.
-
-   span, not a numbered end line: "3 / -1" on a two-column grid resolves to
-   "3 / 3", which the spec rewrites as an implicit extra track that overflows
-   the page. span degrades on its own, so this needs no media query. */
-.row--statement > .row__title,
-.row--statement > .row__body {
-  grid-column: span 2;
-}
-
-/* Collapses at the same width the column count drops, so no span is ever
-   evaluated against a two-column grid — `3 / -1` would resolve to `3 / 3`,
-   which the spec rewrites as an implicit extra track that overflows the page. */
-@media (max-width: 60rem) {
-  .row__title,
-  .row__body {
-    grid-column: 1 / -1;
-    padding-inline: 0;
-    border-inline-start: 0;
-  }
-
-  .row__body {
-    padding-block-start: var(--s3);
-  }
-}
-
 .measure { max-width: var(--measure); }
 .measure-wide { max-width: var(--width-text); }
 
@@ -369,163 +258,6 @@ a:hover { text-decoration-thickness: 2px; }
   color: var(--fg-muted);
   background: var(--blue-wash);
   padding: 0.1em 0.35em;
-}
-
-/* --- The ASCII kit --------------------------------------------------------
-   Plain keyboard characters where the site talks in type: the callouts
-   ("yes, our prices are public ^"), the contact cursor and the home hero's
-   band. The system monospace draws it, so nothing is downloaded. The section
-   labels with their dash rules and the dotted divider rows are gone (David,
-   2026-10-14: "unnecessary line and titles").
-
-   The callouts are decoration, aria-hidden; the hero's band is content. */
-
-/* --- The illustrations ---------------------------------------------------
-   Every illustration is a finished 1-bit image, drawn from zero for its
-   page (David, 2026-10-19) in tone made for the dither: gradients, glows,
-   soft shadows, Bayer-dithered to blue dots and nothing else, the tilt
-   baked in (scripts/illustrations.mjs). Plain images, no masks, no
-   filters; the page ground shows between the dots. Where the page opts in
-   (dither-site.js), a canvas drawn from the same ink sits over the image
-   (.is-live) and the print itself moves. */
-
-.illo {
-  position: relative;
-  pointer-events: none;
-  user-select: none;
-}
-
-.illo img {
-  display: block;
-  width: var(--illo-w, 14rem);
-  max-width: 100%;
-  height: auto;
-}
-
-.illo canvas {
-  position: absolute;
-  inset: 0;
-  display: block;
-  inline-size: 100%;
-  block-size: 100%;
-}
-
-.illo.is-live img {
-  visibility: hidden;
-}
-
-/* Icons show at full strength, always (David, 2026-10-19, option C). They
-   rested faint until then and only came up on hover, which left the right
-   half of the services sections nearly blank. On hover the live canvas
-   (dither-site.js) relights the print from the pointer, the same "lit"
-   effect as the home hero's picture; the ink never drops below full. */
-
-/* The page figure and the section asides: full-strength stickers in their
-   own grid column beside a heading (PageHead.astro, Home's position head,
-   the Services FAQ head), never behind text. They were faded to 20-55% and
-   masked so text could run over them, and David found that amateur
-   (2026-10-14). The column sets the width; on a phone there is no side for
-   them, and the heading leads alone. */
-.illo--field,
-.illo--aside {
-  --illo-w: 100%;
-}
-
-/* Below 60rem the headline needs the whole width (a 320px sticker column
-   pushed "What it costs, and what you get." to three lines at 768px). */
-@media (max-width: 59.99rem) {
-  .illo--field,
-  .illo--aside {
-    display: none;
-  }
-}
-
-/* The icon wash: the hero's own gradient language under an icon, and never
-   a box (David, 2026-10-12: "no box, just transitioning to the background").
-   Two soft radials — purple and blue at the hero wash's 26% — bleed past the
-   icon on every side and dissolve into the paper, so no edge exists
-   anywhere, and quieter than the hero's 26% — at 15% it is a tint, not a
-   backdrop (David: less opacity). The icon sits on it in the functional
-   blue, the darker of the accent pair, so blue art keeps real contrast on
-   the pale wash; on a dark band it is drawn in white. Purple's
-   second fenced use (tokens.css). Decoration by contract: aria-hidden. */
-/* The wash hugs its art and anchors right, so the drawing's cut edge is
-   the box's edge, flush on the layout's line. */
-.icon-wash {
-  position: relative;
-  display: block;
-  width: fit-content;
-  margin-inline-start: auto;
-}
-
-/* The glow bleeds up, down and left only: the right edge is the cut, and
-   a bleed there would push past the rail and scroll the page sideways. */
-.icon-wash::before {
-  content: '';
-  position: absolute;
-  inset: -26% 0 -26% -24%;
-  background:
-    radial-gradient(
-      42% 46% at 64% 30%,
-      color-mix(in srgb, var(--purple) 15%, transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-      46% 50% at 36% 68%,
-      color-mix(in srgb, var(--blue) 15%, transparent),
-      transparent 72%
-    );
-  pointer-events: none;
-}
-
-/* On a phone the sideways bleed has nowhere to go: the pseudo's transparent
-   box runs past the viewport and scrolls the page sideways (the gradient is
-   box-relative, so a tighter box stays edgeless — it just hugs closer). */
-@media (max-width: 47.99rem) {
-  .icon-wash::before {
-    inset: -16% 0;
-  }
-}
-
-/* Above its own wash. */
-.icon-wash .illo {
-  position: relative;
-}
-
-/* A callout: "^ start here". Small text carrying meaning, so --accent-fn. */
-.callout {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: var(--t-small);
-  letter-spacing: 0;
-  color: var(--accent-fn);
-}
-
-/* Hung from the right edge of a row of buttons. contain: inline-size keeps
-   the callout's own width out of the row's, so the row stays as wide as its
-   buttons and the caret lands under the last one. */
-.callout--end {
-  flex: 0 0 100%;
-  contain: inline-size;
-  text-align: end;
-}
-
-/* The cursor after the contact lead. It blinks only for people who have not
-   asked for less motion. */
-.cursor {
-  margin-inline-start: 0.1em;
-  font-family: var(--font-mono);
-  color: var(--accent);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .cursor {
-    animation: cursor-blink 1.1s steps(1) infinite;
-  }
-}
-
-@keyframes cursor-blink {
-  50% { opacity: 0; }
 }
 
 /* --- Buttons -------------------------------------------------------------
@@ -729,87 +461,3 @@ a:hover { text-decoration-thickness: 2px; }
    and gives its height back here. A hero cancels this with a negative
    margin to run its background up behind the header. */
 main { padding-block-start: var(--header-h); }
-
-/* --- Cards with dots in them -----------------------------------------------
-   A card carries its dither INSIDE it, in one corner (David, 2026-10-20),
-   and the corner answers the pointer.
-
-   At rest: a corner of Bayer dots (public/assets/dither/corner.png as a
-   mask over the accent), clipped by the card's own rounded corner. That is
-   all there is with no JavaScript, on touch and for reduced motion.
-
-   With JavaScript on a fine pointer (site.js), the same corner is drawn
-   live on a small canvas in that corner, and it REACTS to the cursor's
-   movement: it thickens and spreads as the pointer comes near, leans
-   toward it, and eases back when it leaves. Nothing is ever drawn at the
-   pointer itself, and the dots are cleared around every line of text, so
-   the corner never sits behind readable words.
-
-   data-corner: tr (default), bl, br, or none. data-corner-from: the
-   viewport width in rem below which the corner is hidden (the layout has
-   no empty corner there). --dc-w / --dc-h size the CSS corner window.
-   data-corner-scale shrinks the live corner for a small card. */
-.dcard {
-  position: relative;
-  isolation: isolate;
-  border-radius: var(--radius);
-  overflow: clip;
-}
-
-/* The canvas sits in the card's corner; site.js sets its position and size
-   (left, top, width, height) and the CSS corner steps aside (.has-dots). */
-.dcard__dots {
-  position: absolute;
-  z-index: -1;
-  image-rendering: pixelated;
-  pointer-events: none;
-}
-
-.dcard.has-dots::after {
-  display: none;
-}
-
-@supports (mask-image: url('')) or (-webkit-mask-image: url('')) {
-  .dcard::after {
-    content: '';
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    z-index: -1;
-    inline-size: var(--dc-w, 240px);
-    block-size: var(--dc-h, 200px);
-    pointer-events: none;
-    background: var(--accent-fn);
-    mask-image: image-set(url('/assets/dither/corner.png') 1x, url('/assets/dither/corner@2x.png') 2x);
-    -webkit-mask-image: image-set(url('/assets/dither/corner.png') 1x, url('/assets/dither/corner@2x.png') 2x);
-    mask-size: 240px 200px;
-    -webkit-mask-size: 240px 200px;
-    mask-position: top right;
-    -webkit-mask-position: top right;
-    mask-repeat: no-repeat;
-    -webkit-mask-repeat: no-repeat;
-  }
-
-  .dcard[data-corner='bl']::after {
-    inset-block: auto 0;
-    inset-inline: 0 auto;
-    rotate: 180deg;
-  }
-
-  .dcard[data-corner='br']::after {
-    inset-block: auto 0;
-    scale: 1 -1;
-  }
-
-  .dcard[data-corner='none']::after {
-    display: none;
-  }
-
-  @media (max-width: 39.99rem) {
-    .dcard[data-corner-from='40']::after { display: none; }
-  }
-
-  @media (max-width: 59.99rem) {
-    .dcard[data-corner-from='60']::after { display: none; }
-  }
-}

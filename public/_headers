@@ -13,12 +13,8 @@
 /assets/fonts/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Illustrations, prints and project screenshots: regenerated rarely, under
-# the same names. Thirty days, so a redraw is picked up within a month.
-/assets/illo/*
-  Cache-Control: public, max-age=2592000
-/assets/dither/*
-  Cache-Control: public, max-age=2592000
+# Project screenshots and images: regenerated rarely, under the same names.
+# Thirty days, so a redraw is picked up within a month.
 /assets/work/*
   Cache-Control: public, max-age=2592000
 /assets/img/*

@@ -1,7 +1,29 @@
 ---
+/* About (the 2026-11 redesign, rolled out 2026-11-26). The page head is the
+   square blue panel (PageTop); then three sections on the shared four-column
+   grid (Sheet + src/styles/grid.css):
+
+     What a site gets you   title cell (two columns) beside the three
+                            paragraphs as running text (two columns).
+     Where we work          a quiet two-cell row: a small heading and one
+                            paragraph. Deliberately not a big title cell, so
+                            the location never becomes the headline.
+     How we work            a full-width title cell, then a row of four: the
+                            three principles, one cell each, and a pixel
+                            drawing to close the row (hidden on phones).
+                            The title gets its own row because "trabalhamos"
+                            does not fit one column on narrower desktops.
+
+   The "+" marks follow the cell edges each section's first and last row
+   really have: 0 / 50 / 100 for the two-column rows, every column line under
+   the row of four. */
 import Base from '../layouts/Base.astro';
-import PageHead from '../components/PageHead.astro';
-import Closing from '../components/Closing.astro';
+import Sheet from '../components/Sheet.astro';
+import PageTop from '../components/PageTop.astro';
+import Pluses from '../components/Pluses.astro';
+import ClosingPanel from '../components/ClosingPanel.astro';
+import Accent from '../components/Accent.astro';
+import Glyph from '../components/Glyph.astro';
 import { useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -16,128 +38,94 @@ const how = [
   { h: t('about.how.2.h'), b: t('about.how.2.b') },
   { h: t('about.how.3.h'), b: t('about.how.3.b') },
 ];
+
+const MID = [0, 50, 100];
+const RAILS = [0, 100];
+const PLUS = [0, 25, 50, 75, 100];
 ---
 
 <Base lang={lang} page="about" title={t('about.title')} description={t('about.lead')}>
-  <PageHead title={t('about.h1')} lead={t('about.lead')} figure="about" />
+  <Sheet>
+    <PageTop title={t('about.h1')} lead={t('about.lead')} />
 
-  {/* No team grid. The old site carried three cards reading "Name Surname"
-      over a placeholder portrait. A studio that cannot yet name its people
-      says what it does instead. */}
-  <section class="story rails">
-    <div class="container row story__inner">
-      <h2 class="story__h row__title">{t('about.story.h')}</h2>
-      <div class="prose row__body">
-        <p>{t('about.story.b1')}</p>
-        <p>{t('about.story.b2')}</p>
-        <p>{t('about.story.b3')}</p>
+    {/* No team grid. The old site carried three cards reading "Name Surname"
+        over a placeholder portrait. A studio that cannot yet name its people
+        says what it does instead. */}
+
+    {/* --- What a site made for your business gets you ------------------- */}
+    <section class="frame">
+      <Pluses at={MID} />
+      <div class="grid">
+        <div class="cell cell--head span-2">
+          <h2 class="head__h"><Accent text={t('about.story.h')} /></h2>
+        </div>
+        <div class="cell span-2 story__body">
+          <div class="prose">
+            <p>{t('about.story.b1')}</p>
+            <p>{t('about.story.b2')}</p>
+            <p>{t('about.story.b3')}</p>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+      <Pluses at={MID} end />
+    </section>
 
-  <section class="where rails">
+    {/* --- Where we work ------------------------------------------------------ */}
+    <section class="frame">
+      <Pluses at={MID} />
+      <div class="grid">
+        <div class="cell span-2">
+          <h2 class="head__h head__h--sm">{t('about.where.h')}</h2>
+        </div>
+        <div class="cell span-2">
+          <p class="head__lead where__b">{t('about.where.b')}</p>
+        </div>
+      </div>
+      <Pluses at={MID} end />
+    </section>
 
-    <div class="container where__inner">
-      <h2 class="where__h">{t('about.where.h')}</h2>
-      <p class="lead measure-wide">{t('about.where.b')}</p>
-    </div>
-  </section>
-
-  <section class="how rails">
-    <div class="container">
-      <h2 class="how__h">{t('about.how.h')}</h2>
-      <div class="how__grid">
+    {/* --- How we work: the title, then one cell per principle --------------- */}
+    <section class="frame">
+      <Pluses at={RAILS} />
+      <div class="grid">
+        <div class="cell cell--head span-4">
+          <h2 class="head__h"><Accent text={t('about.how.h')} /></h2>
+        </div>
         {
-          how.map((item, i) => (
-            <article class="how__item">
-              <h3 class="how__item-h">{item.h}</h3>
-              <p class="how__item-b">{item.b}</p>
+          how.map((item) => (
+            <article class="cell how__item">
+              <h3 class="cell__h">{item.h}</h3>
+              <p class="cell__b">{item.b}</p>
             </article>
           ))
         }
+        <div class="cell cell--art" aria-hidden="true">
+          <Glyph name="web" size={144} />
+        </div>
       </div>
-    </div>
-  </section>
+      <Pluses at={PLUS} narrow={[0, 50, 100]} end />
+    </section>
 
-  <Closing lang={lang} />
+    <ClosingPanel lang={lang} />
+  </Sheet>
 </Base>
 
 <style>
-  .story {
-    padding-block-end: 0;
+  /* The shared grid, cells and type live in src/styles/grid.css; what is
+     here is the About page's own. */
+
+  /* The three paragraphs read at lead size, on the title's bottom line on
+     wide screens so the two cells share one baseline. */
+  .story__body {
+    align-content: end;
   }
 
-  /* On the grid: the heading takes column one, the prose takes the rest, and
-     the line between them is the divider — it IS the prose column's leading
-     edge, so it cannot drift from it. No column gap: a gap would float the
-     prose off the line it is meant to start on, so the breathing room is
-     padding inside the columns instead. */
-  .story__inner {
-    padding-block-start: var(--s5);
-  }
-
-  .story__h {
-    font-size: var(--t-h3);
-    position: sticky;
-    top: var(--header-h);
-  }
-
-  .prose {
-    display: grid;
-    gap: var(--s3);
-    max-width: var(--measure);
+  .story__body .prose {
     font-size: var(--t-lead);
     line-height: 1.5;
   }
 
-  .where {
-    padding-block-start: var(--section-y);
-  }
-
-  .where__inner {
-    display: grid;
-    gap: var(--s4);
-  }
-
-  .where__h {
-    font-size: var(--t-h2);
-    max-width: 14ch;
-  }
-
-  .how {
-    padding-block-start: var(--section-y);
-  }
-
-  .how__h {
-    font-size: var(--t-h3);
-  }
-
-  .how__grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--s5);
-    margin-block-start: var(--s5);
-  }
-
-  .how__item-h {
-    margin-block-end: var(--s2);
-    font-size: var(--t-h3);
-    line-height: 1.2;
-  }
-
-  .how__item-b {
-    color: var(--fg-muted);
-    font-size: var(--t-body);
-  }
-
-  @media (max-width: 60rem) {
-    .how__grid {
-      grid-template-columns: minmax(0, 1fr);
-      gap: var(--s4);
-    }
-
-    .story__h {
-      position: static;
-    }
+  .where__b {
+    max-inline-size: 48ch;
   }
 </style>

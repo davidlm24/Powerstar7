@@ -6,8 +6,8 @@ working with clients across Europe and Brazil.
 Built with **Astro**, output as static HTML and deployed to Cloudflare
 Workers as static assets (see `DEPLOY.md`). No client-side framework; the
 runtime JavaScript is a handful of plain files in `public/assets/js`
-(`site.js` on every page; the dither engine on Home, Services and Pricing;
-the live hero print on Home only), and — the hard constraint —
+(`site.js` on every page, and `hero-pixels.js` for the pixel shine on the
+blue panels), and — the hard constraint —
 **zero third-party requests**. Fonts are self-hosted with hand-written
 `unicode-range` subsets, there is no analytics and there are no cookies, so
 the site needs no consent banner. That is a legal position in Germany, not an
@@ -62,8 +62,9 @@ src/
                     under pt/ with Portuguese slugs (/pt/sobre-nos).
                     Each one is a three-line wrapper around a view.
   views/            The actual pages, each rendered in both languages.
-  components/       Header, Footer, PageHead, Closing, Faq, Priced,
-                    ProjectCard, Illo, Accent, AsciiCallout, Notice.
+  components/       Header, Footer, Sheet, Pluses, PageTop, ClosingPanel,
+                    HeroPixels, HeroPixelsStill, Glyph, ProjectWindow,
+                    Faq, Priced, Accent, Notice.
   layouts/Base      <head>, canonical, hreflang, Open Graph, skip link.
   i18n/ui.ts        ALL copy, both languages, side by side. Also ROUTES —
                     the single source of truth for nav, the language
@@ -72,6 +73,8 @@ src/
     tokens.css      Colour, type scale, spacing. Every contrast pairing is
                     computed, and the ratios are in the comments.
     global.css      Reset, elements, and the few shared primitives.
+    themes.css      The dark (default) and light themes.
+    grid.css        The four-column page grid, cells and blue panels.
     fonts.css       @font-face and the subsets.
   data/metrics.json Written by scripts/measure.mjs. Do not hand-edit.
   data/agency.json  The studio's own figures on the home page. Nothing here

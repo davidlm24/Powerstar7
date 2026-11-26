@@ -3,8 +3,3 @@
 
 # Apache-only config; on Cloudflare it was being served as a plain file.
 .htaccess
-
-# The dither lab is a dev playground (noindex, not in the sitemap); it is not
-# part of the public site.
-lab
-assets/js/dither-lab.js

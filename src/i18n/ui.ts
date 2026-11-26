@@ -55,8 +55,7 @@ export const CONTACT = {
 
 export const ui = {
   en: {
-    'site.description':
-      'DesignActiv is a web agency for small businesses: website design and development, branding, SEO, email and automation, and ongoing care. Built around your business, yours to keep, in English and Portuguese.',
+    'site.description': 'A web agency for small businesses: websites, branding, SEO, email and website care. Public prices and a written proposal before work starts.',
 
     'nav.home': 'Home',
     'nav.work': 'Work',
@@ -70,65 +69,70 @@ export const ui = {
     'nav.skip': 'Skip to content',
     'nav.homeLabel': 'DesignActiv — home',
     'nav.langSwitch': 'Ver em português',
+    'nav.theme.light': 'Light theme',
+
+    /* --- Home (the 2026-11 redesign) ---------------------------------------
+       Short copy, approved on the trial page (David, 2026-11-25/26) and
+       reviewed on 2026-11-26 (COPY-REVIEW-2026-11-26.md).
+       Headline picked by David: "Your business, online." The *accent* word is
+       coloured, not italic, in this design. */
+    'home.h1': 'Your business, *online*.',
+    'home.lead': 'A website made for your business, and a team that keeps it running.',
+    'home.svc.web': 'Designed from what your business does and who needs to find you.',
+    'home.svc.brand': 'A logo, colours and type that stay consistent.',
+    'home.svc.seo': 'Groundwork that helps customers find the right pages.',
+    'home.svc.email': 'Email on your own domain, and small automations.',
+    'home.svc.hosting': 'Hosting, updates, backups and a person who answers.',
+    'home.fit.lead': 'A simple site you update yourself, or a tailored build: it depends on what your site must do.',
+    'home.fit.one': 'Clear pages that load quickly, on phones too.',
+    'home.fit.two': 'Page titles, descriptions and structure set up page by page, so customers land on the right one.',
+    'home.fit.three': 'Your proposal names the accounts that are yours, and you get a handover guide.',
+    'home.step.one': 'A written proposal with the price, agreed before work starts.',
+    'home.step.two': 'The design is a working page you review on your own phone.',
+    'home.step.three': 'Checked on a phone and a computer: visitors find what they need and can reach you.',
+    'home.step.four': 'Your access and a handover guide, plus Website care if you want it.',
+    'closing.short': 'Tell us about it in a few lines. We usually reply within a working day.',
+    'footer.motion': 'Animation',
+    'footer.motion.on': 'on',
+    'footer.motion.off': 'off',
 
     /* --- Home ---------------------------------------------------------- */
     'home.title': 'DesignActiv — web agency for small businesses',
-    /* Accent words: *word* is set in the serif italic (src/i18n/accent.ts).
-       In the hero it is also the highlighted word, and Home.astro fails the
-       build unless it is the headline's last word. */
-    'home.h1': 'Your website, *sorted*.',
-    'home.lead':
-      'Design, domain, email, getting found, updates: DesignActiv takes care of all of it for small businesses, so you can get back to running yours.',
     'home.cta': 'Start a project',
     'home.cta.secondary': 'See prices',
-    'home.callout': 'yes, our prices are public',
-    /* The band along the foot of the hero. The items are one string, split
-       on commas in Home.astro. */
-    'home.band.label': 'made for',
-    'home.band.items': 'salons, bakeries, cafés, garages, clinics, photographers, studios, restaurants, shops, tradespeople',
-    'home.band.pause': 'pause',
-    'home.band.play': 'play',
-    'closing.lead':
-      'Tell us about it in a few lines — you’ll hear back, usually within a working day, and if it’s a fit you get a written scope with the price attached.',
+    /* The band along the foot of the hero lists the five services; the
+       names are svc.*.name (Home.astro), so they never drift from Services. */
+    'home.band.label': 'what we do',
+    'closing.lead': 'Tell us about it in a few lines — you’ll hear back, usually within a working day, and if it’s a fit you get a written proposal with the price.',
 
     'home.proof.weight': 'total page weight',
     'home.proof.requests': 'network requests',
     'home.proof.thirdParty': 'third-party requests',
 
 
-    'home.services.h2': 'Five things, done *properly*.',
+    'home.services.h2': 'Five things we *do*.',
     'home.services.link': 'All services',
     'home.work.h2': 'Recent *work*.',
     'home.work.link': 'All work',
 
     'home.position.h2': 'A website that *fits* your business.',
-    'home.position.body':
-      'Some businesses need a simple site they can update themselves. Others need a more tailored build. We’ll recommend an approach based on what your site must do, who will update it and what you want to spend.',
 
     'home.position.one.h': 'Easy for visitors to use',
-    'home.position.one.b':
-      'We plan for clear pages, readable text and quick loading, including on phones and slower connections.',
-    'home.position.two.h': 'No consent banner, because nothing to consent to',
-    'home.position.two.b':
-      'The site sets no cookies and makes no third-party requests. Fonts are served from this domain, so there is nothing that needs your consent.',
+    'home.position.two.h': 'Found for what you do',
     'home.position.three.h': 'You know what you own',
-    'home.position.three.b':
-      'Your proposal says which domain, code and hosting accounts are yours, and you get a written handover guide at launch, so you can manage or move the site later.',
 
 
     /* --- Services ------------------------------------------------------- */
     /* Services is for the services (2026-10-20); what it costs is the
        Pricing page. Headline, lead and the expanded copy approved by David. */
-    'services.title': 'Services — DesignActiv',
+    'services.title': 'Services for small businesses — DesignActiv',
     'services.h1': 'What we do, and what it *involves*.',
-    'services.lead':
-      'Five services, each explained in plain words: what it is, what you get, and what we need from you.',
+    'services.lead': 'Websites, branding, SEO, email and website care for small businesses. For each one: what you get, how we work, and what we need from you.',
 
-    'pricing.title': 'Pricing — DesignActiv',
+    'pricing.title': 'Pricing: website design and care — DesignActiv',
     'pricing.h1': 'What it costs, and what you *get*.',
-    'pricing.lead':
-      'A starting price to build your site, a monthly one to keep it looked after — and a person who answers when something needs to change.',
-    'pricing.faq.h2': 'What people ask about *price*.',
+    'pricing.lead': 'A starting price for the site, a monthly one if you want it looked after, and extras quoted before we start them.',
+    'pricing.faq.h2': 'Before you *decide*.',
     'services.deliverables': 'What you get',
     'services.what.h': 'What it is',
     'services.how.h': 'How we work',
@@ -136,16 +140,11 @@ export const ui = {
     'services.price.link': 'What it costs',
 
     'svc.web.name': 'Web design & development',
-    'svc.web.short':
-      'We design and build your site as one job, not two: made for your business, with a simple editor where you need to change things yourself.',
-    'svc.web.what1':
-      'Your website, designed and built as one job. We start from what your business does and who needs to find you, so the pages, the words on them and the way they look all follow from that.',
+    'svc.web.what1': 'Your website, designed and built by the same team, from the first page to launch. We start from what your business does and who needs to find you, so the pages, the words on them and the way they look all follow from that.',
     'svc.web.what2':
       'It works on a phone and on a computer, and where you want to change text, prices or photos yourself, it has a simple editor for exactly that.',
-    'svc.web.how':
-      'You tell us what you need, and we write it up as a scope with the price and a timeline attached, before any work starts. Then we design straight into a working page, so you review the real site on your own phone and computer, not a picture of it. We build, test, and launch it with your domain and the first year of hosting.',
-    'svc.web.need':
-      'A short description of the business and what the site must do, then your text, photos and logo, and access to your domain if you already have one. If any of it does not exist yet, say so: it goes into the scope.',
+    'svc.web.how': 'You tell us what you need, and we write it up as a proposal: what we will do, the price and the date, agreed before any work starts. Then we design straight into a working page, so you review the real site on your own phone and computer, not a picture of it. We build, test, and launch it with your domain and the first year of hosting.',
+    'svc.web.need': 'A short description of the business and what the site must do, then your text, photos and logo, and access to your domain if you already have one. If any of it does not exist yet, say so: it goes into the proposal.',
     'svc.web.g1': 'Pages and features agreed in your proposal',
     'svc.web.g2': 'A design made for your business, for phone and desktop',
     'svc.web.g3': 'A contact form that reaches you',
@@ -154,24 +153,19 @@ export const ui = {
     'svc.web.g6': 'Launch, and a written handover guide',
 
     'svc.brand.name': 'Branding',
-    'svc.brand.short':
-      'We create your logo, colours and typefaces, plus the rules that keep them consistent once other people start using them.',
     'svc.brand.what1':
       'A logo, colours and typefaces that look like one business, plus the rules that keep them looking that way when other people start using them: a printer, someone who posts for you, the next person who works on your site.',
     'svc.brand.what2':
       'You can have a brand created from scratch, or have the one you already have refined and put in order.',
     'svc.brand.how':
       'We start from who the business is for and what you want to be known for, show you a direction, and refine it with you. Once you have approved it, we pack it up so you can use it without us.',
-    'svc.brand.need':
-      'If you have a logo, send it as it is. A few brands you like help more than adjectives do. Whether we create or refine is agreed in the scope.',
+    'svc.brand.need': 'If you have a logo, send it as it is. A few brands you like help more than adjectives do. Whether we create or refine is agreed in the proposal.',
     'svc.brand.g1': 'Your logo, with simple rules for using it',
     'svc.brand.g2': 'Colours and typefaces that are easy to read',
     'svc.brand.g3': 'Working files for web and print',
-    'svc.brand.g4': 'A written guide, not a PDF of moodboards',
+    'svc.brand.g4': 'A written guide your printer and your next designer can follow',
 
     'svc.seo.name': 'SEO',
-    'svc.seo.short':
-      'We help search engines understand your site and help customers find the right pages.',
     'svc.seo.what1':
       'Making it easy for search engines to understand what each page is about, and for customers to land on the right page for what they are looking for. It is plain groundwork: clear page titles, a sensible structure, a fast site, and redirects so nothing you already have goes missing.',
     'svc.seo.what2':
@@ -187,12 +181,9 @@ export const ui = {
     'svc.seo.g5': 'Speed checks after launch',
 
     'svc.email.name': 'Email & automation',
-    'svc.email.short':
-      'We set up business email properly on your own domain, plus the small automations that save you time.',
     'svc.email.what1':
       'Business email on your own domain, set up properly and working from day one, and the small automations that stop you doing the same task twice: a confirmation when someone books, a reply when a form is sent, an enquiry that lands where you will actually see it.',
-    'svc.email.what2':
-      'Bigger workflows are agreed separately, as process automation, with their own scope.',
+    'svc.email.what2': 'Bigger workflows are agreed separately, as process automation, with a proposal of their own.',
     'svc.email.how':
       'We set up the mailboxes, test sending and receiving on a phone and a computer, and connect the forms on your site to the inbox you actually use. We write down short instructions for whoever on your team needs them.',
     'svc.email.need':
@@ -203,10 +194,7 @@ export const ui = {
     'svc.email.g4': 'Short written instructions for your team',
 
     'svc.hosting.name': 'Website care',
-    'svc.hosting.short':
-      'We host your site and look after it: updates, backups, uptime monitoring and a person who answers.',
-    'svc.hosting.what1':
-      'A site needs looking after the way a shop window does: kept up to date, kept secure, backed up and watched. We host it and do all of that, and a person answers when something needs to change.',
+    'svc.hosting.what1': 'After launch a site still needs updates, security fixes, backups and someone watching it. We host it and do all of that, and when something needs to change you email us.',
     'svc.hosting.what2':
       'It is optional, and it is not a lock-in.',
     'svc.hosting.how':
@@ -221,11 +209,10 @@ export const ui = {
     'svc.hosting.g6': 'Email support',
 
     /* --- Work ----------------------------------------------------------- */
-    'work.title': 'Work — DesignActiv',
+    'work.title': 'Sites we’ve built — DesignActiv',
     'work.h1': 'Sites we’ve *built*.',
     'work.callout': 'you’re looking at it',
-    'work.lead':
-      'Websites we designed and built for businesses and organisations, in three languages. Below them, this site: our own example.',
+    'work.lead': 'Websites we designed and built for businesses and organisations, in French, Portuguese and German. Below them, this site.',
     'work.visit': 'Visit the site',
     'work.shot.alt': 'The {name} home page',
     /* Facts only from each live site or the old Powerstar7 page: what the
@@ -238,50 +225,40 @@ export const ui = {
     'work.project.ipda.tag': 'Website · in German and Portuguese',
 
     'work.this.h': 'This website',
-    'work.this.b':
-      'This site is our own example: quick to open, easy to read, and clear about what we offer and what it costs.',
-    'work.this.list.1': 'Opens quickly, even on a slow phone connection',
+    'work.this.b': 'Our own site: quick to open, easy to read, and clear about what we offer and what it costs.',
+    'work.this.list.1': 'Opens quickly, because it is light',
     'work.this.list.2': 'Easy to read, and works with a keyboard or screen reader',
     'work.this.list.3': 'No cookies or trackers',
     'work.this.list.4': 'Services and prices easy to find',
     'work.this.details': 'Technical details',
     'work.this.measured': 'Measured {date}',
-    'work.next.h': 'Have a project in mind?',
-    'work.next.b':
-      'Tell us what your business needs. We’ll let you know how we can help and what the next step would be.',
 
     /* --- About ---------------------------------------------------------- */
     'about.title': 'About — DesignActiv',
     'about.h1': 'Small enough to *know* your project.',
-    'about.lead':
-      'DesignActiv is a small web agency working with clients wherever they are. The person you brief is the person you keep talking to.',
-    'about.story.h': 'What a site made for your business gets you',
-    'about.story.b1':
-      'A site that loads fast, even on a weak phone signal, so visitors don’t give up before it appears.',
+    'about.lead': 'DesignActiv is a small web agency. The person you talk to first is the person you keep talking to, from the proposal to the handover.',
+    'about.story.h': 'What your site should do for you',
+    'about.story.b1': 'A site that loads fast, so visitors don’t give up before it appears.',
     'about.story.b2':
       'A site that works with a keyboard or a screen reader, and is structured so search engines can understand it.',
     'about.story.b3':
       'A site you know how to run: what you can edit, what you receive at launch, and a care plan only if you want one.',
-    'about.where.h': 'Where we work',
-    'about.where.b':
-      'We are based in Germany and Luxembourg and work remotely, in English and Portuguese. Multilingual sites are routine for us, and each extra language is priced up front.',
+    'about.where.h': 'Remote, in two languages',
+    'about.where.b': 'We work remotely, in English and Portuguese. A site in more than one language is priced up front, per language.',
     'about.how.h': 'How we work',
     'about.how.1.h': 'You own it',
     'about.how.1.b':
       'Your proposal says which domain, code and hosting accounts are yours, and you get a written handover guide when the site goes live.',
     'about.how.2.h': 'A clear proposal',
-    'about.how.2.b':
-      'We agree on the work, price and timeline before starting. If the scope changes, we quote the extra work first.',
+    'about.how.2.b': 'We agree the work, price and timeline before starting. If the work changes, we quote the extra first.',
     'about.how.3.h': 'Designed to be accessible',
-    'about.how.3.b':
-      'We design for readability, keyboard use and screen readers, and check the agreed pages before launch. It is also, quietly, what makes a site work on a bad phone.',
+    'about.how.3.b': 'We design for readability, keyboard use and screen readers, and check the agreed pages before launch.',
 
     /* --- Contact -------------------------------------------------------- */
     'contact.title': 'Contact — DesignActiv',
     'contact.h1': 'Tell us about your *project*.',
     'contact.callout': 'short is fine',
-    'contact.lead':
-      'A few lines are enough to start. We reply to everything, usually within a working day.',
+    'contact.lead': 'A few lines are enough to start. You will hear back, usually within a working day.',
     'contact.form.name': 'Your name',
     'contact.form.email': 'Email',
     'contact.form.company': 'Company or business name',
@@ -307,7 +284,7 @@ export const ui = {
     'contact.err.message': 'Please tell us a little about the project.',
     'contact.err.one': 'One field needs attention before we can send this.',
     'contact.err.many': '{n} fields need attention before we can send this.',
-    'contact.ok': 'Thanks — your message has been sent. We’ll reply by email.',
+    'contact.ok': 'Thanks — your message has been sent. We’ll reply by email, usually within a working day.',
     'contact.fail': 'Sorry, sending failed. Please email us directly at {email}.',
     'contact.mailtoOpening': 'Opening your email app. If nothing happens, write to {email}.',
     'contact.mailSubject': 'Website enquiry',
@@ -316,18 +293,16 @@ export const ui = {
     'contact.direct.h': 'Or write to us directly',
     'contact.direct.whatsapp': 'Message us on WhatsApp',
     'contact.direct.phone': 'Call us',
-    'contact.direct.b':
-      'Email reaches us fastest. We work in English and Portuguese, and read German.',
+    'contact.direct.b': 'Write in English or Portuguese; we also read German.',
 
     /* --- Footer --------------------------------------------------------- */
-    'footer.blurb':
-      'A web agency for small businesses: websites made for your business, branding, SEO, email and care.',
+    'footer.blurb': 'A web agency for small businesses, in English and Portuguese.',
     'footer.nav': 'Pages',
     'footer.legalNav': 'Legal',
     'footer.legal': 'Legal notice',
     'footer.privacy': 'Privacy',
     'footer.rights': 'All rights reserved.',
-    'footer.built': 'Built around your business. No trackers, no cookies, no consent banner.',
+    'footer.built': 'This site sets no cookies and loads nothing from other companies.',
 
     /* --- Legal ---------------------------------------------------------- */
     'legal.title': 'Legal notice — DesignActiv',
@@ -373,36 +348,28 @@ export const ui = {
     'nf.h1': 'That page is not here.',
     'nf.lead':
       'The link may be old, or the page may have moved. You can find our services, prices and contact details from the home page.',
-    'nf.home': 'Back to the home page',
+    'nf.home': 'Go to the home page',
 
     /* --- Process, pricing and FAQ -------------------------------------
-       Added with the three new sections. Everything here is a draft. The
-       steps and most answers restate commitments the site already makes
-       elsewhere; two answers add new ones (a date in every scope, and an
-       editor for clients who update the site themselves), flagged in
-       DEPLOY.md. Prices are never typed here: they live in
-       src/data/pricing.ts and come in as {price}, so an answer cannot
-       disagree with the price card above it. */
+       The step names (their bodies are home.step.*), the price cards, the
+       extras and the questions. Two answers make commitments of their own
+       (a date in every proposal, and an editor priced in for clients who
+       update the site themselves). Prices are never typed here: they live
+       in src/data/pricing.ts and come in as {price}, so an answer cannot
+       disagree with the price card above it. Copy reviewed 2026-11-26
+       (COPY-REVIEW-2026-11-26.md): "scope" is "proposal" everywhere. */
     'home.process.h2': 'From first conversation to *launch*.',
-    'home.process.s1.h': 'Scope and price',
-    'home.process.s2.h': 'Review the design',
+    'home.process.s1.h': 'Proposal and price',
+    'home.process.s2.h': 'Design review',
     'home.process.s3.h': 'Build and test',
     'home.process.s4.h': 'Handover',
-    'home.process.s1.b':
-      'You tell us what you need, and we write it up as a scope with the price attached, including what we need from you, such as text and photos — agreed before any work starts.',
-    'home.process.s2.b':
-      'We design straight into a working page, so you review the real site on your own phone — not a picture of it.',
-    'home.process.s3.b':
-      'We build and test the agreed site on phones and computers, checking that visitors can find information and contact you easily.',
-    'home.process.s4.b':
-      'You get the access and the written handover guide agreed in your proposal — plus Website care, if you want someone to keep it running.',
 
-    'services.pricing.h2': 'Know the scope and *price* before work starts.',
+    'services.pricing.h2': 'Know the work and the *price* before it starts.',
     'services.pricing.lead':
       'We put the agreed work, price and timeline in writing. If you request more work later, we’ll quote it before doing it.',
     'services.pricing.from': 'From',
     'services.currency.label': 'Show prices in',
-    'services.currency.note': 'Prices are set in euros. Reais are an estimate at about R$ {rate} per €1, rounded, and may differ when you pay.',
+    'services.currency.note': 'Prices are set in euros. Reais are a rounded estimate.',
     'services.pricing.includes': 'What’s included',
     'services.pricing.perMonth': 'per month',
     'services.pricing.perPage': '{price} per page',
@@ -434,8 +401,8 @@ export const ui = {
     'services.care.small':
       'A small change is a new photo, updated prices or opening hours, or a paragraph of text. Anything bigger — a new page or section — is quoted before we start it.',
 
-    'services.addons.h': 'Add to any project',
-    'services.addons.lead': 'Quoted with the rest of the scope, so they are part of the agreed price.',
+    'services.addons.h': 'Add to your project',
+    'services.addons.lead': 'Quoted with the rest of the proposal, so they are part of the agreed price.',
     'services.addons.pages': 'Extra pages',
     'services.addons.language': 'Each additional language',
     'services.addons.identity': 'Brand identity, created from scratch',
@@ -451,25 +418,19 @@ export const ui = {
     'services.faq.q5': 'Do you work in languages other than English?',
     'services.faq.q6': 'What does “accessible” mean in practice?',
     'services.faq.q7': 'Do you keep working on it after launch?',
-    'services.faq.a1':
-      'A straightforward small-business site usually takes 2 to 4 weeks from the day we have your text and photos. The exact timeline goes into the written scope next to the price, so you have a date before anything starts. Text and photos arriving when agreed is what keeps it on schedule.',
-    'services.faq.a2':
-      'To start, just a short description of the business and what the site needs to do — the contact form asks for exactly that. Once the scope is agreed, we need your text, photos and logo, and access to your domain if you already have one. If any of that doesn’t exist yet, say so: it goes into the scope.',
-    'services.faq.a3':
-      'Yes, if you want to. If you’ll be updating it yourself, we add a simple editor for your text, prices and photos, and it goes into the scope and the price. Changes to the structure stay with us, and Website care includes a small change every month if you’d rather not touch it at all.',
+    'services.faq.a1': 'A straightforward small-business site usually takes 2 to 4 weeks from the day we have your text and photos. The exact date goes into the written proposal next to the price, so you have it before anything starts. The timeline holds when text and photos arrive as agreed.',
+    'services.faq.a2': 'To start, just a short description of the business and what the site needs to do — the contact form asks for exactly that. Once the proposal is agreed, we need your text, photos and logo, and access to your domain if you already have one. If any of that doesn’t exist yet, say so: it goes into the proposal.',
+    'services.faq.a3': 'Yes, if you want to. If you’ll be updating it yourself, we add a simple editor for your text, prices and photos, and it goes into the proposal and the price. Changes to the structure stay with us, and Website care includes a small change every month if you’d rather not touch it at all.',
     'services.faq.a4':
       'You are not locked in. Your proposal and handover guide say which domain, code and hosting accounts are yours and how to move the site, so leaving means ending Website care, if you have it, not asking for your own site back. Website care is month to month: you can end it with 30 days’ notice by email.',
-    'services.faq.a5':
-      'Yes. We talk with you in English or Portuguese, and read German. The site itself can be in several languages at once — French and German are common in Luxembourg — and each language beyond the first is priced up front, from {price}.',
-    'services.faq.a6':
-      'It means people who can’t use a mouse, don’t see well or use a screen reader can still use your site. We design with accessibility in mind and check the agreed pages with a keyboard and a screen reader before launch. It also makes the site easier to use on a cheap phone in bright sun.',
+    'services.faq.a5': 'Yes. We talk with you in English or Portuguese, and read German. The site itself can be in several languages at once — Portuguese and English, say, or French and German — and each language beyond the first is priced up front, from {price}.',
+    'services.faq.a6': 'It means people who can’t use a mouse, don’t see well or use a screen reader can still use your site. We design with accessibility in mind and check the agreed pages with a keyboard and a screen reader before launch.',
     'services.faq.a7':
       'If you want us to. Website care costs {price} a month and covers hosting from the second year (the first is included in your project), updates, backups, monitoring, email support and one small change each month. It is optional: without it, anything later is quoted when you need it, and after the first year you can move the site to your own hosting.',
   },
 
   pt: {
-    'site.description':
-      'A DesignActiv é uma agência web para pequenas empresas: design e desenvolvimento de sites, identidade visual, SEO, e-mail e automação, e manutenção contínua. Feitos em torno do seu negócio e entregues a você, em português e inglês.',
+    'site.description': 'Agência web para pequenas empresas: sites, identidade visual, SEO, e-mail e manutenção. Preços públicos e proposta por escrito antes de começar.',
 
     'nav.home': 'Início',
     'nav.work': 'Trabalhos',
@@ -483,60 +444,63 @@ export const ui = {
     'nav.skip': 'Ir para o conteúdo',
     'nav.homeLabel': 'DesignActiv — início',
     'nav.langSwitch': 'View in English',
+    'nav.theme.light': 'Tema claro',
+
+    'home.h1': 'Seu negócio, *online*.',
+    'home.lead': 'Um site feito para o seu negócio, e uma equipe que o mantém no ar.',
+    'home.svc.web': 'Feito a partir do que o seu negócio faz e de quem precisa encontrar você.',
+    'home.svc.brand': 'Logotipo, cores e fontes que se mantêm coerentes.',
+    'home.svc.seo': 'Uma base que ajuda os clientes a achar as páginas certas.',
+    'home.svc.email': 'E-mail no seu domínio e pequenas automações.',
+    'home.svc.hosting': 'Hospedagem, atualizações, backups e alguém que responde.',
+    'home.fit.lead': 'Um site simples que você mesmo atualiza, ou algo sob medida: depende do que o seu site precisa fazer.',
+    'home.fit.one': 'Páginas claras que abrem rápido, também no celular.',
+    'home.fit.two': 'Títulos, descrições e estrutura configurados página por página, para o cliente chegar à página certa.',
+    'home.fit.three': 'A sua proposta diz quais contas são suas, e você recebe um guia de entrega.',
+    'home.step.one': 'Uma proposta por escrito com o preço, combinada antes de começar.',
+    'home.step.two': 'O design já é uma página funcionando, que você revisa no seu celular.',
+    'home.step.three': 'Conferido no celular e no computador: as pessoas encontram o que procuram e falam com você.',
+    'home.step.four': 'Seus acessos e um guia de entrega, mais a Manutenção do site, se quiser.',
+    'closing.short': 'Conte em poucas linhas. Normalmente respondemos em um dia útil.',
+    'footer.motion': 'Animação',
+    'footer.motion.on': 'ligada',
+    'footer.motion.off': 'desligada',
 
     /* --- Home ---------------------------------------------------------- */
     'home.title': 'DesignActiv — agência web para pequenas empresas',
-    'home.h1': 'Seu site, *resolvido*.',
-    'home.lead':
-      'Design, domínio, e-mail, ser encontrado, atualizações: a DesignActiv cuida de tudo isso para pequenas empresas, e você volta a cuidar do seu negócio.',
     'home.cta': 'Começar um projeto',
     'home.cta.secondary': 'Ver preços',
-    'home.callout': 'sim, nossos preços são públicos',
-    'home.band.label': 'feito para',
-    'home.band.items': 'salões, padarias, cafés, oficinas, clínicas, fotógrafos, estúdios, restaurantes, lojas, prestadores de serviço',
-    'home.band.pause': 'pausar',
-    'home.band.play': 'continuar',
-    'closing.lead':
-      'Conte em poucas linhas — você recebe uma resposta, normalmente em um dia útil, e, se fizer sentido, um escopo por escrito com o preço junto.',
+    'home.band.label': 'o que fazemos',
+    'closing.lead': 'Conte em poucas linhas — você recebe uma resposta, normalmente em um dia útil, e, se fizer sentido, uma proposta por escrito com o preço.',
 
     'home.proof.weight': 'peso total da página',
     'home.proof.requests': 'requisições de rede',
     'home.proof.thirdParty': 'requisições a terceiros',
 
 
-    'home.services.h2': 'Cinco coisas, bem *feitas*.',
+    'home.services.h2': 'Cinco coisas que *fazemos*.',
     'home.services.link': 'Todos os serviços',
-    'home.work.h2': 'Trabalhos *recentes*.',
+    'home.work.h2': '*Trabalhos* recentes.',
     'home.work.link': 'Todos os trabalhos',
 
-    'home.position.h2': 'Um site que faz sentido para o seu *negócio*.',
-    'home.position.body':
-      'Alguns negócios precisam de um site simples que possam atualizar sozinhos. Outros precisam de uma solução mais personalizada. Vamos recomendar o caminho de acordo com as funções do site, quem vai atualizá-lo e quanto você pretende investir.',
+    'home.position.h2': 'Um site que *combina* com o seu negócio.',
 
     'home.position.one.h': 'Fácil para seus clientes usarem',
-    'home.position.one.b':
-      'Planejamos páginas claras, texto fácil de ler e carregamento rápido, inclusive no celular e em conexões mais lentas.',
-    'home.position.two.h': 'Sem banner de consentimento, porque não há o que consentir',
-    'home.position.two.b':
-      'O site não grava cookies e não faz requisições a terceiros. As fontes vêm deste domínio, então não há nada que dependa do seu consentimento.',
+    'home.position.two.h': 'Encontrado pelo que você faz',
     'home.position.three.h': 'Você sabe o que é seu',
-    'home.position.three.b':
-      'A proposta diz quais contas de domínio, código e hospedagem são suas, e você recebe um guia de entrega por escrito no lançamento, para poder administrar ou levar o site depois.',
 
 
     /* --- Services ------------------------------------------------------- */
     /* Serviços é para os serviços (2026-10-20); quanto custa é a página
        Preços. Título, abertura e o texto ampliado aprovados pelo David. */
-    'services.title': 'Serviços — DesignActiv',
-    'services.h1': 'O que fazemos, e o que isso *envolve*.',
-    'services.lead':
-      'Cinco serviços, cada um explicado em palavras simples: o que é, o que você recebe e o que precisamos de você.',
+    'services.title': 'Serviços para pequenas empresas — DesignActiv',
+    'services.h1': 'O que fazemos e o que isso *envolve*.',
+    'services.lead': 'Sites, identidade visual, SEO, e-mail e manutenção para pequenas empresas. Para cada um: o que você recebe, como trabalhamos e o que precisamos de você.',
 
-    'pricing.title': 'Preços — DesignActiv',
-    'pricing.h1': 'Quanto custa, e o que você *recebe*.',
-    'pricing.lead':
-      'Um preço de partida para construir o seu site, outro mensal para cuidar dele depois — e uma pessoa que responde quando algo precisa mudar.',
-    'pricing.faq.h2': 'O que perguntam sobre *preço*.',
+    'pricing.title': 'Preços: criação e manutenção de sites — DesignActiv',
+    'pricing.h1': 'Quanto custa e o que você *recebe*.',
+    'pricing.lead': 'Um preço inicial para o site, um mensal se você quiser que cuidemos dele, e os extras orçados antes de começarmos.',
+    'pricing.faq.h2': 'Antes de *decidir*.',
     'services.deliverables': 'O que você recebe',
     'services.what.h': 'O que é',
     'services.how.h': 'Como trabalhamos',
@@ -544,16 +508,11 @@ export const ui = {
     'services.price.link': 'Quanto custa',
 
     'svc.web.name': 'Design e desenvolvimento web',
-    'svc.web.short':
-      'Desenhamos e construímos seu site como um trabalho só, não dois: feito para o seu negócio, com um editor simples onde você precisar mudar algo sozinho.',
-    'svc.web.what1':
-      'Seu site, desenhado e construído como um trabalho só. Partimos do que o seu negócio faz e de quem precisa encontrar você, e as páginas, os textos e o visual vêm daí.',
+    'svc.web.what1': 'Seu site, desenhado e construído pela mesma equipe, da primeira página ao lançamento. Partimos do que o seu negócio faz e de quem precisa encontrar você, e as páginas, os textos e o visual vêm daí.',
     'svc.web.what2':
       'Funciona no celular e no computador e, onde você quiser mudar textos, preços ou fotos sozinho, tem um editor simples para isso.',
-    'svc.web.how':
-      'Você nos conta o que precisa, e escrevemos tudo como um escopo, com preço e prazo, antes de qualquer trabalho começar. Depois desenhamos direto numa página funcionando, para você revisar o site de verdade no seu celular e no computador, não uma imagem dele. Construímos, testamos e lançamos com o seu domínio e o primeiro ano de hospedagem.',
-    'svc.web.need':
-      'Uma descrição curta do negócio e do que o site precisa fazer; depois, seus textos, fotos e logotipo, e o acesso ao seu domínio, se você já tiver um. Se algo disso ainda não existe, diga: entra no escopo.',
+    'svc.web.how': 'Você nos conta do que precisa, e escrevemos uma proposta: o que vamos fazer, o preço e a data, combinados antes de qualquer trabalho começar. Depois fazemos o design direto em uma página que já funciona, para você revisar o site de verdade no seu celular e no computador, não uma imagem dele. Construímos, testamos e lançamos com o seu domínio e o primeiro ano de hospedagem.',
+    'svc.web.need': 'Uma descrição curta do negócio e do que o site precisa fazer; depois, seus textos, fotos e logotipo, e o acesso ao seu domínio, se você já tiver um. Se algo disso ainda não existe, diga: entra na proposta.',
     'svc.web.g1': 'Páginas e funções definidas na proposta',
     'svc.web.g2': 'Um design feito para o seu negócio, para celular e computador',
     'svc.web.g3': 'Um formulário de contato que chega até você',
@@ -562,24 +521,18 @@ export const ui = {
     'svc.web.g6': 'Lançamento e um guia de entrega por escrito',
 
     'svc.brand.name': 'Branding',
-    'svc.brand.short':
-      'Criamos seu logotipo, suas cores e suas fontes, com as regras que mantêm tudo coerente depois que outras pessoas começam a usar.',
     'svc.brand.what1':
       'Um logotipo, cores e fontes que parecem de um negócio só, mais as regras que mantêm tudo assim quando outras pessoas começam a usar: uma gráfica, alguém que posta por você, a próxima pessoa que mexer no seu site.',
     'svc.brand.what2':
       'Você pode ter uma marca criada do zero ou ter a que já existe refinada e colocada em ordem.',
-    'svc.brand.how':
-      'Começamos por quem o negócio atende e pelo que você quer que saibam sobre ele, mostramos uma direção e refinamos junto com você. Depois que você aprova, deixamos tudo pronto para você usar sem a gente.',
-    'svc.brand.need':
-      'Se você já tem um logotipo, mande como está. Algumas marcas de que você gosta ajudam mais do que adjetivos. Se criamos ou refinamos, isso fica combinado no escopo.',
+    'svc.brand.how': 'Começamos por quem o negócio atende e pelo que você quer que ele seja conhecido, mostramos uma direção e refinamos junto com você. Depois que você aprova, deixamos tudo pronto para você usar sem depender de nós.',
+    'svc.brand.need': 'Se você já tem um logotipo, mande como está. Algumas marcas de que você gosta ajudam mais do que adjetivos. Se criamos ou refinamos, isso fica combinado na proposta.',
     'svc.brand.g1': 'Seu logotipo, com regras simples de uso',
     'svc.brand.g2': 'Cores e fontes fáceis de ler',
     'svc.brand.g3': 'Arquivos de trabalho para web e impressão',
-    'svc.brand.g4': 'Um guia por escrito, não um PDF de moodboards',
+    'svc.brand.g4': 'Um guia por escrito que a gráfica e o próximo designer conseguem seguir',
 
     'svc.seo.name': 'SEO',
-    'svc.seo.short':
-      'Ajudamos os buscadores a entender seu site e os clientes a encontrar as páginas certas.',
     'svc.seo.what1':
       'Facilitar para os buscadores entenderem sobre o que é cada página, e para os clientes chegarem à página certa para o que procuram. É trabalho de base, simples: títulos claros, uma estrutura que faz sentido, um site rápido e redirecionamentos para que nada do que você já tem se perca.',
     'svc.seo.what2':
@@ -595,12 +548,8 @@ export const ui = {
     'svc.seo.g5': 'Testes de velocidade depois do lançamento',
 
     'svc.email.name': 'E-mail e automação',
-    'svc.email.short':
-      'Configuramos direito o e-mail profissional no seu próprio domínio, mais as pequenas automações que poupam seu tempo.',
-    'svc.email.what1':
-      'E-mail profissional no seu próprio domínio, configurado direito e funcionando desde o primeiro dia, e as pequenas automações que evitam você fazer a mesma tarefa duas vezes: uma confirmação quando alguém agenda, uma resposta quando um formulário é enviado, um contato que chega onde você realmente vai ver.',
-    'svc.email.what2':
-      'Fluxos maiores são combinados à parte, como automação de processos, com escopo próprio.',
+    'svc.email.what1': 'E-mail profissional no seu próprio domínio, configurado direito e funcionando desde o primeiro dia, e as pequenas automações que evitam que você faça a mesma tarefa duas vezes: uma confirmação quando alguém agenda, uma resposta quando um formulário é enviado, um contato que chega onde você realmente vai ver.',
+    'svc.email.what2': 'Fluxos maiores são combinados à parte, como automação de processos, com proposta própria.',
     'svc.email.how':
       'Configuramos as caixas de e-mail, testamos o envio e o recebimento no celular e no computador e ligamos os formulários do seu site à caixa que você realmente usa. Deixamos por escrito instruções curtas para quem na sua equipe precisar delas.',
     'svc.email.need':
@@ -611,10 +560,7 @@ export const ui = {
     'svc.email.g4': 'Instruções curtas por escrito para a sua equipe',
 
     'svc.hosting.name': 'Manutenção do site',
-    'svc.hosting.short':
-      'Hospedamos seu site e cuidamos dele: atualizações, backups, monitoramento e uma pessoa que responde.',
-    'svc.hosting.what1':
-      'Um site precisa de cuidado como uma vitrine: em dia, seguro, com backup e de olho. Hospedamos e fazemos tudo isso, e uma pessoa responde quando algo precisa mudar.',
+    'svc.hosting.what1': 'Depois do lançamento, um site continua precisando de atualizações, correções de segurança, backups e alguém de olho nele. Hospedamos e fazemos tudo isso, e quando algo precisa mudar, você escreve para nós.',
     'svc.hosting.what2':
       'É opcional e não prende você.',
     'svc.hosting.how':
@@ -629,11 +575,10 @@ export const ui = {
     'svc.hosting.g6': 'Suporte por e-mail',
 
     /* --- Work ----------------------------------------------------------- */
-    'work.title': 'Trabalhos — DesignActiv',
+    'work.title': 'Sites que fizemos — DesignActiv',
     'work.h1': 'Sites que *fizemos*.',
     'work.callout': 'é este que você está vendo',
-    'work.lead':
-      'Sites que desenhamos e construímos para empresas e organizações, em três idiomas. Logo abaixo, este site: o nosso próprio exemplo.',
+    'work.lead': 'Sites que desenhamos e construímos para empresas e organizações, em francês, português e alemão. Logo abaixo, este site.',
     'work.visit': 'Ver o site',
     'work.shot.alt': 'Página inicial do site {name}',
     'work.project.service.line': 'Limpeza residencial em Bruxelas desde 2014: limpeza, passadoria e ajuda com compras.',
@@ -644,50 +589,40 @@ export const ui = {
     'work.project.ipda.tag': 'Site · em alemão e português',
 
     'work.this.h': 'Este site',
-    'work.this.b':
-      'Este site é o nosso próprio exemplo: abre rápido, é fácil de ler e deixa claro o que oferecemos e quanto custa.',
-    'work.this.list.1': 'Abre rápido, mesmo numa conexão lenta de celular',
+    'work.this.b': 'Nosso próprio site: abre rápido, é fácil de ler e deixa claro o que oferecemos e quanto custa.',
+    'work.this.list.1': 'Abre rápido, porque é leve',
     'work.this.list.2': 'Fácil de ler, e funciona com teclado ou leitor de tela',
     'work.this.list.3': 'Sem cookies nem rastreadores',
     'work.this.list.4': 'Serviços e preços fáceis de encontrar',
     'work.this.details': 'Detalhes técnicos',
     'work.this.measured': 'Medido em {date}',
-    'work.next.h': 'Tem um projeto em mente?',
-    'work.next.b':
-      'Conte do que seu negócio precisa. Vamos dizer como podemos ajudar e qual seria o próximo passo.',
 
     /* --- About ---------------------------------------------------------- */
     'about.title': 'Sobre nós — DesignActiv',
     'about.h1': 'Pequena o bastante para *conhecer* seu projeto.',
-    'about.lead':
-      'A DesignActiv é uma pequena agência web que trabalha com clientes onde quer que estejam. Quem recebe o seu briefing é quem continua falando com você.',
-    'about.story.h': 'O que você ganha com um site feito para o seu negócio',
-    'about.story.b1':
-      'Um site que carrega rápido, mesmo com sinal fraco no celular, para que ninguém desista antes de ele aparecer.',
+    'about.lead': 'A DesignActiv é uma pequena agência web. A pessoa com quem você fala no início é a mesma até a entrega.',
+    'about.story.h': 'O que o seu site deve fazer por você',
+    'about.story.b1': 'Um site que carrega rápido, para que ninguém desista antes de ele aparecer.',
     'about.story.b2':
       'Um site que funciona com teclado ou leitor de tela, e é estruturado para que os buscadores o entendam.',
     'about.story.b3':
       'Um site que você sabe administrar: o que pode editar, o que recebe no lançamento e um plano de manutenção só se quiser.',
-    'about.where.h': 'Onde trabalhamos',
-    'about.where.b':
-      'Temos base na Alemanha e no Luxemburgo e trabalhamos a distância, em português e inglês. Sites multilíngues são rotina para nós, e cada idioma a mais tem preço definido desde o início.',
+    'about.where.h': 'Remoto, em dois idiomas',
+    'about.where.b': 'Trabalhamos a distância, em português e inglês. Um site em mais de um idioma tem preço definido desde o início, por idioma.',
     'about.how.h': 'Como trabalhamos',
     'about.how.1.h': 'É seu',
     'about.how.1.b':
       'A proposta diz quais contas de domínio, código e hospedagem são suas, e você recebe um guia de entrega por escrito quando o site for ao ar.',
     'about.how.2.h': 'Uma proposta clara',
-    'about.how.2.b':
-      'Combinamos o trabalho, o preço e o prazo antes de começar. Se o escopo mudar, orçamos o trabalho extra primeiro.',
+    'about.how.2.b': 'Combinamos o trabalho, o preço e o prazo antes de começar. Se o trabalho mudar, orçamos o extra primeiro.',
     'about.how.3.h': 'Pensado para ser acessível',
-    'about.how.3.b':
-      'Projetamos pensando em leitura, uso pelo teclado e leitores de tela, e conferimos as páginas combinadas antes do lançamento. É também, discretamente, o que faz um site funcionar num celular ruim.',
+    'about.how.3.b': 'Projetamos pensando em leitura, uso pelo teclado e leitores de tela, e conferimos as páginas combinadas antes do lançamento.',
 
     /* --- Contact -------------------------------------------------------- */
     'contact.title': 'Contato — DesignActiv',
     'contact.h1': 'Conte sobre o seu *projeto*.',
     'contact.callout': 'curto já está ótimo',
-    'contact.lead':
-      'Poucas linhas já bastam para começar. Respondemos tudo, normalmente em um dia útil.',
+    'contact.lead': 'Poucas linhas já bastam para começar. Você recebe uma resposta, normalmente em um dia útil.',
     'contact.form.name': 'Seu nome',
     'contact.form.email': 'E-mail',
     'contact.form.company': 'Empresa ou nome do negócio',
@@ -695,11 +630,10 @@ export const ui = {
     'contact.form.topic': 'Sobre o que é?',
     'contact.form.topic.website': 'Um site novo ou uma reformulação',
     'contact.form.topic.care': 'Manutenção do site',
-    'contact.form.topic.extras': 'Marca, e-mail ou automação',
+    'contact.form.topic.extras': 'Identidade visual, e-mail ou automação',
     'contact.form.topic.other': 'Outra coisa',
     'contact.form.message': 'Sobre o seu projeto',
-    'contact.form.messageHint':
-      'O que você precisa, mais ou menos para quando, e o que já estiver decidido.',
+    'contact.form.messageHint': 'Do que você precisa, mais ou menos para quando, e o que já estiver decidido.',
     'contact.form.submit': 'Enviar mensagem',
     'contact.form.privacy': 'Usamos o que você enviar para responder, não para marketing.',
     'contact.form.privacyLink': 'Como tratamos seus dados',
@@ -713,7 +647,7 @@ export const ui = {
     'contact.err.message': 'Conte um pouco sobre o projeto, por favor.',
     'contact.err.one': 'Um campo precisa de atenção antes de enviarmos.',
     'contact.err.many': '{n} campos precisam de atenção antes de enviarmos.',
-    'contact.ok': 'Obrigado — sua mensagem foi enviada. Vamos responder por e-mail.',
+    'contact.ok': 'Obrigado — sua mensagem foi enviada. Vamos responder por e-mail, normalmente em um dia útil.',
     'contact.fail': 'Desculpe, o envio falhou. Escreva direto para {email}.',
     'contact.mailtoOpening': 'Abrindo seu aplicativo de e-mail. Se nada acontecer, escreva para {email}.',
     'contact.mailSubject': 'Contato pelo site',
@@ -722,18 +656,16 @@ export const ui = {
     'contact.direct.h': 'Ou escreva direto para nós',
     'contact.direct.whatsapp': 'Fale com a gente no WhatsApp',
     'contact.direct.phone': 'Ligue para nós',
-    'contact.direct.b':
-      'O e-mail chega mais rápido. Trabalhamos em português e inglês, e lemos alemão.',
+    'contact.direct.b': 'Escreva em português ou inglês; também lemos alemão.',
 
     /* --- Footer --------------------------------------------------------- */
-    'footer.blurb':
-      'Uma agência web para pequenas empresas: sites feitos para o seu negócio, identidade visual, SEO, e-mail e manutenção.',
+    'footer.blurb': 'Uma agência web para pequenas empresas, em português e inglês.',
     'footer.nav': 'Páginas',
     'footer.legalNav': 'Jurídico',
     'footer.legal': 'Aviso legal',
     'footer.privacy': 'Privacidade',
     'footer.rights': 'Todos os direitos reservados.',
-    'footer.built': 'Feito em torno do seu negócio. Sem rastreadores, sem cookies, sem banner de consentimento.',
+    'footer.built': 'Este site não usa cookies e não carrega nada de outras empresas.',
 
     /* --- Legal ---------------------------------------------------------- */
     'legal.title': 'Aviso legal — DesignActiv',
@@ -755,11 +687,9 @@ export const ui = {
     'privacy.lead':
       'Como este site trata dados pessoais, e os direitos que você tem sobre eles pelo GDPR.',
     'privacy.summary.h': 'A versão curta',
-    'privacy.summary.b':
-      'Este site não usa cookies, não roda analytics e não carrega nada de outros domínios. Fontes, estilos, scripts e imagens vêm todos deste domínio. Se você não usar o formulário de contato, não ficamos sabendo nada sobre você além do que seu navegador informa ao nosso servidor para poder entregar esta página.',
+    'privacy.summary.b': 'Este site não usa cookies, não usa ferramentas de análise de tráfego e não carrega nada de outros domínios. Fontes, estilos, scripts e imagens vêm todos deste domínio. Se você não usar o formulário de contato, não ficamos sabendo nada sobre você além do que seu navegador informa ao nosso servidor para poder entregar esta página.',
     'privacy.hosting.h': 'Hospedagem e registros de servidor',
-    'privacy.hosting.b':
-      'Nosso provedor registra logs de acesso padrão — endereço IP, horário, página solicitada, referenciador e agente de usuário — necessários para entregar o site e mantê-lo seguro. Base legal: art. 6(1)(f) do GDPR, nosso interesse legítimo em operar o site.',
+    'privacy.hosting.b': 'Nosso provedor registra logs de acesso padrão — endereço IP, horário, página solicitada, página de origem e navegador — necessários para entregar o site e mantê-lo seguro. Base legal: art. 6(1)(f) do GDPR, nosso interesse legítimo em operar o site.',
     'privacy.form.h': 'O formulário de contato',
     'privacy.form.b':
       'Se você nos escrever, tratamos o nome, o e-mail, a empresa ou nome do negócio (se você informar), o assunto e a mensagem enviados para poder responder. Base legal: art. 6(1)(b) e (f) do GDPR. Guardamos a correspondência pelo tempo necessário para resolver a solicitação e cumprir prazos legais de retenção, e não a usamos para marketing.',
@@ -767,8 +697,7 @@ export const ui = {
     'privacy.fonts.b':
       'Além da hospedagem, nenhuma outra empresa recebe seus dados por este site. As fontes são servidas a partir deste domínio, e não do Google Fonts, então seu endereço IP nunca é repassado a outro provedor para exibir texto. Não há mapas incorporados, vídeos, chats, pixels ou botões de redes sociais.',
     'privacy.rights.h': 'Seus direitos',
-    'privacy.rights.b':
-      'Você tem direito de acesso, retificação, exclusão, limitação, portabilidade e oposição conforme os arts. 15 a 21 do GDPR, e o direito de reclamar a uma autoridade de controle. Escreva para nós e resolvemos.',
+    'privacy.rights.b': 'Você tem direito de acesso, retificação, exclusão, limitação, portabilidade e oposição conforme os arts. 15 a 21 do GDPR, e o direito de apresentar uma reclamação a uma autoridade de proteção de dados. Escreva para nós e resolvemos.',
     'privacy.todo.h': 'Esta página não está completa.',
     'privacy.todo.b':
       'Ainda é preciso nomear o responsável e a autoridade de controle competente, e este texto deve passar por revisão jurídica antes de o site ir ao ar.',
@@ -779,38 +708,29 @@ export const ui = {
     'nf.h1': 'Essa página não está aqui.',
     'nf.lead':
       'O link pode estar desatualizado ou a página pode ter mudado. Na página inicial, você encontra nossos serviços, preços e formas de contato.',
-    'nf.home': 'Voltar para a página inicial',
+    'nf.home': 'Ir para a página inicial',
 
     /* Ver a nota em inglês. Os preços nunca são digitados aqui: ficam em
        src/data/pricing.ts e entram como {price}. */
     'home.process.h2': 'Da primeira conversa ao *lançamento*.',
-    'home.process.s1.h': 'Escopo e preço',
-    'home.process.s2.h': 'Revise o design',
+    'home.process.s1.h': 'Proposta e preço',
+    'home.process.s2.h': 'Revisão do design',
     'home.process.s3.h': 'Criação e testes',
     'home.process.s4.h': 'Entrega',
-    'home.process.s1.b':
-      'Você conta do que precisa, e nós escrevemos um escopo com o preço junto, incluindo o que precisamos de você, como textos e fotos — combinado antes de qualquer trabalho começar.',
-    'home.process.s2.b':
-      'Fazemos o design direto em uma página que já funciona, então você revisa o site de verdade no seu próprio celular — não uma imagem dele.',
-    'home.process.s3.b':
-      'Criamos e testamos o site combinado em celulares e computadores, conferindo se as pessoas encontram as informações e conseguem falar com você.',
-    'home.process.s4.b':
-      'Você recebe os acessos e o guia de entrega por escrito combinados na proposta — e a Manutenção do site, se você quiser alguém cuidando dele.',
 
-    'services.pricing.h2': 'Saiba o escopo e o *preço* antes de começarmos.',
+    'services.pricing.h2': 'Saiba o que será feito e o *preço* antes de começar.',
     'services.pricing.lead':
       'Registramos por escrito o trabalho combinado, o preço e o prazo. Se você pedir algo a mais depois, vamos enviar um orçamento antes de executar.',
     'services.pricing.from': 'A partir de',
     'services.currency.label': 'Mostrar preços em',
-    'services.currency.note': 'Os preços são definidos em euros. Os valores em reais são uma estimativa a cerca de R$ {rate} por €1, arredondada, e podem variar na hora do pagamento.',
+    'services.currency.note': 'Os preços são definidos em euros. Os valores em reais são uma estimativa arredondada.',
     'services.pricing.includes': 'O que está incluído',
     'services.pricing.perMonth': 'por mês',
     'services.pricing.perPage': '{price} por página',
 
-    'services.design.kind': 'Pagamento único',
+    'services.design.kind': 'Projeto avulso',
     'services.design.name': 'Criação de site',
-    'services.design.note':
-      'O preço de partida para um site simples de pequeno negócio. Sistemas de agendamento, integrações, mais trabalho de conteúdo ou um prazo apertado aumentam o orçamento — e você recebe o valor por escrito antes de começarmos.',
+    'services.design.note': 'O preço inicial para um site simples de pequeno negócio. Sistemas de agendamento, integrações, mais trabalho de conteúdo ou um prazo apertado aumentam o orçamento — e você recebe o valor por escrito antes de começarmos.',
     'services.design.i1': 'Design feito para o seu negócio, pensado para celular e computador',
     'services.design.i2': 'Até cinco páginas',
     'services.design.i3': 'Estrutura e layout das páginas',
@@ -834,35 +754,30 @@ export const ui = {
     'services.care.small':
       'Uma pequena alteração é uma foto nova, preços ou horários atualizados, ou um parágrafo de texto. Qualquer coisa maior — uma página ou seção nova — é orçada antes de começarmos.',
 
-    'services.addons.h': 'Adicione a qualquer projeto',
-    'services.addons.lead': 'Orçados junto com o resto do escopo, então já entram no preço combinado.',
+    'services.addons.h': 'Adicione ao seu projeto',
+    'services.addons.lead': 'Orçados junto com o resto da proposta, então já entram no preço combinado.',
     'services.addons.pages': 'Páginas extras',
     'services.addons.language': 'Cada idioma adicional',
-    'services.addons.identity': 'Identidade de marca, criada do zero',
-    'services.addons.brand': 'Refinamento de marca (você já tem um logotipo)',
+    'services.addons.identity': 'Identidade visual, criada do zero',
+    'services.addons.brand': 'Refinamento da identidade visual (você já tem um logotipo)',
     'services.addons.email': 'Configuração de e-mail e automação básica',
     'services.addons.automation': 'Automação de processos',
 
-    'services.faq.h2': 'O que as pessoas costumam perguntar antes de começar.',
+    'services.faq.h2': 'Perguntas antes de começar.',
     'services.faq.q1': 'Quanto tempo demora um site?',
     'services.faq.q2': 'Do que vocês precisam de mim para começar?',
     'services.faq.q3': 'Posso editar o site sozinho depois?',
     'services.faq.q4': 'E se eu quiser sair?',
-    'services.faq.q5': 'Vocês trabalham em outros idiomas além do inglês?',
+    'services.faq.q5': 'Vocês trabalham em outros idiomas?',
     'services.faq.q6': 'O que significa “acessível” na prática?',
     'services.faq.q7': 'Vocês continuam cuidando do site depois do lançamento?',
-    'services.faq.a1':
-      'Um site simples de pequeno negócio costuma levar de 2 a 4 semanas, a partir do dia em que recebemos seus textos e fotos. O prazo exato entra no escopo escrito, junto com o preço, então você tem uma data antes de qualquer coisa começar. Textos e fotos chegando quando combinado é o que mantém o cronograma.',
-    'services.faq.a2':
-      'Para começar, só uma descrição curta do negócio e do que o site precisa fazer — é exatamente o que o formulário de contato pede. Depois de combinado o escopo, precisamos dos seus textos, fotos e logotipo, e do acesso ao seu domínio, se você já tiver um. Se alguma dessas coisas ainda não existir, é só dizer: isso entra no escopo.',
-    'services.faq.a3':
-      'Sim, se você quiser. Se for você quem vai atualizar o site, incluímos um editor simples para textos, preços e fotos, e ele entra no escopo e no preço. Mudanças na estrutura ficam com a gente, e a Manutenção do site inclui uma pequena alteração por mês, se você preferir não mexer em nada.',
+    'services.faq.a1': 'Um site simples de pequeno negócio costuma levar de 2 a 4 semanas, a partir do dia em que recebemos seus textos e fotos. A data exata entra na proposta por escrito, junto com o preço, então você já tem a data antes de qualquer coisa começar. O prazo se mantém quando textos e fotos chegam na data combinada.',
+    'services.faq.a2': 'Para começar, só uma descrição curta do negócio e do que o site precisa fazer — é exatamente o que o formulário de contato pede. Depois de combinada a proposta, precisamos dos seus textos, fotos e logotipo, e do acesso ao seu domínio, se você já tiver um. Se alguma dessas coisas ainda não existir, é só dizer: isso entra na proposta.',
+    'services.faq.a3': 'Sim, se você quiser. Se for você quem vai atualizar o site, incluímos um editor simples para textos, preços e fotos, e ele entra na proposta e no preço. Mudanças na estrutura ficam conosco, e a Manutenção do site inclui uma pequena alteração por mês, se você preferir não mexer em nada.',
     'services.faq.a4':
       'Você não fica preso. A proposta e o guia de entrega dizem quais contas de domínio, código e hospedagem são suas e como levar o site, então sair é só encerrar a Manutenção do site, se você tiver, e não pedir o seu próprio site de volta. A Manutenção do site é mensal: você pode encerrá-la com 30 dias de aviso por e-mail.',
-    'services.faq.a5':
-      'Sim. Falamos com você em inglês ou português, e lemos alemão. O site em si pode ter vários idiomas ao mesmo tempo — francês e alemão são comuns no Luxemburgo — e cada idioma além do primeiro tem preço definido desde o início, a partir de {price}.',
-    'services.faq.a6':
-      'Significa que pessoas que não usam mouse, que enxergam mal ou que usam leitor de tela conseguem usar o seu site do mesmo jeito. Pensamos a acessibilidade desde o design e conferimos as páginas combinadas com teclado e leitor de tela antes do lançamento. Isso também deixa o site mais fácil de usar num celular barato, sob sol forte.',
+    'services.faq.a5': 'Sim. Falamos com você em português ou inglês, e lemos alemão. O site em si pode ter vários idiomas ao mesmo tempo — português e inglês, por exemplo, ou francês e alemão — e cada idioma além do primeiro tem preço definido desde o início, a partir de {price}.',
+    'services.faq.a6': 'Significa que pessoas que não usam mouse, que enxergam mal ou que usam leitor de tela conseguem usar o seu site do mesmo jeito. Pensamos a acessibilidade desde o design e conferimos as páginas combinadas com teclado e leitor de tela antes do lançamento.',
     'services.faq.a7':
       'Se você quiser. A Manutenção do site custa {price} por mês e cobre hospedagem a partir do segundo ano (o primeiro está incluído no projeto), atualizações, backups, monitoramento, suporte por e-mail e uma pequena alteração mensal. É opcional: sem ela, qualquer coisa depois é orçada quando você precisar, e depois do primeiro ano você pode levar o site para a sua própria hospedagem.',
   },

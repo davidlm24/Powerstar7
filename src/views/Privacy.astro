@@ -1,6 +1,16 @@
 ---
+/* Privacy (the 2026-11 redesign, rolled out 2026-11-26). The blue page head,
+   then two sections:
+     1. the short version: its title in the left half, the plain-language
+        summary in the right half, and the "not complete" notice under both;
+     2. the policy itself: one row per heading, the heading in the left
+        column and its text in the three columns beside it, then the
+        "last updated" line across the full width. Under 60rem each heading
+        sits above its text instead. */
 import Base from '../layouts/Base.astro';
-import PageHead from '../components/PageHead.astro';
+import Sheet from '../components/Sheet.astro';
+import PageTop from '../components/PageTop.astro';
+import Pluses from '../components/Pluses.astro';
 import Notice from '../components/Notice.astro';
 import { useTranslations, CONTACT, type Lang } from '../i18n/ui';
 
@@ -24,90 +34,129 @@ const updated = '2026-10-09';
 ---
 
 <Base lang={lang} page="privacy" title={t('privacy.title')} description={t('privacy.lead')}>
-  {/* The lead states SCOPE — what this document covers. The .summary below
-      states substance ("we collect almost nothing"). Two different jobs, so
-      they do not read as the same sentence twice. */}
-  <PageHead title={t('privacy.h1')} lead={t('privacy.lead')} figure="privacy" />
+  <Sheet>
+    {/* The lead states SCOPE, what this document covers. The summary below
+        states substance ("we collect almost nothing"). Two different jobs,
+        so they do not read as the same sentence twice. */}
+    <PageTop title={t('privacy.h1')} lead={t('privacy.lead')} />
 
-  <section class="privacy rails">
-    <div class="container">
-      {/* The summary first, in plain language. A privacy page whose honest
-          content is "we collect almost nothing" should say that at the top
-          rather than bury it under four screens of legal boilerplate. */}
-      <div class="summary">
-        <h2 class="summary__h">{t('privacy.summary.h')}</h2>
-        <p class="lead summary__b">{t('privacy.summary.b')}</p>
+    {/* The summary first, in plain language. A privacy page whose honest
+        content is "we collect almost nothing" should say that at the top
+        rather than bury it under four screens of legal boilerplate. */}
+    <section class="frame">
+      <Pluses at={[0, 50, 100]} />
+      <div class="grid">
+        <div class="cell cell--head span-2">
+          <h2 class="head__h head__h--sm">{t('privacy.summary.h')}</h2>
+        </div>
+        <div class="cell cell--lead span-2">
+          <p class="head__lead summary__b">{t('privacy.summary.b')}</p>
+        </div>
+        <div class="cell span-4 doc__notice">
+          <Notice title={t('privacy.todo.h')} body={t('privacy.todo.b')} />
+        </div>
       </div>
+      <Pluses at={[0, 100]} end />
+    </section>
 
-      <Notice title={t('privacy.todo.h')} body={t('privacy.todo.b')} />
-
-      <div class="prose">
+    <section class="frame frame--last">
+      <Pluses at={[0, 25, 100]} />
+      <div class="grid">
         {
           sections.map((s) => (
-            <section>
-              <h2>{s.h}</h2>
-              <p>{s.b}</p>
+            <section class="row doc__row">
+              <div class="cell doc__t"><h2 class="doc__h">{s.h}</h2></div>
+              <div class="cell span-3 doc__b">
+                <div class="prose">
+                  <p>{s.b}</p>
+                </div>
+              </div>
             </section>
           ))
         }
 
-        <section>
-          <h2>{t('legal.contact.h')}</h2>
-          <p>
-            <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
-          </p>
+        <section class="row doc__row">
+          <div class="cell doc__t"><h2 class="doc__h">{t('legal.contact.h')}</h2></div>
+          <div class="cell span-3 doc__b">
+            <div class="prose">
+              <p>
+                <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+              </p>
+            </div>
+          </div>
         </section>
-      </div>
 
-      <p class="updated">
-        {t('privacy.updated')}: <time datetime={updated}>{updated}</time>
-      </p>
-    </div>
-  </section>
+        <div class="cell span-4 doc__updated">
+          <p class="updated">
+            {t('privacy.updated')}: <time datetime={updated}>{updated}</time>
+          </p>
+        </div>
+      </div>
+      <Pluses at={[0, 100]} end />
+    </section>
+  </Sheet>
 </Base>
 
 <style>
-  .privacy {
-    padding-block-end: var(--section-y);
+  /* The shared grid lives in src/styles/grid.css. */
+
+  /* The page has no closing panel, so its last section keeps the gap above
+     the footer that the closing frame would otherwise give. A margin, not
+     padding, so the end "+" marks stay on the grid's bottom line. */
+  .frame--last {
+    margin-block-end: var(--section-gap);
   }
 
-  .summary {
-    max-width: var(--width-text);
-    padding-block-end: var(--s4);
-  }
-
-  .summary__h {
-    font-size: var(--t-h3);
-  }
-
+  /* The summary is the page's real message: full-strength text. */
   .summary__b {
-    margin-block-start: var(--s3);
     color: var(--fg);
   }
 
-  .prose {
+  /* The notice brings its own margin and width cap for the old layout; in a
+     cell the padding does that job. */
+  /* The notice fills its cell, square like the grid; its text keeps a
+     reading measure (review GV-9). */
+  .doc__notice :global(.notice) {
+    margin: 0;
+    max-width: none;
+    border-radius: 0;
+  }
+
+  .doc__notice :global(.notice__body) {
     max-width: var(--width-text);
-    display: grid;
-    gap: var(--s5);
-    margin-block-start: var(--s5);
   }
 
-  .prose h2 {
-    font-size: var(--t-h3);
-    margin-block-end: var(--s2);
+  .doc__h {
+    margin: 0;
+    font-size: 1.15rem;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    font-weight: 500;
+    color: var(--fg);
+    text-wrap: balance;
   }
 
-  .prose p {
-    color: var(--fg-muted);
+  /* A footnote row, so it is shorter than the rows above it. */
+  .doc__updated {
+    padding-block: 1.25rem;
   }
 
   .updated {
-    margin-block-start: var(--s6);
-    max-width: var(--width-text);
     font-size: var(--t-small);
-    font-weight: var(--weight-heading);
-    letter-spacing: 0;
-    text-transform: none;
     color: var(--fg-muted);
+  }
+
+  /* Two columns and one: the heading takes the full row, and its text
+     follows straight under it in the same block, no line between them. */
+  @media (max-width: 60rem) {
+    .doc__t {
+      grid-column: 1 / -1;
+      padding-block-end: 0.75rem;
+    }
+
+    .doc__b {
+      border-block-start: 0;
+      padding-block-start: 0;
+    }
   }
 </style>

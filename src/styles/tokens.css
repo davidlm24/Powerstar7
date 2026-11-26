@@ -84,11 +84,11 @@
   /* --- Purple ---------------------------------------------------------
      A SECOND hue, which the rest of this file argues against and which
      REBUILD-BRIEF.md §1 lists as a mistake to avoid. It is here because
-     David asked for a blue-and-purple hero, and it is fenced: TWO uses,
-     both David's explicit call. One, the hero's background wash. Two
-     (2026-10-12), .icon-wash — the same soft radial language under the
-     ASCII service icons, edgeless, dissolving into the paper; decoration,
-     aria-hidden, no readable text on it. Never a fill behind readable
+     David asked for a blue-and-purple hero, and it is fenced. Both of its
+     uses (the old hero's background wash, and from 2026-10-12 the
+     .icon-wash under the service icons) left with the 2026-11 redesign, so
+     today nothing on a page draws in it; the token stays for the next
+     deliberate use. Never a fill behind readable
      text, never a border, never a line, never a hard-edged block. (Until 2026-09-24 it also coloured the
      last two full stops of a three-line headline; that headline is gone.) It carries no
      meaning and nothing is measured against it — if it were deleted the site would lose an
@@ -223,8 +223,9 @@
      it shares its row with a picture; this one serves an h1 with the whole
      width to itself. The vw term reaches the 104px cap at 1051px. */
   --t-hero: clamp(2rem, 9.9vw, 6.5rem);        /*  32 → 104px              */
-  /* NEW. The inner-page h1. PageHead and 404 both hard-coded their own
-     clamp topping at 96px — 8px under the home hero, which is not a step
+  /* The inner-page h1 of the old page head (no call site since the
+     2026-11 redesign: PageTop sets its own). The old page head and 404 both
+     hard-coded their own clamp topping at 96px — 8px under the home hero, which is not a step
      down, it is noise. 80px makes the ladder 104 / 80 / 56 / 28: four real
      steps, and a future display change touches this file only. */
   --t-title: clamp(2.5rem, 6.5vw, 5rem);       /*  40 →  80px              */
@@ -294,22 +295,6 @@
      --header-h is the band the page must keep clear. ANY position:sticky
      offset on this site must use it: making the header sticky silently hid
      three sub-headings that were still offsetting by --s4. */
-  /* The page grid. Four columns at desktop, two on a phone. Everything that
-     spans more than one column should still line up with these — not because
-     the grid is drawn any more (the edge rails are gone; see global.css) but
-     because the dividers that remain sit ON these track boundaries, and a
-     block that ignores them puts its content out of step with the one above. */
-  --grid-cols: 4;
-
-  /* Air inside a grid cell before the next line. One value so every cell on
-     the page hangs the same way — the stats block previously had none on its
-     first cell and 32px on the one below, which is why the two rows did not
-     line up. */
-  /* Fluid, because this is subtracted from a grid cell twice. A flat 4rem
-     left a two-column stats cell 4px of content at 320px and the page
-     scrolled sideways. --s3 at the bottom, --s6 where there is room. */
-  --col-pad: clamp(var(--s3), 4.5vw, var(--s6));
-
   /* A literal now, because there is no bar left to derive it from — the
      header is the page's own ground with a hairline. The VALUE is unchanged
      at 92px (the old 3.75rem bar plus 1rem of padding top and bottom), so
@@ -335,6 +320,8 @@
      own radius, so the focus ring matches whatever it rings. */
   --radius: 6px;
   --radius-sm: 4px;
+  /* The home hero is the one large rounded surface (2026-11-25). */
+  --radius-hero: clamp(1.25rem, 2.2vw, 1.75rem);
 
   /*
 
@@ -361,25 +348,6 @@
      and 1.13:1 against the light rule's 1.08:1. */
   --rail: rgb(245 242 235 / 0.08);
   --rule: rgb(245 242 235 / 0.05);
-
-  background: var(--bg);
-  color: var(--fg);
-}
-
-/* The blue band (David, 2026-10-19, option C of the "colour rhythm" pass):
-   the closing call to action on the brand blue, the loud moment the old
-   Powerstar7 site had in "Let's Bring Your Vision to Life". Roles flip the
-   same way .invert does. White on --blue-fn is 5.47:1; the muted white is
-   92%, which blends to 4.79:1 on the blue, so it still clears AA for the
-   20px lead. */
-.band-blue {
-  --bg: var(--blue-fn);
-  --fg: #fff;
-  --fg-muted: rgb(255 255 255 / 0.92);
-  --accent: #fff;
-  --accent-fn: #fff;
-  --rail: rgb(255 255 255 / 0.22);
-  --rule: rgb(255 255 255 / 0.16);
 
   background: var(--bg);
   color: var(--fg);

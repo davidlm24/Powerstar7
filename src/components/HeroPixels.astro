@@ -1,0 +1,98 @@
+---
+/* The pixel field of the blue panels (lab trial; rounds 6-7, David
+   2026-11-26). One layer of small square cells over a whole panel, under
+   its content. hero-pixels.js draws it on the canvas:
+     - every cell at its own faint opacity, a few lighting up at random,
+       denser near the focus;
+     - variant "hero": pixel drawings (a browser, a phone, a check) around
+       the stage ([data-px-stage], HeroPixelsStill), scattered and glitched,
+       dissolving from one into the next;
+     - variant "corner": no drawing, a cluster of bright scattered pixels
+       around `focus` (fractions of the panel, "1 0" = top right) that
+       reshuffles now and then. For panels whose content sits elsewhere: the
+       closing panel, and later the pricing cards.
+   The parent must be positioned and clip its corners; its content needs
+   position: relative and z-index: 1 to sit above the field.
+   Each variant fades out toward the panel's text (masks below), so white
+   text never sits on more than a few percent of white.
+   Without JavaScript, or with reduced motion, the canvas stays empty and the
+   faint empty squares here (plus the hero's still drawing) show instead.
+   Colour: --px-ink, set by the page. */
+import { FRAMES } from '../data/hero-pixels';
+
+interface Props {
+  variant?: 'hero' | 'corner';
+  /** Where the pixels gather, as "x y" fractions of the panel (corner). */
+  focus?: string;
+}
+
+const { variant = 'hero', focus = '1 0' } = Astro.props;
+const hero = variant === 'hero';
+---
+
+<div
+  class:list={['hero-px', `hero-px--${variant}`]}
+  data-hero-pixels
+  data-frames={hero ? JSON.stringify(FRAMES) : undefined}
+  data-focus={hero ? undefined : focus}
+  style={hero ? undefined : `--fx: ${Number(focus.split(' ')[0]) * 100}%; --fy: ${Number(focus.split(' ')[1]) * 100}%`}
+  aria-hidden="true"
+>
+  <canvas class="hero-px__canvas"></canvas>
+</div>
+<script src="/assets/js/hero-pixels.js" defer is:inline></script>
+
+<style>
+  .hero-px {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    /* The still's empty cells: 4px squares on a 5px step, white at 8%.
+       An inline SVG, so no request. */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='5'%3E%3Crect x='.5' y='.5' width='4' height='4' fill='%23fff' fill-opacity='.08'/%3E%3C/svg%3E");
+  }
+
+  /* Hero: clear behind the copy, full from about the middle on. The stops
+     keep any white under the lead to a few percent (round 6, measured). */
+  .hero-px--hero {
+    -webkit-mask-image: linear-gradient(90deg, transparent 22%, rgb(0 0 0 / 0.12) 42%, #000 58%);
+    mask-image: linear-gradient(90deg, transparent 22%, rgb(0 0 0 / 0.12) 42%, #000 58%);
+  }
+
+  /* Corner: full at the focus, gone well before the text. */
+  .hero-px--corner {
+    -webkit-mask-image: radial-gradient(ellipse 62% 150% at var(--fx) var(--fy), #000 18%, rgb(0 0 0 / 0.35) 45%, transparent 72%);
+    mask-image: radial-gradient(ellipse 62% 150% at var(--fx) var(--fy), #000 18%, rgb(0 0 0 / 0.35) 45%, transparent 72%);
+  }
+
+  .hero-px.is-live {
+    background-image: none;
+  }
+
+  .hero-px__canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Stacked hero (the page's own breakpoint): the copy is on top, so the
+     field fades in from where the stage starts (--fade-at, set by the
+     script; a safe guess without it). */
+  @media (max-width: 60rem) {
+    .hero-px--hero {
+      -webkit-mask-image: linear-gradient(180deg, transparent calc(var(--fade-at, 75%) - 7rem), rgb(0 0 0 / 0.12) calc(var(--fade-at, 75%) - 1.5rem), #000 calc(var(--fade-at, 75%) + 3rem));
+      mask-image: linear-gradient(180deg, transparent calc(var(--fade-at, 75%) - 7rem), rgb(0 0 0 / 0.12) calc(var(--fade-at, 75%) - 1.5rem), #000 calc(var(--fade-at, 75%) + 3rem));
+    }
+
+    /* Narrow: the text runs nearly the full width, so the glow keeps to
+       the top-right corner and is gone before the second line of text
+       (measured at 375). */
+    .hero-px--corner {
+      -webkit-mask-image: radial-gradient(ellipse 75% 45% at 100% 0%, #000 15%, rgb(0 0 0 / 0.3) 40%, transparent 72%);
+      mask-image: radial-gradient(ellipse 75% 45% at 100% 0%, #000 15%, rgb(0 0 0 / 0.3) 40%, transparent 72%);
+    }
+  }
+</style>

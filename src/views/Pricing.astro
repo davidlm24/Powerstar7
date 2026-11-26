@@ -1,12 +1,25 @@
 ---
+/* Pricing (the 2026-11 redesign; trial on /lab/pricing-dark, rolled out
+   2026-11-26). One offer and the plan that follows it, then the extras and
+   the questions about money. Figures come from src/data/pricing.ts as
+   §amount§ markers drawn by <Priced> (euros, with reais for the currency
+   toggle), so a price changes in one place and a string never holds one.
+
+   The blue project card is the pricing card with the shine in its corner
+   (David): HeroPixels variant="corner" at its top right, away from the
+   price and the list. Its gradient ends darker (.panel__light--even): its
+   text runs the card's full width. */
 import Base from '../layouts/Base.astro';
-import PageHead from '../components/PageHead.astro';
-import Accent from '../components/Accent.astro';
-import Closing from '../components/Closing.astro';
+import Sheet from '../components/Sheet.astro';
+import PageTop from '../components/PageTop.astro';
+import Pluses from '../components/Pluses.astro';
 import Faq from '../components/Faq.astro';
+import ClosingPanel from '../components/ClosingPanel.astro';
+import Accent from '../components/Accent.astro';
 import Priced from '../components/Priced.astro';
+import HeroPixels from '../components/HeroPixels.astro';
 import { useTranslations, route, type Lang } from '../i18n/ui';
-import { PRICING, rateLabel } from '../data/pricing';
+import { PRICING } from '../data/pricing';
 
 interface Props {
   lang: Lang;
@@ -14,42 +27,14 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-/* Prices travel as §amount§ markers and <Priced> draws them (euros, with the
-   reais attached for the currency toggle). Strings never hold a number. */
 const eur = (amount: number) => `§${amount}§`;
 const from = (amount: number) => `${t('services.pricing.from')} ${eur(amount)}`;
 
-/* Pricing is one offer and the plan that follows it, then the extras — not a
-   price per service. A list with one row per discipline asks a salon owner to
-   work out which rows apply to them; this says what the one project includes,
-   what keeping it running costs, and what can go on top. The figures come
-   from src/data/pricing.ts, so a price changes in one place. This is its own
-   page since 2026-10-20 (David): Services is for the services. */
-const designIncludes = [
-  t('services.design.i1'),
-  t('services.design.i2'),
-  t('services.design.i3'),
-  t('services.design.i4'),
-  t('services.design.i5'),
-  t('services.design.i6'),
-  t('services.design.i7'),
-  t('services.design.i8'),
-];
-
-const careIncludes = [
-  t('services.care.i1'),
-  t('services.care.i2'),
-  t('services.care.i3'),
-  t('services.care.i4'),
-  t('services.care.i5'),
-  t('services.care.i6'),
-];
+const designIncludes = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => t(`services.design.i${n}` as 'services.design.i1'));
+const careIncludes = [1, 2, 3, 4, 5, 6].map((n) => t(`services.care.i${n}` as 'services.care.i1'));
 
 const addons = [
-  {
-    name: t('services.addons.pages'),
-    price: t('services.pricing.perPage', { price: eur(PRICING.addons.page) }),
-  },
+  { name: t('services.addons.pages'), price: t('services.pricing.perPage', { price: eur(PRICING.addons.page) }) },
   { name: t('services.addons.language'), price: from(PRICING.addons.language) },
   { name: t('services.addons.identity'), price: from(PRICING.addons.identity) },
   { name: t('services.addons.brand'), price: from(PRICING.addons.brand) },
@@ -57,155 +42,116 @@ const addons = [
   { name: t('services.addons.automation'), price: from(PRICING.addons.automation) },
 ];
 
-/* The questions that are about money, ending a contract, or a language that
-   costs extra; the rest stay on the Services page. The prices in the answers
-   come from src/data/pricing.ts, so an answer can never disagree with the
-   price card above it. */
 const faqs = [
   { q: t('services.faq.q4'), a: t('services.faq.a4') },
   { q: t('services.faq.q5'), a: t('services.faq.a5', { price: eur(PRICING.addons.language) }) },
   { q: t('services.faq.q7'), a: t('services.faq.a7', { price: eur(PRICING.care) }) },
 ];
+
+const MID = [0, 50, 100];
 ---
 
-<Base lang={lang} page="pricing" title={t('pricing.title')} description={t('pricing.lead')} dither>
-  <PageHead title={t('pricing.h1')} lead={t('pricing.lead')} figure="services" />
+<Base lang={lang} page="pricing" title={t('pricing.title')} description={t('pricing.lead')}>
+  <Sheet>
+    <PageTop title={t('pricing.h1')} lead={t('pricing.lead')} />
 
-  {/* --- What things cost -------------------------------------------------
-      First on the page, because it is the question a referral arrives with.
-      Two cards (David, 2026-10-14: the flat, divided version lacked contrast
-      and hierarchy): the project on the dark ground, where the eye lands
-      first, and the care that follows it on raised paper, a step quieter.
-      Each ends in its own way to act. The extras sit in a panel under them.
-      The id is what the home page links to. */}
-  <section class="pricing rails" id="pricing">
-    <div class="container">
-      <div class="pricing__head">
-        <h2><Accent text={t('services.pricing.h2')} /></h2>
-        <p class="lead measure">{t('services.pricing.lead')}</p>
-
-        {/* Shown by site.js, so it never appears where it would do nothing. */}
-        <div class="currency" data-currency hidden role="group" aria-label={t('services.currency.label')}>
-          <span class="currency__label" aria-hidden="true">{t('services.currency.label')}</span>
-          <span class="currency__btns">
-            <button type="button" class="currency__btn" data-cur="eur" aria-pressed="true">EUR · €</button>
-            <button type="button" class="currency__btn" data-cur="brl" aria-pressed="false">BRL · R$</button>
-          </span>
+    {/* --- What things cost ------------------------------------------------- */}
+    <section class="frame" id="pricing">
+      <Pluses at={MID} />
+      <div class="grid">
+        <div class="cell cell--head span-2">
+          <h2 class="head__h"><Accent text={t('services.pricing.h2')} /></h2>
         </div>
-        <p class="currency__note" data-currency-note role="status" hidden>
-          {t('services.currency.note', { rate: rateLabel(lang) })}
-        </p>
-      </div>
-
-      <div class="plans">
-        <article class="plan plan--design invert dcard" data-corner="tr" data-corner-from="40">
-          <p class="plan__kind">{t('services.design.kind')}</p>
-          <h3 class="plan__name">{t('services.design.name')}</h3>
-          {/* Both spans on ONE line with a real space between them. Astro's
-              HTML compression deletes whitespace that crosses a line break, so
-              the gap then existed only in CSS, and the text itself read
-              "From€750" to anything that reads text rather than layout: copy
-              and paste, search snippets, some screen readers. The flex gap
-              still sets the visible spacing; the space is for everything else. */}
-          <p class="plan__price">
-            <span class="plan__unit">{t('services.pricing.from')}</span> <span class="plan__amount print-in"><Priced text={eur(PRICING.design)} lang={lang} /></span>
+        <div class="cell cell--lead span-2">
+          <p class="head__lead">{t('services.pricing.lead')}</p>
+          {/* Shown by site.js, so it never appears where it would do nothing. */}
+          <div class="currency" data-currency hidden role="group" aria-label={t('services.currency.label')}>
+            <span class="currency__label" aria-hidden="true">{t('services.currency.label')}</span>
+            <span class="currency__btns">
+              <button type="button" class="currency__btn" data-cur="eur" aria-pressed="true">EUR · €</button>
+              <button type="button" class="currency__btn" data-cur="brl" aria-pressed="false">BRL · R$</button>
+            </span>
+          </div>
+          <p class="currency__note" data-currency-note role="status" hidden>
+            {t('services.currency.note')}
           </p>
-          <p class="plan__note">{t('services.design.note')}</p>
-          <h4 class="plan__includes">{t('services.pricing.includes')}</h4>
-          <ul class="plan__list">
-            {designIncludes.map((item) => <li>{item}</li>)}
-          </ul>
-          <a class="btn plan__cta" href={route('contact', lang)}>{t('home.cta')}</a>
+        </div>
+
+        <article class="cell plan plan--design panel on-blue span-2">
+          <div class="panel__light panel__light--even" aria-hidden="true"></div>
+          <HeroPixels variant="corner" focus="1 0" />
+          <div class="plan__body">
+            <p class="plan__kind">{t('services.design.kind')}</p>
+            <h3 class="plan__name">{t('services.design.name')}</h3>
+            {/* One line, a real space between the spans (Astro's HTML
+                compression would otherwise leave "From€750" in the text). */}
+            <p class="plan__price">
+              <span class="plan__unit">{t('services.pricing.from')}</span> <span class="plan__amount"><Priced text={eur(PRICING.design)} lang={lang} /></span>
+            </p>
+            <p class="plan__note">{t('services.design.note')}</p>
+            <h4 class="plan__includes">{t('services.pricing.includes')}</h4>
+            <ul class="plan__list plan__list--two">
+              {designIncludes.map((item) => <li>{item}</li>)}
+            </ul>
+            <a class="btn plan__cta" href={route('contact', lang)}>{t('home.cta')}</a>
+          </div>
         </article>
 
-        <article class="plan plan--care dcard" data-corner="tr" data-corner-from="40">
-          <p class="plan__kind">{t('services.care.kind')}</p>
-          <h3 class="plan__name">{t('services.care.name')}</h3>
-          <p class="plan__price">
-            <span class="plan__amount print-in"><Priced text={eur(PRICING.care)} lang={lang} /></span> <span class="plan__unit">{t('services.pricing.perMonth')}</span>
-          </p>
-          <p class="plan__note">{t('services.care.note')}</p>
-          <h4 class="plan__includes">{t('services.pricing.includes')}</h4>
-          <ul class="plan__list">
-            {careIncludes.map((item) => <li>{item}</li>)}
-          </ul>
-          <p class="plan__note">{t('services.care.small')}</p>
-          <a class="btn btn--quiet plan__cta" href={route('contact', lang)}>{t('services.care.cta')}</a>
+        <article class="cell plan plan--care span-2">
+          <div class="plan__body">
+            <p class="plan__kind">{t('services.care.kind')}</p>
+            <h3 class="plan__name">{t('services.care.name')}</h3>
+            <p class="plan__price">
+              <span class="plan__amount"><Priced text={eur(PRICING.care)} lang={lang} /></span> <span class="plan__unit">{t('services.pricing.perMonth')}</span>
+            </p>
+            <p class="plan__note">{t('services.care.note')}</p>
+            <h4 class="plan__includes">{t('services.pricing.includes')}</h4>
+            <ul class="plan__list">
+              {careIncludes.map((item) => <li>{item}</li>)}
+            </ul>
+            <p class="plan__note">{t('services.care.small')}</p>
+            <a class="btn btn--quiet plan__cta" href={route('contact', lang)}>{t('services.care.cta')}</a>
+          </div>
         </article>
       </div>
+      <Pluses at={MID} end />
+    </section>
 
-      <div class="addons dcard" data-corner="bl" data-corner-from="60">
-        <div>
-          <h3 class="addons__h">{t('services.addons.h')}</h3>
-          <p class="addons__lead">{t('services.addons.lead')}</p>
+    {/* --- Extras ---------------------------------------------------------- */}
+    <section class="frame">
+      <Pluses at={MID} />
+      <div class="grid">
+        <div class="cell cell--head span-2">
+          <h2 class="head__h head__h--sm">{t('services.addons.h')}</h2>
+          <p class="head__lead">{t('services.addons.lead')}</p>
         </div>
-        <dl class="addons__list">
-          {
-            addons.map((a) => (
-              <div class="addon">
-                <dt>{a.name}</dt>
-                <dd class="addon__price"><Priced text={a.price} lang={lang} /></dd>
-              </div>
-            ))
-          }
-        </dl>
+        <div class="cell span-2 cell--list">
+          <dl class="addons__list">
+            {
+              addons.map((a) => (
+                <div class="addon">
+                  <dt>{a.name}</dt>
+                  <dd class="addon__price"><Priced text={a.price} lang={lang} /></dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
       </div>
-    </div>
-  </section>
+      <Pluses at={MID} end />
+    </section>
 
-  <Faq lang={lang} heading={t('pricing.faq.h2')} items={faqs} />
+    <Faq lang={lang} heading={t('pricing.faq.h2')} items={faqs} />
 
-  <Closing lang={lang} />
+    <ClosingPanel lang={lang} />
+  </Sheet>
 </Base>
 
+
 <style>
-  /* --- What things cost --------------------------------------------------- */
+  /* The shared grid, panels and questions live in src/styles/grid.css. */
 
-  /* The first section after the page head: a shorter step down than the
-     rhythm between sections, and no rule above it any more. */
-  .pricing {
-    padding-block-start: var(--s5);
-  }
-
-  .pricing__head {
-    display: grid;
-    gap: var(--s3);
-    margin-block-end: var(--s5);
-  }
-
-  /* The project and the care that follows it, side by side, the project the
-     wider of the two. Two surfaces instead of one dividing rule: the dark
-     card (.invert, so every role inside flips) and the raised paper card with
-     an edge. Square, no shadow, like every surface on the site. Stretched to
-     one height so the two buttons line up at the bottom. */
-  .plans {
-    display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-    align-items: stretch;
-    gap: var(--s3);
-  }
-
-  .plan {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s3);
-    padding: clamp(var(--s4), 3vw, var(--s5));
-  }
-
-  .plan--care {
-    background: var(--paper-hi);
-    border: 1px solid var(--rail);
-  }
-
-  .plan__kind {
-    font-size: var(--t-small);
-    font-weight: var(--weight-heading);
-    letter-spacing: 0;
-    text-transform: none;
-    color: var(--fg-muted);
-  }
-
-  /* Currency toggle: two square buttons, the chosen one filled. */
+  /* --- Currency toggle --------------------------------------------------------- */
   .currency {
     display: flex;
     flex-wrap: wrap;
@@ -214,18 +160,14 @@ const faqs = [
   }
 
   .currency[hidden],
-  .currency__note[hidden] {
-    display: none;
-  }
+  .currency__note[hidden] { display: none; }
 
   .currency__label {
     font-size: var(--t-small);
     color: var(--fg-muted);
   }
 
-  .currency__btns {
-    display: inline-flex;
-  }
+  .currency__btns { display: inline-flex; }
 
   .currency__btn {
     min-block-size: 2.5rem;
@@ -239,11 +181,8 @@ const faqs = [
     cursor: pointer;
   }
 
-  .currency__btn + .currency__btn {
-    margin-inline-start: -1px;
-  }
+  .currency__btn + .currency__btn { margin-inline-start: -1px; }
 
-  /* The pair reads as one control with slightly rounded ends. */
   .currency__btn:first-child {
     border-start-start-radius: var(--radius-sm);
     border-end-start-radius: var(--radius-sm);
@@ -254,9 +193,7 @@ const faqs = [
     border-end-end-radius: var(--radius-sm);
   }
 
-  .currency__btn:hover {
-    background: var(--blue-wash);
-  }
+  .currency__btn:hover { background: var(--blue-wash); }
 
   .currency__btn[aria-pressed='true'] {
     background: var(--ink);
@@ -265,8 +202,38 @@ const faqs = [
   }
 
   .currency__note {
-    max-width: 52ch;
+    max-inline-size: 52ch;
     font-size: var(--t-small);
+    color: var(--fg-muted);
+  }
+
+  /* --- The two plans ------------------------------------------------------------ */
+  .plan {
+    isolation: isolate;
+    overflow: clip;
+    padding: 0;
+  }
+
+  .plan__body {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s3);
+    block-size: 100%;
+    padding: clamp(var(--s4), 3vw, var(--s5));
+  }
+
+  /* The shine on the blue card: top right, gone before the list's second
+     column (measured). */
+  .plan--design :global(.hero-px--corner) {
+    -webkit-mask-image: radial-gradient(ellipse 48% 42% at 100% 0%, #000 12%, rgb(0 0 0 / 0.3) 38%, transparent 72%);
+    mask-image: radial-gradient(ellipse 48% 42% at 100% 0%, #000 12%, rgb(0 0 0 / 0.3) 38%, transparent 72%);
+  }
+
+  .plan__kind {
+    font-size: var(--t-small);
+    font-weight: var(--weight-heading);
     color: var(--fg-muted);
   }
 
@@ -282,21 +249,12 @@ const faqs = [
     gap: var(--s1) var(--s2);
   }
 
-  /* The project's number at h2 scale and the care plan's a step below it,
-     both in the heading weight with tabular figures: the price is the thing
-     on this page people came for, so it is the heaviest type on it. */
   .plan__amount {
     font-size: var(--t-h2);
     font-weight: var(--weight-heading);
     letter-spacing: var(--tr-display);
     line-height: 1;
     font-variant-numeric: tabular-nums;
-    /* The number people came for prints in dots once its card has landed
-       ("yes, our prices are public ^"): printed in the open, in the site's
-       own ink. Once, on scroll-in; it is still and solid before anyone
-       reads it (global.css, the print coming up). */
-    --print-dur: 360ms;
-    --print-delay: calc(var(--reveal-delay, 0ms) + 120ms);
   }
 
   .plan__unit {
@@ -305,18 +263,15 @@ const faqs = [
   }
 
   .plan__note {
-    max-width: 52ch;
+    max-inline-size: 52ch;
     font-size: var(--t-body);
     color: var(--fg-muted);
   }
 
-  /* Space, not a hairline, splits the card into its offer and its contents. */
   .plan__includes {
     margin-block-start: var(--s3);
     font-size: var(--t-small);
     font-weight: var(--weight-heading);
-    letter-spacing: 0;
-    text-transform: none;
     color: var(--fg-muted);
   }
 
@@ -328,24 +283,17 @@ const faqs = [
     gap: 0.6rem;
   }
 
-  /* Eight items as one column run long beside the care plan's six; two
-     columns keep the two cards roughly the same height. */
-  .plan--design .plan__list {
+  .plan__list--two {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: var(--s4);
   }
 
-  /* The way to act, pinned to the card's foot so both line up; the card's
-     gap keeps it clear of the list when the card is at its natural height. */
   .plan__list li {
     position: relative;
     padding-inline-start: 1.5rem;
     font-size: var(--t-body);
   }
 
-  /* A check for what a plan includes: it answers "is this in the price?".
-     --accent-fn, so it clears 3:1 on both cards (--blue-fn on paper, the
-     on-ink blue on the dark card). */
   .plan__list li::before {
     content: '';
     position: absolute;
@@ -363,51 +311,17 @@ const faqs = [
     margin-block-start: auto;
   }
 
-  /* On the dark card the button keeps the light-ground fill. Inside .invert
-     --accent-fn becomes --on-ink-blue, and white on that is 2.9:1; --blue-fn
-     carries white at 5.47:1, and the hover fill at 7.63:1. */
-  .plan--design .plan__cta {
-    --btn-bg: var(--blue-fn);
+  @media (max-width: 39.99rem) {
+    .plan__list--two { grid-template-columns: minmax(0, 1fr); }
   }
 
-  .plan--design .plan__cta:hover,
-  .plan--design .plan__cta:focus-visible {
-    --btn-bg: var(--blue-hover);
-  }
+  /* --- Extras --------------------------------------------------------------------- */
+  .cell--list { align-content: center; }
 
-  /* --- Extras ------------------------------------------------------------- */
+  .cell--lead { gap: 1.25rem; }
 
-  /* A panel on the same raised paper as the care card: what the extras are on
-     the left, the list on the right, each price in the heading weight so it
-     reads as a price and not as a footnote. */
-  .addons {
-    --dc-h: 150px;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-    gap: var(--s3) var(--s5);
-    margin-block-start: var(--s3);
-    padding: clamp(var(--s4), 3vw, var(--s5));
-    background: var(--paper-hi);
-    border: 1px solid var(--rail);
-  }
+  .addons__list { margin: 0; display: grid; }
 
-  .addons__h {
-    font-size: var(--t-h3);
-  }
-
-  .addons__lead {
-    margin-block-start: var(--s2);
-    font-size: var(--t-body);
-    color: var(--fg-muted);
-  }
-
-  .addons__list {
-    margin: 0;
-    display: grid;
-  }
-
-  /* One row per extra, the name left and the price right, separated by
-     space alone. */
   .addon {
     display: flex;
     flex-wrap: wrap;
@@ -415,19 +329,17 @@ const faqs = [
     justify-content: space-between;
     gap: var(--s1) var(--s3);
     padding-block: 0.8rem;
+    border-block-end: 1px solid var(--rail);
   }
 
-  .addon:first-child {
-    padding-block-start: 0;
-  }
+  .addon:first-child { padding-block-start: 0; }
 
   .addon:last-child {
     padding-block-end: 0;
+    border-block-end: 0;
   }
 
-  .addon dt {
-    font-weight: var(--weight-medium);
-  }
+  .addon dt { font-weight: var(--weight-medium); }
 
   .addon__price {
     margin: 0;
@@ -436,19 +348,4 @@ const faqs = [
     white-space: nowrap;
   }
 
-  /* The cards and the extras panel stack where the Services rows collapse
-     (60rem), in the same order; the project's list drops to one column on a
-     phone. These came over from Services with the cards. */
-  @media (max-width: 60rem) {
-    .plans,
-    .addons {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
-
-  @media (max-width: 40rem) {
-    .plan--design .plan__list {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
 </style>

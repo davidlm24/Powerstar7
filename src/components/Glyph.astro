@@ -1,0 +1,289 @@
+---
+/* Pixel glyphs for the dark theme trial (David, 2026-11-25: "more
+   minimalistic", "a more digitalized look", "square (pixels) style").
+
+   Each glyph is a 12 x 12 bitmap, one string per row, in three tones:
+     '#'  solid ink     (--fg)
+     'o'  solid blue    (--accent-fn)
+     ':'  tinted blue   (--accent-fn at 35%), the glyph's dither tone
+     '.'  empty
+   Every lit cell is drawn as a square of 0.84 in a cell of 1, so the gap
+   between squares shows the pixel grid. For an even grid at any zoom, give
+   it a size that is a multiple of 12 (60, 72, 96, 120, 132): each cell is
+   then a whole number of pixels and every square snaps the same way.
+
+   Motion: the pixels light up in a diagonal wave from the top left (each
+   rect carries --d = x + y). It plays once when an ancestor gets .is-play,
+   and again each time its [data-glyph-zone] is hovered or takes keyboard
+   focus. At rest, without JavaScript, and under reduced motion there is no
+   animation at all: the glyph is simply drawn. */
+export type GlyphName = 'web' | 'brand' | 'seo' | 'email' | 'hosting' | 'use' | 'consent' | 'own' | 'more';
+
+interface Props {
+  name: GlyphName;
+  size?: number;
+}
+
+const { name, size = 96 } = Astro.props;
+
+const art: Record<GlyphName, string[]> = {
+  // A browser window: blue bar in the title strip, one tinted block of content.
+  web: [
+    '............',
+    '............',
+    '.##########.',
+    '.#.ooo....#.',
+    '.#........#.',
+    '.#.:::....#.',
+    '.#.:::....#.',
+    '.#........#.',
+    '.#........#.',
+    '.##########.',
+    '............',
+    '............',
+  ],
+  // A tinted round mark beside a solid blue square.
+  brand: [
+    '............',
+    '............',
+    '............',
+    '...##.......',
+    '..#::#......',
+    '.#::::#.....',
+    '.#::::#.ooo.',
+    '..#::#..ooo.',
+    '...##...ooo.',
+    '............',
+    '............',
+    '............',
+  ],
+  // A magnifying glass with a glint on the lens.
+  seo: [
+    '............',
+    '...###......',
+    '..#...#.....',
+    '.#.::..#....',
+    '.#.:...#....',
+    '.#.....#....',
+    '..#...#.....',
+    '...###.o....',
+    '........o...',
+    '.........oo.',
+    '.........oo.',
+    '............',
+  ],
+  // An envelope with a blue flap.
+  email: [
+    '............',
+    '............',
+    '.##########.',
+    '.#o......o#.',
+    '.#.o....o.#.',
+    '.#..o..o..#.',
+    '.#...oo...#.',
+    '.#........#.',
+    '.##########.',
+    '............',
+    '............',
+    '............',
+  ],
+  // Website care: a shield with a blue check.
+  hosting: [
+    '............',
+    '..########..',
+    '..#......#..',
+    '..#......#..',
+    '..#....o.#..',
+    '..#.o.o..#..',
+    '..#..o...#..',
+    '...#....#...',
+    '....#..#....',
+    '.....##.....',
+    '............',
+    '............',
+  ],
+  // A cursor over a small frame; the frame steps back one cell around it.
+  use: [
+    '............',
+    '.########...',
+    '.#......#...',
+    '.#......#...',
+    '.#......#...',
+    '.#....o.#...',
+    '.#....oo....',
+    '.####.ooo...',
+    '......oooo..',
+    '......oo....',
+    '........o...',
+    '............',
+  ],
+  // A circle with a diagonal slash.
+  consent: [
+    '............',
+    '............',
+    '....####....',
+    '...o....#...',
+    '..#.o....#..',
+    '..#..o...#..',
+    '..#...o..#..',
+    '..#....o.#..',
+    '...#....o...',
+    '....####....',
+    '............',
+    '............',
+  ],
+  // A key.
+  own: [
+    '............',
+    '............',
+    '............',
+    '..###.......',
+    '.#...#......',
+    '.#...#ooooo.',
+    '.#...#..o.o.',
+    '..###.....o.',
+    '............',
+    '............',
+    '............',
+    '............',
+  ],
+  // Four small squares, one still to come, and an arrow.
+  more: [
+    '............',
+    '............',
+    '............',
+    '.##.##..o...',
+    '.##.##...o..',
+    '.......oooo.',
+    '.##.::...o..',
+    '.##.::..o...',
+    '............',
+    '............',
+    '............',
+    '............',
+  ],
+};
+
+type Tone = 'ink' | 'accent' | 'tint';
+const TONE: Record<string, Tone | undefined> = { '#': 'ink', o: 'accent', ':': 'tint' };
+const GRID = 12;
+const INSET = 0.08; // (1 - 0.84) / 2, centres the square in its cell
+const SQUARE = 0.84;
+
+const rows = art[name];
+if (!rows || rows.length !== GRID || rows.some((row) => row.length !== GRID)) {
+  throw new Error(`Glyph "${name}": the bitmap must be ${GRID} rows of ${GRID} characters.`);
+}
+
+const pixels: { x: number; y: number; tone: Tone }[] = [];
+rows.forEach((row, y) => {
+  [...row].forEach((ch, x) => {
+    const tone = TONE[ch];
+    if (tone) pixels.push({ x, y, tone });
+    else if (ch !== '.') throw new Error(`Glyph "${name}": unknown character "${ch}" at ${x},${y}.`);
+  });
+});
+---
+
+<svg
+  class={`glyph glyph--${name}`}
+  viewBox={`0 0 ${GRID} ${GRID}`}
+  width={size}
+  height={size}
+  shape-rendering="crispEdges"
+  aria-hidden="true"
+  focusable="false"
+>
+  {pixels.map(({ x, y, tone }) => (
+    <rect
+      class={`glyph__px glyph__px--${tone}`}
+      x={(x + INSET).toFixed(2)}
+      y={(y + INSET).toFixed(2)}
+      width={SQUARE}
+      height={SQUARE}
+      style={`--d: ${x + y}`}
+    />
+  ))}
+</svg>
+
+<style>
+  .glyph {
+    display: block;
+  }
+
+  /* Tones. An ancestor can recolour a glyph with --glyph-ink and
+     --glyph-accent; by default they follow the theme. */
+  .glyph__px {
+    fill: var(--glyph-ink, var(--fg));
+    transform-box: fill-box;
+    transform-origin: center;
+    /* Timing is bound here; only the name is set by the triggers below,
+       so at rest there is no animation. --glyph-delay staggers a whole
+       glyph, --glyph-step is the wave's step from one diagonal to the next. */
+    animation-duration: var(--glyph-dur, 560ms);
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+    animation-delay: calc(var(--glyph-delay, 0ms) + var(--d, 0) * var(--glyph-step, 22ms));
+    animation-fill-mode: backwards;
+  }
+
+  .glyph__px--accent {
+    fill: var(--glyph-accent, var(--accent-fn));
+  }
+
+  /* fill-opacity, not opacity, so the light-up can animate opacity on
+     every tone and still land on 35% here. */
+  .glyph__px--tint {
+    fill: var(--glyph-accent, var(--accent-fn));
+    fill-opacity: 0.35;
+  }
+
+  /* Two identical keyframes: the hover adds the second to the list, so it
+     restarts on every hover while the first (the scroll-in play) is left
+     alone and does not replay when the pointer leaves. */
+  @keyframes glyph-px-in {
+    from { opacity: 0.12; transform: scale(0.6); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes glyph-px-again {
+    from { opacity: 0.12; transform: scale(0.6); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* Armed (html.reveal: motion allowed, IntersectionObserver present):
+       a glyph waits dim until its cell is seen, instead of showing lit and
+       then dropping to 12% when the wave starts. */
+    :global(.reveal [data-glyph-zone]:not(.is-play)) .glyph__px {
+      opacity: 0.12;
+      transform: scale(0.6);
+    }
+
+    :global(.is-play) .glyph__px {
+      animation-name: glyph-px-in;
+    }
+
+    /* Replays: the page adds .is-again on pointer enter / focus and removes
+       it after the wave, so leaving mid-wave never snaps the pixels. */
+    :global(.is-again) .glyph__px {
+      animation-name: glyph-px-in, glyph-px-again;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glyph__px {
+      animation: none !important;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .glyph__px {
+      fill: CanvasText;
+    }
+
+    .glyph__px--accent,
+    .glyph__px--tint {
+      fill: Highlight;
+    }
+  }
+</style>

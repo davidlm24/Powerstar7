@@ -1,14 +1,26 @@
 ---
+/* The home page (the 2026-11 redesign; trial rounds 1-7 on /lab/home-dark,
+   rolled out 2026-11-26). Dark by default with a light theme (Base).
+
+   ONE grid: every section sits on the same four columns between the rails
+   (Sheet + src/styles/grid.css). Cells draw their own top and right edges,
+   so nothing is drawn twice; only the rails run through the gaps between
+   sections. Section titles live inside the grid, in cells of their own.
+   Illustrations are pixel art (Glyph.astro); the hero is a live pixel field
+   (HeroPixels) with drawings on its right. The copy is the short set
+   (home.h1, home.lead, home.svc.*, home.fit.*, home.step.* in ui.ts). */
 import Base from '../layouts/Base.astro';
-import Illo from '../components/Illo.astro';
-import AsciiCallout from '../components/AsciiCallout.astro';
-import Closing from '../components/Closing.astro';
 import Accent from '../components/Accent.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import Glyph, { type GlyphName } from '../components/Glyph.astro';
+import HeroPixels from '../components/HeroPixels.astro';
+import HeroPixelsStill from '../components/HeroPixelsStill.astro';
+import Sheet from '../components/Sheet.astro';
+import Pluses from '../components/Pluses.astro';
+import ClosingPanel from '../components/ClosingPanel.astro';
+import ProjectWindow from '../components/ProjectWindow.astro';
 import { PROJECTS } from '../data/projects';
-import { accentParts } from '../i18n/accent';
 import { useTranslations, route, type Lang } from '../i18n/ui';
-import { rampCss } from '../lib/bayer';
+import { accentParts } from '../i18n/accent';
 
 interface Props {
   lang: Lang;
@@ -17,1080 +29,425 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-/* The rows carry svc.*.short: the first sentence of each service, which the
-   Services page now opens its own, longer explanation with.
+const services: { key: GlyphName; name: string; b: string }[] = [
+  { key: 'web', name: t('svc.web.name'), b: t('home.svc.web') },
+  { key: 'brand', name: t('svc.brand.name'), b: t('home.svc.brand') },
+  { key: 'seo', name: t('svc.seo.name'), b: t('home.svc.seo') },
+  { key: 'email', name: t('svc.email.name'), b: t('home.svc.email') },
+  { key: 'hosting', name: t('svc.hosting.name'), b: t('home.svc.hosting') },
+];
 
-   Written out rather than built with a template literal, because
-   t(`svc.${key}.body`) needs an `as any` cast and that quietly removes the
-   type protection from every key it touches. */
-const services = [
-  { key: 'web', name: t('svc.web.name'), b: t('svc.web.short') },
-  { key: 'brand', name: t('svc.brand.name'), b: t('svc.brand.short') },
-  { key: 'seo', name: t('svc.seo.name'), b: t('svc.seo.short') },
-  { key: 'email', name: t('svc.email.name'), b: t('svc.email.short') },
-  { key: 'hosting', name: t('svc.hosting.name'), b: t('svc.hosting.short') },
-] as const;
+const position: { g: GlyphName; h: string; b: string }[] = [
+  { g: 'use', h: t('home.position.one.h'), b: t('home.fit.one') },
+  { g: 'seo', h: t('home.position.two.h'), b: t('home.fit.two') },
+  { g: 'own', h: t('home.position.three.h'), b: t('home.fit.three') },
+];
 
-/* The headline's accent word (*word* in ui.ts) is also its highlighted word,
-   and it has to be the last one: the headline is drawn as two lines, the
-   lead-in and then the highlight. Anything else is a copy error, so the build
-   stops on it rather than shipping a headline with nothing highlighted. */
-const h1Parts = accentParts(t('home.h1'));
-const [h1Lead, h1Mark, h1End] = h1Parts;
-if (
-  h1Parts.length > 3 ||
-  !h1Lead || h1Lead.accent ||
-  !h1Mark?.accent ||
-  (h1End && h1End.text.trim() !== '.')
-) {
-  throw new Error(`home.h1 must be "lead-in *word*." with the accent last (${lang})`);
-}
+const steps = [
+  { h: t('home.process.s1.h'), b: t('home.step.one') },
+  { h: t('home.process.s2.h'), b: t('home.step.two') },
+  { h: t('home.process.s3.h'), b: t('home.step.three') },
+  { h: t('home.process.s4.h'), b: t('home.step.four') },
+];
 
-/* The band along the foot of the hero. The first copy is the one screen
-   readers get; the other three only keep the loop seamless, because half
-   the track has to be wider than the widest screen for translateX(-50%) to
-   come back round without a gap. */
-const band = t('home.band.items').split(',').map((s) => s.trim());
+const h1 = accentParts(t('home.h1'));
+const band = services.map((s) => s.name);
 const bandRun = [0, 1, 2, 3].flatMap((copy) => band.map((item) => ({ item, copy })));
 
-/* Each step restates a commitment the site already makes elsewhere: a
-   written scope with the price attached (About), design reviewed on real
-   devices (Services), code with no builder underneath and WCAG AA as the
-   floor (Services), and a handover in the client's name with a written guide
-   (the position section). So nothing here claims anything new. The
-   descriptions are drafts, written 2026-09-24; rewrite them freely. */
-const steps = [
-  { h: t('home.process.s1.h'), b: t('home.process.s1.b') },
-  { h: t('home.process.s2.h'), b: t('home.process.s2.b') },
-  { h: t('home.process.s3.h'), b: t('home.process.s3.b') },
-  { h: t('home.process.s4.h'), b: t('home.process.s4.b') },
-];
-
-const position = [
-  { h: t('home.position.one.h'), b: t('home.position.one.b') },
-  { h: t('home.position.two.h'), b: t('home.position.two.b') },
-  { h: t('home.position.three.h'), b: t('home.position.three.b') },
-];
+/* The "+" marks sit only where a line really crosses: the rails always, and
+   an inner column line only where a cell edge meets that section's top or
+   bottom line (the gaps between sections carry the rails only, round 6). */
+const PLUS = [0, 25, 50, 75, 100];
+const RAILS = [0, 100];
+const TOP_SERVICES = [0, 50, 75, 100];
+const TOP_POSITION = [0, 50, 100];
 ---
 
-<Base lang={lang} page="home" title={t('home.title')} dither>
-  {/* The Bayer ramp the highlight wipes in behind (src/lib/bayer.ts). A
-      data URI in a custom property: not a request. Astro's scoped style
-      cannot take a frontmatter value, hence set:html. */}
-  <Fragment set:html={`<style>:root{${rampCss()}}</style>`} />
-  {/* --- Hero ------------------------------------------------------------
-      David's picks (2026-10-14): "Your website, sorted." with the last word
-      highlighted, and a slow band of the kinds of business we make sites for
-      along the foot. The picture beside it (David, 2026-10-20) is the same
-      laptop, phone and plant, now a live print: the browser on the laptop
-      is resized by the pointer, or by an idle cursor, and its page reflows
-      into the phone's below 768px (hero-print.js). */}
-  <section class="hero rails">
-    {/* Both decorative layers live on this one element rather than on the
-        section's own pseudos. That began as a way to keep ::before free for
-        the frame lines; the frame is gone, but the arrangement stays because
-        this element's box is identical to the one the pseudos used, so the
-        wash's percentages — and the measured contrast ceiling on them — hold
-        without being re-derived. */}
-    <div class="hero__fx" aria-hidden="true"></div>
-    {/* The wash as dots: 1px Bayer dither drifting slowly, drawn in WebGL
-        by dither-site.js and kept clear of every line of text. Shown only
-        once it draws (.has-dots); the CSS wash above is what everyone
-        else sees. */}
-    <canvas class="hero__dots" aria-hidden="true"></canvas>
+<Base lang={lang} page="home" title={t('home.title')}>
+  <Sheet>
 
-    <div class="container hero__grid">
-      <div class="hero__copy">
-        <h1 class="hero__h1">
-          <span class="hero__l1">{h1Lead.text.trimEnd()}</span>
-          <span class="hero__l2"><span class="hero__mark accent">{h1Mark.text}</span><b aria-hidden="true">.</b></span>
-        </h1>
-
-        <div class="hero__foot">
-          <p class="lead measure">{t('home.lead')}</p>
+    {/* --- Hero ------------------------------------------------------------ */}
+    <section class="frame frame--hero">
+      <div class="hero on-blue" data-float>
+        <div class="hero__light" aria-hidden="true"></div>
+        <HeroPixels />
+        <div class="hero__copy">
+          <h1 class="hero__h1">
+            {h1.map((p) => (p.accent ? <span class="hero__mark">{p.text}</span> : p.text))}
+          </h1>
+          <p class="hero__lead">{t('home.lead')}</p>
           <div class="hero__actions">
             <a class="btn" href={route('contact', lang)}>{t('home.cta')}</a>
-            {/* The callout belongs to this button, not to the row: when the
-                buttons stack on a narrow phone, it has to stay under "See prices". */}
-            <span class="hero__prices">
-              <a class="btn btn--quiet" href={route('pricing', lang)}>{t('home.cta.secondary')}</a>
-              <AsciiCallout text={t('home.callout')} align="end" />
-            </span>
+            <a class="btn btn--quiet" href={route('pricing', lang)}>{t('home.cta.secondary')}</a>
           </div>
+        </div>
+        {/* Where the drawings go. The motion is paused from the footer's
+            Animation switch (WCAG 2.2.2), not from a button here. */}
+        <div class="hero__px">
+          <HeroPixelsStill />
         </div>
       </div>
 
-      {/* The still is the same print at rest, for the first paint and for no
-          JS; the canvas replaces it once it has printed (.is-live). The stage
-          holds the hidden line figure and takes the pointer. */}
-      <div class="hero__pic" aria-hidden="true" data-wash-clear data-hero-print>
-        {/* One file for every screen: a dot is one CSS pixel at any density,
-            and pixelated scaling keeps it crisp at 2x. */}
-        <img class="hero__still" src="/assets/illo/hero-responsive.png" width="635" height="508" alt="" fetchpriority="high" />
-        <div class="hero__stage"></div>
-        <canvas class="hero__canvas"></canvas>
-        <span class="hero__read"></span>
-      </div>
-    </div>
-
-    <div class="hero__band invert" data-band>
-      <div class="container hero__band-in">
-        <p class="hero__band-label">{t('home.band.label')}</p>
-        <div class="hero__band-run">
-          <ul class="hero__band-track">
+      {/* The five services, moving along a row of the grid. */}
+      <div class="band" data-band role="region" aria-label={t('home.band.label')}>
+        <Pluses at={RAILS} />
+        <p class="band__label">{t('home.band.label')}</p>
+        <div class="band__run">
+          <ul class="band__track">
             {bandRun.map(({ item, copy }) => <li aria-hidden={copy > 0 ? 'true' : undefined}>{item}</li>)}
           </ul>
         </div>
-        {/* WCAG 2.2.2: anything that moves on its own for more than five
-            seconds next to other content needs a way to stop it. The visible
-            [pause] went (David, 2026-10-20); the mechanism stays: hover
-            pauses it, tapping or clicking the stripe toggles it, and this
-            button is the keyboard and screen-reader route, drawn only while
-            it has focus. Shown by the script, so it never appears where it
-            would do nothing. */}
-        <button
-          type="button"
-          class="hero__band-pause"
-          data-pause={t('home.band.pause')}
-          data-play={t('home.band.play')}
-          hidden
-        >{t('home.band.pause')}</button>
+        <Pluses at={RAILS} end />
       </div>
-    </div>
-  </section>
+    </section>
 
-  {/* --- What we do -------------------------------------------------------
-      Back to one service to a row (David, 2026-10-20), full width, and
-      SHORT: "narrower" meant vertically. A row is as tall as its print and a
-      little padding, not the copy plus a big picture. Each row goes to its
-      own explanation on the Services page. The print rests at full strength
-      on its soft wash and is relit by the pointer, like the hero's. */}
-  <section class="services rails">
-    <div class="container">
-      <div class="services__head">
-        <h2><Accent text={t('home.services.h2')} /></h2>
-      </div>
-
-      <ul class="lanes">
-        {
-          services.map((s) => (
-            <li>
-              <a class="lane" data-illo-zone href={`${route('services', lang)}#${s.key}`}>
-                <div class="lane__text">
-                  <h3 class="lane__name">{s.name} <span class="lane__go" aria-hidden="true">&rarr;</span></h3>
-                  <p class="lane__b">{s.b}</p>
-                </div>
-                <div class="lane__art">
-                  <div class="icon-wash" aria-hidden="true">
-                    <Illo name={s.key} variant="icon" />
-                  </div>
-                </div>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-
-      <p class="lanes__more">
-        <a href={route('services', lang)}>{t('home.services.link')} &rarr;</a>
-      </p>
-    </div>
-  </section>
-
-  {/* --- Position --------------------------------------------------------- */}
-  <section class="position rails">
-    <div class="container">
-      <div class="position__head">
-        <div class="position__intro">
-          <h2 class="position__h2"><Accent text={t('home.position.h2')} /></h2>
-          <p class="lead measure">{t('home.position.body')}</p>
+    {/* --- Services -------------------------------------------------------- */}
+    <section class="frame">
+      <Pluses at={TOP_SERVICES} />
+      <div class="grid">
+        <div class="cell cell--head span-2">
+          <h2 class="head__h"><Accent text={t('home.services.h2')} /></h2>
         </div>
-        <Illo name="fit" variant="aside" />
+        {services.map((s) => (
+          <a class="cell cell--link" href={`${route('services', lang)}#${s.key}`} data-glyph-zone>
+            <span class="cell__art"><Glyph name={s.key} size={96} /></span>
+            <h3 class="cell__h">{s.name} <span class="cell__go" aria-hidden="true">&rarr;</span></h3>
+            <p class="cell__b">{s.b}</p>
+          </a>
+        ))}
+        <a class="cell cell--link cell--more" href={route('services', lang)} data-glyph-zone>
+          <span class="cell__art"><Glyph name="more" size={96} /></span>
+          <h3 class="cell__h cell__h--big">{t('home.services.link')} <span class="cell__go" aria-hidden="true">&rarr;</span></h3>
+        </a>
       </div>
+      <Pluses at={PLUS} narrow={[0, 50, 100]} end />
+    </section>
 
-      <div class="position__grid">
-        {
-          position.map((p, i) => (
-            <article class="point">
-              <h3 class="point__h">{p.h}</h3>
-              <p class="point__b">{p.b}</p>
-            </article>
-          ))
-        }
+    {/* --- Position --------------------------------------------------------- */}
+    <section class="frame">
+      <Pluses at={TOP_POSITION} />
+      <div class="grid">
+        <div class="cell cell--head span-2">
+          <h2 class="head__h"><Accent text={t('home.position.h2')} /></h2>
+        </div>
+        <div class="cell cell--lead span-2">
+          <p class="head__lead">{t('home.fit.lead')}</p>
+        </div>
+        {position.map((p) => (
+          <article class="cell" data-glyph-zone>
+            <span class="cell__art"><Glyph name={p.g} size={48} /></span>
+            <h3 class="cell__h">{p.h}</h3>
+            <p class="cell__b">{p.b}</p>
+          </article>
+        ))}
+        <div class="cell cell--art" aria-hidden="true" data-glyph-zone>
+          <Glyph name="web" size={144} />
+        </div>
       </div>
-    </div>
-  </section>
+      <Pluses at={PLUS} narrow={[0, 50, 100]} end />
+    </section>
 
-  {/* --- Recent work -----------------------------------------------------
-      The three client sites the team built (as Powerstar7), back on the home
-      page as the old site had them (David, 2026-10-19). On paper, between the
-      blue-wash band and the dark process band. */}
-  <section class="work rails">
-    <div class="container">
-      <div class="work__head">
-        <h2><Accent text={t('home.work.h2')} /></h2>
-        <a class="work__all" href={route('work', lang)}>{t('home.work.link')} &rarr;</a>
+    {/* --- Recent work ------------------------------------------------------ */}
+    <section class="frame">
+      <Pluses at={PLUS} />
+      <div class="grid grid--work">
+        <div class="cell cell--head cell--work-head">
+          <h2 class="head__h"><Accent text={t('home.work.h2')} /></h2>
+          <a class="head__more" href={route('work', lang)}>{t('home.work.link')} &rarr;</a>
+        </div>
+        {PROJECTS.map((p) => <div class="cell cell--flush"><ProjectWindow project={p} lang={lang} /></div>)}
       </div>
-      <div class="work__grid">
-        {PROJECTS.map((p) => <ProjectCard project={p} lang={lang} />)}
-      </div>
-    </div>
-  </section>
+      <Pluses at={PLUS} end />
+    </section>
 
-  {/* --- Process ----------------------------------------------------------
-      A timeline rather than a fourth grid of numbered cards. The site already
-      has three of those (the service cards, the position points, About's
-      "how"), and a process is a SEQUENCE — so it gets one continuous rule
-      with a node where each step starts, instead of four separate boxes. */}
-  <section class="process rails invert">
-    <div class="container">
-      <div class="process__head">
-        <h2><Accent text={t('home.process.h2')} /></h2>
-      </div>
-
-      <ol class="steps">
-        {
-          steps.map((s, i) => (
-            <li class="step">
-              <span class="step__n print-in">{String(i + 1).padStart(2, '0')}</span>
-              <h3 class="step__h">{s.h}</h3>
-              <p class="step__b">{s.b}</p>
+    {/* --- Process: the one place numbers belong (it is a sequence) -------- */}
+    <section class="frame">
+      <Pluses at={RAILS} />
+      <div class="grid">
+        <div class="cell cell--head span-4">
+          <h2 class="head__h"><Accent text={t('home.process.h2')} /></h2>
+        </div>
+        <ol class="row">
+          {steps.map((s, i) => (
+            <li class="cell">
+              <span class="step__n">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="cell__h">{s.h}</h3>
+              <p class="cell__b">{s.b}</p>
             </li>
-          ))
-        }
-      </ol>
-    </div>
-  </section>
+          ))}
+        </ol>
+      </div>
+      <Pluses at={PLUS} narrow={[0, 50, 100]} end />
+    </section>
 
-  <Closing lang={lang} />
-  {/* The hero print: the kernel and the print first, then the figure, which
-      mounts itself. Deferred classic scripts and module scripts run in
-      document order, after the parse. */}
-  <script src="/assets/js/hairline/kernel.js" defer is:inline></script>
-  <script src="/assets/js/hero-print.js" defer is:inline></script>
-  <script type="module" src="/assets/js/hairline/responsive.js" is:inline></script>
+    <ClosingPanel lang={lang} lead={t('closing.short')} />
+  </Sheet>
+
+  <script is:inline>
+    (function () {
+      var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reduce || !('IntersectionObserver' in window)) return;
+
+      // Each glyph's pixels light up once, when its cell first comes into view.
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('is-play');
+          io.unobserve(e.target);
+        });
+      }, { threshold: 0.4 });
+      document.querySelectorAll('[data-glyph-zone]').forEach(function (el) {
+        io.observe(el);
+        // Replay on hover or focus; the class stays until the wave has run
+        // (560ms + 22 diagonals x 22ms), so leaving early never cuts it off.
+        var t = 0;
+        var again = function (e) {
+          if (e.type === 'pointerenter' && e.pointerType !== 'mouse') return;
+          if (el.classList.contains('is-again')) return;
+          el.classList.add('is-again');
+          clearTimeout(t);
+          t = setTimeout(function () { el.classList.remove('is-again'); }, 1100);
+        };
+        el.addEventListener('pointerenter', again);
+        el.addEventListener('focusin', again);
+      });
+
+      // The two blue panels drift a few pixels against the scroll.
+      var floats = document.querySelectorAll('[data-float]');
+      var ticking = false;
+      var drift = function () {
+        ticking = false;
+        var h = innerHeight;
+        floats.forEach(function (el) {
+          var r = el.getBoundingClientRect();
+          var d = ((r.top + r.height / 2) - h / 2) / h;
+          el.style.setProperty('--drift', Math.max(-1, Math.min(1, d)) * -5 + 'px');
+        });
+      };
+      addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(drift); } }, { passive: true });
+      drift();
+    })();
+  </script>
 </Base>
 
-<script>
-  /* The band's pause. Hover pauses it too (CSS); this is for keyboard and
-     touch: the button (shown only on focus) and a tap on the stripe itself.
-     Nobody who asked for less motion sees the band move at all, so the
-     button stays hidden for them. */
-  const band = document.querySelector<HTMLElement>('[data-band]');
-  const pause = band?.querySelector<HTMLButtonElement>('.hero__band-pause');
-  if (band && pause && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    pause.hidden = false;
-    const toggle = () => {
-      const paused = band.toggleAttribute('data-paused');
-      pause.textContent = (paused ? pause.dataset.play : pause.dataset.pause) ?? '';
-      pause.setAttribute('aria-pressed', String(paused));
-    };
-    pause.addEventListener('click', toggle);
-    band.addEventListener('click', (e) => {
-      if (e.target !== pause) toggle();
-    });
-  }
-</script>
-
 <style>
-  /* --- Hero -------------------------------------------------------------- */
+  /* The shared grid lives in src/styles/grid.css (Sheet.astro); what is
+     here is the home page's own. */
+
+  /* The project card pads itself; it takes the cells' padding. */
+  .cell--flush :global(.pw) { --pw-pad: var(--cell-pad); }
+
+  .cell--more { align-content: end; }
+
+  .step__n {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2.1rem;
+    block-size: 2.1rem;
+    margin-block-end: 0.75rem;
+    border: 1px solid var(--accent-fn);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    color: var(--accent-fn);
+  }
+
+  .grid--work .cell--work-head {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 60rem) {
+    .grid--work .cell--work-head { grid-column: 1 / -1; min-block-size: 8rem; flex-direction: row; align-items: end; }
+    /* An odd last project spans the row, so no hole shows. */
+    .grid--work > :last-child { grid-column: 1 / -1; }
+  }
+
+  @media (max-width: 39.99rem) {
+    .grid--work .cell--work-head { flex-direction: column; align-items: start; }
+  }
+
+  /* --- Hero ------------------------------------------------------------------ */
+  .frame--hero { padding-block: var(--s2) 0; }
 
   .hero {
     position: relative;
     isolation: isolate;
-    /* Pulled up under the transparent header, so the wash runs behind it.
-       The bottom padding is room for the band's lean: the stripe tilts 1.3
-       degrees about its middle, so its lower corner drops about 1.3vw below
-       where it would sit level. overflow: clip cuts at the padding box, so
-       the drop has to be inside it (a margin on the band collapsed out of
-       the hero and the corner was clipped flat, 2026-10-20). */
-    margin-block-start: calc(-1 * var(--header-h));
-    padding-block: calc(var(--s6) + var(--header-h)) calc(var(--s2) + 1.3vw);
-    /* The wash is inset negatively so it bleeds past the section, and the
-       drift pushes it further still — which put 244px of horizontal scroll
-       on the page. `clip` on the x axis only, so the wash can still bleed
-       UP behind the frosted header while never widening the document.
-       (clip, not hidden: hidden would create a scroll container.) */
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    min-block-size: clamp(30rem, 44vw, 38rem);
+    border-radius: var(--radius-float);
     overflow: clip;
+    transform: translateY(var(--drift, 0px));
   }
 
-  @supports not (overflow: clip) {
-    .hero {
-      overflow: hidden;
-    }
-  }
-
-  /* --- The wash ----------------------------------------------------------
-     Two soft fields of colour behind the type, blue and purple, drifting
-     slowly against each other. This is the site's second authored moment
-     (the button sheen is the first) and it is confined to this one section.
-
-     No blur filter: the radial stops are already soft, and a 60px blur on a
-     box this size is a large, expensive layer for an effect the gradient
-     gives for free.
-
-     The 30% stops are a measured ceiling, not a look. The lead paragraph is
-     --ink-muted, the weakest text in the hero, and it has to clear 4.5:1
-     against the STRONGEST point of the wash — because the wash drifts and
-     the layout reflows, so "the text probably isn't under the blob" is not
-     something to rely on. At 30% the worst case is 5.1:1 (purple) and
-     5.0:1 (blue). Purple at 42%, where this started, measured 4.34:1.
-
-     --hx/--hy come from the pointer (see site.js) and are clamped to -1..1,
-     so the centres can move at most 7% and the measured worst case above
-     still bounds what any text can land on. */
-  .hero__fx {
-    position: absolute;
-    z-index: -2;
-    inset: 0;
-    pointer-events: none;
-  }
-
-  .hero__fx::before {
-    content: '';
-    position: absolute;
-    inset: -35% -12% -25%;
-    background:
-      radial-gradient(
-        34% 38% at calc(70% + var(--hx, 0) * 7%) calc(14% + var(--hy, 0) * 6%),
-        color-mix(in srgb, var(--purple) 26%, transparent),
-        transparent 68%
-      ),
-      radial-gradient(
-        40% 44% at calc(90% - var(--hx, 0) * 5%) calc(52% - var(--hy, 0) * 4%),
-        color-mix(in srgb, var(--blue) 26%, transparent),
-        transparent 70%
-      );
-    /* Rising from the right and dissipating before it reaches the copy
-       (David, 2026-10-19); the WebGL dots fade the same way (dither.js),
-       and both stay cleared off the text itself. */
-    -webkit-mask-image: linear-gradient(100deg, transparent 30%, #000 58%);
-    mask-image: linear-gradient(100deg, transparent 30%, #000 58%);
-    animation: hero-drift 26s var(--ease) infinite alternate;
-    pointer-events: none;
-  }
-
-  /* Grain, over the wash and under the type. Without it the gradient reads as
-     a flat CSS blob; with it, it reads as a surface. Very low opacity — it is
-     texture, not a filter. */
-  .hero__fx::after {
-    content: '';
+  /* Blue to almost clear: solid behind the copy (columns 1-2), fading out
+     across columns 3-4 so the page and its grid lines show through behind
+     the pixels. White on the blue is 6.1:1 at the left edge and 5.5:1 at
+     45 %, where the lead ends. */
+  .hero__light {
     position: absolute;
     inset: 0;
-    background-image: var(--grain);
-    opacity: 0.16;
-  }
-
-  /* The dots. Under the rails like the CSS wash; inset 0, so nothing of
-     it ever leaves the hero's clipped box. */
-  .hero__dots {
-    position: absolute;
-    z-index: -2;
-    inset: 0;
-    display: none;
-    pointer-events: none;
-  }
-
-  .hero.has-dots .hero__dots { display: block; }
-  .hero.has-dots .hero__fx { display: none; }
-
-  /* The wash ends behind the stripe, on the line through its middle, so no
-     dots show in the strip of padding under it and nothing ends in a
-     straight edge. The padding is s2 + 1.3vw; 2.1rem is about half the
-     stripe's own height. Negative insets leave the other three sides
-     unclipped, so the fx layer still bleeds up behind the header. */
-  .hero__fx,
-  .hero__dots {
-    clip-path: inset(-100vh -100vw calc(var(--s2) + 1.3vw + 2.1rem) -100vw);
-  }
-
-  /* Transform only, so the drift runs on the compositor and never touches
-     layout. prefers-reduced-motion is handled globally: the blanket rule
-     collapses the duration, which parks the wash at its start position. */
-  @keyframes hero-drift {
-    from { transform: translate3d(-2%, -1%, 0) scale(1); }
-    to { transform: translate3d(3%, 2%, 0) scale(1.09); }
-  }
-
-  /* Copy on the left, the picture on the right; one column below 60rem,
-     the picture under the buttons. */
-  .hero__grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-    align-items: center;
-    gap: var(--s6) var(--s5);
-    /* Tighter than a section, so the band still lands in the first screen
-       of a 900px-tall laptop. */
-    padding-block-end: var(--s6);
-  }
-
-  /* Smaller than --t-hero, which was sized for a headline with the whole
-     width to itself. Two lines by construction: the lead-in, then the
-     highlighted word. */
-  .hero__h1 {
-    font-size: clamp(2.5rem, 6.4vw, 6rem);
-  }
-
-  .hero__l1,
-  .hero__l2 {
-    display: block;
-  }
-
-  /* The highlighted word, webhero's device and David's reference, set in the
-     serif italic like every accent word. The block sits behind the type,
-     starting a hair left of it so the word's first letter still lines up with
-     the line above, and a little wider on the right for the italic's
-     overhang. --paper on --blue-fn is 4.87:1, AA even at body size. */
-  .hero__mark {
-    position: relative;
-    z-index: 0;
-    display: inline-block;
-    color: var(--paper);
-    padding-inline: 0.08em 0.1em;
-    margin-inline-start: -0.08em;
-  }
-
-  .hero__mark::before {
-    content: '';
-    position: absolute;
     z-index: -1;
-    inset: 0.08em 0 -0.02em;
-    background: var(--accent-fn);
-    transform-origin: left center;
+    /* Blue to a light blue, opaque (David, round 5). White on it: 6.1:1 at
+       the left edge, 5.5:1 at 45 % and about 5.1:1 at 50 %, where the lead
+       ends; the light end (#5a9bff) is behind the pixels only. */
+    background:
+      radial-gradient(45% 70% at 8% 0%, rgb(255 255 255 / 0.12), transparent 70%),
+      linear-gradient(90deg, #0b5bd3 0%, var(--blue-fn) 45%, #5a9bff 100%);
   }
 
-  /* The accent lands on the full stop too, the same blue dot the wordmark
-     ends on. Decorative and aria-hidden. */
-  .hero__h1 b {
-    color: var(--accent);
-    font-weight: inherit;
+  .hero__copy {
+    position: relative;
+    z-index: 1;
+    grid-column: 1 / span 2;
+    align-self: center;
+    padding: clamp(3rem, 6vw, 5.5rem) clamp(1.75rem, 5vw, 5rem);
   }
 
-  .hero__foot {
-    /* The query container for the "See prices" callout, below. */
-    container-type: inline-size;
-    display: grid;
-    justify-items: start;
-    gap: var(--s5);
-    margin-block-start: var(--s5);
-    /* Room for the callout, which hangs out of the flow under its button. */
-    padding-block-end: var(--s4);
+  .hero__h1 {
+    font-size: clamp(2.75rem, 6.4vw, 5.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    font-weight: 500;
+    color: #fff;
+    text-wrap: balance;
+  }
+
+  .hero__mark { color: #cfe0ff; }
+
+  /* The hero is above the fold: it never waits for the scroll entrance. */
+  :global(.reveal) .hero__h1 {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .hero__lead {
+    margin-block-start: 1.5rem;
+    max-inline-size: 30ch;
+    font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+    line-height: 1.45;
+    color: var(--fg-muted);
   }
 
   .hero__actions {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
-    gap: var(--s2);
+    gap: 0.75rem;
+    margin-block-start: 2rem;
   }
 
-  /* The callout belongs to the "See prices" button.
-
-     Stacked (a narrow phone): it wraps under the button, as wide as it, so
-     the caret ends at the button's right edge. contain: inline-size keeps its
-     text from widening the button.
-
-     Side by side (the foot is at least 21rem wide, which both languages'
-     buttons fit in side by side): it runs on one line, out of the flow,
-     right-aligned to the button and extending left under the first one. */
-  .hero__prices {
-    position: relative;
-    display: inline-flex;
-    flex-direction: column;
-    gap: var(--s2);
-  }
-
-  .hero__prices :global(.callout--end) {
-    flex: none;
-  }
-
-  @container (min-width: 21rem) {
-    .hero__prices :global(.callout--end) {
-      position: absolute;
-      inset-block-start: calc(100% + var(--s2));
-      inset-inline-end: 0;
-      contain: none;
-      white-space: nowrap;
-    }
-  }
-
-  /* --- The picture -----------------------------------------------------
-     The live print (hero-print.js). The drawing fills about three quarters
-     of the figure's 5:4 frame, so the frame runs past its column by a
-     little (into the gap) to give the laptop the old desk's presence.
-     The still and the canvas are the same print; the canvas sizes itself
-     to whole device pixels from the stage, which holds the hidden line
-     figure and takes the pointer. */
-  .hero__pic {
-    position: relative;
-    justify-self: center;
-    inline-size: min(100% + var(--s5), 640px);
-    margin-inline-start: calc(-1 * var(--s5));
-  }
-
-  .hero__still {
-    display: block;
-    inline-size: 100%;
-    block-size: auto;
-    image-rendering: pixelated;
-  }
-
-  .hero__stage {
-    position: absolute;
-    inset: 0;
-  }
-
-  .hero__stage :global(svg) {
-    position: absolute;
-    inset: 0;
-    inline-size: 100%;
-    block-size: 100%;
-    opacity: 0;
-  }
-
-  .hero__canvas {
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-start: 0;
-    pointer-events: none;
-    image-rendering: pixelated;
-  }
-
-  .hero__pic.is-live .hero__still { visibility: hidden; }
-
-  /* The width the pointer has set, while it is set: the figure's read-out,
-     just above the laptop lid's top right corner (the camera never moves). */
-  .hero__read {
-    position: absolute;
-    inset-block-start: 9%;
-    inset-inline-start: 66%;
-    font: 500 var(--t-micro) / 1 var(--font-mono);
-    font-variant-numeric: tabular-nums;
-    color: var(--ink-muted);
-    pointer-events: none;
-  }
-
-  /* --- The landing -------------------------------------------------------
-     Only for people who have not asked for less motion; everyone else, and
-     anyone without CSS animation, gets the finished state, which is the
-     state every element is written in. The highlight fills; the picture
-     moves on its own (hero-print.js). */
-  @media (prefers-reduced-motion: no-preference) {
-    .hero__mark::before {
-      animation: hero-fill 450ms var(--ease) 1.35s both;
-    }
-
-    .hero__mark {
-      animation: hero-ink 120ms ease-out 1.45s both;
-    }
-  }
-
-  @keyframes hero-fill {
-    from { transform: scaleX(0); }
-  }
-
-  @keyframes hero-ink {
-    from { color: var(--fg); }
-  }
-
-  /* --- The landing, in dots (html.dither: dither-site.js is running) ------
-     The highlight wipes in behind a dithered edge (the Bayer ramp mask)
-     instead of scaling, keyed on .is-run, which the script adds once it is
-     ready. If html.dither is withdrawn (the 2.5s fallback) the rules above
-     take over with their delays long gone: everything sits in its finished
-     state. */
-  html.dither .hero__mark,
-  html.dither .hero__mark::before { animation: none; }
-
-  html.dither .hero__mark { color: var(--fg); }
-  html.dither .hero__mark::before {
-    visibility: hidden;
-    mask-image: var(--dz-ramp);
-    mask-repeat: repeat-y;
-    mask-size: calc(var(--dz-ramp-w) * 1px) 4px;
-    mask-position: right calc(var(--dz-ramp-off) * -1px) top 0;
-  }
-
-  html.dither .hero.is-run .hero__mark { animation: hero-ink 1ms linear 1.6s both; }
-  html.dither .hero.is-run .hero__mark::before {
-    visibility: visible;
-    animation: hero-wipe 560ms linear 1.35s both;
-  }
-
-  @keyframes hero-wipe {
-    from { mask-position: left calc(var(--dz-ramp-off) * -1px) top 0; }
-  }
-
-  /* --- The band ----------------------------------------------------------
-     The kinds of business we make sites for, moving slowly along a black
-     stripe set a little off the horizontal (David, 2026-10-20): the one
-     continuous motion, in the place webhero runs its client logos. About
-     50px a second. The stripe is .invert, so every role flips by itself
-     (on-ink 15.6:1 on the stripe). The black is a ::before layer 6% wider
-     than the page each side, so it runs past both edges, while the band
-     itself is the page's own width: the label and the run sit on the same
-     content edge as the headline at every width, where a 112% band put the
-     label off-screen below about 1300px. It leans 1.3 degrees; the hero's
-     bottom padding holds the lowered corner. Hover pauses it, tapping it
-     toggles it; with less motion asked for it never starts. */
-  .hero__band {
+  /* The stage: where the drawings sit. The field itself (HeroPixels)
+     covers the whole hero, under the copy. */
+  .hero__px {
     position: relative;
     z-index: 1;
-    margin-block: var(--s2) 0;
-    background: none;
-    transform: rotate(-1.3deg);
-    font-family: var(--font-mono);
-    font-size: var(--t-micro);
-    letter-spacing: var(--tr-mono);
-    color: var(--fg-muted);
-    cursor: pointer;
+    display: grid;
+    place-items: center;
+    grid-column: 3 / span 2;
+    align-self: center;
+    padding: clamp(2rem, 4vw, 3.5rem) clamp(1.75rem, 4vw, 4rem);
+    min-inline-size: 0;
   }
 
-  .hero__band::before {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    inset-inline: -6%;
-    z-index: -1;
-    background: var(--bg);
+  /* White pixels on the blue, in both themes. */
+  .hero { --px-ink: #ffffff; }
+
+  @media (max-width: 60rem) {
+    .hero { grid-template-columns: minmax(0, 1fr); min-block-size: 0; }
+    .hero__copy, .hero__px { grid-column: 1; }
+    .hero__px { padding-block-start: 0; max-inline-size: 34rem; }
+    .hero__light {
+      background:
+        radial-gradient(70% 40% at 8% 0%, rgb(255 255 255 / 0.1), transparent 70%),
+        linear-gradient(180deg, #0b5bd3 0%, var(--blue-fn) 52%, #5a9bff 100%);
+    }
   }
 
-  .hero__band-in {
-    position: relative;
+  @media (prefers-reduced-motion: reduce) {
+    .hero { transform: none; }
+  }
+
+  /* --- The services strip, a row of the grid --------------------------------- */
+  .band {
     display: flex;
     align-items: center;
-    gap: var(--s3);
+    gap: 1.25rem;
+    margin-block-start: var(--s2);
+    position: relative;
+    padding: 1rem var(--cell-pad);
+    border-block: 1px solid var(--rail);
+    border-inline: 1px solid var(--rail);
+    background: var(--bg);
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
   }
 
-  .hero__band-label {
-    flex: none;
-    margin: 0;
-    padding-block: var(--s3);
-    color: var(--fg);
-  }
+  .band__label { flex: none; color: var(--accent-fn); }
 
-  .hero__band-run {
+  .band__run {
     flex: 1 1 0;
     min-inline-size: 0;
     overflow: hidden;
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
-    mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
   }
 
-  .hero__band-track {
+  .band__track {
     display: flex;
     inline-size: max-content;
     list-style: none;
     margin: 0;
     padding: 0;
-    animation: hero-band 96s linear infinite;
+    animation: band 60s linear infinite;
   }
 
-  .hero__band-track li {
+  .band__track li {
     display: flex;
-    gap: 2.5rem;
-    padding-inline-end: 2.5rem;
+    align-items: center;
     white-space: nowrap;
-  }
-
-  .hero__band-track li::after {
-    content: '·';
-    color: var(--accent-fn);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .hero__band:hover .hero__band-track {
-      animation-play-state: paused;
-    }
-  }
-
-  .hero__band[data-paused] .hero__band-track {
-    animation-play-state: paused;
-  }
-
-  @keyframes hero-band {
-    to { transform: translateX(-50%); }
-  }
-
-  /* Drawn only while it has focus, so it never costs the stripe a visible
-     control (David) and still answers WCAG 2.2.2 for keyboard users. */
-  .hero__band-pause {
-    position: absolute;
-    inset-inline-end: var(--gutter);
-    inset-block-start: 50%;
-    translate: 0 -50%;
-    inline-size: 1px;
-    block-size: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    padding: 0;
-    border: 0;
-    background: var(--bg);
-    font: inherit;
-    letter-spacing: inherit;
     color: var(--fg);
-    cursor: pointer;
   }
 
-  .hero__band-pause:focus-visible {
-    inline-size: auto;
-    block-size: auto;
-    overflow: visible;
-    clip-path: none;
-    padding: 0.35rem 0.7rem;
+  .band__track li::after {
+    content: '';
+    inline-size: 5px;
+    block-size: 5px;
+    margin-inline: 2rem;
+    background: var(--accent-fn);
   }
 
-  .hero__band-pause::before { content: '['; color: var(--accent-fn); }
-  .hero__band-pause::after { content: ']'; color: var(--accent-fn); }
+  .band :global(.pluses) { inset-block-start: -1px; }
+
+  /* Paused on hover. */
+  .band:hover .band__track { animation-play-state: paused; }
+
+  .band :global(.pluses--end) { inset-block-start: auto; }
+
+  @keyframes band { to { transform: translateX(-50%); } }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero__band-track {
-      animation: none;
-    }
-
-    .hero__band {
-      cursor: auto;
-    }
+    .band__track { animation: none; flex-wrap: wrap; inline-size: auto; row-gap: 0.5rem; }
+    .band__track li[aria-hidden] { display: none; }
+    .band__run { -webkit-mask-image: none; mask-image: none; }
   }
 
-  /* --- Narrower ----------------------------------------------------------
-     One column: the picture goes under the buttons, a little smaller. */
-  @media (max-width: 59.99rem) {
-    .hero__grid {
-      grid-template-columns: minmax(0, 1fr);
-    }
+  /* Without JavaScript, and with the footer's Animation switch off, the
+     strip stands still as a wrapped list of all five services (frozen
+     mid-run it hid four of them on a phone: review A4). */
+  :global(.no-js) .band__track,
+  :global(html.motion-off) .band__track { animation: none; flex-wrap: wrap; inline-size: auto; row-gap: 0.5rem; }
+  :global(.no-js) .band__track li[aria-hidden],
+  :global(html.motion-off) .band__track li[aria-hidden] { display: none; }
+  :global(.no-js) .band__run,
+  :global(html.motion-off) .band__run { -webkit-mask-image: none; mask-image: none; }
 
-    .hero__h1 {
-      font-size: clamp(2.5rem, 10vw, 5.5rem);
-    }
-
-    .hero__pic {
-      inline-size: min(100%, 26rem);
-    }
-  }
-
-  /* On a phone the label and the button would leave the run one word wide,
-     so the run takes a row of its own under them. */
   @media (max-width: 47.99rem) {
-    .hero__band-in {
-      flex-wrap: wrap;
-      justify-content: space-between;
-      row-gap: 0;
-    }
-
-    .hero__band-label {
-      padding-block-end: 0;
-    }
-
-    .hero__band-run {
-      order: 3;
-      flex-basis: 100%;
-      padding-block: var(--s2) var(--s3);
-    }
-
-    .hero__band {
-      transform: rotate(-1deg);
-    }
+    .band { flex-wrap: wrap; row-gap: 0.75rem; }
+    .band__run { order: 3; flex-basis: 100%; }
   }
 
-  /* --- Services ---------------------------------------------------------- */
-
-  /* The colour rhythm (David, 2026-10-19, option C, after his partner found
-     the page empty next to the old Powerstar7 site, which changed ground 17
-     times): paper, then the blue-wash band, then the dark process band, then
-     the blue closing band. Each band carries --section-y top and bottom; the
-     paper services section gets a bottom pad too, because a band follows it. */
-  .services,
-  .position,
-  .work,
-  .process {
-    padding-block: var(--section-y);
-  }
-
-  .work__head {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: var(--s3);
-    margin-block-end: var(--s5);
-  }
-
-  .work__all {
-    font-size: var(--t-small);
-  }
-
-  .work__grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--s5) var(--s4);
-  }
-
-  @media (max-width: 59.99rem) {
-    .work__grid {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
-
-  .position {
-    background: var(--blue-wash);
-  }
-
-  .services__head {
-    margin-block-end: var(--s5);
-  }
-
-  /* --- What we do: lanes --------------------------------------------------
-     One service to a row, the whole container wide (David, 2026-10-20:
-     "return to the vertical listing, but narrower" - vertically; the width
-     stays). The row is as tall as the 224px print (172px) plus 1rem above
-     and below, about 204px, where the first lanes were 285px. No rules
-     between rows (2026-10-16 audit); the padding separates. */
-  .lanes {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  /* Two tracks: the copy and the art. */
-  .lane {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 14rem;
-    grid-template-areas: 'text art';
-    align-items: baseline;
-    column-gap: var(--s4);
-    padding-block: var(--s2);
-    color: var(--fg);
-    text-decoration: none;
-  }
-
-  .lane__text {
-    grid-area: text;
-    display: grid;
-    gap: var(--s2);
-    transition: transform var(--dur) var(--ease);
-  }
-
-  /* The Services page's own name size, so a service is one size wherever it
-     is named. */
-  .lane__name {
-    font-size: clamp(1.875rem, 4vw, 3rem);
-    font-weight: var(--weight-heading);
-    line-height: 1.04;
-    transition: color var(--dur) var(--ease);
-  }
-
-  .lane__b {
-    max-width: var(--measure);
-    font-size: var(--t-body);
-    color: var(--fg-muted);
-  }
-
-  /* The print is the icon's own 224px render (the Services page's), one
-     image pixel to one screen pixel, never a scaled dither. */
-  .lane__art {
-    grid-area: art;
-    align-self: center;
-    --illo-w: 224px;
-  }
-
-  /* Inline after the name. */
-  .lane__go {
-    display: inline-block;
-    font-size: var(--t-h3);
-    line-height: 1;
-    /* --accent-fn, not --accent: a graphic carrying meaning at small size,
-       and the display blue is 3.97:1. */
-    color: var(--accent-fn);
-    transition: transform var(--dur) var(--ease);
-  }
-
-  /* The copy steps in as the art relights — the whole column, name and body
-     together, so the two never shear apart mid-move. */
-  .lane:hover .lane__text,
-  .lane:focus-visible .lane__text {
-    transform: translateX(0.5rem);
-  }
-
-  .lane:hover .lane__name,
-  .lane:focus-visible .lane__name {
-    color: var(--accent-fn);
-  }
-
-  .lane:hover .lane__go,
-  .lane:focus-visible .lane__go {
-    transform: translateX(0.35rem);
-  }
-
-  .lanes__more {
-    margin-block-start: var(--s4);
-    font-size: var(--t-small);
-  }
-
-  /* On a phone there is no room for the print beside the copy: the row
-     stacks and the art is dropped rather than squeezed. It is decorative;
-     the row says everything without it. */
-  @media (max-width: 40rem) {
-    .lane {
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-areas: 'text';
-      row-gap: var(--s2);
-    }
-
-    .lane__art {
-      display: none;
-    }
-  }
-
-  /* --- Process ----------------------------------------------------------- */
-
-  .process__head {
-    margin-block-end: var(--s5);
-  }
-
-  /* Four steps in a row, in an <ol>: the order is the content here, so these
-     are the only numbers left on the page, in the text face and the
-     functional blue. No rule or node any more (2026-10-16 audit). */
-  .steps {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    column-gap: var(--s4);
-  }
-
-  .step__n {
-    display: block;
-    font-size: var(--t-small);
-    font-weight: var(--weight-heading);
-    color: var(--accent-fn);
-    font-variant-numeric: tabular-nums;
-    /* A process is an ORDER. The steps rise together, 70ms apart, which says
-       "four things"; the numerals print in one after another, twice as far
-       apart, after each step has landed, which says "in this order"
-       (global.css, the print coming up). */
-    --print-dur: 320ms;
-    --print-delay: calc(var(--reveal-delay, 0ms) * 2 + 100ms);
-  }
-
-  .step__h {
-    margin-block: var(--s2) var(--s1);
-    font-size: var(--t-h3);
-    line-height: 1.15;
-  }
-
-  .step__b {
-    font-size: var(--t-body);
-    color: var(--fg-muted);
-  }
-
-  /* The heading and lead, with the "fits your business" sticker beside them
-     at its 1x width (244px). On a phone the sticker is hidden (global.css)
-     and the column collapses. */
-  .position__head {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 244px);
-    align-items: center;
-    gap: var(--s5);
-  }
-
-  .position__intro {
-    display: grid;
-    gap: var(--s3);
-    max-width: 52rem;
-  }
-
-  @media (max-width: 59.99rem) {
-    .position__head {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
-
-  .position__h2 {
-    max-width: 18ch;
-  }
-
-  /* column-gap 0 so each card's edge IS its divider; the air is padding inside
-     the card instead. The lines cannot reach the h2 above because
-     .position__grid is a SIBLING of .position__head, not its parent. */
-  .position__grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--s5);
-    margin-block-start: var(--s5);
-  }
-
-  /* Left-aligned, and the SAME padding on both sides of every cell.
-
-     Centring made the old asymmetry impossible to miss: the first cell was
-     centred inside 0 / 58px of padding so its text sat left of its own middle,
-     and the last inside 58px / 0 so its text sat right of it. Only the middle
-     cell was symmetric, and the three read as three different insets.
-
-     The zeroed outer edges were deliberate once — they put the first cell
-     flush with the heading above, on the grounds that clearance is bought
-     from a divider and the outer edges have no divider to clear. That argument
-     loses to the one the eye makes: three cells side by side have to match
-     each other before any of them matches the heading.
-
-     --s4, NOT --col-pad, and this is the only grid on the site that sets its
-     own clearance rather than taking the system value. Equalising the padding
-     makes the outer two cells pay 58px they never paid before, and at
-     --col-pad that took the body measure down to 263px — short for running
-     copy. --s4 hands ~56px back to every cell and keeps all three identical,
-     which was the whole point of the change.
-
-     The top rules still span the full cell, so the lines stay on the grid
-     while the type steps in from it. */
-  /* --col-pad buys clearance from a divider. The outer two edges have no
-     divider to clear — the page-edge rail that used to sit there is gone — so
-     the padding there was holding the band's text 3rem off nothing and making
-     its measure 6rem narrower than the heading directly above it. */
-  /* --accent-fn, not --accent. This band used to be inverted, where --accent
-     resolves to --on-ink-blue at 6.40:1. On the light ground the display blue
-     is 3.97:1, and 13px needs 4.5:1 — so the index would have failed the
-     moment the band turned light. The functional sibling is 4.89:1. */
-  .point__h {
-    margin-block-end: var(--s2);
-    font-size: var(--t-h3);
-    line-height: 1.2;
-  }
-
-  .point__b {
-    color: var(--fg-muted);
-    font-size: var(--t-body);
-  }
-
-  /* --- Narrow ------------------------------------------------------------ */
-
-  @media (max-width: 60rem) {
-    /* Two abreast rather than four: at four, a step is about 60px wide on a
-       phone and the names wrap to three lines each.
-
-       The rule moves from the container to each step. One continuous line
-       across the container only spans the FIRST row once the grid wraps, so
-       the second row every node sat on nothing. A line per step is the same
-       reading at two columns and it wraps with them. */
-    .steps {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      row-gap: var(--s5);
-    }
-
-    .position__grid {
-      grid-template-columns: minmax(0, 1fr);
-      gap: var(--s4);
-    }
-  }
-
-  /* One step to a row on a phone. Two abreast suited the step NAMES, which
-     were all this timeline carried at first; with a sentence under each, a
-     130px column set it two or three words to a line and up to eleven lines
-     deep. Below 30rem, which covers every portrait phone, each step gets the
-     full width. */
-  @media (max-width: 30rem) {
-    .steps {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-  }
 </style>

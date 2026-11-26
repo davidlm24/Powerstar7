@@ -4,9 +4,12 @@ import { useTranslations, route, CONTACT, type Lang, type PageKey } from '../i18
 interface Props {
   lang: Lang;
   page?: PageKey;
+  /* The Animation switch (themed trial pages): one place to stop everything
+     that moves on its own, as WCAG 2.2.2 asks. */
+  motionToggle?: boolean;
 }
 
-const { lang, page } = Astro.props;
+const { lang, page, motionToggle = false } = Astro.props;
 const t = useTranslations(lang);
 
 const pages: { key: PageKey; label: string }[] = [
@@ -69,8 +72,47 @@ const legal: { key: PageKey; label: string }[] = [
   <div class="container site-footer__base">
     <p>&copy; <span data-year>2026</span> DesignActiv. {t('footer.rights')}</p>
     <p class="site-footer__built">{t('footer.built')}</p>
+    {
+      motionToggle && (
+        <button
+          type="button"
+          class="site-footer__motion"
+          role="switch"
+          aria-checked="true"
+          data-motion-toggle
+          data-on={t('footer.motion.on')}
+          data-off={t('footer.motion.off')}
+        >
+          {t('footer.motion')}: <span data-motion-state aria-hidden="true">{t('footer.motion.on')}</span>
+        </button>
+      )
+    }
   </div>
 </footer>
+
+{
+  motionToggle && (
+    <script is:inline>
+      (function () {
+        var btn = document.querySelector('[data-motion-toggle]');
+        if (!btn) return;
+        var root = document.documentElement, state = btn.querySelector('[data-motion-state]');
+        var show = function () {
+          var off = root.classList.contains('motion-off');
+          btn.setAttribute('aria-checked', String(!off));
+          state.textContent = btn.getAttribute(off ? 'data-off' : 'data-on');
+        };
+        show();
+        btn.addEventListener('click', function () {
+          var off = root.classList.toggle('motion-off');
+          try { localStorage.setItem('designactiv-motion', off ? 'off' : 'on'); } catch (e) {}
+          show();
+          window.dispatchEvent(new Event('motionchange'));
+        });
+      })();
+    </script>
+  )
+}
 
 <style>
   .site-footer {
@@ -156,6 +198,34 @@ const legal: { key: PageKey; label: string }[] = [
 
   .site-footer__built {
     letter-spacing: 0.01em;
+  }
+
+  /* The state word is hidden from the accessible name ("Animation:"),
+     which stays fixed; aria-checked carries on/off (review A10). It keeps to
+     the right when the row wraps (review GV-12), and needs its script, so it
+     is not shown without JavaScript (review A8). */
+  .site-footer__motion {
+    margin-inline-start: auto;
+    min-block-size: 32px;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--fg-muted);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  :global(html.no-js) .site-footer__motion {
+    display: none;
+  }
+
+  .site-footer__motion:hover {
+    color: var(--fg);
+  }
+
+  .site-footer__motion [data-motion-state] {
+    color: var(--fg);
   }
 
   @media (max-width: 48rem) {

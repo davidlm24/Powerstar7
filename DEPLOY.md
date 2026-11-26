@@ -41,7 +41,7 @@ npx wrangler dev --port 8787 --local
 | `/about/` | `307` → `/about` |
 | `/nao-existe` | `404` with the designed page (title "Page not found") |
 | `/about-us`, `/en/work`, `/services.html` | `301` → `/about`, `/work`, `/services` |
-| `/.htaccess`, `/lab/dither` | `404` (excluded by `public/.assetsignore`) |
+| `/.htaccess` | `404` (excluded by `public/.assetsignore`) |
 
 Wrangler also prints "Parsed N valid redirect rules" on start; any "invalid
 redirect rules" line means a `_redirects` entry is silently dropped.

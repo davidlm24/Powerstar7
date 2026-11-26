@@ -146,10 +146,6 @@ async function collect() {
     }
   }
 
-  // The live dither's fields (dither-site.js), one per illustration on the
-  // page, at 1x: what every visitor with motion and a pointer fetches.
-  for (const [, name] of html.matchAll(/data-illo=["']([a-z]+)["']/g)) assets.add(`/assets/dither/${name}.png`);
-
   // Fonts referenced from the bundled CSS that the page actually loads.
   for (const href of [...assets]) {
     if (!href.endsWith('.css')) continue;

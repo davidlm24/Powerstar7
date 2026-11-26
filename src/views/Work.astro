@@ -1,9 +1,19 @@
 ---
+/* Work (the 2026-11 redesign, rolled out 2026-11-26). The blue page head,
+   then the client sites one to a row of the grid, then this site as the
+   team's own example with its evidence and measured figures, and the
+   closing panel.
+
+   Each client site is an exhibit row: the live site's screenshot in a plain
+   browser window across three columns (the bar names the address, a fact the
+   old cards showed and ProjectWindow does not), and what the business is in
+   the fourth. Under 60rem the text drops under the screenshot. */
 import Base from '../layouts/Base.astro';
-import PageHead from '../components/PageHead.astro';
-import AsciiCallout from '../components/AsciiCallout.astro';
-import Closing from '../components/Closing.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import Sheet from '../components/Sheet.astro';
+import PageTop from '../components/PageTop.astro';
+import Pluses from '../components/Pluses.astro';
+import ClosingPanel from '../components/ClosingPanel.astro';
+import Glyph, { type GlyphName } from '../components/Glyph.astro';
 import { PROJECTS } from '../data/projects';
 import { useTranslations, metrics, type Lang } from '../i18n/ui';
 
@@ -25,190 +35,378 @@ const measuredOn = metrics.measuredAt
     }).format(new Date(metrics.measuredAt))
   : '';
 
-const evidence = [
-  t('work.this.list.1'),
-  t('work.this.list.2'),
-  t('work.this.list.3'),
-  t('work.this.list.4'),
+const hasFigures = metrics.measuredAt !== null && metrics.weightKb > 0;
+
+/* Written out rather than built with a template literal, so every key keeps
+   its type check. */
+const copy = {
+  service: { line: t('work.project.service.line'), tag: t('work.project.service.tag') },
+  iconta: { line: t('work.project.iconta.line'), tag: t('work.project.iconta.tag') },
+  ipda: { line: t('work.project.ipda.line'), tag: t('work.project.ipda.tag') },
+};
+
+/* Each claim about this site with the pixel glyph that says the same thing:
+   a server for speed, the hand for ease of use, the refused cookie for no
+   trackers, the browser window for a site where things are easy to find. */
+const evidence: { g: GlyphName; text: string }[] = [
+  { g: 'hosting', text: t('work.this.list.1') },
+  { g: 'use', text: t('work.this.list.2') },
+  { g: 'consent', text: t('work.this.list.3') },
+  { g: 'web', text: t('work.this.list.4') },
 ];
+
+/* The "+" marks: the rails always, an inner column line only where a cell
+   edge in that section's first (top) or last (bottom) row meets the line. */
+const PLUS = [0, 25, 50, 75, 100];
+const EXHIBIT = [0, 75, 100];
+const MID = [0, 50, 100];
 ---
 
 <Base lang={lang} page="work" title={t('work.title')} description={t('work.lead')}>
-  <PageHead title={t('work.h1')} lead={t('work.lead')} figure="work" />
+  <Sheet>
+    <PageTop title={t('work.h1')} lead={t('work.lead')} />
 
-  {/* The client sites first, one to a row (David, 2026-10-19: the three
-      projects from the old Powerstar7 site are theirs), then this site as
-      the team's own example. */}
-  <div class="exhibits rails">
-    <div class="container">
-      <div class="projects">
-        {PROJECTS.map((p) => <ProjectCard project={p} lang={lang} level="h2" wide />)}
+    {/* --- The client sites, one to a row (David, 2026-10-19: the three
+        projects from the old Powerstar7 site are theirs) ------------------ */}
+    <section class="frame">
+      <Pluses at={EXHIBIT} />
+      <div class="grid">
+        {
+          PROJECTS.map((p) => (
+            <article class="row exhibit">
+              <div class="cell cell--flush span-3 exhibit__media">
+                <div class="exhibit__window">
+                  {/* The bar is drawn, not captured: it frames the screenshot
+                      as a website and names the address. */}
+                  <span class="exhibit__bar" aria-hidden="true">
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                    <b>{p.host}</b>
+                  </span>
+                  <img
+                    src={`/assets/work/${p.key}.webp`}
+                    srcset={`/assets/work/${p.key}.webp 1x, /assets/work/${p.key}@2x.webp 2x`}
+                    width="720"
+                    height="450"
+                    alt={t('work.shot.alt', { name: p.name })}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              </div>
+              <div class="cell exhibit__text">
+                <h2 class="exhibit__name" lang={p.key === 'ipda' ? 'de' : undefined}>
+                  {p.name}
+                </h2>
+                <p class="exhibit__tag">{copy[p.key].tag}</p>
+                <p class="cell__b">{copy[p.key].line}</p>
+                <a class="exhibit__link" href={p.url}>
+                  {t('work.visit')}
+                  <span class="visually-hidden"> — {p.name}</span>{' '}
+                  <span class="exhibit__go" aria-hidden="true">&rarr;</span>
+                </a>
+              </div>
+            </article>
+          ))
+        }
       </div>
+      <Pluses at={EXHIBIT} end />
+    </section>
 
-      {/* --- This site --------------------------------------------------- */}
-      <article class="exhibit row row--statement">
-        <header class="exhibit__head row__title">
-          <h2 class="exhibit__h">{t('work.this.h')}</h2>
-          <AsciiCallout text={t('work.callout')} />
-        </header>
+    {/* --- This site: the team's own example ------------------------------- */}
+    <section class="frame">
+      <Pluses at={MID} />
+      <div class="grid">
+        <div class="cell cell--head span-2 this__head">
+          <p class="this__callout" aria-hidden="true">{t('work.callout')}</p>
+          <h2 class="head__h">{t('work.this.h')}</h2>
+        </div>
+        <div class="cell cell--lead span-2">
+          <p class="head__lead">{t('work.this.b')}</p>
+        </div>
 
-        <div class="exhibit__body row__body">
-          <p class="lead">{t('work.this.b')}</p>
-
-          <ul class="evidence">
-            {evidence.map((item) => <li>{item}</li>)}
-          </ul>
-
+        <ul class="row">
           {
-            metrics.measuredAt !== null && metrics.weightKb > 0 && (
-              <div class="details">
-                <p class="details__h">
-                  {t('work.this.details')} · {t('work.this.measured', { date: measuredOn })}
-                </p>
-              <dl class="figures">
-                <div>
+            evidence.map((e) => (
+              <li class="cell" data-glyph-zone>
+                <span class="cell__art">
+                  <Glyph name={e.g} size={48} />
+                </span>
+                <p class="evidence__text">{e.text}</p>
+              </li>
+            ))
+          }
+        </ul>
+
+        {
+          hasFigures && (
+            <div class="row figures">
+              <p class="cell figures__label">
+                {t('work.this.details')}
+                <span class="figures__date">{t('work.this.measured', { date: measuredOn })}</span>
+              </p>
+              {/* display: contents, so each figure is a cell of the row. */}
+              <dl class="figures__list">
+                <div class="cell figure">
                   <dt>{t('home.proof.weight')}</dt>
-                  <dd class="print-in">
+                  <dd>
                     {metrics.weightKb}
                     <span>KB</span>
                   </dd>
                 </div>
-                <div>
+                <div class="cell figure">
                   <dt>{t('home.proof.requests')}</dt>
-                  <dd class="print-in">{metrics.requests}</dd>
+                  <dd>{metrics.requests}</dd>
                 </div>
-                <div>
+                <div class="cell figure">
                   <dt>{t('home.proof.thirdParty')}</dt>
-                  <dd class="print-in">{metrics.thirdPartyRequests}</dd>
+                  <dd>{metrics.thirdPartyRequests}</dd>
                 </div>
               </dl>
-              </div>
-            )
-          }
-        </div>
-      </article>
-    </div>
-  </div>
+            </div>
+          )
+        }
+      </div>
+      <Pluses at={PLUS} narrow={[0, 50, 100]} end />
+    </section>
 
-  <section class="next rails">
-    <div class="container next__inner">
-      <h2 class="next__h">{t('work.next.h')}</h2>
-      <p class="next__b measure">{t('work.next.b')}</p>
-    </div>
-  </section>
+    {/* The page ends straight on the closing panel: a separate "Have a
+        project in mind?" section before it said the same thing twice
+        (David, 2026-11-26). */}
+    <ClosingPanel lang={lang} />
+  </Sheet>
 
-  <Closing lang={lang} />
+  <script is:inline>
+    (function () {
+      var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reduce || !('IntersectionObserver' in window)) return;
+
+      // Each glyph's pixels light up once, when its cell first comes into view.
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('is-play');
+          io.unobserve(e.target);
+        });
+      }, { threshold: 0.4 });
+      document.querySelectorAll('[data-glyph-zone]').forEach(function (el) {
+        io.observe(el);
+        // Replay on hover or focus; the class stays until the wave has run,
+        // so leaving early never cuts it off.
+        var t = 0;
+        var again = function (e) {
+          if (e.type === 'pointerenter' && e.pointerType !== 'mouse') return;
+          if (el.classList.contains('is-again')) return;
+          el.classList.add('is-again');
+          clearTimeout(t);
+          t = setTimeout(function () { el.classList.remove('is-again'); }, 1100);
+        };
+        el.addEventListener('pointerenter', again);
+        el.addEventListener('focusin', again);
+      });
+    })();
+  </script>
 </Base>
 
 <style>
-  .projects {
-    display: grid;
-    gap: var(--s6);
-    padding-block: var(--s5) var(--s6);
+  /* The shared grid, panels and type live in src/styles/grid.css. */
+
+  /* --- The client sites -------------------------------------------------------- */
+  /* The faint wash from above, as on the home page's project cards: blue at
+     10 %, gone by the screenshot's middle. */
+  .exhibit__media {
+    padding: var(--cell-pad) var(--cell-pad) 0;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent-fn) 10%, transparent), transparent 55%), var(--bg);
+    align-content: end;
   }
 
-  .exhibit {
-    padding-block: var(--s5) var(--s6);
+  .exhibit__window {
+    overflow: clip;
+    border: 1px solid var(--rail);
+    border-block-end: 0;
+    border-start-start-radius: var(--radius);
+    border-start-end-radius: var(--radius);
+    background: var(--bg);
   }
 
-  .exhibit__h {
-    margin-block-start: var(--s3);
-    font-size: clamp(1.75rem, 3.2vw, 2.5rem);
-    line-height: 1.06;
-  }
-
-  .exhibit__body {
-    display: grid;
-    gap: var(--s4);
-  }
-
-  .exhibit__body .lead {
-    max-width: var(--measure);
-  }
-
-  .evidence {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    gap: 0;
-    max-width: var(--measure);
-  }
-
-  .evidence li {
-    padding-block: 0.5rem;
-    font-size: var(--t-body);
-  }
-
-  /* The same figures as the home page, at body scale — here they are
-     supporting evidence rather than the headline. */
-  .figures {
+  .exhibit__bar {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--s5);
-    margin: 0;
-  }
-
-  .figures dt {
-    font-size: var(--t-small);
-    font-weight: var(--weight-heading);
-    letter-spacing: 0;
-    text-transform: none;
+    align-items: center;
+    gap: 6px;
+    padding: 0.5rem 0.75rem;
+    border-block-end: 1px solid var(--rail);
+    font-size: var(--t-micro);
     color: var(--fg-muted);
   }
 
-  .details {
-    display: grid;
-    gap: var(--s3);
-    max-width: var(--measure);
-    padding-block-start: var(--s4);
+  .exhibit__bar i {
+    inline-size: 7px;
+    block-size: 7px;
+    border-radius: 50%;
+    background: var(--rail);
   }
 
-  .details__h {
-    margin: 0;
-    font-size: var(--t-small);
-    font-weight: var(--weight-heading);
-    letter-spacing: 0;
-    text-transform: none;
+  .exhibit__bar b {
+    margin-inline-start: 6px;
+    font-weight: var(--weight-text);
+  }
+
+  .exhibit__window img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: top;
+    /* Seen only until the lazy image arrives. */
+    background-color: color-mix(in srgb, var(--fg) 4%, transparent);
+  }
+
+  /* The name sits level with the browser bar beside it. */
+  .exhibit__text {
+    align-content: start;
+  }
+
+  .exhibit__name {
+    font-size: clamp(1.35rem, 2vw, 1.6rem);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+  }
+
+  .exhibit__tag {
+    font-size: var(--t-micro);
     color: var(--fg-muted);
   }
 
-  .figures dd {
-    margin: 0.35rem 0 0;
-    font-family: var(--font-display);
-    font-size: var(--t-h3);
-    /* --weight-medium: the display weight is 400 now, and tabular figures at
-       400 read as a placeholder rather than as a measured result. */
+  .exhibit__link {
+    justify-self: start;
+    margin-block-start: 0.75rem;
+    font-size: var(--t-small);
     font-weight: var(--weight-medium);
-    letter-spacing: -0.03em;
-    font-variant-numeric: tabular-nums;
-    /* The measured figures are the proof: they print in dots once the
-       details have landed, the way the prices do on Services (global.css,
-       the print coming up). */
-    --print-dur: 360ms;
-    --print-delay: calc(var(--reveal-delay, 0ms) + 120ms);
+    color: var(--accent-fn);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.25em;
+    transition: text-decoration-color 200ms var(--ease);
   }
 
-  .figures dd span {
+  .exhibit__link:hover,
+  .exhibit__link:focus-visible {
+    text-decoration-color: currentColor;
+  }
+
+  .exhibit__go {
+    display: inline-block;
+    transition: transform 220ms var(--ease);
+  }
+
+  .exhibit__link:hover .exhibit__go {
+    transform: translateX(4px);
+  }
+
+  /* --- This site ---------------------------------------------------------------- */
+  .this__head {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .this__callout {
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    color: var(--accent-fn);
+  }
+
+  .this__callout::before {
+    content: '';
+    display: inline-block;
+    inline-size: 5px;
+    block-size: 5px;
+    margin-inline-end: 0.6rem;
+    vertical-align: middle;
+    background: var(--accent-fn);
+  }
+
+  .evidence__text {
+    max-inline-size: 24ch;
+    font-size: var(--t-body);
+    line-height: 1.45;
+  }
+
+  /* The figures: a label cell, then one cell for each measured figure. */
+  .figures__list {
+    display: contents;
+    margin: 0;
+  }
+
+  .figures__label {
+    align-content: end;
+    font-size: var(--t-small);
+    font-weight: var(--weight-medium);
+  }
+
+  .figures__date {
+    display: block;
+    font-weight: var(--weight-text);
+    color: var(--fg-muted);
+  }
+
+  .figure {
+    align-content: end;
+  }
+
+  .figure dt {
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+  }
+
+  .figure dd {
+    margin: 0;
+    font-size: clamp(2rem, 3.4vw, 2.75rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    font-weight: var(--weight-medium);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .figure dd span {
     font-size: 0.45em;
+    letter-spacing: 0;
     color: var(--fg-muted);
     margin-inline-start: 0.15em;
   }
 
-  .next {
-    padding-block-start: var(--s5);
+  /* --- Narrower screens ----------------------------------------------------------- */
+  @media (max-width: 60rem) {
+    /* The text drops under the screenshot and takes the whole row. */
+    .exhibit__text {
+      grid-column: 1 / -1;
+    }
+
+    .this__head {
+      min-block-size: 10rem;
+    }
   }
 
-  .next__inner {
-    display: grid;
-    gap: var(--s3);
+  @media (max-width: 39.99rem) {
+    .this__head {
+      min-block-size: 0;
+    }
   }
 
-  .next__h {
-    font-size: var(--t-h3);
-  }
+  @media (prefers-reduced-motion: reduce) {
+    .exhibit__link,
+    .exhibit__go {
+      transition: none;
+    }
 
-  .next__b {
-    color: var(--fg-muted);
+    .exhibit__link:hover .exhibit__go {
+      transform: none;
+    }
   }
-
 </style>

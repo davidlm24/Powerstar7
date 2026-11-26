@@ -1,0 +1,35 @@
+---
+/* A page's last word: "Start a project" at heading scale on a square blue
+   panel, the whole line one link, with the scattered pixel shine gathered
+   behind the arrow (HeroPixels, corner variant). The supporting line says
+   what happens after the click: closing.lead by default (the written scope
+   and price); the home page passes its shorter closing.short. It replaced
+   Closing.astro (the blue band); it must be the last frame inside a Sheet. */
+import HeroPixels from './HeroPixels.astro';
+import { useTranslations, route, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  label?: string;
+  lead?: string;
+}
+
+const { lang, label, lead } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="frame frame--closing">
+  <div class="panel panel--closing on-blue">
+    <div class="panel__light" aria-hidden="true"></div>
+    {/* Gathered low on the right, so the arrow is not drawn on the brightest
+        cells (recheck); on a stacked panel the mask keeps it top right. */}
+    <HeroPixels variant="corner" focus="0.97 0.85" />
+    <div class="panel__body">
+      <a class="closing__link" href={route('contact', lang)}>
+        <span>{label ?? t('home.cta')}</span>
+        <span class="closing__arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <p class="panel__lead">{lead ?? t('closing.lead')}</p>
+    </div>
+  </div>
+</section>

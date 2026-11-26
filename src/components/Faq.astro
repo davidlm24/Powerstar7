@@ -1,156 +1,40 @@
 ---
-/* The questions people ask, as <details>/<summary>: it opens and closes with
-   no JavaScript at all and arrives keyboard-accessible with its expanded
+/* The questions people ask, as one section of the grid: a title cell, then
+   one full-width row per question, each a <details>/<summary>, so it opens
+   and closes with no JavaScript, is keyboard-reachable, and has its expanded
    state announced. Shared by Services and Pricing; each page passes its own
-   heading and its own questions. Answers carry prices as §amount§ markers
+   heading and questions. Answers carry prices as §amount§ markers
    (src/data/pricing.ts), drawn by <Priced>. */
-import Illo from './Illo.astro';
 import Accent from './Accent.astro';
 import Priced from './Priced.astro';
+import Pluses from './Pluses.astro';
 import type { Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
   heading: string;
   items: { q: string; a: string }[];
-  /** The question-mark sticker beside the heading (Services). */
-  aside?: boolean;
 }
 
-const { lang, heading, items, aside = false } = Astro.props;
+const { lang, heading, items } = Astro.props;
 ---
 
-<section class="faq rails">
-  <div class="container">
-    <div class:list={['faq__head', aside && 'faq__head--aside']}>
-      <h2><Accent text={heading} /></h2>
-      {aside && <Illo name="question" variant="aside" />}
+<section class="frame">
+  <Pluses />
+  <div class="grid">
+    <div class="cell cell--head span-4">
+      <h2 class="head__h"><Accent text={heading} /></h2>
     </div>
-
-    <div class="faqs">
-      {
-        items.map((f) => (
-          <details class="faq-item">
-            <summary class="faq-item__q">{f.q}</summary>
-            <div class="faq-item__a">
-              <p><Priced text={f.a} lang={lang} /></p>
-            </div>
-          </details>
-        ))
-      }
-    </div>
+    {
+      items.map((f) => (
+        <details class="cell faq-item span-4">
+          <summary class="faq-item__q">{f.q}</summary>
+          <p class="faq-item__a">
+            <Priced text={f.a} lang={lang} />
+          </p>
+        </details>
+      ))
+    }
   </div>
+  <Pluses end />
 </section>
-
-<style>
-  /* --- FAQ ---------------------------------------------------------------- */
-
-  .faq {
-    padding-block-start: var(--section-y);
-  }
-
-  /* The heading with the question-mark sticker beside it, at its 1x width
-     (244px). On a phone the sticker is hidden (global.css). */
-  .faq__head {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    align-items: center;
-    gap: var(--s5);
-    margin-block-end: var(--s5);
-  }
-
-  @media (max-width: 59.99rem) {
-    .faq__head {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
-
-  .faqs {
-    max-width: var(--width-text);
-  }
-
-  /* list-style and the webkit marker both have to go, or the browser draws its
-     own triangle next to ours. */
-  .faq-item__q {
-    list-style: none;
-    cursor: pointer;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--s4);
-    padding-block: var(--s3);
-    font-family: var(--font-display);
-    font-size: var(--t-h3);
-    font-weight: var(--weight-medium);
-    line-height: 1.2;
-    letter-spacing: var(--tr-heading);
-  }
-
-  .faq-item__q {
-    transition: color var(--dur) var(--ease);
-  }
-
-  .faq-item__q:hover,
-  .faq-item__q:focus-visible {
-    color: var(--accent-fn);
-  }
-
-  .faq-item__q::-webkit-details-marker {
-    display: none;
-  }
-
-  .faq-item__q::after {
-    content: '+';
-    flex: none;
-    font-family: var(--font-mono);
-    font-size: var(--t-body);
-    /* --accent-fn, not --accent: this is a small graphic carrying state, and
-       the display blue is 3.97:1. */
-    color: var(--accent-fn);
-  }
-
-  .faq-item[open] .faq-item__q::after {
-    content: '\2212';
-  }
-
-  /* Opening: the answer prints (dz-in, 200ms: readable by the third step)
-     and the list below moves with it instead of jumping. The height
-     interpolation is Chrome 131+ and ignored elsewhere; the print is keyed
-     on html.reveal, so reduced motion and no JavaScript keep the native
-     snap. Closing stays instant: a visitor closing is done reading. */
-  @media (prefers-reduced-motion: no-preference) {
-    .faq-item {
-      interpolate-size: allow-keywords;
-    }
-
-    .faq-item::details-content {
-      block-size: 0;
-      overflow: clip;
-      transition:
-        block-size 220ms var(--ease),
-        content-visibility 220ms allow-discrete;
-    }
-
-    .faq-item[open]::details-content {
-      block-size: auto;
-    }
-  }
-
-  @supports (mask-image: url('')) {
-    :global(html.reveal) .faq-item[open] .faq-item__a {
-      mask-size: 4px 4px;
-      animation: dz-in 200ms linear both;
-    }
-  }
-
-  .faq-item__a {
-    padding-block-end: var(--s4);
-    max-width: var(--measure);
-    color: var(--fg-muted);
-  }
-
-  /* With the sticker beside it (Services), the heading shares its row. */
-  .faq__head--aside {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 244px);
-  }
-</style>

@@ -47,11 +47,6 @@ export function reais(amount: number, _lang?: Lang): string {
   }).format(Math.round((amount * BRL_PER_EUR) / 10) * 10);
 }
 
-/** The rate as the reader writes it: "6.00" in English, "6,00" in Portuguese. */
-export function rateLabel(lang: Lang): string {
-  return new Intl.NumberFormat(LOCALE[lang], { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(BRL_PER_EUR);
-}
-
 /** Whole euros in the reader's convention: "€750" in English, "€ 750" in
  *  Brazilian Portuguese. Intl rather than a hand-built string, so the spacing
  *  (a non-breaking space in pt-BR) comes from the locale instead of a guess. */
