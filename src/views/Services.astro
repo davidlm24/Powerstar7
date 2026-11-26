@@ -1,0 +1,246 @@
+---
+/* Services (the 2026-11 redesign, rolled out 2026-11-26). The blue page
+   head, then one section of the grid per service, then the questions and
+   the closing panel.
+
+   Each service is explained the same four ways (2026-10-20, David): what it
+   is, how we work, what we need from you, what you get. On the grid that is
+   two rows: the service's pixel glyph and name in a title cell beside what
+   it is, then how we work (two columns), what we need (one) and what you
+   get (one), with the link to the prices at the foot of that last cell, so
+   the order of ideas is the same as before. Each section's id is what a
+   home-page service cell links to (services#web and so on). */
+import Base from '../layouts/Base.astro';
+import Sheet from '../components/Sheet.astro';
+import PageTop from '../components/PageTop.astro';
+import Pluses from '../components/Pluses.astro';
+import Faq from '../components/Faq.astro';
+import ClosingPanel from '../components/ClosingPanel.astro';
+import Glyph, { type GlyphName } from '../components/Glyph.astro';
+import { useTranslations, route, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+/* Written out rather than built with t(`svc.${key}.name` as any), so every
+   key keeps its static check. The home cards carry only a short line per
+   service; the full explanation lives here. */
+const services: {
+  id: GlyphName;
+  name: string;
+  what: [string, string];
+  how: string;
+  need: string;
+  get: string[];
+}[] = [
+  {
+    id: 'web',
+    name: t('svc.web.name'),
+    what: [t('svc.web.what1'), t('svc.web.what2')],
+    how: t('svc.web.how'),
+    need: t('svc.web.need'),
+    get: [t('svc.web.g1'), t('svc.web.g2'), t('svc.web.g3'), t('svc.web.g4'), t('svc.web.g5'), t('svc.web.g6')],
+  },
+  {
+    id: 'brand',
+    name: t('svc.brand.name'),
+    what: [t('svc.brand.what1'), t('svc.brand.what2')],
+    how: t('svc.brand.how'),
+    need: t('svc.brand.need'),
+    get: [t('svc.brand.g1'), t('svc.brand.g2'), t('svc.brand.g3'), t('svc.brand.g4')],
+  },
+  {
+    id: 'seo',
+    name: t('svc.seo.name'),
+    what: [t('svc.seo.what1'), t('svc.seo.what2')],
+    how: t('svc.seo.how'),
+    need: t('svc.seo.need'),
+    get: [t('svc.seo.g1'), t('svc.seo.g2'), t('svc.seo.g3'), t('svc.seo.g4'), t('svc.seo.g5')],
+  },
+  {
+    id: 'email',
+    name: t('svc.email.name'),
+    what: [t('svc.email.what1'), t('svc.email.what2')],
+    how: t('svc.email.how'),
+    need: t('svc.email.need'),
+    get: [t('svc.email.g1'), t('svc.email.g2'), t('svc.email.g3'), t('svc.email.g4')],
+  },
+  {
+    id: 'hosting',
+    name: t('svc.hosting.name'),
+    what: [t('svc.hosting.what1'), t('svc.hosting.what2')],
+    how: t('svc.hosting.how'),
+    need: t('svc.hosting.need'),
+    get: [t('svc.hosting.g1'), t('svc.hosting.g2'), t('svc.hosting.g3'), t('svc.hosting.g4'), t('svc.hosting.g5'), t('svc.hosting.g6')],
+  },
+];
+
+/* The questions about working with us: how long, what we need, editing it
+   yourself, and what accessible means. The ones about money, leaving and a
+   language that costs extra moved to the Pricing page. */
+const faqs = [
+  { q: t('services.faq.q1'), a: t('services.faq.a1') },
+  { q: t('services.faq.q2'), a: t('services.faq.a2') },
+  { q: t('services.faq.q3'), a: t('services.faq.a3') },
+  { q: t('services.faq.q6'), a: t('services.faq.a6') },
+];
+
+/* The "+" marks: the first row of each service is two halves (title and
+   what it is), the last row is two columns, then one, then one. */
+const TOP = [0, 50, 100];
+const END = [0, 50, 75, 100];
+---
+
+<Base lang={lang} page="services" title={t('services.title')} description={t('services.lead')}>
+  <Sheet>
+    <PageTop title={t('services.h1')} lead={t('services.lead')} />
+
+    {
+      services.map((s) => (
+        <section class="frame" id={s.id} aria-labelledby={`${s.id}-h`}>
+          <Pluses at={TOP} />
+          <div class="grid">
+            {/* The glyph is decorative: the name beside it says it all. */}
+            <div class="cell cell--head span-2" data-glyph-zone>
+              <span class="cell__art" aria-hidden="true"><Glyph name={s.id} size={96} /></span>
+              <h2 class="head__h head__h--sm" id={`${s.id}-h`}>{s.name}</h2>
+            </div>
+
+            <div class="cell cell--lead span-2 svc">
+              <h3 class="visually-hidden">{t('services.what.h')}</h3>
+              <p class="head__lead">{s.what[0]}</p>
+              <p class="svc__p">{s.what[1]}</p>
+            </div>
+
+            <div class="cell span-2 svc">
+              <h3 class="svc__h">{t('services.how.h')}</h3>
+              <p class="svc__p">{s.how}</p>
+            </div>
+
+            <div class="cell svc">
+              <h3 class="svc__h">{t('services.need.h')}</h3>
+              <p class="svc__p">{s.need}</p>
+            </div>
+
+            <div class="cell svc svc__getcell">
+              <h3 class="svc__h">{t('services.deliverables')}</h3>
+              <ul class="svc__get">
+                {s.get.map((item) => <li>{item}</li>)}
+              </ul>
+              <a class="head__more svc__price" href={`${route('pricing', lang)}#pricing`}>
+                {t('services.price.link')} <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </div>
+          <Pluses at={END} narrow={[0, 50, 100]} end />
+        </section>
+      ))
+    }
+
+    <Faq lang={lang} heading={t('services.faq.h2')} items={faqs} />
+
+    <ClosingPanel lang={lang} />
+  </Sheet>
+
+  <script is:inline>
+    (function () {
+      var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reduce || !('IntersectionObserver' in window)) return;
+
+      // Each glyph's pixels light up once, when its cell first comes into view.
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('is-play');
+          io.unobserve(e.target);
+        });
+      }, { threshold: 0.4 });
+      document.querySelectorAll('[data-glyph-zone]').forEach(function (el) {
+        io.observe(el);
+        // Replay on hover or focus; the class stays until the wave has run
+        // (560ms + 22 diagonals x 22ms), so leaving early never cuts it off.
+        var t = 0;
+        var again = function (e) {
+          if (e.type === 'pointerenter' && e.pointerType !== 'mouse') return;
+          if (el.classList.contains('is-again')) return;
+          el.classList.add('is-again');
+          clearTimeout(t);
+          t = setTimeout(function () { el.classList.remove('is-again'); }, 1100);
+        };
+        el.addEventListener('pointerenter', again);
+        el.addEventListener('focusin', again);
+      });
+    })();
+  </script>
+</Base>
+
+<style>
+  /* The shared grid, panels and questions live in src/styles/grid.css; what
+     is here is this page's own. */
+
+  /* The lead cell holds two paragraphs, so it sits at the top beside the
+     title rather than at its foot. */
+  .cell--lead { align-content: start; gap: 1rem; }
+
+  .svc__p {
+    max-inline-size: 62ch;
+    font-size: var(--t-body);
+    line-height: 1.55;
+    color: var(--fg-muted);
+  }
+
+  /* The three labels: small, in the page's ink, so they read as the cell's
+     title without competing with the service name. */
+  .svc__h {
+    font-size: var(--t-small);
+    font-weight: var(--weight-heading);
+    letter-spacing: 0;
+    color: var(--fg);
+  }
+
+  /* The list and the price link stack, with the link always at the foot of
+     the cell. */
+  .svc__getcell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .svc__get {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .svc__get li {
+    position: relative;
+    padding-inline-start: 1.25rem;
+    font-size: var(--t-small);
+    line-height: 1.5;
+    color: var(--fg);
+  }
+
+  /* A square in the accent for each thing you get: one device, the pixel
+     of the glyphs. */
+  .svc__get li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.55em;
+    inline-size: 0.4rem;
+    block-size: 0.4rem;
+    background: var(--accent-fn);
+  }
+
+  .svc__price {
+    margin-block-start: auto;
+    padding-block-start: 1.25rem;
+    font-size: var(--t-small);
+  }
+</style>

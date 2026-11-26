@@ -1,0 +1,453 @@
+---
+/* The home page (the 2026-11 redesign; trial rounds 1-7 on /lab/home-dark,
+   rolled out 2026-11-26). Dark by default with a light theme (Base).
+
+   ONE grid: every section sits on the same four columns between the rails
+   (Sheet + src/styles/grid.css). Cells draw their own top and right edges,
+   so nothing is drawn twice; only the rails run through the gaps between
+   sections. Section titles live inside the grid, in cells of their own.
+   Illustrations are pixel art (Glyph.astro); the hero is a live pixel field
+   (HeroPixels) with drawings on its right. The copy is the short set
+   (home.h1, home.lead, home.svc.*, home.fit.*, home.step.* in ui.ts). */
+import Base from '../layouts/Base.astro';
+import Accent from '../components/Accent.astro';
+import Glyph, { type GlyphName } from '../components/Glyph.astro';
+import HeroPixels from '../components/HeroPixels.astro';
+import HeroPixelsStill from '../components/HeroPixelsStill.astro';
+import Sheet from '../components/Sheet.astro';
+import Pluses from '../components/Pluses.astro';
+import ClosingPanel from '../components/ClosingPanel.astro';
+import ProjectWindow from '../components/ProjectWindow.astro';
+import { PROJECTS } from '../data/projects';
+import { useTranslations, route, type Lang } from '../i18n/ui';
+import { accentParts } from '../i18n/accent';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const services: { key: GlyphName; name: string; b: string }[] = [
+  { key: 'web', name: t('svc.web.name'), b: t('home.svc.web') },
+  { key: 'brand', name: t('svc.brand.name'), b: t('home.svc.brand') },
+  { key: 'seo', name: t('svc.seo.name'), b: t('home.svc.seo') },
+  { key: 'email', name: t('svc.email.name'), b: t('home.svc.email') },
+  { key: 'hosting', name: t('svc.hosting.name'), b: t('home.svc.hosting') },
+];
+
+const position: { g: GlyphName; h: string; b: string }[] = [
+  { g: 'use', h: t('home.position.one.h'), b: t('home.fit.one') },
+  { g: 'seo', h: t('home.position.two.h'), b: t('home.fit.two') },
+  { g: 'own', h: t('home.position.three.h'), b: t('home.fit.three') },
+];
+
+const steps = [
+  { h: t('home.process.s1.h'), b: t('home.step.one') },
+  { h: t('home.process.s2.h'), b: t('home.step.two') },
+  { h: t('home.process.s3.h'), b: t('home.step.three') },
+  { h: t('home.process.s4.h'), b: t('home.step.four') },
+];
+
+const h1 = accentParts(t('home.h1'));
+const band = services.map((s) => s.name);
+const bandRun = [0, 1, 2, 3].flatMap((copy) => band.map((item) => ({ item, copy })));
+
+/* The "+" marks sit only where a line really crosses: the rails always, and
+   an inner column line only where a cell edge meets that section's top or
+   bottom line (the gaps between sections carry the rails only, round 6). */
+const PLUS = [0, 25, 50, 75, 100];
+const RAILS = [0, 100];
+const TOP_SERVICES = [0, 50, 75, 100];
+const TOP_POSITION = [0, 50, 100];
+---
+
+<Base lang={lang} page="home" title={t('home.title')}>
+  <Sheet>
+
+    {/* --- Hero ------------------------------------------------------------ */}
+    <section class="frame frame--hero">
+      <div class="hero on-blue" data-float>
+        <div class="hero__light" aria-hidden="true"></div>
+        <HeroPixels />
+        <div class="hero__copy">
+          <h1 class="hero__h1">
+            {h1.map((p) => (p.accent ? <span class="hero__mark">{p.text}</span> : p.text))}
+          </h1>
+          <p class="hero__lead">{t('home.lead')}</p>
+          <div class="hero__actions">
+            <a class="btn" href={route('contact', lang)}>{t('home.cta')}</a>
+            <a class="btn btn--quiet" href={route('pricing', lang)}>{t('home.cta.secondary')}</a>
+          </div>
+        </div>
+        {/* Where the drawings go. The motion is paused from the footer's
+            Animation switch (WCAG 2.2.2), not from a button here. */}
+        <div class="hero__px">
+          <HeroPixelsStill />
+        </div>
+      </div>
+
+      {/* The five services, moving along a row of the grid. */}
+      <div class="band" data-band role="region" aria-label={t('home.band.label')}>
+        <Pluses at={RAILS} />
+        <p class="band__label">{t('home.band.label')}</p>
+        <div class="band__run">
+          <ul class="band__track">
+            {bandRun.map(({ item, copy }) => <li aria-hidden={copy > 0 ? 'true' : undefined}>{item}</li>)}
+          </ul>
+        </div>
+        <Pluses at={RAILS} end />
+      </div>
+    </section>
+
+    {/* --- Services -------------------------------------------------------- */}
+    <section class="frame">
+      <Pluses at={TOP_SERVICES} />
+      <div class="grid">
+        <div class="cell cell--head span-2">
+          <h2 class="head__h"><Accent text={t('home.services.h2')} /></h2>
+        </div>
+        {services.map((s) => (
+          <a class="cell cell--link" href={`${route('services', lang)}#${s.key}`} data-glyph-zone>
+            <span class="cell__art"><Glyph name={s.key} size={96} /></span>
+            <h3 class="cell__h">{s.name} <span class="cell__go" aria-hidden="true">&rarr;</span></h3>
+            <p class="cell__b">{s.b}</p>
+          </a>
+        ))}
+        <a class="cell cell--link cell--more" href={route('services', lang)} data-glyph-zone>
+          <span class="cell__art"><Glyph name="more" size={96} /></span>
+          <h3 class="cell__h cell__h--big">{t('home.services.link')} <span class="cell__go" aria-hidden="true">&rarr;</span></h3>
+        </a>
+      </div>
+      <Pluses at={PLUS} narrow={[0, 50, 100]} end />
+    </section>
+
+    {/* --- Position --------------------------------------------------------- */}
+    <section class="frame">
+      <Pluses at={TOP_POSITION} />
+      <div class="grid">
+        <div class="cell cell--head span-2">
+          <h2 class="head__h"><Accent text={t('home.position.h2')} /></h2>
+        </div>
+        <div class="cell cell--lead span-2">
+          <p class="head__lead">{t('home.fit.lead')}</p>
+        </div>
+        {position.map((p) => (
+          <article class="cell" data-glyph-zone>
+            <span class="cell__art"><Glyph name={p.g} size={48} /></span>
+            <h3 class="cell__h">{p.h}</h3>
+            <p class="cell__b">{p.b}</p>
+          </article>
+        ))}
+        <div class="cell cell--art" aria-hidden="true" data-glyph-zone>
+          <Glyph name="web" size={144} />
+        </div>
+      </div>
+      <Pluses at={PLUS} narrow={[0, 50, 100]} end />
+    </section>
+
+    {/* --- Recent work ------------------------------------------------------ */}
+    <section class="frame">
+      <Pluses at={PLUS} />
+      <div class="grid grid--work">
+        <div class="cell cell--head cell--work-head">
+          <h2 class="head__h"><Accent text={t('home.work.h2')} /></h2>
+          <a class="head__more" href={route('work', lang)}>{t('home.work.link')} &rarr;</a>
+        </div>
+        {PROJECTS.map((p) => <div class="cell cell--flush"><ProjectWindow project={p} lang={lang} /></div>)}
+      </div>
+      <Pluses at={PLUS} end />
+    </section>
+
+    {/* --- Process: the one place numbers belong (it is a sequence) -------- */}
+    <section class="frame">
+      <Pluses at={RAILS} />
+      <div class="grid">
+        <div class="cell cell--head span-4">
+          <h2 class="head__h"><Accent text={t('home.process.h2')} /></h2>
+        </div>
+        <ol class="row">
+          {steps.map((s, i) => (
+            <li class="cell">
+              <span class="step__n">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="cell__h">{s.h}</h3>
+              <p class="cell__b">{s.b}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <Pluses at={PLUS} narrow={[0, 50, 100]} end />
+    </section>
+
+    <ClosingPanel lang={lang} lead={t('closing.short')} />
+  </Sheet>
+
+  <script is:inline>
+    (function () {
+      var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reduce || !('IntersectionObserver' in window)) return;
+
+      // Each glyph's pixels light up once, when its cell first comes into view.
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('is-play');
+          io.unobserve(e.target);
+        });
+      }, { threshold: 0.4 });
+      document.querySelectorAll('[data-glyph-zone]').forEach(function (el) {
+        io.observe(el);
+        // Replay on hover or focus; the class stays until the wave has run
+        // (560ms + 22 diagonals x 22ms), so leaving early never cuts it off.
+        var t = 0;
+        var again = function (e) {
+          if (e.type === 'pointerenter' && e.pointerType !== 'mouse') return;
+          if (el.classList.contains('is-again')) return;
+          el.classList.add('is-again');
+          clearTimeout(t);
+          t = setTimeout(function () { el.classList.remove('is-again'); }, 1100);
+        };
+        el.addEventListener('pointerenter', again);
+        el.addEventListener('focusin', again);
+      });
+
+      // The two blue panels drift a few pixels against the scroll.
+      var floats = document.querySelectorAll('[data-float]');
+      var ticking = false;
+      var drift = function () {
+        ticking = false;
+        var h = innerHeight;
+        floats.forEach(function (el) {
+          var r = el.getBoundingClientRect();
+          var d = ((r.top + r.height / 2) - h / 2) / h;
+          el.style.setProperty('--drift', Math.max(-1, Math.min(1, d)) * -5 + 'px');
+        });
+      };
+      addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(drift); } }, { passive: true });
+      drift();
+    })();
+  </script>
+</Base>
+
+<style>
+  /* The shared grid lives in src/styles/grid.css (Sheet.astro); what is
+     here is the home page's own. */
+
+  /* The project card pads itself; it takes the cells' padding. */
+  .cell--flush :global(.pw) { --pw-pad: var(--cell-pad); }
+
+  .cell--more { align-content: end; }
+
+  .step__n {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2.1rem;
+    block-size: 2.1rem;
+    margin-block-end: 0.75rem;
+    border: 1px solid var(--accent-fn);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    color: var(--accent-fn);
+  }
+
+  .grid--work .cell--work-head {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 60rem) {
+    .grid--work .cell--work-head { grid-column: 1 / -1; min-block-size: 8rem; flex-direction: row; align-items: end; }
+    /* An odd last project spans the row, so no hole shows. */
+    .grid--work > :last-child { grid-column: 1 / -1; }
+  }
+
+  @media (max-width: 39.99rem) {
+    .grid--work .cell--work-head { flex-direction: column; align-items: start; }
+  }
+
+  /* --- Hero ------------------------------------------------------------------ */
+  .frame--hero { padding-block: var(--s2) 0; }
+
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    min-block-size: clamp(30rem, 44vw, 38rem);
+    border-radius: var(--radius-float);
+    overflow: clip;
+    transform: translateY(var(--drift, 0px));
+  }
+
+  /* Blue to almost clear: solid behind the copy (columns 1-2), fading out
+     across columns 3-4 so the page and its grid lines show through behind
+     the pixels. White on the blue is 6.1:1 at the left edge and 5.5:1 at
+     45 %, where the lead ends. */
+  .hero__light {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    /* Blue to a light blue, opaque (David, round 5). White on it: 6.1:1 at
+       the left edge, 5.5:1 at 45 % and about 5.1:1 at 50 %, where the lead
+       ends; the light end (#5a9bff) is behind the pixels only. */
+    background:
+      radial-gradient(45% 70% at 8% 0%, rgb(255 255 255 / 0.12), transparent 70%),
+      linear-gradient(90deg, #0b5bd3 0%, var(--blue-fn) 45%, #5a9bff 100%);
+  }
+
+  .hero__copy {
+    position: relative;
+    z-index: 1;
+    grid-column: 1 / span 2;
+    align-self: center;
+    padding: clamp(3rem, 6vw, 5.5rem) clamp(1.75rem, 5vw, 5rem);
+  }
+
+  .hero__h1 {
+    font-size: clamp(2.75rem, 6.4vw, 5.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    font-weight: 500;
+    color: #fff;
+    text-wrap: balance;
+  }
+
+  .hero__mark { color: #cfe0ff; }
+
+  /* The hero is above the fold: it never waits for the scroll entrance. */
+  :global(.reveal) .hero__h1 {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .hero__lead {
+    margin-block-start: 1.5rem;
+    max-inline-size: 30ch;
+    font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+    line-height: 1.45;
+    color: var(--fg-muted);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-block-start: 2rem;
+  }
+
+  /* The stage: where the drawings sit. The field itself (HeroPixels)
+     covers the whole hero, under the copy. */
+  .hero__px {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    grid-column: 3 / span 2;
+    align-self: center;
+    padding: clamp(2rem, 4vw, 3.5rem) clamp(1.75rem, 4vw, 4rem);
+    min-inline-size: 0;
+  }
+
+  /* White pixels on the blue, in both themes. */
+  .hero { --px-ink: #ffffff; }
+
+  @media (max-width: 60rem) {
+    .hero { grid-template-columns: minmax(0, 1fr); min-block-size: 0; }
+    .hero__copy, .hero__px { grid-column: 1; }
+    .hero__px { padding-block-start: 0; max-inline-size: 34rem; }
+    .hero__light {
+      background:
+        radial-gradient(70% 40% at 8% 0%, rgb(255 255 255 / 0.1), transparent 70%),
+        linear-gradient(180deg, #0b5bd3 0%, var(--blue-fn) 52%, #5a9bff 100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero { transform: none; }
+  }
+
+  /* --- The services strip, a row of the grid --------------------------------- */
+  .band {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-block-start: var(--s2);
+    position: relative;
+    padding: 1rem var(--cell-pad);
+    border-block: 1px solid var(--rail);
+    border-inline: 1px solid var(--rail);
+    background: var(--bg);
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+  }
+
+  .band__label { flex: none; color: var(--accent-fn); }
+
+  .band__run {
+    flex: 1 1 0;
+    min-inline-size: 0;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+  }
+
+  .band__track {
+    display: flex;
+    inline-size: max-content;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    animation: band 60s linear infinite;
+  }
+
+  .band__track li {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    color: var(--fg);
+  }
+
+  .band__track li::after {
+    content: '';
+    inline-size: 5px;
+    block-size: 5px;
+    margin-inline: 2rem;
+    background: var(--accent-fn);
+  }
+
+  .band :global(.pluses) { inset-block-start: -1px; }
+
+  /* Paused on hover. */
+  .band:hover .band__track { animation-play-state: paused; }
+
+  .band :global(.pluses--end) { inset-block-start: auto; }
+
+  @keyframes band { to { transform: translateX(-50%); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .band__track { animation: none; flex-wrap: wrap; inline-size: auto; row-gap: 0.5rem; }
+    .band__track li[aria-hidden] { display: none; }
+    .band__run { -webkit-mask-image: none; mask-image: none; }
+  }
+
+  /* Without JavaScript, and with the footer's Animation switch off, the
+     strip stands still as a wrapped list of all five services (frozen
+     mid-run it hid four of them on a phone: review A4). */
+  :global(.no-js) .band__track,
+  :global(html.motion-off) .band__track { animation: none; flex-wrap: wrap; inline-size: auto; row-gap: 0.5rem; }
+  :global(.no-js) .band__track li[aria-hidden],
+  :global(html.motion-off) .band__track li[aria-hidden] { display: none; }
+  :global(.no-js) .band__run,
+  :global(html.motion-off) .band__run { -webkit-mask-image: none; mask-image: none; }
+
+  @media (max-width: 47.99rem) {
+    .band { flex-wrap: wrap; row-gap: 0.75rem; }
+    .band__run { order: 3; flex-basis: 100%; }
+  }
+
+</style>

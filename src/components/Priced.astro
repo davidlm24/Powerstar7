@@ -1,0 +1,31 @@
+---
+import { euros, reais } from '../data/pricing';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  /** Text in which every price is written as §amount§ (whole euros). */
+  text: string;
+  lang: Lang;
+}
+
+const { text, lang } = Astro.props;
+
+/* A price is drawn once, in euros, and carries its reais as data. site.js swaps
+   the text when the visitor picks BRL, so with JavaScript off the page simply
+   stays in euros — the currency prices are actually set in. Splitting on a
+   marker rather than formatting inside the string keeps the translations free
+   of numbers: they only ever say where a price goes. */
+const parts = text.split(/§(\d+)§/);
+---
+
+{
+  parts.map((part, i) =>
+    i % 2 === 0 ? (
+      part
+    ) : (
+      <span class="price" data-eur={euros(Number(part), lang)} data-brl={reais(Number(part), lang)}>
+        {euros(Number(part), lang)}
+      </span>
+    ),
+  )
+}

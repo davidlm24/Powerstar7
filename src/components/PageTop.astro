@@ -1,0 +1,40 @@
+---
+/* An inner page's head: a square blue panel with the headline, its lead and
+   the scattered pixel shine on the right (HeroPixels, corner variant). It
+   replaces PageHead and its dither sticker (David, 2026-11-26: "blue panel +
+   shine" on every page head). The headline's *accent* word is a lighter
+   blue, not italic. A `lead` slot takes markup (a .pending placeholder); an
+   `actions` slot puts buttons under the lead. */
+import Accent from './Accent.astro';
+import HeroPixels from './HeroPixels.astro';
+
+interface Props {
+  title: string;
+  lead?: string;
+  /** Where the shine gathers, "x y" as fractions of the panel. */
+  focus?: string;
+}
+
+const { title, lead, focus = '0.97 0.5' } = Astro.props;
+---
+
+<section class="frame frame--top">
+  <div class="panel panel--top on-blue">
+    <div class="panel__light" aria-hidden="true"></div>
+    <HeroPixels variant="corner" focus={focus} />
+    <div class="panel__body">
+      <h1 class="panel__h1"><Accent text={title} /></h1>
+      {(lead || Astro.slots.has('lead')) && <p class="panel__lead">{lead ?? <slot name="lead" />}</p>}
+      {Astro.slots.has('actions') && <div class="panel__actions"><slot name="actions" /></div>}
+    </div>
+  </div>
+</section>
+
+<style>
+  .panel__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-block-start: 0.75rem;
+  }
+</style>

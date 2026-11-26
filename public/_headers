@@ -1,0 +1,21 @@
+# Cloudflare static-asset headers (same format on Netlify / Pages).
+# The build adds its own rule for /_astro/* (hashed filenames, immutable).
+# Without these, Cloudflare serves every font and image with max-age=0 and
+# revalidates them on each visit.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# The font files are not fingerprinted; they also never change (subsets of
+# two fixed faces). A changed face gets a new filename.
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Project screenshots and images: regenerated rarely, under the same names.
+# Thirty days, so a redraw is picked up within a month.
+/assets/work/*
+  Cache-Control: public, max-age=2592000
+/assets/img/*
+  Cache-Control: public, max-age=2592000

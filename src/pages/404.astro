@@ -1,0 +1,182 @@
+---
+/* One 404 serves both languages. The host cannot know which language a
+   broken URL was meant to be in, so the page offers both rather than
+   guessing. It is the only page with no canonical URL of its own, and it
+   passes no `page` prop to Base, so it stays out of the index.
+
+   The 2026-11 grid design (src/styles/grid.css), one section of the sheet:
+   the headline and the way home in a wide title cell, with a pixel glyph in
+   the fourth column; then English and Portuguese side by side, each a
+   half-width cell with its lead and its links. There is no blue panel and
+   no closing panel here: a lost visitor needs a way out, not a pitch. */
+import Base from '../layouts/Base.astro';
+import Sheet from '../components/Sheet.astro';
+import Pluses from '../components/Pluses.astro';
+import Glyph from '../components/Glyph.astro';
+import { useTranslations, route, ROUTES } from '../i18n/ui';
+
+const t = useTranslations('en');
+const pt = useTranslations('pt');
+
+const links = (['home', 'work', 'services', 'pricing', 'about', 'contact'] as const).map((key) => ({
+  en: { href: ROUTES[key].en, label: t(`nav.${key}` as any) },
+  pt: { href: ROUTES[key].pt, label: pt(`nav.${key}` as any) },
+}));
+
+/* The first row meets the top line at the rails and at the 75% column line
+   (a three-column title beside the glyph); the last row is two halves. */
+const TOP = [0, 75, 100];
+const END = [0, 50, 100];
+---
+
+<Base lang="en" title={t('nf.title')}>
+  <Sheet>
+    <section class="frame nf">
+      <Pluses at={TOP} />
+      <div class="grid">
+        <div class="cell cell--head span-3 nf__head">
+          <h1 class="head__h nf__h1">{t('nf.h1')}</h1>
+          <p class="head__lead nf__h1-pt" lang="pt">{pt('nf.h1')}</p>
+          <p class="nf__back">
+            <a class="btn" href={route('home', 'en')}>{t('nf.home')}</a>
+            <a class="btn btn--quiet" href={route('home', 'pt')} lang="pt">{pt('nf.home')}</a>
+          </p>
+        </div>
+        <div class="cell cell--art nf__art" aria-hidden="true">
+          <Glyph name="more" size={144} />
+        </div>
+
+        <nav class="cell span-2 nf__lang" aria-label="English">
+          <h2 class="nf__nav-h">English</h2>
+          <p class="nf__lead">{t('nf.lead')}</p>
+          <ul class="nf__list">
+            {links.map((l) => (
+              <li><a href={l.en.href}>{l.en.label} <span class="nf__go" aria-hidden="true">&rarr;</span></a></li>
+            ))}
+          </ul>
+        </nav>
+
+        <nav class="cell span-2 nf__lang" aria-label="Português" lang="pt">
+          <h2 class="nf__nav-h">Português</h2>
+          <p class="nf__lead">{pt('nf.lead')}</p>
+          <ul class="nf__list">
+            {links.map((l) => (
+              <li><a href={l.pt.href}>{l.pt.label} <span class="nf__go" aria-hidden="true">&rarr;</span></a></li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+      <Pluses at={END} end />
+    </section>
+  </Sheet>
+</Base>
+
+<style>
+  /* The shared grid lives in src/styles/grid.css; what is here is the 404's
+     own. */
+
+  /* The sheet ends here, so the page keeps some air above the footer. A
+     margin, not padding: the bottom "+" marks sit on the frame's edge. */
+  .nf {
+    margin-block-end: var(--section-gap);
+  }
+
+  .nf__head {
+    gap: 2rem;
+  }
+
+  /* The page's one headline, so it is set larger than a section title. */
+  .nf__h1 {
+    font-size: clamp(2.4rem, 5.2vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.045em;
+    max-inline-size: 14ch;
+  }
+
+  .nf__h1-pt {
+    margin-block-start: 0.5rem;
+  }
+
+  .nf__back {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  .nf__lang {
+    gap: 1rem;
+  }
+
+  .nf__nav-h {
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    font-weight: var(--weight-medium);
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--accent-fn);
+  }
+
+  .nf__lead {
+    max-inline-size: 40ch;
+    font-size: var(--t-body);
+    line-height: 1.5;
+    color: var(--fg-muted);
+  }
+
+  .nf__list {
+    display: grid;
+    gap: 0.15rem;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nf__list a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-block: 0.4rem;
+    font-size: 1.15rem;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--fg);
+    text-decoration: none;
+    transition: color 220ms var(--ease);
+  }
+
+  .nf__go {
+    color: var(--accent-fn);
+    transition: transform 220ms var(--ease);
+  }
+
+  .nf__list a:hover,
+  .nf__list a:focus-visible {
+    color: var(--accent-fn);
+  }
+
+  .nf__list a:hover .nf__go {
+    transform: translateX(4px);
+  }
+
+  /* Two columns: the title takes the row and the glyph would sit alone in
+     half of the next, so it steps out (it is decoration only). */
+  @media (max-width: 60rem) {
+    .nf__art {
+      display: none;
+    }
+
+    /* Each language then takes a full row, so no column line meets the
+       bottom edge in the middle. */
+    .nf :global(.pluses--end i[data-x='50']) {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nf__list a,
+    .nf__go {
+      transition: none;
+    }
+  }
+</style>

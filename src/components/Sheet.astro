@@ -1,0 +1,10 @@
+---
+/* A page's sheet: the root of the grid design (src/styles/grid.css). Every
+   view puts its sections (.frame) inside one Sheet; the sheet draws the two
+   rails from the header to the footer and spaces the sections apart. */
+---
+
+<div class="hd">
+  <div class="guides" aria-hidden="true"></div>
+  <slot />
+</div>

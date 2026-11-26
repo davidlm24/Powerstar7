@@ -1,0 +1,14 @@
+---
+/* A heading's text with its accent word set in the serif italic. The copy
+   marks the word with asterisks (src/i18n/accent.ts). A span, not <em>: the
+   accent is the typography's, not emphasis a screen reader should stress. */
+import { accentParts } from '../i18n/accent';
+
+interface Props {
+  text: string;
+}
+
+const parts = accentParts(Astro.props.text);
+---
+
+{parts.map((p) => (p.accent ? <span class="accent">{p.text}</span> : p.text))}

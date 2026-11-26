@@ -1,0 +1,299 @@
+/* =========================================================================
+   Themes — on trial (David, 2026-11-25). A page opts in with theme="dark",
+   theme="light" or theme="switch" on Base; today that is only the
+   /lab/home-dark test page, so nothing here touches the live site.
+
+   Both themes work one level below the roles: the RAW palette is redefined,
+   so every role built on it (--bg, --fg, …) and every component that reaches
+   for a raw token directly (the header frost reads --paper, fields read
+   --paper-hi and --field-edge, the skip link reads --ink) changes in one
+   place.
+
+   Dark, on the page ground #0E0E0C and the card #161613:
+     --ink #F2EFE8        17.6:1 / 16.4:1
+     --ink-muted #A7A196   7.5:1 /  7.0:1
+     --accent-fn #5c9dff   7.0:1 /  6.5:1
+     --field-edge #77736b  3.9:1 on the card
+     --blue #0e6fff        4.6:1 (focus ring)
+
+   Light, on Firecrawl's ground #F9F9F9 (measured on firecrawl.dev) and the
+   card #FFFFFF:
+     --ink #262626        14.4:1 / 15.1:1
+     --ink-muted #5C5C5C   6.4:1 /  6.7:1
+     --accent-fn #0c62e0   5.2:1 /  5.5:1
+     --field-edge #8A8A8A  3.3:1 / 3.5:1
+     --blue #0e6fff        4.2:1 (focus ring)
+     --rail #E6E6E6        decorative (Firecrawl's #EDEDED, a step firmer)
+
+   Solid buttons are --blue-fn with a white label in both: 5.47:1.
+   ========================================================================= */
+
+/* --- Dark ---------------------------------------------------------------- */
+.theme-dark {
+  color-scheme: dark;
+
+  --paper: #0e0e0c;
+  --paper-hi: #161613;
+  --ink: #f2efe8;
+  --ink-muted: #a7a196;
+  --ink-deep: #0a0a09;
+  --blue-wash: #121c30;
+  --field-edge: #77736b;
+  --error: #ff8f80;
+
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --fg-muted: var(--ink-muted);
+  --accent: #6aa6ff;
+  --accent-fn: #5c9dff;
+  --rail: rgb(242 239 232 / 0.08);
+  --rule: rgb(242 239 232 / 0.05);
+
+  --surface: #161613;
+  --surface-edge: rgb(242 239 232 / 0.08);
+  --plus: rgb(242 239 232 / 0.32);
+  --glyph-dot: #5c9dff;
+  --header-glass: rgb(14 14 12 / 0.72);
+  --float-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.8);
+}
+
+/* --- Light: Firecrawl's ground, not pure white ---------------------------- */
+.theme-light {
+  color-scheme: light;
+
+  --paper: #f9f9f9;
+  --paper-hi: #ffffff;
+  --ink: #262626;
+  --ink-muted: #5c5c5c;
+  --ink-deep: #1b1b1b;
+  --blue-wash: #eaf1fd;
+  --field-edge: #8a8a8a;
+  --error: #b42318;
+
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --fg-muted: var(--ink-muted);
+  --accent: #0e6fff;
+  --accent-fn: #0c62e0;
+  --rail: #e6e6e6;
+  --rule: #ededed;
+
+  --surface: #ffffff;
+  --surface-edge: #e6e6e6;
+  --plus: rgb(38 38 38 / 0.28);
+  --glyph-dot: #0c62e0;
+  --header-glass: rgb(249 249 249 / 0.75);
+  --float-shadow: 0 24px 48px -28px rgb(12 40 90 / 0.35);
+}
+
+/* --- Shared by both themes ------------------------------------------------ */
+:is(.theme-dark, .theme-light) {
+  /* Corners (David, 2026-11-25: "less radius"): cards and windows 6px,
+     fields 4px. The blue panels (hero, closing) are square since round 7
+     (2026-11-26), like the grid they sit on. Buttons stay pills. Grid
+     cells have none: their lines are shared. */
+  --radius: 6px;
+  --radius-sm: 4px;
+  --radius-float: 0;
+}
+
+/* Solid buttons stay on the darker blue so their white label clears AA. */
+:is(.theme-dark, .theme-light) .btn {
+  --btn-bg: var(--blue-fn);
+}
+
+:is(.theme-dark, .theme-light) .btn:hover,
+:is(.theme-dark, .theme-light) .btn:focus-visible {
+  --btn-bg: var(--blue-hover);
+}
+
+:is(.theme-dark, .theme-light) .btn--quiet {
+  --btn-bg: transparent;
+  --btn-fg: var(--fg);
+  border-color: var(--surface-edge);
+}
+
+:is(.theme-dark, .theme-light) .btn--sm {
+  min-height: 40px;
+  padding: 0.55rem 1rem;
+  font-size: var(--t-small);
+}
+
+:is(.theme-dark, .theme-light) ::selection {
+  background: var(--blue-fn);
+  color: #fff;
+}
+
+/* --- Header: the full-width bar with blur behind it ------------------- */
+/* Not a pill (David, 2026-11-25): the site's own frosted rectangle, always
+   on, with the rail line under it. :root raises these above Header.astro's
+   own scoped rules, which otherwise won until the page scrolled, so the bar
+   changed height and colour on the first scroll (review GV-3). The padding
+   keeps the bar at --header-h (92px with its 1px line) at all times. */
+:root:is(.theme-dark, .theme-light) .site-header,
+:root:is(.theme-dark, .theme-light) .site-header.is-stuck {
+  padding-block: var(--s3) calc(var(--s3) - 1px);
+  background-color: var(--header-glass);
+  border-block-end-color: var(--rail);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  backdrop-filter: blur(16px) saturate(1.3);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root:is(.theme-dark, .theme-light) .site-header,
+  :root:is(.theme-dark, .theme-light) .site-header.is-stuck { background-color: var(--paper); }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root:is(.theme-dark, .theme-light) .site-header,
+  :root:is(.theme-dark, .theme-light) .site-header.is-stuck { background-color: var(--paper); }
+}
+
+:is(.theme-dark, .theme-light) .site-header__row {
+  justify-content: flex-start;
+  gap: var(--s3);
+}
+
+:is(.theme-dark, .theme-light) .site-header .wordmark {
+  margin-inline-end: auto;
+}
+
+/* On a phone the bar reads in DOM order (wordmark, Menu, theme, CTA), so the
+   focus order matches what is seen (review A9): no reordering. */
+
+:is(.theme-dark, .theme-light) .site-header__cta { white-space: nowrap; }
+
+/* Between the full nav appearing (60rem) and about 72rem the nav, the
+   language link, the theme button and the CTA do not fit on one line (the
+   Portuguese labels are longer): the CTA steps aside; every page ends in a
+   "Start a project" panel anyway. */
+@media (min-width: 60.01rem) and (max-width: 72rem) {
+  :is(.theme-dark, .theme-light) .site-header__cta { display: none; }
+}
+
+/* On a phone the hero's own "Start a project" is right under the bar. */
+@media (max-width: 30rem) {
+  :is(.theme-dark, .theme-light) .site-header__cta { display: none; }
+}
+
+/* --- On the blue: white text, white buttons, a pale dot sheen ------------- */
+:is(.theme-dark, .theme-light) .on-blue {
+  --bg: var(--blue-fn);
+  --fg: #fff;
+  --fg-muted: rgb(255 255 255 / 0.92);
+  --accent-fn: #fff;
+  color: var(--fg);
+}
+
+:is(.theme-dark, .theme-light) .on-blue :focus-visible { outline-color: #fff; }
+
+:is(.theme-dark, .theme-light) .on-blue .btn {
+  --btn-bg: #fff;
+  --btn-fg: var(--blue-fn);
+  /* The pointer sheen on a white button: pale blue dots, thin, so the blue
+     label keeps its contrast (site.js reads these two). */
+  --btn-dots: #dce8ff;
+  --btn-dots-cap: 0.3;
+  box-shadow: 0 10px 24px -12px rgb(3 25 75 / 0.5);
+}
+
+:is(.theme-dark, .theme-light) .on-blue .btn:hover,
+:is(.theme-dark, .theme-light) .on-blue .btn:focus-visible {
+  --btn-bg: #fff;
+  --btn-fg: var(--blue-hover);
+}
+
+:is(.theme-dark, .theme-light) .on-blue .btn--quiet {
+  --btn-bg: transparent;
+  --btn-fg: #fff;
+  /* The sheen's dots are opaque pixels under the label, so they are a blue
+     white still reads on (4.8:1), not white (recheck of A3). */
+  --btn-dots: #2a6fdc;
+  --btn-dots-cap: 0.22;
+  border-color: rgb(255 255 255 / 0.55);
+  box-shadow: none;
+}
+
+/* In the hero the quiet button may sit where the blue starts to fade:
+   give it the blue itself, so its white label is 5.47:1 anywhere. */
+:is(.theme-dark, .theme-light) .hero.on-blue .btn--quiet {
+  --btn-bg: var(--blue-fn);
+}
+
+/* An opaque darker blue on hover and focus, not a white tint: the white
+   label is 7.6:1 on it and 4.8:1 on the sheen's dots (review A3). */
+:is(.theme-dark, .theme-light) .on-blue .btn--quiet:hover,
+:is(.theme-dark, .theme-light) .on-blue .btn--quiet:focus-visible {
+  --btn-bg: var(--blue-hover);
+  --btn-fg: #fff;
+  border-color: #fff;
+}
+
+/* The closing line is a link the width of the panel: its white focus ring
+   gets a dark band inside it, so it shows over the light end too (review
+   A7, WCAG technique C40). */
+:is(.theme-dark, .theme-light) .on-blue .closing__link:focus-visible {
+  box-shadow: 0 0 0 3px #0b3f99;
+}
+
+/* The rails run through the header's bottom line too (it is transparent
+   until the page scrolls, and the rails stopped 1px short of it). */
+:is(.theme-dark, .theme-light) .site-header.rails::before,
+:is(.theme-dark, .theme-light) .site-header.rails::after {
+  inset-block-end: -1px;
+}
+
+/* --- Footer ------------------------------------------------------------- */
+:is(.theme-dark, .theme-light) .site-footer {
+  border-block-start: 1px solid var(--rail);
+}
+
+/* The light theme keeps the footer dark, as Firecrawl and Cloudflare do. */
+.theme-light .site-footer {
+  border-block-start-color: transparent;
+}
+
+/* --- The light/dark switch ------------------------------------------------ */
+/* Header.astro's toggle swaps the theme inside document.startViewTransition()
+   and grows the new theme out of the button as a circle: a clip-path on
+   ::view-transition-new(root), animated from the script (480ms,
+   cubic-bezier(.2,.7,.2,1)). The browser's own cross-fade is off, so the old
+   picture holds still and stays underneath while the circle opens over it. */
+:root:is(.theme-dark, .theme-light)::view-transition-old(root),
+:root:is(.theme-dark, .theme-light)::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+:root:is(.theme-dark, .theme-light)::view-transition-old(root) { z-index: 0; }
+:root:is(.theme-dark, .theme-light)::view-transition-new(root) { z-index: 1; }
+
+/* Where there are no view transitions, the script sets .theme-switching on
+   <html> for 340ms: a 300ms colour ease on everything for the moment of the
+   swap only, so hover and reveal timings are untouched the rest of the time. */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition-property: background-color, color, border-color, fill, stroke, box-shadow !important;
+  transition-duration: 300ms !important;
+  transition-timing-function: ease !important;
+  transition-delay: 0s !important;
+}
+
+/* The script already switches instantly when less motion is asked for; this
+   holds even if the class lands anyway. */
+@media (prefers-reduced-motion: reduce) {
+  html.theme-switching,
+  html.theme-switching *,
+  html.theme-switching *::before,
+  html.theme-switching *::after {
+    transition: none !important;
+  }
+
+  :root:is(.theme-dark, .theme-light)::view-transition-group(*),
+  :root:is(.theme-dark, .theme-light)::view-transition-old(*),
+  :root:is(.theme-dark, .theme-light)::view-transition-new(*) {
+    animation: none !important;
+  }
+}

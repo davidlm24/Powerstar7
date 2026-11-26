@@ -1,0 +1,21 @@
+{
+  "measuredAt": "2026-11-26",
+  "page": "/",
+  "requests": 11,
+  "thirdPartyRequests": 0,
+  "weightKb": 189.9,
+  "weightRawKb": 333.7,
+  "cookies": 0,
+  "assets": [
+    "/_astro/Home.CnTEaLFA.css",
+    "/_astro/Pluses.Dx-SoMPA.css",
+    "/assets/fonts/geist-latin.woff2",
+    "/assets/fonts/source-serif-4-italic-latin.woff2",
+    "/assets/img/favicon.svg",
+    "/assets/js/hero-pixels.js",
+    "/assets/js/site.js",
+    "/assets/work/iconta.webp",
+    "/assets/work/ipda.webp",
+    "/assets/work/service.webp"
+  ]
+}

@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.preview/
+.astro/
+.DS_Store
+.impeccable/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example

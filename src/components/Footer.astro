@@ -1,0 +1,237 @@
+---
+import { useTranslations, route, CONTACT, type Lang, type PageKey } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  page?: PageKey;
+  /* The Animation switch (themed trial pages): one place to stop everything
+     that moves on its own, as WCAG 2.2.2 asks. */
+  motionToggle?: boolean;
+}
+
+const { lang, page, motionToggle = false } = Astro.props;
+const t = useTranslations(lang);
+
+const pages: { key: PageKey; label: string }[] = [
+  { key: 'home', label: t('nav.home') },
+  { key: 'work', label: t('nav.work') },
+  { key: 'services', label: t('nav.services') },
+  { key: 'pricing', label: t('nav.pricing') },
+  { key: 'about', label: t('nav.about') },
+  { key: 'contact', label: t('nav.contact') },
+];
+
+const legal: { key: PageKey; label: string }[] = [
+  { key: 'legal', label: t('footer.legal') },
+  { key: 'privacy', label: t('footer.privacy') },
+];
+---
+
+{/* One component, rendered on every page in both languages. The site it
+    replaces carried a 74-line footer copy-pasted into ten files — about a
+    third of all the HTML on the site. */}
+<footer class="site-footer invert rails">
+  <div class="container site-footer__inner">
+    <div class="site-footer__brand">
+      <p class="site-footer__wordmark">DesignActiv<span aria-hidden="true">.</span></p>
+      <p class="site-footer__blurb">{t('footer.blurb')}</p>
+      <a class="site-footer__email" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+    </div>
+
+    <nav class="site-footer__nav" aria-label={t('footer.nav')}>
+      <h2 class="site-footer__heading">{t('footer.nav')}</h2>
+      <ul>
+        {
+          pages.map((item) => (
+            <li>
+              <a href={route(item.key, lang)} aria-current={item.key === page ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <nav class="site-footer__nav" aria-label={t('footer.legalNav')}>
+      <h2 class="site-footer__heading">{t('footer.legalNav')}</h2>
+      <ul>
+        {
+          legal.map((item) => (
+            <li>
+              <a href={route(item.key, lang)} aria-current={item.key === page ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+
+  <div class="container site-footer__base">
+    <p>&copy; <span data-year>2026</span> DesignActiv. {t('footer.rights')}</p>
+    <p class="site-footer__built">{t('footer.built')}</p>
+    {
+      motionToggle && (
+        <button
+          type="button"
+          class="site-footer__motion"
+          role="switch"
+          aria-checked="true"
+          data-motion-toggle
+          data-on={t('footer.motion.on')}
+          data-off={t('footer.motion.off')}
+        >
+          {t('footer.motion')}: <span data-motion-state aria-hidden="true">{t('footer.motion.on')}</span>
+        </button>
+      )
+    }
+  </div>
+</footer>
+
+{
+  motionToggle && (
+    <script is:inline>
+      (function () {
+        var btn = document.querySelector('[data-motion-toggle]');
+        if (!btn) return;
+        var root = document.documentElement, state = btn.querySelector('[data-motion-state]');
+        var show = function () {
+          var off = root.classList.contains('motion-off');
+          btn.setAttribute('aria-checked', String(!off));
+          state.textContent = btn.getAttribute(off ? 'data-off' : 'data-on');
+        };
+        show();
+        btn.addEventListener('click', function () {
+          var off = root.classList.toggle('motion-off');
+          try { localStorage.setItem('designactiv-motion', off ? 'off' : 'on'); } catch (e) {}
+          show();
+          window.dispatchEvent(new Event('motionchange'));
+        });
+      })();
+    </script>
+  )
+}
+
+<style>
+  .site-footer {
+    margin-block-start: auto;
+    padding-block: var(--s6) var(--s4);
+  }
+
+  .site-footer__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+    gap: var(--s6) var(--s5);
+    padding-block-end: var(--s6);
+  }
+
+  .site-footer__wordmark {
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    /* --weight-medium: at --t-h3 the 400 display weight disappears against
+       the body copy beside it. Same reason as the header wordmark. */
+    font-weight: var(--weight-medium);
+    letter-spacing: -0.03em;
+  }
+
+  .site-footer__wordmark span {
+    color: var(--accent);
+  }
+
+  .site-footer__blurb {
+    max-width: 34ch;
+    margin-block-start: var(--s2);
+    color: var(--fg-muted);
+    font-size: var(--t-small);
+  }
+
+  .site-footer__email {
+    display: inline-block;
+    margin-block-start: var(--s3);
+    color: var(--fg);
+    font-size: var(--t-small);
+    text-underline-offset: 0.25em;
+  }
+
+  .site-footer__heading {
+    font-size: var(--t-small);
+    font-weight: var(--weight-heading);
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--fg-muted);
+  }
+
+  .site-footer__nav ul {
+    list-style: none;
+    padding: 0;
+    margin-block-start: var(--s3);
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .site-footer__nav a {
+    color: var(--fg);
+    font-size: var(--t-small);
+    text-decoration: none;
+  }
+
+  .site-footer__nav a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .site-footer__nav a[aria-current='page'] {
+    color: var(--fg-muted);
+  }
+
+  .site-footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s2) var(--s4);
+    padding-block-start: var(--s4);
+    color: var(--fg-muted);
+    font-size: var(--t-micro);
+  }
+
+  .site-footer__built {
+    letter-spacing: 0.01em;
+  }
+
+  /* The state word is hidden from the accessible name ("Animation:"),
+     which stays fixed; aria-checked carries on/off (review A10). It keeps to
+     the right when the row wraps (review GV-12), and needs its script, so it
+     is not shown without JavaScript (review A8). */
+  .site-footer__motion {
+    margin-inline-start: auto;
+    min-block-size: 32px;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--fg-muted);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  :global(html.no-js) .site-footer__motion {
+    display: none;
+  }
+
+  .site-footer__motion:hover {
+    color: var(--fg);
+  }
+
+  .site-footer__motion [data-motion-state] {
+    color: var(--fg);
+  }
+
+  @media (max-width: 48rem) {
+    .site-footer__inner {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s5);
+    }
+  }
+</style>

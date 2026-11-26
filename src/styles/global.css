@@ -1,0 +1,463 @@
+/* =========================================================================
+   DesignActiv — base layer
+   Reset, elements, and the handful of primitives every page composes from.
+   Component styling lives with its component; nothing decorative lives here.
+   ========================================================================= */
+
+@import './tokens.css';
+
+/* --- Reset --------------------------------------------------------------- */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Derived from --header-h, not guessed. Without it, tabbing to a link just
+     below the fold — or following the skip link, or any #anchor — parks the
+     target underneath the bar. */
+  scroll-padding-block-start: calc(var(--header-h) + var(--s2));
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-text);
+  font-size: var(--t-body);
+  font-weight: var(--weight-text);
+  line-height: var(--lh-body);
+  min-height: 100svh;
+  /* No -webkit-font-smoothing: antialiased. On macOS and iOS it renders text
+     THINNER than the default subpixel rendering, which at body weight 400 is
+     the difference between "light" and "anaemic", on exactly the machines a
+     design client looks at the site on. */
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg,
+video { display: block; max-width: 100%; height: auto; }
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Section entrances (David, 2026-10-16, from the taste-skill audit): as a
+   section scrolls in, its parts rise 24px and fade in, one after another
+   (site.js sets --reveal-delay, 70ms apart). Armed only by the .reveal class
+   (Base.astro), which is never set for reduced motion or without
+   IntersectionObserver, and is withdrawn if site.js does not arrive, so the
+   resting state everyone else sees is simply the finished page. The hero is
+   left out: it has its own landing. The selector list matches site.js
+   (REVEAL) exactly. A grid cell's own text (its heading, body and lead, a
+   project card) enters on its own, unless the cell is already one of the
+   parts above, so nothing rises twice; the cells themselves stay put, since
+   they carry the grid's lines. */
+.reveal main > :not(.hero) :is(h1, h2, .lead, .plan, .svc, .faq-item, .how__item, .closing__link, .prose > *, .contact__inner > *, .notice, .updated, :is(.cell__h, .cell__b, .head__lead, .pw):not(:is(.svc, .plan, .how__item, .contact__inner) *)) {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.reveal main > :not(.hero) :is(h1, h2, .lead, .plan, .svc, .faq-item, .how__item, .closing__link, .prose > *, .contact__inner > *, .notice, .updated, :is(.cell__h, .cell__b, .head__lead, .pw):not(:is(.svc, .plan, .how__item, .contact__inner) *)).is-in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 600ms var(--ease),
+    transform 700ms var(--ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Paper shows every part, whether or not it has scrolled into view. */
+@media print {
+  .reveal main > :not(.hero) * {
+    opacity: 1 !important;
+    transform: none !important;
+    mask-image: none !important;
+  }
+}
+
+/* --- The print coming up ---------------------------------------------------
+   What the studio prints does not rise and fade like a paragraph: it
+   DEVELOPS, the dots coming up in Bayer order like a print in the tray.
+   CSS only: the element steps through the sixteen 4x4 Bayer levels
+   (--dz-0 … --dz-16, Base.astro) to solid (dz-in). 1px cells (mask-size
+   4px for the 4-cell tile). mask-image is paint, not layout.
+
+   Who prints: .print-now, on a reply that prints when it changes (the
+   form status, a swapped price), added by site.js on each change.
+
+   Keyed on .reveal, so with reduced motion or without JavaScript nothing
+   is masked: the text simply changes. If a browser has no masks the
+   @supports block is skipped. */
+@supports (mask-image: url('')) {
+  .reveal .print-now {
+    mask-size: 4px 4px;
+    animation: dz-in var(--print-dur, 240ms) linear both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --- Typography ---------------------------------------------------------- */
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tr-heading);
+  text-wrap: balance;
+}
+
+/* The bare h1 carries the poster weight (the home hero, 500); the inner-page
+   titles set --weight-heading alongside their --t-title size. Every other
+   heading is 600: with headings and body in one face (Geist), weight and size
+   are all that separate a sub-head from the copy under it, and David asked
+   for clearer hierarchy (2026-10-14). */
+h1 { font-weight: var(--weight-display); }
+h2, h3, h4 { font-weight: var(--weight-heading); }
+
+h1 {
+  font-size: var(--t-hero);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tr-display);
+}
+
+h2 { font-size: var(--t-h2); }
+h3 { font-size: var(--t-h3); }
+
+/* The accent word a heading may carry (src/components/Accent.astro): Source
+   Serif 4 italic, regular weight whatever the heading's weight, 6% larger
+   because its x-height is smaller than Geist's. No synthesis: if the italic
+   is missing, the fallback serif shows rather than a slanted sans. */
+.accent {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.06em;
+  letter-spacing: -0.01em;
+  font-synthesis: none;
+}
+
+p { text-wrap: pretty; }
+
+a {
+  color: var(--accent-fn);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+a:hover { text-decoration-thickness: 2px; }
+
+/* One visible focus treatment, everywhere, in the display blue. */
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  /* No border-radius here on purpose: an outline follows the element's own
+     radius, so the ring matches whatever it rings without a single
+     per-element override. */
+}
+
+.invert :focus-visible { outline-color: var(--on-ink-blue); }
+
+/* --blue-fn, not --blue: the display blue behind white measured 4.43:1 and
+   failed AA for selected text. The functional sibling is 5.47:1. #fff stays
+   — --paper on this fill is 4.89:1, which passes but spends margin for
+   nothing. */
+::selection {
+  background: var(--blue-fn);
+  color: #fff;
+}
+
+/* --- Primitives ---------------------------------------------------------- */
+
+/* --- Bands ----------------------------------------------------------------
+   .rails draws the two page-edge rules: one vertical hairline at each of the
+   container's content edges, running the full height of every band. Both of
+   the references the owner chose do exactly this — trace.so and Makora each
+   carry two 1px rails at their content edge, flipping colour on dark
+   sections.
+
+   Drawn PER BAND rather than as one page-level overlay, because a single
+   full-height layer cannot flip with the ground it crosses: it would need a
+   second layer for every inverted section, and whatever z-index it took it
+   would paint either over or under the opaque bands. Per band, the layering
+   resolves itself and --rail is simply read from whatever band it is in.
+
+   isolation: isolate is what makes z-index: -1 mean "above this band's own
+   background, below its content" rather than "behind everything". It was kept
+   when the old frame was retired, for the mark field; the mark field is gone
+   and this is what it is for now. */
+.rails {
+  position: relative;
+  isolation: isolate;
+}
+
+.rails::before,
+.rails::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset-block: 0;
+  inline-size: 1px;
+  background: var(--rail);
+  pointer-events: none;
+}
+
+.rails::before { inset-inline-start: var(--rail-x); }
+.rails::after { inset-inline-end: var(--rail-x); }
+
+.container {
+  width: 100%;
+  max-width: var(--width-page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.measure { max-width: var(--measure); }
+.measure-wide { max-width: var(--width-text); }
+
+.lead {
+  font-size: var(--t-lead);
+  line-height: 1.45;
+  color: var(--fg-muted);
+  letter-spacing: -0.008em;
+}
+
+/* An unfilled slot, shown as unfilled. Used wherever a section is built but
+   its content is not written yet — the legal notice's missing registration
+   details, the prices, the FAQ answers.
+
+   It is deliberately NOT styled to look like content. The rule the legal page
+   set: "Unfilled fields read as unfilled. They are not styled to look like
+   content, because they are not content." Mono, tinted, angle-bracketed, so
+   nobody mistakes one for copy and nobody ships one by accident.
+
+   The text inside is written inline at the call site rather than as an i18n
+   key, because a placeholder is not content and does not belong in the
+   translation deck. */
+.pending {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  color: var(--fg-muted);
+  background: var(--blue-wash);
+  padding: 0.1em 0.35em;
+}
+
+/* --- Buttons -------------------------------------------------------------
+   Two: a solid one and a quiet one.
+
+   The buttons carry the one piece of ornament in this system — a light sheen
+   that follows the pointer across the face, plus a hairline top highlight
+   that gives the fill a direction. This is deliberate and it is the only
+   place it appears. The previous site put the same idea on a hero cursor
+   glow, a shine sweep on a pricing badge and a fade on every element on the
+   page; spread that thin it read as noise. Spent in exactly one place, on
+   the control the visitor is about to click, it reads as craft. */
+
+.btn {
+  --btn-bg: var(--accent-fn);
+  --btn-fg: #fff;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: 0.85rem 1.4rem;
+  min-height: 44px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  border: 1px solid transparent;
+  /* Pill (David, 2026-10-19, of square / 8px / pill), like the old site's
+     buttons and set against a site that is otherwise square. The sheen's
+     ::after inherits it; the focus ring follows it on its own. */
+  border-radius: 999px;
+  cursor: pointer;
+  /* A hairline of light along the top edge — one inset, not the three-layer
+     bevel the old system stamped on twelve different surfaces. */
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22);
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+/* The sheen. isolation + z-index:-1 puts it above the fill but below the
+   label, so the glyphs themselves are never washed out.
+
+   That is also the catch: "below the label" means "in the label's
+   background", which is the layer WCAG contrast is measured against. The
+   alpha here is not a taste decision — it is the largest value that keeps
+   white text on --blue-hover above 4.5:1 once composited, with margin.
+   Raising it, or lightening --blue-hover, breaks AA on hover. */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    9rem circle at var(--mx, 50%) var(--my, 50%),
+    rgb(255 255 255 / 0.2),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+  pointer-events: none;
+}
+
+/* Focus takes the same fill as hover, because focus also turns the sheen on
+   — and the sheen has to composite over the darker fill to stay readable.
+
+   Every hover rule below is guarded with :not(:disabled). A disabled button
+   still MATCHES :hover in CSS — it just never fires events — so without the
+   guard an inert control would light up, lift and track the pointer. */
+.btn:not(.btn--quiet):not(:disabled):hover,
+.btn:not(.btn--quiet):focus-visible {
+  --btn-bg: var(--blue-hover);
+}
+
+.btn:not(:disabled):hover { transform: translateY(-1px); }
+.btn:not(:disabled):active { transform: translateY(0) scale(0.98); }
+
+/* The dot sheen (site.js): a canvas under the label, the same layer the
+   gradient sheen uses. Once a button has one, its gradient sheen is off;
+   without JavaScript the gradient is what shows. */
+.btn__dots {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  inline-size: 100%;
+  block-size: 100%;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.btn.has-dots::after { display: none; }
+
+/* Only where there is a real pointer. On touch the sheen has nothing to
+   follow, and the old version stuck on after a tap. */
+@media (hover: hover) and (pointer: fine) {
+  .btn:not(:disabled):hover::after { opacity: 1; }
+}
+
+.btn:focus-visible::after { opacity: 1; }
+
+/* --- Disabled ------------------------------------------------------------
+   The contact form disables its submit button for the duration of a request.
+   Before this the disabled button was pixel-identical to an enabled one,
+   cursor included, so the one moment the control is genuinely inert was the
+   moment it looked most clickable.
+
+   The colour drains to a neutral rather than dimming with opacity. Opacity
+   composites the LABEL against the page ground along with the fill, which
+   takes an 18px/500 label to 3.54:1 even at 0.75 — worse than the state it
+   is meant to clarify. A flat neutral fill keeps it at 8.07:1. WCAG exempts
+   inactive controls from contrast, but there is no reason to spend that
+   exemption. The top highlight goes too: it is what gives the fill its
+   direction, and an inert surface should read flat. */
+.btn:disabled {
+  --btn-bg: var(--ink-muted);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* The quiet button has no fill to drain, so it mutes its label and keeps the
+   hairline. Without this it would inherit the neutral fill above. */
+.btn--quiet:disabled {
+  --btn-bg: transparent;
+  --btn-fg: var(--fg-muted);
+  border-color: var(--rule);
+}
+
+/* --rail, not --rule: at 1.08:1 the edge of an outlined button was
+   effectively invisible on the cream. 1.22:1 is the same line the page edges
+   draw. Honest caveat: neither clears WCAG 1.4.11's 3:1, which is defensible
+   here only because the button carries a visible text label — the boundary is
+   not what identifies the control. A field border has no label and so gets
+   --field-edge instead. */
+.btn--quiet {
+  --btn-bg: transparent;
+  --btn-fg: var(--fg);
+  border-color: var(--rail);
+  box-shadow: none;
+}
+
+/* The quiet button turns dark on hover (David, 2026-10-19): the roles
+   swap, fill from --fg and label from --bg, so on a dark band it turns
+   light instead and the label always keeps the ground's full contrast
+   (15.41:1 on paper). :not(:disabled) on the focus rule too: it costs
+   nothing and lifts the specificity over .invert .btn--quiet. */
+.btn--quiet:not(:disabled):hover,
+.btn--quiet:not(:disabled):focus-visible {
+  --btn-bg: var(--fg);
+  --btn-fg: var(--bg);
+  border-color: var(--fg);
+}
+
+/* The quiet sheen only ever shows on hover or focus, when the fill has
+   swapped dark — so it is cut from the LABEL's colour (currentColor): a
+   light sheen on the dark fill, and, inside .invert where the swap goes
+   the other way, a dark sheen on the light fill. 14% keeps the label
+   above 5:1 at the sheen's centre. */
+.btn--quiet::after {
+  background: radial-gradient(
+    9rem circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, currentColor 14%, transparent),
+    transparent 60%
+  );
+}
+
+.invert .btn--quiet { --btn-fg: var(--on-ink); }
+
+/* --- Accessibility -------------------------------------------------------- */
+
+.skip-link {
+  position: absolute;
+  inset-inline-start: var(--gutter);
+  inset-block-start: -100%;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background: var(--ink);
+  color: var(--paper);
+  text-decoration: none;
+}
+
+.skip-link:focus-visible { inset-block-start: var(--s2); }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The header is out of the flow (Header.astro), so main starts under it
+   and gives its height back here. A hero cancels this with a negative
+   margin to run its background up behind the header. */
+main { padding-block-start: var(--header-h); }

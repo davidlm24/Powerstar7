@@ -1,0 +1,5 @@
+# Files under dist/client that must NOT be uploaded as public assets.
+# Paths are relative to the assets directory (dist/client).
+
+# Apache-only config; on Cloudflare it was being served as a plain file.
+.htaccess

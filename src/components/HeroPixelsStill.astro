@@ -1,0 +1,38 @@
+---
+/* The stage of the hero's pixel field ([data-px-stage]): the first drawing,
+   still, at the same cell size the script uses (its box is 66 cells wide:
+   the 60-cell drawing plus 3 on each side; at most 330px, so 5px a cell).
+   It is what shows without JavaScript or with reduced motion; when the
+   script runs, it hides this and reads its box to place the live drawings. */
+import { FRAMES, COLS, ROWS } from '../data/hero-pixels';
+
+const LEVEL: Record<string, number> = { '#': 1, ':': 0.35 };
+const tones = new Map<number, string>();
+FRAMES[0].forEach((row, y) => {
+  for (let x = 0; x < COLS; x++) {
+    const o = LEVEL[row.charAt(x)];
+    if (o) tones.set(o, (tones.get(o) ?? '') + `M${x}.1 ${y}.1h.8v.8h-.8z`);
+  }
+});
+---
+
+<svg
+  class="hero-px-still"
+  data-px-stage
+  viewBox={`-3 -3 ${COLS + 6} ${ROWS + 6}`}
+  shape-rendering="crispEdges"
+  aria-hidden="true"
+  focusable="false"
+>
+  {[...tones].map(([o, d]) => <path d={d} fill-opacity={o} />)}
+</svg>
+
+<style>
+  .hero-px-still {
+    display: block;
+    inline-size: min(100%, 330px);
+    block-size: auto;
+    aspect-ratio: 66 / 48;
+    fill: var(--px-ink, #fff);
+  }
+</style>

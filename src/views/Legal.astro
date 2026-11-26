@@ -1,0 +1,153 @@
+---
+/* Legal notice (the 2026-11 redesign, rolled out 2026-11-26). The blue page
+   head, then one section: the "not complete" notice across the full width,
+   and under it one row per heading, the heading in the left column and its
+   content in the three columns beside it. Under 60rem each heading sits
+   above its content instead.
+
+   The angle-bracket placeholders (.pending, styled in global.css) stay
+   visibly unfilled until the real details are in. */
+import Base from '../layouts/Base.astro';
+import Sheet from '../components/Sheet.astro';
+import PageTop from '../components/PageTop.astro';
+import Pluses from '../components/Pluses.astro';
+import Notice from '../components/Notice.astro';
+import { useTranslations, CONTACT, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Base lang={lang} page="legal" title={t('legal.title')} description={t('legal.lead')}>
+  <Sheet>
+    <PageTop title={t('legal.h1')} lead={t('legal.lead')} />
+
+    <section class="frame">
+      <Pluses at={[0, 100]} />
+      <div class="grid">
+        <div class="cell span-4 doc__notice">
+          <Notice title={t('legal.todo.h')} body={t('legal.todo.b')} />
+        </div>
+
+        <section class="row doc__row">
+          <div class="cell doc__t"><h2 class="doc__h">{t('legal.basis')}</h2></div>
+          <div class="cell span-3 doc__b">
+            <div class="prose">
+              <p>
+                <span class="pending"
+                  >&lt;{lang === 'pt' ? 'razão social registrada' : 'registered legal entity'}&gt;</span
+                ><br />
+                <span class="pending">&lt;{lang === 'pt' ? 'endereço postal' : 'postal address'}&gt;</span
+                ><br />
+                <span class="pending">&lt;{lang === 'pt' ? 'país' : 'country'}&gt;</span>
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="row doc__row">
+          <div class="cell doc__t"><h2 class="doc__h">{t('legal.contact.h')}</h2></div>
+          <div class="cell span-3 doc__b">
+            <div class="prose">
+              <p>
+                <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="row doc__row">
+          <div class="cell doc__t"><h2 class="doc__h">{t('legal.vat.h')}</h2></div>
+          <div class="cell span-3 doc__b">
+            <div class="prose">
+              <p class="pending">
+                &lt;{lang === 'pt' ? 'número de IVA, se houver' : 'VAT ID, if any'}&gt;
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="row doc__row">
+          <div class="cell doc__t"><h2 class="doc__h">{t('legal.register.h')}</h2></div>
+          <div class="cell span-3 doc__b">
+            <div class="prose">
+              <p class="pending">
+                &lt;{lang === 'pt' ? 'tribunal de registro e número, se houver' : 'register court and number, if any'}&gt;
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="row doc__row">
+          <div class="cell doc__t"><h2 class="doc__h">{t('legal.responsible.h')}</h2></div>
+          <div class="cell span-3 doc__b">
+            <div class="prose">
+              <p class="pending">
+                &lt;{lang === 'pt' ? 'nome e endereço do responsável' : 'name and address of the person responsible'}&gt;
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+      <Pluses at={[0, 25, 100]} end />
+    </section>
+  </Sheet>
+</Base>
+
+<style>
+  /* The shared grid lives in src/styles/grid.css. */
+
+  /* The page has no closing panel, so its last section keeps the gap above
+     the footer that the closing frame would otherwise give. A margin, not
+     padding, so the end "+" marks stay on the grid's bottom line. */
+  .frame {
+    margin-block-end: var(--section-gap);
+  }
+
+  /* The notice brings its own margin and width cap for the old layout; in a
+     cell the padding does that job. */
+  /* The notice fills its cell, square like the grid; its text keeps a
+     reading measure (review GV-9). */
+  .doc__notice :global(.notice) {
+    margin: 0;
+    max-width: none;
+    border-radius: 0;
+  }
+
+  .doc__notice :global(.notice__body) {
+    max-width: var(--width-text);
+  }
+
+  .doc__h {
+    margin: 0;
+    font-size: 1.15rem;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    font-weight: 500;
+    color: var(--fg);
+    text-wrap: balance;
+  }
+
+  /* Placeholder paragraphs: the inline .pending ground hugs the text. */
+  .doc__b p.pending {
+    justify-self: start;
+  }
+
+  /* Two columns and one: the heading takes the full row, and its content
+     follows straight under it in the same block, no line between them. */
+  @media (max-width: 60rem) {
+    .doc__t {
+      grid-column: 1 / -1;
+      padding-block-end: 0.75rem;
+    }
+
+    .doc__b {
+      border-block-start: 0;
+      padding-block-start: 0;
+    }
+  }
+</style>

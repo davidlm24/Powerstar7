@@ -1,0 +1,511 @@
+/* =========================================================================
+   The page grid (the 2026-11 redesign, rolled out to every page on
+   2026-11-26). Imported by Base.astro, so it is global; every selector sits
+   under :where(.hd) so it only applies inside a page sheet (Sheet.astro) and
+   carries one class of specificity at most: a page's own scoped rules always
+   win over it.
+
+   The system:
+     .hd            the page root (Sheet.astro): one column of sections with
+                    --section-gap between them, and the two rails.
+     .guides        the rails, from the header to the footer. Only the rails
+                    run through the gaps; column lines belong to the cells.
+     .frame         one section, between the rails.
+     .pluses        "+" marks where a line really crosses (Pluses.astro).
+     .grid          four columns (two under 60rem, one under 40rem). Cells
+                    draw their own top and right edge, the grid its left rail
+                    and bottom line, so no line is ever drawn twice.
+     .cell          one cell; .span-2 / .span-4 widen it.
+     .cell--head    a section's title cell: bottom-aligned, faint dots.
+     .panel         a square blue panel (PageTop, ClosingPanel, plan cards)
+                    with the scattered pixel shine (HeroPixels).
+   ========================================================================= */
+
+:where(.hd) {
+  --cols: 4;
+  --cell-pad: clamp(1.5rem, 3vw, 2.75rem);
+  /* The gap between sections (David, round 5: "cramped"). */
+  --section-gap: clamp(3.5rem, 7vw, 6rem);
+  position: relative;
+  display: grid;
+  row-gap: var(--section-gap);
+  /* minmax(0, …): a marquee track inside is max-content wide. */
+  grid-template-columns: minmax(0, 1fr);
+  padding-block: var(--s3) 0;
+}
+
+:where(.hd) .guides {
+  position: absolute;
+  inset-block: calc(-1 * var(--header-h)) 0;
+  inset-inline: var(--rail-x);
+  border-inline: 1px solid var(--rail);
+  pointer-events: none;
+}
+
+:where(.hd) .frame {
+  position: relative;
+  margin-inline: var(--rail-x);
+}
+
+:where(.hd) .frame--top {
+  padding-block-start: var(--s2);
+}
+
+/* The closing panel's frame ends the sheet: a line under it on the light
+   theme; the dark footer draws its own. */
+:where(.hd) .frame--closing {
+  border-block-end: 1px solid var(--rail);
+  padding-block: 0 var(--section-gap);
+}
+
+:where(.theme-dark) :where(.hd) .frame--closing {
+  border-block-end: 0;
+}
+
+/* --- "+" marks ------------------------------------------------------------ */
+:where(.hd) .pluses {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 3;
+  block-size: 0;
+  pointer-events: none;
+}
+
+:where(.hd) .pluses i {
+  position: absolute;
+  inset-block-start: -5px;
+  inline-size: 11px;
+  block-size: 11px;
+  margin-inline-start: -5px;
+  background:
+    linear-gradient(var(--plus), var(--plus)) center / 1px 11px no-repeat,
+    linear-gradient(var(--plus), var(--plus)) center / 11px 1px no-repeat;
+}
+
+:where(.hd) .pluses i:not([data-x='0']) {
+  margin-inline-start: -6px;
+}
+
+:where(.hd) .pluses--end {
+  inset: auto 0 0;
+}
+
+:where(.hd) .pluses--end i {
+  inset-block-start: -6px;
+}
+
+/* --- The grid ------------------------------------------------------------- */
+:where(.hd) .grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-block-end: 1px solid var(--rail);
+}
+
+/* Cells paint the page colour, so each grid redraws the left rail. */
+:where(.hd) .grid::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 1px;
+  background: var(--rail);
+  pointer-events: none;
+}
+
+/* A list or other wrapper that is one full row of its section's grid. */
+:where(.hd) .row {
+  display: grid;
+  grid-column: 1 / -1;
+  /* Cells stretch to the row's height, so every right edge reaches the
+     row's bottom line. */
+  align-items: stretch;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+:where(.hd) .span-2 { grid-column: span 2; }
+:where(.hd) .span-3 { grid-column: span 3; }
+:where(.hd) .span-4 { grid-column: 1 / -1; }
+
+:where(.hd) .cell {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+  padding: var(--cell-pad);
+  background: var(--bg);
+  border-block-start: 1px solid var(--rail);
+  border-inline-end: 1px solid var(--rail);
+  color: var(--fg);
+}
+
+:where(.hd) .cell--flush { padding: 0; }
+
+:where(.hd) .cell--head {
+  align-content: end;
+  min-block-size: 14rem;
+  isolation: isolate;
+}
+
+:where(.hd) .cell--lead { align-content: end; }
+
+:where(.hd) .cell--art { place-items: center; }
+
+/* The layout's light dither: faint Bayer dots in each section's title cell. */
+:where(.hd) .cell--head::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 0 40%;
+  z-index: -1;
+  background: var(--accent-fn);
+  opacity: 0.09;
+  -webkit-mask-image: var(--dz-4), linear-gradient(90deg, transparent, #000 85%);
+  mask-image: var(--dz-4), linear-gradient(90deg, transparent, #000 85%);
+  -webkit-mask-size: 4px 4px, 100% 100%;
+  mask-size: 4px 4px, 100% 100%;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  pointer-events: none;
+}
+
+/* --- Type inside the grid ---------------------------------------------------- */
+:where(.hd) .head__h {
+  font-size: clamp(1.9rem, 3.6vw, 3rem);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  max-inline-size: 16ch;
+  text-wrap: balance;
+}
+
+:where(.hd) .head__h--sm {
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+}
+
+/* Accent words are colour only in this design: no italic (David, round 4). */
+:where(.hd) :is(.head__h, .panel__h1) .accent {
+  font-family: inherit;
+  font-style: normal;
+  font-weight: inherit;
+  letter-spacing: inherit;
+}
+
+:where(.hd) .head__h .accent {
+  color: var(--accent-fn);
+}
+
+:where(.hd) .head__lead {
+  max-inline-size: 40ch;
+  font-size: var(--t-lead);
+  line-height: 1.45;
+  color: var(--fg-muted);
+}
+
+:where(.hd) .head__more {
+  font-weight: var(--weight-medium);
+  color: var(--accent-fn);
+  text-decoration: none;
+}
+
+:where(.hd) .head__more:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+:where(.hd) .cell__art {
+  display: block;
+  margin-block-end: 1.25rem;
+}
+
+:where(.hd) .cell__h {
+  font-size: 1.15rem;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  font-weight: 500;
+  transition: color 220ms var(--ease);
+}
+
+:where(.hd) .cell__h--big { font-size: 1.5rem; }
+
+:where(.hd) .cell__b {
+  max-inline-size: 34ch;
+  font-size: var(--t-small);
+  line-height: 1.5;
+  color: var(--fg-muted);
+}
+
+/* Running text inside a cell (About, the legal pages). */
+:where(.hd) .prose {
+  display: grid;
+  gap: 1rem;
+  max-inline-size: 62ch;
+  color: var(--fg-muted);
+}
+
+:where(.hd) .prose :is(h2, h3) {
+  margin-block-start: 0.75rem;
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--fg);
+}
+
+:where(.hd) .prose a {
+  color: var(--accent-fn);
+  text-underline-offset: 3px;
+}
+
+/* --- Link cells: no lighter ground on hover. The title turns blue, the arrow
+   moves, and a 2px blue line grows along the cell's top edge. ------------- */
+:where(.hd) .cell--link {
+  text-decoration: none;
+}
+
+:where(.hd) .cell--link::before {
+  content: '';
+  position: absolute;
+  inset: -1px 0 auto;
+  block-size: 2px;
+  background: var(--accent-fn);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 320ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+:where(.hd) .cell--link:hover::before,
+:where(.hd) .cell--link:focus-visible::before {
+  transform: scaleX(1);
+}
+
+:where(.hd) .cell--link:hover .cell__h,
+:where(.hd) .cell--link:focus-visible .cell__h {
+  color: var(--accent-fn);
+}
+
+:where(.hd) .cell--link:focus-visible {
+  outline-offset: -4px;
+}
+
+:where(.hd) .cell__go {
+  display: inline-block;
+  color: var(--accent-fn);
+  transition: transform 220ms var(--ease);
+}
+
+:where(.hd) .cell--link:hover .cell__go {
+  transform: translateX(4px);
+}
+
+/* --- The blue panels ----------------------------------------------------------- */
+:where(.hd) .panel {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  display: grid;
+  align-items: center;
+  border-radius: var(--radius-float);
+  /* White pixels on the blue, in both themes. */
+  --px-ink: #ffffff;
+}
+
+/* The light end stays at #1a68e0 (white on it is 5.1:1): a panel's text can
+   run far to the right at laptop widths (review A1, 2026-11-26); the pixel
+   shine lightens the right side instead. The home hero keeps its own,
+   lighter gradient: its text never leaves the left half. */
+:where(.hd) .panel__light {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(45% 80% at 8% 0%, rgb(255 255 255 / 0.1), transparent 70%),
+    linear-gradient(100deg, #0b5bd3 0%, var(--blue-fn) 50%, #1a68e0 100%);
+}
+
+/* Kept as an alias: the plan card asked for this before it was the base. */
+:where(.hd) .panel__light--even {}
+
+/* The page head's shine keeps to the right edge, clear of the headline and
+   its pale-blue accent word (review A2); on a stacked panel, to the bottom
+   right corner, under the text. Specificity above HeroPixels' own mask. */
+.hd .panel--top .hero-px--corner {
+  -webkit-mask-image: radial-gradient(ellipse 34% 120% at 100% 50%, #000 15%, rgb(0 0 0 / 0.3) 45%, transparent 75%);
+  mask-image: radial-gradient(ellipse 34% 120% at 100% 50%, #000 15%, rgb(0 0 0 / 0.3) 45%, transparent 75%);
+}
+
+:where(.hd) .panel__body {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1.25rem;
+}
+
+/* The page head (PageTop.astro). */
+:where(.hd) .panel--top {
+  min-block-size: clamp(16rem, 24vw, 21rem);
+  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.75rem, 5vw, 5rem);
+}
+
+:where(.hd) .panel__h1 {
+  font-size: clamp(2.4rem, 5.2vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  font-weight: 500;
+  color: #fff;
+  text-wrap: balance;
+  max-inline-size: 18ch;
+}
+
+:where(.hd) .panel__h1 .accent,
+:where(.hd) .panel__mark {
+  color: #cfe0ff;
+}
+
+:where(.hd) .panel__lead {
+  max-inline-size: 44ch;
+  font-size: var(--t-lead);
+  line-height: 1.45;
+  color: #fff;
+}
+
+/* The closing panel (ClosingPanel.astro). */
+:where(.hd) .panel--closing {
+  padding: clamp(2.5rem, 6vw, 4.5rem) var(--cell-pad);
+  box-shadow:
+    0 40px 90px -40px rgb(12 98 224 / 0.7),
+    var(--float-shadow);
+}
+
+:where(.hd) .closing__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #fff;
+  text-decoration: none;
+  font-size: clamp(2.5rem, 6.5vw, 5.25rem);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+:where(.hd) .closing__arrow {
+  transition: transform 240ms var(--ease);
+}
+
+:where(.hd) .closing__link:hover .closing__arrow {
+  transform: translateX(10px);
+}
+
+/* --- Questions (Faq.astro): one row per question ------------------------------- */
+:where(.hd) .faq-item {
+  gap: 0;
+  padding-block: 0;
+}
+
+/* The focused row sits above the next one, so its focus ring keeps all four
+   sides (review A6). */
+:where(.hd) .faq-item:focus-within {
+  z-index: 1;
+}
+
+:where(.hd) .faq-item__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.4rem;
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  cursor: pointer;
+  list-style: none;
+}
+
+:where(.hd) .faq-item__q::-webkit-details-marker {
+  display: none;
+}
+
+:where(.hd) .faq-item__q::after {
+  content: '+';
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  color: var(--accent-fn);
+  transition: transform 220ms var(--ease);
+}
+
+:where(.hd) .faq-item[open] .faq-item__q::after {
+  transform: rotate(45deg);
+}
+
+:where(.hd) .faq-item__q:hover {
+  color: var(--accent-fn);
+}
+
+:where(.hd) .faq-item__a {
+  max-inline-size: 62ch;
+  padding-block-end: 1.6rem;
+  color: var(--fg-muted);
+}
+
+/* --- Narrower screens ------------------------------------------------------------ */
+@media (max-width: 60rem) {
+  :where(.hd) { --cols: 2; }
+
+  /* At two columns only the marks a section opts in to (Pluses' narrow
+     prop: the rails by default) can sit on a real crossing. */
+  :where(.hd) .pluses i:not([data-narrow]) {
+    display: none;
+  }
+
+  :where(.hd) .span-3 { grid-column: 1 / -1; }
+
+  :where(.hd) .panel__light {
+    background: linear-gradient(180deg, #0b5bd3 0%, var(--blue-fn) 60%, #1f6fe8 100%);
+  }
+
+  /* A stacked page head: its text runs the full width, so the shine keeps
+     to a strip along the bottom, in the panel's own padding, under the last
+     line of text (recheck of A1/A2 at 320-768px). */
+  .hd .panel--top {
+    padding-block-end: 4.5rem;
+  }
+
+  .hd .panel--top .hero-px--corner {
+    -webkit-mask-image: linear-gradient(180deg, transparent calc(100% - 3.25rem), rgb(0 0 0 / 0.5) calc(100% - 2rem), #000 calc(100% - 0.5rem));
+    mask-image: linear-gradient(180deg, transparent calc(100% - 3.25rem), rgb(0 0 0 / 0.5) calc(100% - 2rem), #000 calc(100% - 0.5rem));
+  }
+}
+
+@media (max-width: 39.99rem) {
+  :where(.hd) { --cols: 1; }
+
+  :where(.hd) .pluses i:not([data-x='0']):not([data-x='100']) {
+    display: none;
+  }
+
+  :where(.hd) .span-2 { grid-column: auto; }
+
+  :where(.hd) .cell--head {
+    min-block-size: 0;
+    padding-block-start: clamp(2.5rem, 10vw, 3.5rem);
+  }
+
+  :where(.hd) .cell--art { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.hd) .closing__arrow,
+  :where(.hd) .faq-item__q::after,
+  :where(.hd) .cell__go,
+  :where(.hd) .cell--link::before {
+    transition: none;
+  }
+}

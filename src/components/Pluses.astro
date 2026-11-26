@@ -1,0 +1,23 @@
+---
+/* The "+" marks on a section's top line (or, with `end`, its bottom line),
+   only where a line really crosses it: the rails (0 and 100) always, and an
+   inner column line (25, 50, 75 %) only where a cell edge meets that line.
+
+   `at` is for four columns. `narrow` names the marks that still sit on a
+   crossing at two columns (under 60rem): the rails by default; add 50 only
+   where the section's first (or, for `end`, last) two-column row really has
+   two cells. That depends on item counts, so recheck it when the number of
+   steps, projects or figures changes. Under 40rem only the rails show
+   (src/styles/grid.css). */
+interface Props {
+  at?: number[];
+  narrow?: number[];
+  end?: boolean;
+}
+
+const { at = [0, 100], narrow = [0, 100], end = false } = Astro.props;
+---
+
+<span class:list={['pluses', end && 'pluses--end']} aria-hidden="true">
+  {at.map((x) => <i data-x={x} data-narrow={narrow.includes(x) ? '' : undefined} style={`left: ${x}%`}></i>)}
+</span>
