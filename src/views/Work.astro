@@ -1,21 +1,27 @@
 ---
-/* Work (the 2026-11 redesign, rolled out 2026-11-26). The blue page head,
-   then the client sites one to a row of the grid, then this site as the
-   team's own example with its evidence and measured figures, and the
-   closing panel.
+/* Work, now the example sites (David, 2026-11-27): the blue page head, then
+   four example sites for the kinds of small business the studio works with
+   (src/data/examples.ts, drawn by ExampleSite.astro), one to a row of the
+   grid, then this site as the team's own example with its evidence and
+   measured figures, and the closing panel. The three client projects of the
+   Powerstar7 years were here until David took them off the site (old, and
+   some have moved on). The route stays /work (/pt/trabalhos); the nav calls
+   it Examples.
 
-   Each client site is an exhibit row: the live site's screenshot in a plain
-   browser window across three columns (the bar names the address, a fact the
-   old cards showed and ProjectWindow does not), and what the business is in
-   the fourth. Under 60rem the text drops under the screenshot. */
+   Each example is an exhibit row: the site in a plain browser window across
+   three columns (the bar shows its made-up .example address), and in the
+   fourth what kind of business it is, the feature it is built around, and
+   what a site like it includes. Under 60rem the text drops under the
+   window. */
 import Base from '../layouts/Base.astro';
 import Sheet from '../components/Sheet.astro';
 import PageTop from '../components/PageTop.astro';
 import Pluses from '../components/Pluses.astro';
 import ClosingPanel from '../components/ClosingPanel.astro';
 import Glyph, { type GlyphName } from '../components/Glyph.astro';
-import { PROJECTS } from '../data/projects';
-import { useTranslations, metrics, type Lang } from '../i18n/ui';
+import ExampleSite from '../components/ExampleSite.astro';
+import { EXAMPLES, EXAMPLE_KEYS, EXAMPLE_META } from '../data/examples';
+import { useTranslations, route, metrics, type Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
@@ -36,14 +42,6 @@ const measuredOn = metrics.measuredAt
   : '';
 
 const hasFigures = metrics.measuredAt !== null && metrics.weightKb > 0;
-
-/* Written out rather than built with a template literal, so every key keeps
-   its type check. */
-const copy = {
-  service: { line: t('work.project.service.line'), tag: t('work.project.service.tag') },
-  iconta: { line: t('work.project.iconta.line'), tag: t('work.project.iconta.tag') },
-  ipda: { line: t('work.project.ipda.line'), tag: t('work.project.ipda.tag') },
-};
 
 /* Each claim about this site with the pixel glyph that says the same thing:
    a server for speed, the hand for ease of use, the refused cookie for no
@@ -66,56 +64,51 @@ const MID = [0, 50, 100];
   <Sheet>
     <PageTop title={t('work.h1')} lead={t('work.lead')} />
 
-    {/* --- The client sites, one to a row (David, 2026-10-19: the three
-        projects from the old Powerstar7 site are theirs) ------------------ */}
+    {/* --- The example sites, one to a row ------------------------------ */}
     <section class="frame">
       <Pluses at={EXHIBIT} />
       <div class="grid">
         {
-          PROJECTS.map((p) => (
-            <article class="row exhibit">
-              <div class="cell cell--flush span-3 exhibit__media">
-                <div class="exhibit__window">
-                  {/* The bar is drawn, not captured: it frames the screenshot
-                      as a website and names the address. */}
-                  <span class="exhibit__bar" aria-hidden="true">
-                    <i></i>
-                    <i></i>
-                    <i></i>
-                    <b>{p.host}</b>
-                  </span>
-                  <img
-                    src={`/assets/work/${p.key}.webp`}
-                    srcset={`/assets/work/${p.key}.webp 1x, /assets/work/${p.key}@2x.webp 2x`}
-                    width="720"
-                    height="450"
-                    alt={t('work.shot.alt', { name: p.name })}
-                    loading="lazy"
-                    decoding="async"
-                  />
+          EXAMPLE_KEYS.map((k) => {
+            const ex = EXAMPLES[lang][k];
+            return (
+              <article class="row exhibit" id={k}>
+                <div class="cell cell--flush span-3 exhibit__media">
+                  <div class="exhibit__window">
+                    {/* The bar is drawn: it frames the example as a website
+                        and shows its made-up address. */}
+                    <span class="exhibit__bar" aria-hidden="true">
+                      <i></i>
+                      <i></i>
+                      <i></i>
+                      <b>{EXAMPLE_META[k].host}</b>
+                    </span>
+                    <ExampleSite name={k} lang={lang} />
+                  </div>
                 </div>
-              </div>
-              <div class="cell exhibit__text">
-                <h2 class="exhibit__name" lang={p.key === 'ipda' ? 'de' : undefined}>
-                  {p.name}
-                </h2>
-                <p class="exhibit__tag">{copy[p.key].tag}</p>
-                <p class="cell__b">{copy[p.key].line}</p>
-                <a class="exhibit__link" href={p.url}>
-                  {t('work.visit')}
-                  <span class="visually-hidden"> — {p.name}</span>{' '}
-                  <span class="exhibit__go" aria-hidden="true">&rarr;</span>
-                </a>
-              </div>
-            </article>
-          ))
+                <div class="cell exhibit__text">
+                  <h2 class="exhibit__name">{ex.type}</h2>
+                  <p class="exhibit__tag">{t('examples.tag', { feature: ex.feature })}</p>
+                  <p class="cell__b">{ex.line}</p>
+                  <ul class="exhibit__list">
+                    {ex.includes.map((item) => <li>{item}</li>)}
+                  </ul>
+                  <a class="exhibit__link" href={route('contact', lang)}>
+                    {t('work.ex.cta')}
+                    <span class="visually-hidden"> — {ex.type}</span>{' '}
+                    <span class="exhibit__go" aria-hidden="true">&rarr;</span>
+                  </a>
+                </div>
+              </article>
+            );
+          })
         }
       </div>
       <Pluses at={EXHIBIT} end />
     </section>
 
     {/* --- This site: the team's own example ------------------------------- */}
-    <section class="frame">
+    <section class="frame" id="this">
       <Pluses at={MID} />
       <div class="grid">
         <div class="cell cell--head span-2 this__head">
@@ -213,7 +206,10 @@ const MID = [0, 50, 100];
 <style>
   /* The shared grid, panels and type live in src/styles/grid.css. */
 
-  /* --- The client sites -------------------------------------------------------- */
+  /* --- The example sites ------------------------------------------------------- */
+  /* Home's stage links here, and its measured figures to #this;
+     global.css's scroll-padding clears the header. */
+
   /* The faint wash from above, as on the home page's project cards: blue at
      10 %, gone by the screenshot's middle. */
   .exhibit__media {
@@ -253,17 +249,6 @@ const MID = [0, 50, 100];
     font-weight: var(--weight-text);
   }
 
-  .exhibit__window img {
-    display: block;
-    inline-size: 100%;
-    block-size: auto;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    object-position: top;
-    /* Seen only until the lazy image arrives. */
-    background-color: color-mix(in srgb, var(--fg) 4%, transparent);
-  }
-
   /* The name sits level with the browser bar beside it. */
   .exhibit__text {
     align-content: start;
@@ -279,6 +264,33 @@ const MID = [0, 50, 100];
   .exhibit__tag {
     font-size: var(--t-micro);
     color: var(--fg-muted);
+  }
+
+  /* What a site like it includes: the strip's small accent squares, no
+     dividing lines (the house rule). */
+  .exhibit__list {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--t-small);
+    line-height: 1.4;
+  }
+
+  .exhibit__list li {
+    display: grid;
+    grid-template-columns: 5px 1fr;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .exhibit__list li::before {
+    content: '';
+    inline-size: 5px;
+    block-size: 5px;
+    background: var(--accent-fn);
+    transform: translateY(-0.15em);
   }
 
   .exhibit__link {

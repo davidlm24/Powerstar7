@@ -1,24 +1,24 @@
 ---
-/* The pixel field of the blue panels (lab trial; rounds 6-7, David
-   2026-11-26). One layer of small square cells over a whole panel, under
-   its content. hero-pixels.js draws it on the canvas:
+/* The pixel field of the blue panels (rounds 6-7, David 2026-11-26). One
+   layer of small square cells over a whole panel, under its content.
+   hero-pixels.js draws it on the canvas:
      - every cell at its own faint opacity, a few lighting up at random,
-       denser near the focus;
-     - variant "hero": pixel drawings (a browser, a phone, a check) around
-       the stage ([data-px-stage], HeroPixelsStill), scattered and glitched,
-       dissolving from one into the next;
-     - variant "corner": no drawing, a cluster of bright scattered pixels
+       denser near the stage or focus;
+     - variant "hero": bright pixels gathered around the panel's stage
+       ([data-px-stage], the client-site window of HeroStage.astro), which
+       reshuffle every few seconds and tell the stage to show the next site
+       (2026-11-27; the pixel drawings it showed before are retired);
+     - variant "corner": no stage, a cluster of bright scattered pixels
        around `focus` (fractions of the panel, "1 0" = top right) that
        reshuffles now and then. For panels whose content sits elsewhere: the
-       closing panel, and later the pricing cards.
+       closing panel, the page tops, the pricing card.
    The parent must be positioned and clip its corners; its content needs
    position: relative and z-index: 1 to sit above the field.
    Each variant fades out toward the panel's text (masks below), so white
    text never sits on more than a few percent of white.
    Without JavaScript, or with reduced motion, the canvas stays empty and the
-   faint empty squares here (plus the hero's still drawing) show instead.
+   faint empty squares here show instead.
    Colour: --px-ink, set by the page. */
-import { FRAMES } from '../data/hero-pixels';
 
 interface Props {
   variant?: 'hero' | 'corner';
@@ -33,7 +33,6 @@ const hero = variant === 'hero';
 <div
   class:list={['hero-px', `hero-px--${variant}`]}
   data-hero-pixels
-  data-frames={hero ? JSON.stringify(FRAMES) : undefined}
   data-focus={hero ? undefined : focus}
   style={hero ? undefined : `--fx: ${Number(focus.split(' ')[0]) * 100}%; --fy: ${Number(focus.split(' ')[1]) * 100}%`}
   aria-hidden="true"

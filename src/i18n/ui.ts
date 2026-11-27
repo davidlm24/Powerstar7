@@ -58,7 +58,7 @@ export const ui = {
     'site.description': 'A web agency for small businesses: websites, branding, SEO, email and website care. Public prices and a written proposal before work starts.',
 
     'nav.home': 'Home',
-    'nav.work': 'Work',
+    'nav.work': 'Examples',
     'nav.services': 'Services',
     'nav.pricing': 'Pricing',
     'nav.about': 'About',
@@ -100,20 +100,31 @@ export const ui = {
     'home.title': 'DesignActiv — web agency for small businesses',
     'home.cta': 'Start a project',
     'home.cta.secondary': 'See prices',
-    /* The band along the foot of the hero lists the five services; the
-       names are svc.*.name (Home.astro), so they never drift from Services. */
-    'home.band.label': 'what we do',
+    /* The hero's stage (HeroStage.astro): its link's name, and the caption
+       tag under each example ({feature} from src/data/examples.ts). */
+    'home.stage.label': 'Example sites for a hair salon, a bakery, an electrician and a restaurant',
+    'examples.tag': 'Example · {feature}',
+    /* The facts row under the hero (2026-11-27, replacing the services strip):
+       a value and one line each. {price} comes from src/data/pricing.ts. */
+    'home.fact.price.v': 'From {price}',
+    'home.fact.price.b': 'Yes, our prices are public.',
+    'home.fact.proposal.v': 'Price in writing first',
+    'home.fact.proposal.b': 'You agree the proposal before any work starts.',
+    'home.fact.time.v': '2 to 4 weeks',
+    'home.fact.time.b': 'For a straightforward site, from the day we have your text and photos.',
+    'home.fact.care.v': '{price} a month, optional',
+    'home.fact.care.b': 'Website care is month to month: end it with 30 days’ notice.',
     'closing.lead': 'Tell us about it in a few lines — you’ll hear back, usually within a working day, and if it’s a fit you get a written proposal with the price.',
 
     'home.proof.weight': 'total page weight',
+    'home.proof.cookies': 'cookies',
+    'home.proof.note': 'This page, measured {date}',
     'home.proof.requests': 'network requests',
     'home.proof.thirdParty': 'third-party requests',
 
 
     'home.services.h2': 'Five things we *do*.',
     'home.services.link': 'All services',
-    'home.work.h2': 'Recent *work*.',
-    'home.work.link': 'All work',
 
     'home.position.h2': 'A website that *fits* your business.',
 
@@ -209,20 +220,11 @@ export const ui = {
     'svc.hosting.g6': 'Email support',
 
     /* --- Work ----------------------------------------------------------- */
-    'work.title': 'Sites we’ve built — DesignActiv',
-    'work.h1': 'Sites we’ve *built*.',
+    'work.title': 'Example sites — DesignActiv',
+    'work.h1': 'What your site could *look like*.',
     'work.callout': 'you’re looking at it',
-    'work.lead': 'Websites we designed and built for businesses and organisations, in French, Portuguese and German. Below them, this site.',
-    'work.visit': 'Visit the site',
-    'work.shot.alt': 'The {name} home page',
-    /* Facts only from each live site or the old Powerstar7 page: what the
-       organisation does and the site's language. No figures or results. */
-    'work.project.service.line': 'Home cleaning in Brussels since 2014: cleaning, ironing and help with shopping.',
-    'work.project.service.tag': 'Website · in French',
-    'work.project.iconta.line': 'Digital financial services for people, businesses and partner shops.',
-    'work.project.iconta.tag': 'Website · in Portuguese',
-    'work.project.ipda.line': 'The German site of the Pentecostal church God is Love, with services in Essen and Münster.',
-    'work.project.ipda.tag': 'Website · in German and Portuguese',
+    'work.lead': 'Four example sites for the kinds of business we work with, each built around what its customers come to do. The names are made up. Below them, this site.',
+    'work.ex.cta': 'Start a project like this',
 
     'work.this.h': 'This website',
     'work.this.b': 'Our own site: quick to open, easy to read, and clear about what we offer and what it costs.',
@@ -433,7 +435,7 @@ export const ui = {
     'site.description': 'Agência web para pequenas empresas: sites, identidade visual, SEO, e-mail e manutenção. Preços públicos e proposta por escrito antes de começar.',
 
     'nav.home': 'Início',
-    'nav.work': 'Trabalhos',
+    'nav.work': 'Exemplos',
     'nav.services': 'Serviços',
     'nav.pricing': 'Preços',
     'nav.about': 'Sobre nós',
@@ -470,18 +472,27 @@ export const ui = {
     'home.title': 'DesignActiv — agência web para pequenas empresas',
     'home.cta': 'Começar um projeto',
     'home.cta.secondary': 'Ver preços',
-    'home.band.label': 'o que fazemos',
+    'home.stage.label': 'Sites de exemplo para um salão de beleza, uma padaria, um eletricista e um restaurante',
+    'examples.tag': 'Exemplo · {feature}',
+    'home.fact.price.v': 'A partir de {price}',
+    'home.fact.price.b': 'Sim, nossos preços são públicos.',
+    'home.fact.proposal.v': 'Preço por escrito, antes',
+    'home.fact.proposal.b': 'Você aprova a proposta antes de qualquer trabalho começar.',
+    'home.fact.time.v': '2 a 4 semanas',
+    'home.fact.time.b': 'Para um site simples, a partir do dia em que recebemos seus textos e fotos.',
+    'home.fact.care.v': '{price} por mês, opcional',
+    'home.fact.care.b': 'A Manutenção do site é mês a mês: encerre com 30 dias de aviso.',
     'closing.lead': 'Conte em poucas linhas — você recebe uma resposta, normalmente em um dia útil, e, se fizer sentido, uma proposta por escrito com o preço.',
 
     'home.proof.weight': 'peso total da página',
+    'home.proof.cookies': 'cookies',
+    'home.proof.note': 'Esta página, medida em {date}',
     'home.proof.requests': 'requisições de rede',
     'home.proof.thirdParty': 'requisições a terceiros',
 
 
     'home.services.h2': 'Cinco coisas que *fazemos*.',
     'home.services.link': 'Todos os serviços',
-    'home.work.h2': '*Trabalhos* recentes.',
-    'home.work.link': 'Todos os trabalhos',
 
     'home.position.h2': 'Um site que *combina* com o seu negócio.',
 
@@ -575,18 +586,11 @@ export const ui = {
     'svc.hosting.g6': 'Suporte por e-mail',
 
     /* --- Work ----------------------------------------------------------- */
-    'work.title': 'Sites que fizemos — DesignActiv',
-    'work.h1': 'Sites que *fizemos*.',
+    'work.title': 'Sites de exemplo — DesignActiv',
+    'work.h1': 'Como o seu site pode *ficar*.',
     'work.callout': 'é este que você está vendo',
-    'work.lead': 'Sites que desenhamos e construímos para empresas e organizações, em francês, português e alemão. Logo abaixo, este site.',
-    'work.visit': 'Ver o site',
-    'work.shot.alt': 'Página inicial do site {name}',
-    'work.project.service.line': 'Limpeza residencial em Bruxelas desde 2014: limpeza, passadoria e ajuda com compras.',
-    'work.project.service.tag': 'Site · em francês',
-    'work.project.iconta.line': 'Serviços financeiros digitais para pessoas, empresas e lojas credenciadas.',
-    'work.project.iconta.tag': 'Site · em português',
-    'work.project.ipda.line': 'O site alemão da Igreja Pentecostal Deus é Amor, com cultos em Essen e Münster.',
-    'work.project.ipda.tag': 'Site · em alemão e português',
+    'work.lead': 'Quatro sites de exemplo para os tipos de negócio com que trabalhamos, cada um pensado para o que os clientes vêm fazer. Os nomes são inventados. Logo abaixo, este site.',
+    'work.ex.cta': 'Começar um projeto assim',
 
     'work.this.h': 'Este site',
     'work.this.b': 'Nosso próprio site: abre rápido, é fácil de ler e deixa claro o que oferecemos e quanto custa.',

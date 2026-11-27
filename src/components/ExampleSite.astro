@@ -1,0 +1,560 @@
+---
+/* One example site (src/data/examples.ts), drawn in HTML and CSS: the home
+   page of a made-up small business, in the frame of a 16:10 screenshot.
+
+   Every length is in cqw (a hundredth of the frame's width; the wrapper is
+   the size container), so the same site reads the same in the hero's small
+   window and on the Work page's wide one, like a screenshot scaled, but
+   with crisp text and no image request.
+
+   Each example has its own palette and type (Geist, and the Source Serif 4
+   italic the site already loads), and its picture areas are printed in the
+   site's own Bayer dots (--dz-* from Base.astro) rather than photographs,
+   which this studio does not have.
+
+   It is a picture: aria-hidden, nothing in it is focusable. What it shows
+   is said in words next to it (the hero caption, the Work page's text). */
+import { EXAMPLES, EXAMPLE_META, type ExampleKey } from '../data/examples';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  name: ExampleKey;
+  lang: Lang;
+  class?: string;
+}
+
+const { name, lang, class: extra } = Astro.props;
+const s = EXAMPLES[lang][name].site;
+const meta = EXAMPLE_META[name];
+---
+
+<div class:list={['ex-box', extra]} aria-hidden="true">
+  {
+    name === 'salon' && (
+      <div class="ex ex--salon">
+        <div class="ex__nav">
+          <b class="ex__logo ex__serif">{meta.name}</b>
+          <span class="ex__links"><i>{s.nav1}</i><i>{s.nav2}</i><i class="ex__navcta">{s.nav3}</i></span>
+        </div>
+        <div class="ex__body">
+          <div class="ex__copy">
+            <p class="ex__h">{s.h} <em class="ex__serif">{s.hAccent}</em>.</p>
+            <p class="ex__sub">{s.sub}</p>
+            <span class="ex__btn">{s.cta}</span>
+          </div>
+          <div class="ex__pic ex__pic--arch"></div>
+          <div class="ex__card salon__card">
+            <p class="ex__cardh">{s.day}</p>
+            <span class="salon__slots">
+              <i>09:30</i><i class="is-taken">11:00</i><i>13:30</i>
+              <i class="is-pick">15:00</i><i>16:30</i><i class="is-taken">17:15</i>
+            </span>
+            <span class="ex__row"><span>{s.service}</span><b>{s.price}</b></span>
+            <span class="ex__btn ex__btn--full">{s.confirm}</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+  {
+    name === 'bakery' && (
+      <div class="ex ex--bakery">
+        <div class="ex__nav">
+          <b class="ex__logo">{meta.name}</b>
+          <span class="ex__links"><i>{s.nav1}</i><i>{s.nav2}</i><i>{s.nav3}</i></span>
+        </div>
+        <div class="ex__body">
+          <div class="ex__copy">
+            <p class="ex__h">{s.h}</p>
+            <p class="ex__sub">{s.sub}</p>
+            <span class="ex__btn">{s.cta}</span>
+          </div>
+          <div class="ex__pic ex__pic--sun"></div>
+          <div class="ex__card bakery__card">
+            <p class="ex__cardh">{s.today}</p>
+            <span class="bakery__item is-in"><span>{s.i1}</span><b>{s.p1}</b><i>1</i></span>
+            <span class="bakery__item is-in"><span>{s.i2}</span><b>{s.p2}</b><i>1</i></span>
+            <span class="bakery__item"><span>{s.i3}</span><b>{s.p3}</b><i>+</i></span>
+            <span class="bakery__item"><span>{s.i4}</span><b>{s.p4}</b><i>+</i></span>
+            <span class="bakery__foot"><span>{s.foot}</span><b>{s.total}</b></span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+  {
+    name === 'electric' && (
+      <div class="ex ex--electric">
+        <p class="electric__top">{s.top}</p>
+        <div class="ex__nav">
+          <b class="ex__logo">{meta.name}<span>.</span></b>
+          <span class="ex__links"><i>{s.nav1}</i><i>{s.nav2}</i><i>{s.nav3}</i></span>
+        </div>
+        <div class="ex__body">
+          <div class="ex__copy">
+            <p class="ex__h">{s.h} <em>{s.hAccent}</em>.</p>
+            <p class="ex__sub">{s.sub}</p>
+            <span class="ex__btn">
+              <svg viewBox="0 0 16 16" class="ex__ico"><path d="M4.2 1.5 6.4 4 5 6.1a8 8 0 0 0 4.9 4.9L12 9.6l2.5 2.2-1.3 2.3c-.4.6-1.1.9-1.8.7A12.5 12.5 0 0 1 1.2 4.6c-.2-.7.1-1.4.7-1.8z" fill="currentColor"/></svg>
+              {s.call}
+            </span>
+            <span class="electric__area">
+              <svg viewBox="0 0 16 16" class="ex__ico"><path d="M8 1a5 5 0 0 0-5 5c0 3.6 5 9 5 9s5-5.4 5-9a5 5 0 0 0-5-5zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" fill="currentColor"/></svg>
+              {s.area}
+            </span>
+          </div>
+          <div class="ex__pic ex__pic--bolt"></div>
+          <div class="ex__card electric__card">
+            <p class="ex__cardh">{s.formH}</p>
+            <span class="electric__field electric__field--tall">{s.field}</span>
+            <span class="electric__pair"><span class="electric__field"></span><span class="electric__field"></span></span>
+            <span class="ex__btn ex__btn--full">{s.send}</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+  {
+    name === 'restaurant' && (
+      <div class="ex ex--restaurant">
+        <div class="ex__nav">
+          <b class="ex__logo ex__serif">{meta.name}</b>
+          <span class="ex__links"><i>{s.nav1}</i><i>{s.nav2}</i><i class="ex__navcta">{s.nav3}</i></span>
+        </div>
+        <div class="ex__body">
+          <div class="ex__copy">
+            <p class="ex__h">{s.h} <em class="ex__serif">{s.hAccent}</em>.</p>
+            <p class="ex__sub">{s.sub}</p>
+            <p class="restaurant__hours">{s.hours}</p>
+          </div>
+          <div class="ex__pic ex__pic--fire"></div>
+          <div class="ex__card restaurant__card">
+            <p class="ex__cardh">{s.resH}</p>
+            <span class="restaurant__pick"><i>{s.day}</i><i>{s.guests}</i></span>
+            <span class="salon__slots restaurant__slots">
+              <i>19:00</i><i class="is-pick">19:30</i><i>20:30</i><i class="is-taken">21:00</i>
+            </span>
+            <span class="ex__btn ex__btn--full">{s.cta}</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+</div>
+
+<style>
+  /* The frame: a 16:10 size container. Everything inside is in cqw. */
+  .ex-box {
+    container-type: inline-size;
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+
+  .ex {
+    --ex-bg: #fff;
+    --ex-ink: #1b1b1b;
+    --ex-muted: #5c5c5c;
+    --ex-accent: #0c62e0;
+    --ex-on-accent: #fff;
+    --ex-card: #fff;
+    --ex-line: rgb(0 0 0 / 0.1);
+
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    padding: 0 5cqw;
+    background: var(--ex-bg);
+    color: var(--ex-ink);
+    font-family: var(--font-text);
+    font-size: 1.5cqw;
+    line-height: 1.35;
+    letter-spacing: 0;
+    text-align: start;
+  }
+
+  .ex i,
+  .ex em,
+  .ex b { font-style: normal; }
+
+  .ex__serif {
+    font-family: var(--font-accent);
+    font-style: italic !important;
+    font-weight: 500;
+  }
+
+  .ex__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 2.6cqw;
+  }
+
+  .ex__logo {
+    font-size: 2.1cqw;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .ex__links {
+    display: flex;
+    align-items: center;
+    gap: 2.6cqw;
+    font-size: 1.35cqw;
+    color: var(--ex-muted);
+  }
+
+  .ex__navcta {
+    padding: 0.7cqw 1.5cqw;
+    border-radius: 99cqw;
+    background: var(--ex-accent);
+    color: var(--ex-on-accent);
+  }
+
+  .ex__body {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    align-items: center;
+    gap: 4cqw;
+    padding-block-end: 4cqw;
+  }
+
+  .ex__copy {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: start;
+    gap: 2cqw;
+  }
+
+  .ex__h {
+    margin: 0;
+    font-size: 5.2cqw;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  .ex__h em { color: var(--ex-accent); }
+
+  .ex__sub {
+    margin: 0;
+    max-inline-size: 30ch;
+    font-size: 1.6cqw;
+    color: var(--ex-muted);
+  }
+
+  .ex__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8cqw;
+    padding: 1.3cqw 2.4cqw;
+    border-radius: 99cqw;
+    background: var(--ex-accent);
+    color: var(--ex-on-accent);
+    font-size: 1.45cqw;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .ex__btn--full { inline-size: 100%; box-sizing: border-box; }
+
+  .ex__ico { inline-size: 1.5cqw; block-size: 1.5cqw; flex: none; }
+
+  .ex__card {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 1.3cqw;
+    padding: 2.4cqw;
+    border-radius: 1.6cqw;
+    background: var(--ex-card);
+    box-shadow: 0 0.4cqw 1cqw rgb(0 0 0 / 0.08), 0 3cqw 6cqw -3cqw rgb(0 0 0 / 0.3);
+  }
+
+  .ex__cardh {
+    margin: 0;
+    font-size: 1.7cqw;
+    font-weight: 600;
+  }
+
+  .ex__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1cqw;
+    padding-block: 1cqw;
+    border-block: 1px solid var(--ex-line);
+    font-size: 1.35cqw;
+    color: var(--ex-muted);
+  }
+
+  .ex__row b { color: var(--ex-ink); font-weight: 600; }
+
+  /* Picture areas: two colours printed in the site's Bayer dots, fading
+     across the area, under the card. */
+  .ex__pic {
+    position: absolute;
+    z-index: 0;
+    background: var(--pic-a);
+  }
+
+  .ex__pic::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--pic-b);
+    -webkit-mask-image: var(--dz-8), var(--pic-fade, linear-gradient(160deg, #000 20%, transparent 85%));
+    mask-image: var(--dz-8), var(--pic-fade, linear-gradient(160deg, #000 20%, transparent 85%));
+    -webkit-mask-size: 1.2cqw 1.2cqw, 100% 100%;
+    mask-size: 1.2cqw 1.2cqw, 100% 100%;
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
+  /* --- Hair salon: sand, rose, a serif ------------------------------------ */
+  .ex--salon {
+    --ex-bg: #f4ede5;
+    --ex-ink: #2b211c;
+    --ex-muted: #6b5d55;
+    --ex-accent: #a84a35;
+    --ex-line: rgb(43 33 28 / 0.12);
+  }
+
+  .ex--salon .ex__pic--arch {
+    --pic-a: #e7c9b8;
+    --pic-b: #b4644f;
+    inset: 0 0 4cqw auto;
+    inline-size: 30cqw;
+    border-radius: 15cqw 15cqw 0 0;
+    overflow: hidden;
+  }
+
+  .salon__card {
+    justify-self: start;
+    align-self: end;
+    inline-size: 26cqw;
+  }
+
+  .salon__slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8cqw;
+  }
+
+  .salon__slots i {
+    padding-block: 0.8cqw;
+    border: 1px solid var(--ex-line);
+    border-radius: 0.8cqw;
+    font-size: 1.3cqw;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .salon__slots .is-taken {
+    color: color-mix(in srgb, var(--ex-muted) 55%, transparent);
+    text-decoration: line-through;
+  }
+
+  .salon__slots .is-pick {
+    border-color: var(--ex-accent);
+    background: var(--ex-accent);
+    color: var(--ex-on-accent);
+  }
+
+  /* --- Bakery and café: cream, brown, mustard ------------------------------ */
+  .ex--bakery {
+    --ex-bg: #fbf3e2;
+    --ex-ink: #3a2414;
+    --ex-muted: #725a45;
+    --ex-accent: #3a2414;
+    --ex-line: rgb(58 36 20 / 0.12);
+  }
+
+  .ex--bakery .ex__h { font-weight: 700; letter-spacing: -0.04em; }
+
+  .ex--bakery .ex__pic--sun {
+    --pic-a: #f6d58f;
+    --pic-b: #d38b1c;
+    --pic-fade: radial-gradient(circle at 70% 70%, #000 30%, transparent 72%);
+    inset: -2cqw -4cqw auto auto;
+    inline-size: 34cqw;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  .bakery__card {
+    align-self: end;
+    gap: 0.6cqw;
+  }
+
+  .bakery__item {
+    display: grid;
+    grid-template-columns: 1fr auto 2.4cqw;
+    align-items: center;
+    gap: 1.2cqw;
+    padding-block: 0.7cqw;
+    border-block-end: 1px solid var(--ex-line);
+    font-size: 1.35cqw;
+  }
+
+  .bakery__item b { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .bakery__item i {
+    display: grid;
+    place-items: center;
+    block-size: 2.4cqw;
+    border-radius: 50%;
+    border: 1px solid var(--ex-line);
+    font-size: 1.2cqw;
+    font-weight: 600;
+  }
+
+  .bakery__item.is-in i {
+    border-color: #d38b1c;
+    background: #d38b1c;
+    color: #fff;
+  }
+
+  .bakery__foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 1cqw;
+    margin-block-start: 0.6cqw;
+    padding: 1.2cqw 1.6cqw;
+    border-radius: 1cqw;
+    background: var(--ex-ink);
+    color: #fbf3e2;
+    font-size: 1.3cqw;
+  }
+
+  /* --- Electrician: navy, signal yellow ------------------------------------- */
+  .ex--electric {
+    --ex-bg: #0f1b2d;
+    --ex-ink: #f4f6fa;
+    --ex-muted: #b6c0cf;
+    --ex-accent: #ffcd3c;
+    --ex-on-accent: #0f1b2d;
+    --ex-card: #fff;
+    --ex-line: rgb(15 27 45 / 0.14);
+
+    grid-template-rows: auto auto 1fr;
+  }
+
+  .electric__top {
+    margin: 0 -5cqw;
+    padding: 0.7cqw 5cqw;
+    background: var(--ex-accent);
+    color: var(--ex-on-accent);
+    font-size: 1.2cqw;
+    font-weight: 600;
+  }
+
+  .ex--electric .ex__logo span { color: var(--ex-accent); }
+
+  .ex--electric .ex__h { font-weight: 700; }
+
+  .ex--electric .ex__btn { padding: 1.6cqw 3cqw; font-size: 1.7cqw; }
+
+  .electric__area {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6cqw;
+    font-size: 1.3cqw;
+    color: var(--ex-muted);
+  }
+
+  .ex--electric .ex__pic--bolt {
+    --pic-a: transparent;
+    --pic-b: #ffcd3c;
+    --pic-fade: linear-gradient(115deg, transparent 35%, #000 70%);
+    inset: -3cqw -5cqw 0 30%;
+    opacity: 0.55;
+  }
+
+  .electric__card {
+    align-self: center;
+    color: #0f1b2d;
+  }
+
+  .electric__field {
+    display: block;
+    min-block-size: 3.2cqw;
+    padding: 1cqw 1.2cqw;
+    border: 1px solid var(--ex-line);
+    border-radius: 0.8cqw;
+    font-size: 1.3cqw;
+    color: #6b7686;
+  }
+
+  .electric__field--tall { min-block-size: 7cqw; }
+
+  .electric__pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1cqw;
+  }
+
+  .electric__card .ex__btn { background: #0f1b2d; color: #fff; }
+
+  /* --- Restaurant: deep green, cream, tomato -------------------------------- */
+  .ex--restaurant {
+    --ex-bg: #14261e;
+    --ex-ink: #efe6d2;
+    --ex-muted: #c4bba7;
+    --ex-accent: #e0583a;
+    --ex-card: #efe6d2;
+    --ex-line: rgb(20 38 30 / 0.16);
+  }
+
+  .ex--restaurant .ex__h { font-weight: 500; }
+
+  .ex--restaurant .ex__h em { color: #f08a5d; }
+
+  .restaurant__hours {
+    margin: 0;
+    padding-block-start: 1.2cqw;
+    border-block-start: 1px solid rgb(239 230 210 / 0.2);
+    font-size: 1.35cqw;
+    color: var(--ex-muted);
+  }
+
+  .ex--restaurant .ex__pic--fire {
+    --pic-a: transparent;
+    --pic-b: #e0583a;
+    --pic-fade: radial-gradient(ellipse 60% 70% at 60% 100%, #000 10%, transparent 70%);
+    inset: 0 -5cqw -4cqw 35%;
+  }
+
+  .restaurant__card {
+    align-self: center;
+    color: #14261e;
+  }
+
+  .restaurant__card .ex__cardh { color: #14261e; }
+
+  .restaurant__pick {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8cqw;
+  }
+
+  .restaurant__pick i {
+    padding: 0.9cqw 1.2cqw;
+    border-radius: 0.8cqw;
+    background: rgb(20 38 30 / 0.07);
+    font-size: 1.3cqw;
+  }
+
+  .restaurant__slots { grid-template-columns: repeat(4, 1fr); }
+
+  .restaurant__card .salon__slots i { border-color: rgb(20 38 30 / 0.16); }
+
+  .restaurant__card .is-taken { color: rgb(20 38 30 / 0.4); text-decoration: line-through; }
+
+  .restaurant__card .is-pick { background: var(--ex-accent); border-color: var(--ex-accent); color: #fff; }
+</style>

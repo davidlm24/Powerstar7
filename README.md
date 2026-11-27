@@ -63,8 +63,8 @@ src/
                     Each one is a three-line wrapper around a view.
   views/            The actual pages, each rendered in both languages.
   components/       Header, Footer, Sheet, Pluses, PageTop, ClosingPanel,
-                    HeroPixels, HeroPixelsStill, Glyph, ProjectWindow,
-                    Faq, Priced, Accent, Notice.
+                    HeroPixels, HeroStage, ExampleSite, Glyph, Faq,
+                    Priced, Accent, Notice.
   layouts/Base      <head>, canonical, hreflang, Open Graph, skip link.
   i18n/ui.ts        ALL copy, both languages, side by side. Also ROUTES —
                     the single source of truth for nav, the language

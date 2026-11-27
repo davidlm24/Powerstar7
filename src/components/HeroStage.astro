@@ -1,0 +1,269 @@
+---
+/* The home hero's stage (Impeccable pass, 2026-11-27): example sites for
+   four kinds of small business (src/data/examples.ts, drawn by
+   ExampleSite.astro), one at a time, in a plain light browser window on the
+   blue. Each is labelled as an example in its caption, and its address ends
+   in .example. It first showed the three client projects of the Powerstar7
+   years; David took those off the site (old, and some have moved on).
+
+   One clock: hero-pixels.js. Each time its field changes (every ~4.5s,
+   only while the hero is on screen, the tab is visible and the footer's
+   Animation switch is on) it sends `px:cycle` on the hero, and the next
+   example develops over the current one in dots (the site's own Bayer
+   steps, dz-in), while the field's bright pixels reshuffle around the
+   window ([data-px-stage]). The caption prints in dots as it changes.
+
+   With reduced motion, no JavaScript or the Animation switch off, nothing
+   arrives and the first example simply stands. The examples are HTML, so
+   the page fetches nothing for them.
+
+   The whole stage is one link, to the examples on the Work page. Its
+   accessible name is the visually hidden line; the window and caption
+   change, so they are aria-hidden rather than re-announced. */
+import ExampleSite from './ExampleSite.astro';
+import { EXAMPLES, EXAMPLE_KEYS, EXAMPLE_META } from '../data/examples';
+import { useTranslations, route, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const caps = EXAMPLE_KEYS.map((k) => ({
+  host: EXAMPLE_META[k].host,
+  name: EXAMPLES[lang][k].type,
+  tag: t('examples.tag', { feature: EXAMPLES[lang][k].feature }),
+}));
+const first = caps[0];
+---
+
+<a class="stage" href={route('work', lang)} data-stage data-caps={JSON.stringify(caps)}>
+  <span class="visually-hidden">{t('home.stage.label')}</span>
+  <div class="stage__window" data-px-stage aria-hidden="true">
+    <div class="stage__bar">
+      <i></i><i></i><i></i>
+      <b class="stage__host" data-stage-host>{first.host}</b>
+    </div>
+    <div class="stage__shots">
+      {EXAMPLE_KEYS.map((k, i) => <ExampleSite name={k} lang={lang} class={i === 0 ? 'stage__shot is-on' : 'stage__shot'} />)}
+    </div>
+    <div class="stage__cap">
+      <span class="stage__text" data-stage-text>
+        <b class="stage__name">{first.name}</b>
+        <span class="stage__tag">{first.tag}</span>
+      </span>
+      <span class="stage__go">&rarr;</span>
+    </div>
+  </div>
+</a>
+
+<script is:inline>
+  (function () {
+    var st = document.querySelector('[data-stage]');
+    var hero = st && st.closest('.hero');
+    if (!hero) return;
+    var shots = st.querySelectorAll('.stage__shot');
+    var host = st.querySelector('[data-stage-host]');
+    var text = st.querySelector('[data-stage-text]');
+    var caps;
+    try { caps = JSON.parse(st.getAttribute('data-caps')); } catch (e) { return; }
+    if (!caps || shots.length < 2) return;
+    var at = 0;
+    var swap = 0;
+
+    // Restart a one-shot dot print (global.css .print-now): off, a layout
+    // read, on again, so the browser sees two changes.
+    var reprint = function (el) {
+      el.classList.remove('print-now');
+      void el.offsetWidth;
+      el.classList.add('print-now');
+    };
+
+    hero.addEventListener('px:cycle', function () {
+      var prev = shots[at];
+      at = (at + 1) % shots.length;
+      var next = shots[at];
+      var c = caps[at];
+
+      // A change still running ends now, so two never overlap: the one that
+      // was developing becomes the one at rest, and every other is cleared.
+      clearTimeout(swap);
+      for (var i = 0; i < shots.length; i++) if (shots[i] !== prev) shots[i].classList.remove('is-on', 'is-in');
+      prev.classList.remove('is-in');
+      prev.classList.add('is-on');
+
+      next.classList.add('is-in');
+      host.textContent = c.host;
+      text.innerHTML = '';
+      var name = document.createElement('b');
+      name.className = 'stage__name';
+      name.textContent = c.name;
+      var tag = document.createElement('span');
+      tag.className = 'stage__tag';
+      tag.textContent = c.tag;
+      text.appendChild(name);
+      text.appendChild(tag);
+      reprint(text);
+
+      // The develop runs 700ms (CSS); then the new site is the one at rest.
+      swap = setTimeout(function () {
+        prev.classList.remove('is-on');
+        next.classList.remove('is-in');
+        next.classList.add('is-on');
+      }, 760);
+    });
+  })();
+</script>
+
+<style>
+  /* The window is a light browser on the blue in both themes, so its colours
+     are its own: ink on white, measured 15:1 (name) and 6.6:1 (host, tag). */
+  .stage {
+    --stage-ink: #1b1b1b;
+    --stage-muted: #5c5c5c;
+    --stage-line: #e3e6ec;
+
+    display: block;
+    inline-size: min(100%, 34rem);
+    color: var(--stage-ink);
+    text-decoration: none;
+    border-radius: 8px;
+  }
+
+  .stage:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 5px;
+  }
+
+  .stage__window {
+    display: block;
+    overflow: clip;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow:
+      0 2px 6px rgb(6 25 70 / 0.18),
+      0 40px 80px -40px rgb(6 25 70 / 0.65);
+    transform: translateY(0);
+    transition:
+      transform 320ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 320ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .stage__bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.55rem 0.8rem;
+    border-block-end: 1px solid var(--stage-line);
+    font-size: var(--t-micro);
+    color: var(--stage-muted);
+  }
+
+  .stage__bar i {
+    inline-size: 7px;
+    block-size: 7px;
+    border-radius: 50%;
+    background: #d3d7de;
+  }
+
+  .stage__host {
+    margin-inline-start: 6px;
+    font-weight: var(--weight-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* The examples, stacked; the one at rest shows, the next develops over
+     it. Each is a 16:10 frame (ExampleSite's own box). */
+  .stage__shots {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 10;
+    background: #f1f3f6;
+  }
+
+  .stage__shots > :global(.stage__shot) {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+
+  .stage__shots > :global(.stage__shot.is-on) {
+    opacity: 1;
+    z-index: 1;
+  }
+
+  /* The next site develops in 5px dots (a 4-cell Bayer tile at 20px, the
+     field's own cell size), seventeen steps over 700ms. */
+  .stage__shots > :global(.stage__shot.is-in) {
+    opacity: 1;
+    z-index: 2;
+    -webkit-mask-size: 20px 20px;
+    mask-size: 20px 20px;
+    animation: dz-in 700ms linear both;
+  }
+
+  .stage__cap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1rem 0.9rem;
+    border-block-start: 1px solid var(--stage-line);
+  }
+
+  .stage__text {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.75rem;
+    row-gap: 0.15rem;
+    min-inline-size: 0;
+  }
+
+  .stage__text.print-now {
+    --print-dur: 420ms;
+  }
+
+  .stage :global(.stage__name) {
+    font-size: 1rem;
+    font-weight: var(--weight-medium);
+    letter-spacing: -0.01em;
+  }
+
+  .stage :global(.stage__tag) {
+    font-size: var(--t-micro);
+    color: var(--stage-muted);
+  }
+
+  .stage__go {
+    flex: none;
+    color: var(--blue-fn);
+    font-weight: var(--weight-medium);
+    transition: transform 220ms var(--ease);
+  }
+
+  @media (hover: hover) {
+    .stage:hover .stage__window {
+      transform: translateY(-4px);
+      box-shadow:
+        0 4px 10px rgb(6 25 70 / 0.2),
+        0 48px 90px -40px rgb(6 25 70 / 0.75);
+    }
+
+    .stage:hover .stage__go { transform: translateX(4px); }
+  }
+
+  .stage:focus-visible .stage__go { transform: translateX(4px); }
+
+  .stage:active .stage__window { transform: translateY(-2px); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stage__window,
+    .stage:hover .stage__window,
+    .stage:active .stage__window { transform: none; }
+  }
+</style>
