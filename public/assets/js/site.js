@@ -344,7 +344,7 @@
      allowed, IntersectionObserver present). Each section's parts enter in
      order as they scroll in, 70ms apart within their section, once. The
      selector list matches global.css exactly. */
-  var REVEAL = "h1, h2, .lead, .plan, .svc, .faq-item, .how__item, .closing__link, .prose > *, .contact__inner > *, .notice, .updated, :is(.cell__h, .cell__b, .head__lead, .pw):not(:is(.svc, .plan, .how__item, .contact__inner) *)";
+  var REVEAL = "h2, .lead, .plan, .svc, .faq-item, .how__item, .closing__link, .prose > *, .contact__inner > *, .notice, .updated, :is(.cell__h, .cell__b, .head__lead):not(:is(.svc, .plan, .how__item, .contact__inner) *)";
   if (document.documentElement.classList.contains('reveal')) try {
     var pending = [];
     Array.prototype.forEach.call(document.querySelectorAll('main > :not(.hero)'), function (section) {
@@ -513,7 +513,8 @@
   /* Fade the dots in or out over 180ms: the density thins, Bayer order. */
   var fadeDots = function (d, to) {
     cancelAnimationFrame(d.raf);
-    if (!pointerEffects) { d.on = to; drawDots(d); return; }
+    // No fade with reduced motion or the footer's Animation switch off.
+    if (!pointerEffects || document.documentElement.classList.contains('motion-off')) { d.on = to; drawDots(d); return; }
     var from = d.on, t0 = 0;
     var step = function (now) {
       if (!t0) t0 = now;

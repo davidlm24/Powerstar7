@@ -273,7 +273,9 @@ const TOP_POSITION = [0, 50, 100];
       var drift = function () {
         ticking = false;
         var h = innerHeight;
+        var still = document.documentElement.classList.contains('motion-off');
         floats.forEach(function (el) {
+          if (still) { el.style.setProperty('--drift', '0px'); return; }
           var r = el.getBoundingClientRect();
           var d = ((r.top + r.height / 2) - h / 2) / h;
           el.style.setProperty('--drift', Math.max(-1, Math.min(1, d)) * -5 + 'px');

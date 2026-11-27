@@ -3,8 +3,8 @@
    square blue panel (PageTop); then three sections on the shared four-column
    grid (Sheet + src/styles/grid.css):
 
-     What a site gets you   title cell (two columns) beside the three
-                            paragraphs as running text (two columns).
+     Week by week           title and lead cells, then the four weeks of a
+                            typical project, one cell each (wave 2).
      Where we work          a quiet two-cell row: a small heading and one
                             paragraph. Deliberately not a big title cell, so
                             the location never becomes the headline.
@@ -33,6 +33,14 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
+/* Written out, so every key keeps its type check. */
+const weeks = [
+  { k: t('about.week.1.k'), h: t('about.week.1.h'), b: t('about.week.1.b') },
+  { k: t('about.week.2.k'), h: t('about.week.2.h'), b: t('about.week.2.b') },
+  { k: t('about.week.3.k'), h: t('about.week.3.h'), b: t('about.week.3.b') },
+  { k: t('about.week.4.k'), h: t('about.week.4.h'), b: t('about.week.4.b') },
+];
+
 const how = [
   { h: t('about.how.1.h'), b: t('about.how.1.b') },
   { h: t('about.how.2.h'), b: t('about.how.2.b') },
@@ -52,22 +60,30 @@ const PLUS = [0, 25, 50, 75, 100];
         over a placeholder portrait. A studio that cannot yet name its people
         says what it does instead. */}
 
-    {/* --- What a site made for your business gets you ------------------- */}
+    {/* --- A typical project, week by week (wave 2, 2026-11-27): replaced
+        "What your site should do for you", which repeated the home page. The
+        weeks are the process with its time attached; the 2 to 4 weeks are
+        David's figure (services.faq.a1). ---------------------------------- */}
     <section class="frame">
       <Pluses at={MID} />
       <div class="grid">
         <div class="cell cell--head span-2">
-          <h2 class="head__h"><Accent text={t('about.story.h')} /></h2>
+          <h2 class="head__h"><Accent text={t('about.week.h')} /></h2>
         </div>
-        <div class="cell span-2 story__body">
-          <div class="prose">
-            <p>{t('about.story.b1')}</p>
-            <p>{t('about.story.b2')}</p>
-            <p>{t('about.story.b3')}</p>
-          </div>
+        <div class="cell cell--lead span-2">
+          <p class="head__lead">{t('about.week.lead')}</p>
         </div>
+        <ol class="row weeks">
+          {weeks.map((w, i) => (
+            <li class="cell week" style={`--k: ${i}`}>
+              <span class="week__k">{w.k}</span>
+              <h3 class="cell__h">{w.h}</h3>
+              <p class="cell__b">{w.b}</p>
+            </li>
+          ))}
+        </ol>
       </div>
-      <Pluses at={MID} end />
+      <Pluses at={PLUS} narrow={[0, 50, 100]} end />
     </section>
 
     {/* --- Where we work ------------------------------------------------------ */}
@@ -114,15 +130,12 @@ const PLUS = [0, 25, 50, 75, 100];
   /* The shared grid, cells and type live in src/styles/grid.css; what is
      here is the About page's own. */
 
-  /* The three paragraphs read at lead size, on the title's bottom line on
-     wide screens so the two cells share one baseline. */
-  .story__body {
-    align-content: end;
-  }
-
-  .story__body .prose {
-    font-size: var(--t-lead);
-    line-height: 1.5;
+  /* The week, above each step's name: sentence case, bold, small, in the
+     accent colour (no uppercase labels, the house rule). */
+  .week__k {
+    font-size: var(--t-small);
+    font-weight: var(--weight-medium);
+    color: var(--accent-fn);
   }
 
   .where__b {

@@ -143,10 +143,19 @@ const MID = [0, 50, 100];
           </form>
         </div>
 
-        {/* The ways to reach a person, in their own cell: the email at the
-            size of a heading, since for many visitors it is the whole page. */}
+        {/* What happens after sending (wave 2, 2026-11-27), then the ways
+            to reach a person: the email at the size of a heading, since for
+            many visitors it is the whole page. */}
         <aside class="cell span-2 direct" data-glyph-zone>
           <span class="cell__art" aria-hidden="true"><Glyph name="email" size={96} /></span>
+          <div class="next">
+            <h2 class="next__h">{t('contact.next.h')}</h2>
+            <ol class="next__list">
+              <li>{t('contact.next.1')}</li>
+              <li>{t('contact.next.2')}</li>
+              <li>{t('contact.next.3')}</li>
+            </ol>
+          </div>
           <h2 class="head__h head__h--sm">{t('contact.direct.h')}</h2>
           <p class="cell__b direct__b">{t('contact.direct.b')}</p>
           <a class="direct__email" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
@@ -157,7 +166,7 @@ const MID = [0, 50, 100];
           }
           {
             CONTACT.phone && (
-              <a class="direct__alt" href={`tel:${CONTACT.phone.replace(/s/g, '')}`}>{t('contact.direct.phone')}: {CONTACT.phone}</a>
+              <a class="direct__alt" href={`tel:${CONTACT.phone.replace(/\s/g, '')}`}>{t('contact.direct.phone')}: {CONTACT.phone}</a>
             )
           }
         </aside>
@@ -340,6 +349,47 @@ const MID = [0, 50, 100];
 
   .direct__b {
     max-inline-size: 40ch;
+  }
+
+  /* What happens next: three short lines with the site's small accent
+     squares, set apart from the email below by space, not a line. */
+  .next {
+    display: grid;
+    gap: 0.9rem;
+    margin-block-end: var(--s4);
+  }
+
+  .next__h {
+    font-size: var(--t-body);
+    font-weight: var(--weight-medium);
+    letter-spacing: -0.01em;
+  }
+
+  .next__list {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-inline-size: 42ch;
+    font-size: var(--t-small);
+    line-height: 1.5;
+    color: var(--fg-muted);
+  }
+
+  .next__list li {
+    display: grid;
+    grid-template-columns: 5px 1fr;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .next__list li::before {
+    content: '';
+    inline-size: 5px;
+    block-size: 5px;
+    background: var(--accent-fn);
+    transform: translateY(-0.15em);
   }
 
   .direct__email {
