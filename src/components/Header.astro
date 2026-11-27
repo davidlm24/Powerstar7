@@ -132,8 +132,11 @@ const items: { key: PageKey; label: string }[] = [
               sync();
               window.dispatchEvent(new Event('themechange'));
             };
+            /* Less motion asked for, by the system or by the footer's
+               Animation switch: the theme swaps instantly. */
             var still = function () {
-              return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+              return h.classList.contains('motion-off') ||
+                !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
             };
             var fade = 0;
             btn.addEventListener('click', function () {

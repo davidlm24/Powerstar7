@@ -1,12 +1,16 @@
-/* Hero pixels (HeroPixels.astro), round 6: one field of small square cells
-   over the whole hero.
-   - The drawings (browser, phone, check; 60 x 42 cells each) are placed
-     around the stage ([data-px-stage]) at a slightly different spot each
-     time, with some pixels moved sideways, some missing, short rows shifted
-     like a glitch, and strays scattered around them. A few of the misplaced
-     pixels blink while a drawing holds; then it dissolves into the next.
-   - Every other cell rests at its own faint opacity, and a few light up at
-     random and fade, denser near the drawing.
+/* Hero pixels (HeroPixels.astro): one field of small square cells over a
+   blue panel, under its content. Three ways to use it:
+   - frame (the home hero since 2026-11-27): the stage ([data-px-stage]) is
+     the window that shows the client sites (HeroStage.astro). Bright pixels
+     gather around its edges, a few blinking; every HOLD they dissolve into
+     a new scatter, and the field sends `px:cycle` on its panel so the
+     window shows the next site at the same moment. This is the stage's
+     only clock: when the field stops, the sites stop too.
+   - drawings (data-frames, the earlier hero): pixel drawings placed around
+     the stage, scattered and glitched, dissolving from one into the next.
+   - corner (no stage): a cluster around data-focus that reshuffles.
+   Every other cell rests at its own faint opacity, and a few light up at
+   random and fade, denser near the stage or focus.
    Drawing: one value per cell, written into a cols x rows image, scaled up
    without smoothing, then cut into squares by a tiled mask. Two draw calls a
    frame, at most ~30 frames a second, and nothing while the hero is off
@@ -21,7 +25,7 @@
   if (window.__heroPx) return;
   window.__heroPx = 1;
 
-  var CELL = 5, FIT = 66, HOLD = 2800, MOVE = 1000, TICK = 33;
+  var CELL = 5, FIT = 66, TICK = 33;
   var TONE = { '#': 1, ':': 0.35 };
   var root = document.documentElement;
 
@@ -48,10 +52,16 @@
     // only gathers its pixels around data-focus.
     var stage = box.parentNode && box.parentNode.querySelector('[data-px-stage]');
     try { F = JSON.parse(box.getAttribute('data-frames')); } catch (e) {}
-    if (!F || F.length < 2 || !stage) { F = null; stage = null; }
+    if (!F || F.length < 2) F = null;
+    if (F && !stage) F = null;
     if (!ctx || box.__px) return;
     box.__px = 1;
+    // A frame stage holds longer: a client site needs time to be looked at.
+    var framed = !!stage && !F;
+    var HOLD = framed ? 4500 : 2800, MOVE = framed ? 700 : 1000;
+    var panel = box.parentNode;
 
+    // The drawing's (or, framed, the stage's) size in cells.
     var FR = F ? F[0].length : 0, FC = F ? F[0][0].length : 0;
     var focus = (box.getAttribute('data-focus') || '1 0').split(' ').map(Number);
     var off = document.createElement('canvas'), octx = off.getContext('2d'), img;
@@ -85,6 +95,22 @@
         if (v > T[j]) T[j] = v;
         if (b) bl.push({ i: j, v: v, on: true, t: 0 });
       };
+      if (framed) {
+        // Around the window: pixels just outside its four edges, thinning
+        // with distance, denser toward the corners; half of them blink.
+        var per = 2 * (FC + FR);
+        for (var q = 0; q < 150; q++) {
+          var u = Math.pow(R(), 0.85) * per, g = 1 + Math.round(Math.pow(R(), 2.2) * 14), ex, ey;
+          if (R() < 0.35) u = (Math.round(R() * 4) * per) / 4 + (R() - 0.5) * 14; // near a corner
+          u = ((u % per) + per) % per;
+          if (u < FC) { ex = ox + u; ey = oy - g; }
+          else if (u < FC + FR) { ex = ox + FC + g - 1; ey = oy + u - FC; }
+          else if (u < 2 * FC + FR) { ex = ox + FC - (u - FC - FR); ey = oy + FR + g - 1; }
+          else { ex = ox - g; ey = oy + FR - (u - 2 * FC - FR); }
+          put(Math.round(ex), Math.round(ey), R() < 0.4 ? 1 : 0.4, R() < 0.5);
+        }
+        return { T: T, bl: bl };
+      }
       var bx = ox + Math.round((R() - 0.5) * 8), by = oy + Math.round((R() - 0.5) * 6), x, y, v, r;
       if (!F) {
         // Corner: a cluster of scattered pixels around the focus, thinning
@@ -125,8 +151,9 @@
       var br = box.getBoundingClientRect(), sr = stage && stage.getBoundingClientRect();
       if (!br.width || !br.height || (sr && !sr.width)) return false;
       var dp = W / br.width;
-      cell = Math.max(2, Math.round((sr ? Math.min(CELL, sr.width / FIT) : CELL) * dp));
+      cell = Math.max(2, Math.round((sr && F ? Math.min(CELL, sr.width / FIT) : CELL) * dp));
       cols = Math.ceil(W / cell); rows = Math.ceil(H / cell); N = cols * rows;
+      if (framed) { FC = Math.round((sr.width * dp) / cell); FR = Math.round((sr.height * dp) / cell); }
       if (sr) {
         ox = Math.round(((sr.left + sr.width / 2 - br.left) * dp) / cell - FC / 2);
         oy = Math.round(((sr.top + sr.height / 2 - br.top) * dp) / cell - FR / 2);
@@ -180,6 +207,8 @@
       nx = F ? (f + 1) % F.length : 0; cycle++;
       next = place(nx, cycle);
       blink = []; moving = true; mt = 0;
+      // The stage changes with the field (HeroStage.astro listens).
+      if (framed && panel && window.CustomEvent) panel.dispatchEvent(new CustomEvent('px:cycle', { detail: { cycle: cycle } }));
     };
 
     var running = function () { return seen && !document.hidden && !dead && !root.classList.contains('motion-off'); };
@@ -250,7 +279,9 @@
     from = to = ink();
     resize(r0.width * d0, r0.height * d0);
     box.classList.add('is-live');
-    if (stage) stage.style.visibility = 'hidden';
+    // A drawing stage is a still, replaced by the live drawings; a frame
+    // stage is the window itself and stays.
+    if (stage && F) stage.style.visibility = 'hidden';
 
     // Crisp squares: size the canvas in device pixels when the browser can
     // report them (this observer also fires when the zoom or DPR changes).
@@ -281,7 +312,7 @@
       if (!mq.matches) return;
       dead = true; sync(); draw();
       box.classList.remove('is-live');
-      if (stage) stage.style.visibility = '';
+      if (stage && F) stage.style.visibility = '';
     });
 
     sync();

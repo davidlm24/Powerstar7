@@ -206,7 +206,8 @@ const legal: { key: PageKey; label: string }[] = [
      is not shown without JavaScript (review A8). */
   .site-footer__motion {
     margin-inline-start: auto;
-    min-block-size: 32px;
+    /* The site's 44px target size (WCAG 2.5.8 asks 24; 2.5.5 asks 44). */
+    min-block-size: 44px;
     padding: 0.35rem 0.75rem;
     border: 1px solid currentColor;
     border-radius: 999px;

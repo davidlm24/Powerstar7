@@ -58,7 +58,7 @@ export const ui = {
     'site.description': 'A web agency for small businesses: websites, branding, SEO, email and website care. Public prices and a written proposal before work starts.',
 
     'nav.home': 'Home',
-    'nav.work': 'Work',
+    'nav.work': 'Examples',
     'nav.services': 'Services',
     'nav.pricing': 'Pricing',
     'nav.about': 'About',
@@ -100,20 +100,31 @@ export const ui = {
     'home.title': 'DesignActiv — web agency for small businesses',
     'home.cta': 'Start a project',
     'home.cta.secondary': 'See prices',
-    /* The band along the foot of the hero lists the five services; the
-       names are svc.*.name (Home.astro), so they never drift from Services. */
-    'home.band.label': 'what we do',
+    /* The hero's stage (HeroStage.astro): its link's name, and the caption
+       tag under each example ({feature} from src/data/examples.ts). */
+    'home.stage.label': 'Example sites for a hair salon, a bakery, an electrician and a restaurant',
+    'examples.tag': 'Example · {feature}',
+    /* The facts row under the hero (2026-11-27, replacing the services strip):
+       a value and one line each. {price} comes from src/data/pricing.ts. */
+    'home.fact.price.v': 'From {price}',
+    'home.fact.price.b': 'Yes, our prices are public.',
+    'home.fact.proposal.v': 'Price in writing first',
+    'home.fact.proposal.b': 'You agree the proposal before any work starts.',
+    'home.fact.time.v': '2 to 4 weeks',
+    'home.fact.time.b': 'For a straightforward site, from the day we have your text and photos.',
+    'home.fact.care.v': '{price} a month, optional',
+    'home.fact.care.b': 'Website care is month to month: end it with 30 days’ notice.',
     'closing.lead': 'Tell us about it in a few lines — you’ll hear back, usually within a working day, and if it’s a fit you get a written proposal with the price.',
 
     'home.proof.weight': 'total page weight',
+    'home.proof.cookies': 'cookies',
+    'home.proof.note': 'This page, measured {date}',
     'home.proof.requests': 'network requests',
     'home.proof.thirdParty': 'third-party requests',
 
 
     'home.services.h2': 'Five things we *do*.',
     'home.services.link': 'All services',
-    'home.work.h2': 'Recent *work*.',
-    'home.work.link': 'All work',
 
     'home.position.h2': 'A website that *fits* your business.',
 
@@ -209,20 +220,11 @@ export const ui = {
     'svc.hosting.g6': 'Email support',
 
     /* --- Work ----------------------------------------------------------- */
-    'work.title': 'Sites we’ve built — DesignActiv',
-    'work.h1': 'Sites we’ve *built*.',
+    'work.title': 'Example sites — DesignActiv',
+    'work.h1': 'What your site could *look like*.',
     'work.callout': 'you’re looking at it',
-    'work.lead': 'Websites we designed and built for businesses and organisations, in French, Portuguese and German. Below them, this site.',
-    'work.visit': 'Visit the site',
-    'work.shot.alt': 'The {name} home page',
-    /* Facts only from each live site or the old Powerstar7 page: what the
-       organisation does and the site's language. No figures or results. */
-    'work.project.service.line': 'Home cleaning in Brussels since 2014: cleaning, ironing and help with shopping.',
-    'work.project.service.tag': 'Website · in French',
-    'work.project.iconta.line': 'Digital financial services for people, businesses and partner shops.',
-    'work.project.iconta.tag': 'Website · in Portuguese',
-    'work.project.ipda.line': 'The German site of the Pentecostal church God is Love, with services in Essen and Münster.',
-    'work.project.ipda.tag': 'Website · in German and Portuguese',
+    'work.lead': 'Four example sites for the kinds of business we work with, each built around what its customers come to do. The names are made up. Below them, this site.',
+    'work.ex.cta': 'Start a project like this',
 
     'work.this.h': 'This website',
     'work.this.b': 'Our own site: quick to open, easy to read, and clear about what we offer and what it costs.',
@@ -237,12 +239,20 @@ export const ui = {
     'about.title': 'About — DesignActiv',
     'about.h1': 'Small enough to *know* your project.',
     'about.lead': 'DesignActiv is a small web agency. The person you talk to first is the person you keep talking to, from the proposal to the handover.',
-    'about.story.h': 'What your site should do for you',
-    'about.story.b1': 'A site that loads fast, so visitors don’t give up before it appears.',
-    'about.story.b2':
-      'A site that works with a keyboard or a screen reader, and is structured so search engines can understand it.',
-    'about.story.b3':
-      'A site you know how to run: what you can edit, what you receive at launch, and a care plan only if you want one.',
+    'about.week.h': 'A typical project, *week by week*.',
+    'about.week.lead': 'A straightforward site usually takes two to four weeks from the day we have your text and photos. This is what those weeks look like.',
+    'about.week.1.k': 'Week 1',
+    'about.week.1.h': 'Proposal',
+    'about.week.1.b': 'You tell us about the business. We reply within a working day, then send the pages, the price and a launch date in writing.',
+    'about.week.2.k': 'Week 2',
+    'about.week.2.h': 'Design',
+    'about.week.2.b': 'You review the design as a working page on your own phone, and tell us what to change.',
+    'about.week.3.k': 'Week 3',
+    'about.week.3.h': 'Build',
+    'about.week.3.b': 'Every page with your text and photos in place, checked on a phone and a computer.',
+    'about.week.4.k': 'Week 4',
+    'about.week.4.h': 'Launch and handover',
+    'about.week.4.b': 'The site goes live on your domain. You get your access, a handover guide and, if you want it, Website care.',
     'about.where.h': 'Remote, in two languages',
     'about.where.b': 'We work remotely, in English and Portuguese. A site in more than one language is priced up front, per language.',
     'about.how.h': 'How we work',
@@ -290,6 +300,10 @@ export const ui = {
     'contact.mailSubject': 'Website enquiry',
     'contact.unconfigured': 'This form is not connected yet — please email us at {email}.',
 
+    'contact.next.h': 'What happens next',
+    'contact.next.1': 'We reply by email, usually within a working day.',
+    'contact.next.2': 'If it’s a fit, you get a written proposal with the price and a date.',
+    'contact.next.3': 'Work starts only when you agree to the proposal.',
     'contact.direct.h': 'Or write to us directly',
     'contact.direct.whatsapp': 'Message us on WhatsApp',
     'contact.direct.phone': 'Call us',
@@ -433,7 +447,7 @@ export const ui = {
     'site.description': 'Agência web para pequenas empresas: sites, identidade visual, SEO, e-mail e manutenção. Preços públicos e proposta por escrito antes de começar.',
 
     'nav.home': 'Início',
-    'nav.work': 'Trabalhos',
+    'nav.work': 'Exemplos',
     'nav.services': 'Serviços',
     'nav.pricing': 'Preços',
     'nav.about': 'Sobre nós',
@@ -470,18 +484,27 @@ export const ui = {
     'home.title': 'DesignActiv — agência web para pequenas empresas',
     'home.cta': 'Começar um projeto',
     'home.cta.secondary': 'Ver preços',
-    'home.band.label': 'o que fazemos',
+    'home.stage.label': 'Sites de exemplo para um salão de beleza, uma padaria, um eletricista e um restaurante',
+    'examples.tag': 'Exemplo · {feature}',
+    'home.fact.price.v': 'A partir de {price}',
+    'home.fact.price.b': 'Sim, nossos preços são públicos.',
+    'home.fact.proposal.v': 'Preço por escrito, antes',
+    'home.fact.proposal.b': 'Você aprova a proposta antes de qualquer trabalho começar.',
+    'home.fact.time.v': '2 a 4 semanas',
+    'home.fact.time.b': 'Para um site simples, a partir do dia em que recebemos seus textos e fotos.',
+    'home.fact.care.v': '{price} por mês, opcional',
+    'home.fact.care.b': 'A Manutenção do site é mês a mês: encerre com 30 dias de aviso.',
     'closing.lead': 'Conte em poucas linhas — você recebe uma resposta, normalmente em um dia útil, e, se fizer sentido, uma proposta por escrito com o preço.',
 
     'home.proof.weight': 'peso total da página',
+    'home.proof.cookies': 'cookies',
+    'home.proof.note': 'Esta página, medida em {date}',
     'home.proof.requests': 'requisições de rede',
     'home.proof.thirdParty': 'requisições a terceiros',
 
 
     'home.services.h2': 'Cinco coisas que *fazemos*.',
     'home.services.link': 'Todos os serviços',
-    'home.work.h2': '*Trabalhos* recentes.',
-    'home.work.link': 'Todos os trabalhos',
 
     'home.position.h2': 'Um site que *combina* com o seu negócio.',
 
@@ -575,18 +598,11 @@ export const ui = {
     'svc.hosting.g6': 'Suporte por e-mail',
 
     /* --- Work ----------------------------------------------------------- */
-    'work.title': 'Sites que fizemos — DesignActiv',
-    'work.h1': 'Sites que *fizemos*.',
+    'work.title': 'Sites de exemplo — DesignActiv',
+    'work.h1': 'Como o seu site pode *ficar*.',
     'work.callout': 'é este que você está vendo',
-    'work.lead': 'Sites que desenhamos e construímos para empresas e organizações, em francês, português e alemão. Logo abaixo, este site.',
-    'work.visit': 'Ver o site',
-    'work.shot.alt': 'Página inicial do site {name}',
-    'work.project.service.line': 'Limpeza residencial em Bruxelas desde 2014: limpeza, passadoria e ajuda com compras.',
-    'work.project.service.tag': 'Site · em francês',
-    'work.project.iconta.line': 'Serviços financeiros digitais para pessoas, empresas e lojas credenciadas.',
-    'work.project.iconta.tag': 'Site · em português',
-    'work.project.ipda.line': 'O site alemão da Igreja Pentecostal Deus é Amor, com cultos em Essen e Münster.',
-    'work.project.ipda.tag': 'Site · em alemão e português',
+    'work.lead': 'Quatro sites de exemplo para os tipos de negócio com que trabalhamos, cada um pensado para o que os clientes vêm fazer. Os nomes são inventados. Logo abaixo, este site.',
+    'work.ex.cta': 'Começar um projeto assim',
 
     'work.this.h': 'Este site',
     'work.this.b': 'Nosso próprio site: abre rápido, é fácil de ler e deixa claro o que oferecemos e quanto custa.',
@@ -601,12 +617,20 @@ export const ui = {
     'about.title': 'Sobre nós — DesignActiv',
     'about.h1': 'Pequena o bastante para *conhecer* seu projeto.',
     'about.lead': 'A DesignActiv é uma pequena agência web. A pessoa com quem você fala no início é a mesma até a entrega.',
-    'about.story.h': 'O que o seu site deve fazer por você',
-    'about.story.b1': 'Um site que carrega rápido, para que ninguém desista antes de ele aparecer.',
-    'about.story.b2':
-      'Um site que funciona com teclado ou leitor de tela, e é estruturado para que os buscadores o entendam.',
-    'about.story.b3':
-      'Um site que você sabe administrar: o que pode editar, o que recebe no lançamento e um plano de manutenção só se quiser.',
+    'about.week.h': 'Um projeto típico, *semana a semana*.',
+    'about.week.lead': 'Um site simples costuma levar de duas a quatro semanas a partir do dia em que recebemos seus textos e fotos. É assim que essas semanas costumam ser.',
+    'about.week.1.k': 'Semana 1',
+    'about.week.1.h': 'Proposta',
+    'about.week.1.b': 'Você conta sobre o negócio. Respondemos em um dia útil e mandamos por escrito as páginas, o preço e a data de lançamento.',
+    'about.week.2.k': 'Semana 2',
+    'about.week.2.h': 'Design',
+    'about.week.2.b': 'Você revisa o design como uma página funcionando no seu próprio celular, e diz o que mudar.',
+    'about.week.3.k': 'Semana 3',
+    'about.week.3.h': 'Construção',
+    'about.week.3.b': 'Todas as páginas com seus textos e fotos no lugar, conferidas no celular e no computador.',
+    'about.week.4.k': 'Semana 4',
+    'about.week.4.h': 'Lançamento e entrega',
+    'about.week.4.b': 'O site entra no ar no seu domínio. Você recebe seus acessos, um guia de entrega e, se quiser, a Manutenção do site.',
     'about.where.h': 'Remoto, em dois idiomas',
     'about.where.b': 'Trabalhamos a distância, em português e inglês. Um site em mais de um idioma tem preço definido desde o início, por idioma.',
     'about.how.h': 'Como trabalhamos',
@@ -653,6 +677,10 @@ export const ui = {
     'contact.mailSubject': 'Contato pelo site',
     'contact.unconfigured': 'Este formulário ainda não está conectado — escreva para {email}.',
 
+    'contact.next.h': 'O que acontece depois',
+    'contact.next.1': 'Respondemos por e-mail, normalmente em um dia útil.',
+    'contact.next.2': 'Se fizer sentido, você recebe uma proposta por escrito com o preço e uma data.',
+    'contact.next.3': 'O trabalho só começa quando você aprova a proposta.',
     'contact.direct.h': 'Ou escreva direto para nós',
     'contact.direct.whatsapp': 'Fale com a gente no WhatsApp',
     'contact.direct.phone': 'Ligue para nós',

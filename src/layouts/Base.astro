@@ -136,12 +136,13 @@ const dz = `:root{${levelsCss()}}${stepsKeyframes('dz-in', 0, 16)}`;
 
     {/* Swap the no-js class before first paint so nothing flashes. The
         .reveal class arms the section entrances (site.js) only where they can
-        run: motion allowed and IntersectionObserver present. If site.js has
+        run: motion allowed (by the system and by the footer's Animation
+        switch) and IntersectionObserver present. If site.js has
         not taken over within 2.5s (blocked, failed, very slow), the class is
         dropped and every part shows, so content can never stay hidden. */}
     <script is:inline>
       document.documentElement.classList.remove('no-js');
-      if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches && !document.documentElement.classList.contains('motion-off')) {
         document.documentElement.classList.add('reveal');
         setTimeout(function () {
           if (!window.__revealReady) document.documentElement.classList.remove('reveal');

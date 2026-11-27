@@ -57,16 +57,18 @@ select {
    IntersectionObserver, and is withdrawn if site.js does not arrive, so the
    resting state everyone else sees is simply the finished page. The hero is
    left out: it has its own landing. The selector list matches site.js
-   (REVEAL) exactly. A grid cell's own text (its heading, body and lead, a
-   project card) enters on its own, unless the cell is already one of the
+   (REVEAL) exactly. A page's h1 is not in the list (2026-11-27): it sits in
+   the page head above the fold, and entering after its own lead turned the
+   hierarchy upside down for half a second. A grid cell's own text (its
+   heading, body and lead) enters on its own, unless the cell is already one of the
    parts above, so nothing rises twice; the cells themselves stay put, since
    they carry the grid's lines. */
-.reveal main > :not(.hero) :is(h1, h2, .lead, .plan, .svc, .faq-item, .how__item, .closing__link, .prose > *, .contact__inner > *, .notice, .updated, :is(.cell__h, .cell__b, .head__lead, .pw):not(:is(.svc, .plan, .how__item, .contact__inner) *)) {
+.reveal main > :not(.hero) :is(h2, .lead, .plan, .svc, .faq-item, .how__item, .closing__link, .prose > *, .contact__inner > *, .notice, .updated, :is(.cell__h, .cell__b, .head__lead):not(:is(.svc, .plan, .how__item, .contact__inner) *)) {
   opacity: 0;
   transform: translateY(24px);
 }
 
-.reveal main > :not(.hero) :is(h1, h2, .lead, .plan, .svc, .faq-item, .how__item, .closing__link, .prose > *, .contact__inner > *, .notice, .updated, :is(.cell__h, .cell__b, .head__lead, .pw):not(:is(.svc, .plan, .how__item, .contact__inner) *)).is-in {
+.reveal main > :not(.hero) :is(h2, .lead, .plan, .svc, .faq-item, .how__item, .closing__link, .prose > *, .contact__inner > *, .notice, .updated, :is(.cell__h, .cell__b, .head__lead):not(:is(.svc, .plan, .how__item, .contact__inner) *)).is-in {
   opacity: 1;
   transform: none;
   transition:
@@ -114,6 +116,20 @@ select {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* The footer's Animation switch (html.motion-off, WCAG 2.2.2) stops every
+   motion the way reduced motion does, not only the loops: entrances, prints,
+   hovers that travel, the theme switch. It can be flipped while the page is
+   open, so this is a class rule, not a media query. */
+html.motion-off { scroll-behavior: auto; }
+
+html.motion-off *,
+html.motion-off *::before,
+html.motion-off *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
 }
 
 /* --- Typography ---------------------------------------------------------- */

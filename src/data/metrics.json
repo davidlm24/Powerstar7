@@ -1,21 +1,19 @@
 {
-  "measuredAt": "2026-11-26",
+  "measuredAt": "2026-11-27",
   "page": "/",
-  "requests": 11,
+  "requests": 9,
   "thirdPartyRequests": 0,
-  "weightKb": 189.9,
-  "weightRawKb": 333.7,
+  "weightKb": 115.8,
+  "weightRawKb": 247.2,
   "cookies": 0,
   "assets": [
-    "/_astro/Home.CnTEaLFA.css",
-    "/_astro/Pluses.Dx-SoMPA.css",
+    "/_astro/ExampleSite.CPTCxBfM.css",
+    "/_astro/Home.lm1wKaHo.css",
+    "/_astro/Pluses.BowX-MHd.css",
     "/assets/fonts/geist-latin.woff2",
     "/assets/fonts/source-serif-4-italic-latin.woff2",
     "/assets/img/favicon.svg",
     "/assets/js/hero-pixels.js",
-    "/assets/js/site.js",
-    "/assets/work/iconta.webp",
-    "/assets/work/ipda.webp",
-    "/assets/work/service.webp"
+    "/assets/js/site.js"
   ]
 }

@@ -7,19 +7,28 @@
    so nothing is drawn twice; only the rails run through the gaps between
    sections. Section titles live inside the grid, in cells of their own.
    Illustrations are pixel art (Glyph.astro); the hero is a live pixel field
-   (HeroPixels) with drawings on its right. The copy is the short set
-   (home.h1, home.lead, home.svc.*, home.fit.*, home.step.* in ui.ts). */
+   (HeroPixels) with example sites on its right (HeroStage). The copy is
+   the short set (home.h1, home.lead, home.svc.*, home.fit.*, home.step.* in
+   ui.ts).
+
+   Impeccable pass, 2026-11-27: the page shows why to choose the studio
+   before it explains anything. The hero stage shows real client sites; a
+   row of four facts under it (from-price, price in writing, 2-4 weeks,
+   optional care) replaced the services strip; the fourth "fits" cell holds
+   this page's measured figures; and a line draws through the four process
+   steps as they scroll by. The hero shows example sites, not client
+   projects: David took the Powerstar7-era projects off the site, so
+   "Recent work" is gone too. */
 import Base from '../layouts/Base.astro';
 import Accent from '../components/Accent.astro';
 import Glyph, { type GlyphName } from '../components/Glyph.astro';
 import HeroPixels from '../components/HeroPixels.astro';
-import HeroPixelsStill from '../components/HeroPixelsStill.astro';
+import HeroStage from '../components/HeroStage.astro';
 import Sheet from '../components/Sheet.astro';
 import Pluses from '../components/Pluses.astro';
 import ClosingPanel from '../components/ClosingPanel.astro';
-import ProjectWindow from '../components/ProjectWindow.astro';
-import { PROJECTS } from '../data/projects';
-import { useTranslations, route, type Lang } from '../i18n/ui';
+import { PRICING, euros } from '../data/pricing';
+import { useTranslations, route, metrics, type Lang } from '../i18n/ui';
 import { accentParts } from '../i18n/accent';
 
 interface Props {
@@ -51,8 +60,27 @@ const steps = [
 ];
 
 const h1 = accentParts(t('home.h1'));
-const band = services.map((s) => s.name);
-const bandRun = [0, 1, 2, 3].flatMap((copy) => band.map((item) => ({ item, copy })));
+
+/* The four reasons, in the order a visitor asks them: how much, how sure,
+   how long, and what after. Prices come from pricing.ts, never typed. */
+const facts = [
+  { v: t('home.fact.price.v', { price: euros(PRICING.design, lang) }), b: t('home.fact.price.b'), href: route('pricing', lang) },
+  { v: t('home.fact.proposal.v'), b: t('home.fact.proposal.b') },
+  { v: t('home.fact.time.v'), b: t('home.fact.time.b') },
+  { v: t('home.fact.care.v', { price: euros(PRICING.care, lang) }), b: t('home.fact.care.b') },
+];
+
+/* This page's own measured figures (scripts/measure.mjs), shown in the
+   fourth "fits" cell; the Work page has the full set. */
+const measuredOn = metrics.measuredAt
+  ? new Intl.DateTimeFormat(lang === 'pt' ? 'pt-BR' : 'en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(new Date(metrics.measuredAt))
+  : '';
+const hasFigures = metrics.measuredAt !== null && metrics.weightKb > 0;
 
 /* The "+" marks sit only where a line really crosses: the rails always, and
    an inner column line only where a cell edge meets that section's top or
@@ -84,20 +112,33 @@ const TOP_POSITION = [0, 50, 100];
         {/* Where the drawings go. The motion is paused from the footer's
             Animation switch (WCAG 2.2.2), not from a button here. */}
         <div class="hero__px">
-          <HeroPixelsStill />
+          <HeroStage lang={lang} />
         </div>
       </div>
 
-      {/* The five services, moving along a row of the grid. */}
-      <div class="band" data-band role="region" aria-label={t('home.band.label')}>
-        <Pluses at={RAILS} />
-        <p class="band__label">{t('home.band.label')}</p>
-        <div class="band__run">
-          <ul class="band__track">
-            {bandRun.map(({ item, copy }) => <li aria-hidden={copy > 0 ? 'true' : undefined}>{item}</li>)}
-          </ul>
-        </div>
-        <Pluses at={RAILS} end />
+      {/* The reasons, as a row of the grid right under the hero. Each value
+          prints in dots once as the page opens (.print-now, only with
+          motion allowed), 90ms apart. */}
+      <div class="facts-wrap">
+        <Pluses at={PLUS} narrow={[0, 50, 100]} />
+        <ul class="grid facts">
+          {facts.map((f, i) => (
+            <li class:list={['cell', 'fact', f.href && 'cell--link']} style={`--i: ${i}`}>
+              {f.href ? (
+                <a class="fact__link" href={f.href}>
+                  <span class="fact__v print-now">{f.v} <span class="cell__go" aria-hidden="true">&rarr;</span></span>
+                  <span class="fact__b">{f.b}</span>
+                </a>
+              ) : (
+                <>
+                  <span class="fact__v print-now">{f.v}</span>
+                  <span class="fact__b">{f.b}</span>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+        <Pluses at={PLUS} narrow={[0, 50, 100]} end />
       </div>
     </section>
 
@@ -140,24 +181,27 @@ const TOP_POSITION = [0, 50, 100];
             <p class="cell__b">{p.b}</p>
           </article>
         ))}
-        <div class="cell cell--art" aria-hidden="true" data-glyph-zone>
-          <Glyph name="web" size={144} />
-        </div>
+        {hasFigures && (
+          <a class="cell cell--link proof" href={`${route('work', lang)}#this`}>
+            <dl class="proof__list">
+              <div class="proof__fig">
+                <dt>{t('home.proof.weight')}</dt>
+                <dd>{Math.round(metrics.weightKb)}<span>KB</span></dd>
+              </div>
+              <div class="proof__fig">
+                <dt>{t('home.proof.cookies')}</dt>
+                <dd>{metrics.cookies}</dd>
+              </div>
+              <div class="proof__fig">
+                <dt>{t('home.proof.thirdParty')}</dt>
+                <dd>{metrics.thirdPartyRequests}</dd>
+              </div>
+            </dl>
+            <span class="proof__note">{t('home.proof.note', { date: measuredOn })} <span class="cell__go" aria-hidden="true">&rarr;</span></span>
+          </a>
+        )}
       </div>
       <Pluses at={PLUS} narrow={[0, 50, 100]} end />
-    </section>
-
-    {/* --- Recent work ------------------------------------------------------ */}
-    <section class="frame">
-      <Pluses at={PLUS} />
-      <div class="grid grid--work">
-        <div class="cell cell--head cell--work-head">
-          <h2 class="head__h"><Accent text={t('home.work.h2')} /></h2>
-          <a class="head__more" href={route('work', lang)}>{t('home.work.link')} &rarr;</a>
-        </div>
-        {PROJECTS.map((p) => <div class="cell cell--flush"><ProjectWindow project={p} lang={lang} /></div>)}
-      </div>
-      <Pluses at={PLUS} end />
     </section>
 
     {/* --- Process: the one place numbers belong (it is a sequence) -------- */}
@@ -167,9 +211,9 @@ const TOP_POSITION = [0, 50, 100];
         <div class="cell cell--head span-4">
           <h2 class="head__h"><Accent text={t('home.process.h2')} /></h2>
         </div>
-        <ol class="row">
+        <ol class="row steps">
           {steps.map((s, i) => (
-            <li class="cell">
+            <li class="cell" style={`--k: ${i}`}>
               <span class="step__n">{String(i + 1).padStart(2, '0')}</span>
               <h3 class="cell__h">{s.h}</h3>
               <p class="cell__b">{s.b}</p>
@@ -186,6 +230,16 @@ const TOP_POSITION = [0, 50, 100];
   <script is:inline>
     (function () {
       var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // The header's "Start a project" steps back while the hero's own is
+      // on screen, so the first screen asks once; it returns as the hero
+      // leaves. Without this script (or the observer) it simply stays.
+      var heroCta = document.querySelector('.hero__actions');
+      if (heroCta && 'IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) {
+          document.documentElement.classList.toggle('hero-cta-in', es[es.length - 1].isIntersecting);
+        }).observe(heroCta);
+      }
 
       if (reduce || !('IntersectionObserver' in window)) return;
 
@@ -219,7 +273,9 @@ const TOP_POSITION = [0, 50, 100];
       var drift = function () {
         ticking = false;
         var h = innerHeight;
+        var still = document.documentElement.classList.contains('motion-off');
         floats.forEach(function (el) {
+          if (still) { el.style.setProperty('--drift', '0px'); return; }
           var r = el.getBoundingClientRect();
           var d = ((r.top + r.height / 2) - h / 2) / h;
           el.style.setProperty('--drift', Math.max(-1, Math.min(1, d)) * -5 + 'px');
@@ -235,9 +291,6 @@ const TOP_POSITION = [0, 50, 100];
   /* The shared grid lives in src/styles/grid.css (Sheet.astro); what is
      here is the home page's own. */
 
-  /* The project card pads itself; it takes the cells' padding. */
-  .cell--flush :global(.pw) { --pw-pad: var(--cell-pad); }
-
   .cell--more { align-content: end; }
 
   .step__n {
@@ -251,23 +304,6 @@ const TOP_POSITION = [0, 50, 100];
     font-family: var(--font-mono);
     font-size: var(--t-micro);
     color: var(--accent-fn);
-  }
-
-  .grid--work .cell--work-head {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 1.5rem;
-  }
-
-  @media (max-width: 60rem) {
-    .grid--work .cell--work-head { grid-column: 1 / -1; min-block-size: 8rem; flex-direction: row; align-items: end; }
-    /* An odd last project spans the row, so no hole shows. */
-    .grid--work > :last-child { grid-column: 1 / -1; }
-  }
-
-  @media (max-width: 39.99rem) {
-    .grid--work .cell--work-head { flex-direction: column; align-items: start; }
   }
 
   /* --- Hero ------------------------------------------------------------------ */
@@ -371,83 +407,213 @@ const TOP_POSITION = [0, 50, 100];
     .hero { transform: none; }
   }
 
-  /* --- The services strip, a row of the grid --------------------------------- */
-  .band {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    margin-block-start: var(--s2);
+  /* --- The header's button while the hero's is on screen (script above) --- */
+  :global(.site-header__cta) {
+    transition: opacity 220ms var(--ease), visibility 0s linear 0s;
+  }
+
+  :global(html.hero-cta-in .site-header__cta) {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 220ms var(--ease), visibility 0s linear 220ms;
+  }
+
+  /* --- The facts: four reasons as a row of the grid under the hero ------------ */
+  .facts-wrap {
     position: relative;
-    padding: 1rem var(--cell-pad);
-    border-block: 1px solid var(--rail);
-    border-inline: 1px solid var(--rail);
-    background: var(--bg);
-    font-family: var(--font-mono);
-    font-size: var(--t-micro);
+    margin-block-start: var(--s2);
   }
 
-  .band__label { flex: none; color: var(--accent-fn); }
-
-  .band__run {
-    flex: 1 1 0;
-    min-inline-size: 0;
-    overflow: hidden;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+  .fact {
+    align-content: start;
+    gap: 0.5rem;
+    padding-block: clamp(1.25rem, 2.4vw, 2rem);
   }
 
-  .band__track {
-    display: flex;
-    inline-size: max-content;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    animation: band 60s linear infinite;
+  .fact__link {
+    display: grid;
+    gap: 0.5rem;
+    color: inherit;
+    text-decoration: none;
   }
 
-  .band__track li {
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    color: var(--fg);
-  }
-
-  .band__track li::after {
+  /* The cell is the link's box, so the whole cell answers. */
+  .fact__link::after {
     content: '';
-    inline-size: 5px;
-    block-size: 5px;
-    margin-inline: 2rem;
+    position: absolute;
+    inset: 0;
+  }
+
+  .fact__link:focus-visible { outline: none; }
+
+  .fact:has(.fact__link:focus-visible) {
+    outline: 2px solid var(--accent-fn);
+    outline-offset: -4px;
+  }
+
+  .fact:has(.fact__link:focus-visible)::before { transform: scaleX(1); }
+
+  .fact__v {
+    display: block;
+    font-size: clamp(1.35rem, 2.1vw, 1.75rem);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    font-weight: var(--weight-medium);
+    color: var(--fg);
+    text-wrap: balance;
+    transition: color 220ms var(--ease);
+  }
+
+  .fact.cell--link:hover .fact__v,
+  .fact.cell--link:active .fact__v,
+  .fact:has(.fact__link:focus-visible) .fact__v {
+    color: var(--accent-fn);
+  }
+
+  .fact.cell--link:hover .cell__go { transform: translateX(4px); }
+
+  .fact__b {
+    display: block;
+    max-inline-size: 30ch;
+    font-size: var(--t-small);
+    line-height: 1.5;
+    color: var(--fg-muted);
+  }
+
+  /* Each value develops in dots once as the page opens, one after another. */
+  :global(.reveal) .fact__v.print-now {
+    --print-dur: 520ms;
+    animation-delay: calc(240ms + var(--i, 0) * 90ms);
+  }
+
+  :global(html.motion-off) .fact__v.print-now {
+    animation: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  @media (max-width: 39.99rem) {
+    .fact { padding-block: 1.25rem; }
+  }
+
+  /* --- This page, measured: the fourth "fits" cell ----------------------------- */
+  .proof {
+    align-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .proof__list {
+    display: grid;
+    gap: 0.9rem;
+    margin: 0;
+  }
+
+  .proof__fig {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block-end: 0.6rem;
+    border-block-end: 1px solid var(--rail);
+  }
+
+  .proof__fig dt {
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+  }
+
+  .proof__fig dd {
+    margin: 0;
+    font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    font-weight: var(--weight-medium);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .proof__fig dd span {
+    margin-inline-start: 0.15em;
+    font-size: 0.45em;
+    letter-spacing: 0;
+    color: var(--fg-muted);
+  }
+
+  .proof__note {
+    font-size: var(--t-small);
+    font-weight: var(--weight-medium);
+    color: var(--fg);
+    transition: color 220ms var(--ease);
+  }
+
+  .proof:hover .proof__note,
+  .proof:focus-visible .proof__note,
+  .proof:active .proof__note { color: var(--accent-fn); }
+
+  .proof:hover .cell__go { transform: translateX(4px); }
+
+  /* --- Process: a line draws through the four steps as they scroll by ---------- */
+  /* At rest (no scroll timelines, reduced motion, the Animation switch off)
+     the line is complete and every number box is filled: the finished
+     drawing, never a half state. */
+  .steps {
+    position: relative;
+    view-timeline: --steps block;
+  }
+
+  .steps::after {
+    content: '';
+    position: absolute;
+    z-index: 2;
+    inset: -1px 0 auto;
+    block-size: 2px;
     background: var(--accent-fn);
+    transform-origin: 0 50%;
+    pointer-events: none;
   }
 
-  .band :global(.pluses) { inset-block-start: -1px; }
-
-  /* Paused on hover. */
-  .band:hover .band__track { animation-play-state: paused; }
-
-  .band :global(.pluses--end) { inset-block-start: auto; }
-
-  @keyframes band { to { transform: translateX(-50%); } }
-
-  @media (prefers-reduced-motion: reduce) {
-    .band__track { animation: none; flex-wrap: wrap; inline-size: auto; row-gap: 0.5rem; }
-    .band__track li[aria-hidden] { display: none; }
-    .band__run { -webkit-mask-image: none; mask-image: none; }
+  .steps .step__n {
+    background: var(--accent-fn);
+    color: var(--bg);
   }
 
-  /* Without JavaScript, and with the footer's Animation switch off, the
-     strip stands still as a wrapped list of all five services (frozen
-     mid-run it hid four of them on a phone: review A4). */
-  :global(.no-js) .band__track,
-  :global(html.motion-off) .band__track { animation: none; flex-wrap: wrap; inline-size: auto; row-gap: 0.5rem; }
-  :global(.no-js) .band__track li[aria-hidden],
-  :global(html.motion-off) .band__track li[aria-hidden] { display: none; }
-  :global(.no-js) .band__run,
-  :global(html.motion-off) .band__run { -webkit-mask-image: none; mask-image: none; }
+  @supports (animation-timeline: view()) {
+    /* Wide: one line along the row's top edge; each box fills as the line
+       reaches it (the same timeline, a later slice of it per step). */
+    :global(.reveal) .steps::after {
+      animation: steps-line linear both;
+      animation-timeline: --steps;
+      animation-range: cover 12% cover 45%;
+    }
 
-  @media (max-width: 47.99rem) {
-    .band { flex-wrap: wrap; row-gap: 0.75rem; }
-    .band__run { order: 3; flex-basis: 100%; }
+    :global(.reveal) .steps .step__n {
+      animation: step-fill linear both;
+      animation-timeline: --steps;
+      animation-range: cover calc(12% + var(--k, 0) * 8.25%) cover calc(14% + var(--k, 0) * 8.25%);
+    }
+
+    /* Two columns or one: no single row to draw along, so each box fills
+       as its own step comes up the screen. */
+    @media (max-width: 60rem) {
+      :global(.reveal) .steps::after { animation: none; display: none; }
+
+      :global(.reveal) .steps .step__n {
+        animation-timeline: view();
+        animation-range: entry 60% cover 35%;
+      }
+    }
+
+    :global(html.motion-off) .steps::after,
+    :global(html.motion-off) .steps .step__n { animation: none; }
+  }
+
+  @keyframes steps-line {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  @keyframes step-fill {
+    from { background: transparent; color: var(--accent-fn); }
+    to { background: var(--accent-fn); color: var(--bg); }
   }
 
 </style>
